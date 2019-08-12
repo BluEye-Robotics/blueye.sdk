@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "BlueyePioneerSDK"
+version = "0.1.0"
+description = "SDK for controlling a Blueye Pioneer"
+authors = ["Sindre Hansen <sindre.hansen@blueye.no>",
+           "Aksel Lenes <aksel.lenes@blueye.no"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+
+[tool.poetry.dev-dependencies]
+pytest = "^3.0"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
