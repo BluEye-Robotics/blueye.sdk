@@ -14,4 +14,3 @@ def get_image(**kwargs):
 def save_image(**kwargs):
     frame = get_image(**kwargs)
     cv2.imwrite(kwargs['filename'], frame)
-

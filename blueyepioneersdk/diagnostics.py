@@ -7,7 +7,8 @@ import http.client
 
 
 def get_diagnostic_data(ip, name, port=80, post_data=None, method=None):
-    data = get_website_json("http://%s:%d/diagnostics/%s" % (ip, port, name), post_data, method=method)
+    data = get_website_json("http://%s:%d/diagnostics/%s" %
+                            (ip, port, name), post_data, method=method)
     return data
 
 
@@ -27,6 +28,7 @@ def get_website_json(url, post_data=None, method=None):
         print("Could not decode json")
         return None
     return data
+
 
 def get_website(url, post_data=None, method=None, decode_utf8=True):
     try:

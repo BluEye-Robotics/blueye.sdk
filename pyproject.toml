@@ -11,6 +11,8 @@ p2_app_protocol = { path = "../p2_app_protocol/python/" }
 
 [tool.poetry.dev-dependencies]
 pytest = "^3.0"
+autopep8 = "^1.4"
+pep8 = "^1.7"
 
 [build-system]
 requires = ["poetry>=0.12"]

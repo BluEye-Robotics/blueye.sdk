@@ -1,1 +1,1 @@
-from pioneer import Pioneer
+from blueyepioneersdk import Pioneer
