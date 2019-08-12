@@ -7,6 +7,7 @@ authors = ["Sindre Hansen <sindre.hansen@blueye.no>",
 
 [tool.poetry.dependencies]
 python = "^3.7"
+p2_app_protocol = { path = "../p2_app_protocol/python/" }
 
 [tool.poetry.dev-dependencies]
 pytest = "^3.0"
