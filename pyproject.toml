@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "BlueyePioneerSDK"
+name = "blueye.sdk"
 version = "0.1.0"
 description = "SDK for controlling a Blueye Pioneer"
 authors = ["Sindre Hansen <sindre.hansen@blueye.no>",
@@ -7,7 +7,7 @@ authors = ["Sindre Hansen <sindre.hansen@blueye.no>",
 
 [tool.poetry.dependencies]
 python = "^3.7"
-p2_app_protocol = { path = "../p2_app_protocol/python/" }
+"blueye.protocol" = { path = "../blueye.protocol/" }
 opencv-python = "^4.1"
 
 [tool.poetry.dev-dependencies]

@@ -3,9 +3,9 @@ import cv2
 import pprint
 # import threading
 
-from blueyepioneersdk.diagnostics import get_diagnostic_data
-from blueyepioneersdk.video import get_image, save_image
-from p2_app_protocol import UdpClient
+from blueye.sdk.diagnostics import get_diagnostic_data
+from blueye.sdk.video import get_image, save_image
+from blueye.protocol import UdpClient
 
 
 class Pioneer:

@@ -1,4 +1,4 @@
-from blueyepioneersdk import __version__
+from blueye.sdk import __version__
 
 
 def test_version():
