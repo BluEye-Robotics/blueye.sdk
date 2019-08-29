@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
-import cv2
 import pprint
 import threading
+from typing import Iterator, Tuple
 
+import cv2
+
+from blueye.protocol import TcpClient, UdpClient
 from blueye.sdk.diagnostics import get_diagnostic_data
 from blueye.sdk.video import get_image, save_image
-from blueye.protocol import UdpClient
 
 
 class PioneerStateWatcher(threading.Thread):
@@ -30,14 +32,30 @@ class PioneerStateWatcher(threading.Thread):
 
 
 class Pioneer:
-    def __init__(self, ip="192.168.1.101", autoConnect=True):
+    def __init__(self, ip="192.168.1.101", tcpPort=2011, autoConnect=True):
         self._ip = ip
+        self._tcpclient = TcpClient(
+            ip=ip, port=tcpPort, autoConnect=autoConnect)
         self._stateWatcher = PioneerStateWatcher()
         if autoConnect is True:
             self._stateWatcher.start()
 
-    def set_lights(self):
-        pass
+    @property
+    def lights(self) -> (int, int):
+        state = self._stateWatcher.general_state
+        return (state["lights_upper"], state["lights_lower"])
+
+    @lights.setter
+    def lights(self, upper_lower_iterator: Iterator[Tuple[int, int]]):
+        try:
+            upper, lower = upper_lower_iterator
+        except (TypeError, ValueError) as e:
+            raise TypeError("Lights require a tuple with two values") from e
+        try:
+            self._tcpclient.set_lights(upper, lower)
+        except ValueError as e:
+            raise ValueError("Error occured while trying to set lights to"
+                             f"({upper},{lower})") from e
 
     @property
     def depth(self):
