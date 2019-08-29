@@ -11,7 +11,7 @@ python = "^3.7"
 opencv-python = "^4.1"
 
 [tool.poetry.dev-dependencies]
-pytest = "^3.0"
+pytest = "5.0.1"
 autopep8 = "^1.4"
 pep8 = "^1.7"
 
