@@ -15,7 +15,7 @@ def mocked_pioneer(mocked_clients):
 
 class TestLights:
     def test_lights_returns_tuple(self, mocked_pioneer):
-        mocked_pioneer._state.general_state = {
+        mocked_pioneer._stateWatcher.general_state = {
             "lights_upper": 0, "lights_lower": 0}
         assert mocked_pioneer.lights == (0, 0)
 
