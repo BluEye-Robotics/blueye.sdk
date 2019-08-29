@@ -1,29 +1,40 @@
 #!/usr/bin/env python3
 import cv2
 import pprint
-# import threading
+import threading
 
 from blueye.sdk.diagnostics import get_diagnostic_data
 from blueye.sdk.video import get_image, save_image
 from blueye.protocol import UdpClient
 
 
-class Pioneer:
-    def __init__(self, ip="192.168.1.101"):
-        self._ip = ip
-        # self._cached_pioneer_state = None
-        # self._pioneer_state_event = threading.Event()
+class PioneerStateWatcher(threading.Thread):
+    """
+    Subscribes to UDP messages from the drone and stores the latest data
+    """
+
+    def __init__(self):
+        threading.Thread.__init__(self)
+        self.general_state = None
+        self.calibration_state = None
         self._udpclient = UdpClient()
+        self._stop_thread = False
 
-    @property
-    def _pioneer_state(self):
-        # self._pioneer_state_event.wait()
-        # return self._cached_pioneer_state
-        return self._udpclient.get_data_dict()
+    def run(self):
+        while self._stop_thread is not True:
+            data_packet = self._udpclient.get_data_dict()
+            if data_packet["command_type"] == 1:
+                self.general_state = data_packet
+            elif data_packet["command_type"] == 2:
+                self.calibration_state = data_packet
 
-    # def _update_pineer_state(self, state):
-    #    self._last_pioneer_state = state
-    #    self._pioneer_state_event.set()
+
+class Pioneer:
+    def __init__(self, ip="192.168.1.101", autoConnect=True):
+        self._ip = ip
+        self._stateWatcher = PioneerStateWatcher()
+        if autoConnect is True:
+            self._stateWatcher.start()
 
     def set_lights(self):
         pass
