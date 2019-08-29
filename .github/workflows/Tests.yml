@@ -1,0 +1,31 @@
+name: Tests
+
+on: [push]
+
+jobs:
+  Test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.7
+
+    - name: Install poetry
+      run: pip install poetry==0.12.17
+
+    # Temporary fix until blueye.protocol is published to pypi
+    - name: Clone blueye.protocol
+      env:
+        GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
+        REPO_PATH: github.com/Blueye-Robotics/blueye.protocol.git
+      run: git clone "https://$GIT_TOKEN@$REPO_PATH" ../blueye.protocol
+
+    - name: Install dependencies
+      run: poetry install
+
+    - name: Run tests
+      run: poetry run pytest
