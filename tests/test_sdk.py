@@ -10,7 +10,7 @@ def mocked_clients(mocker):
 @pytest.fixture
 def mocked_pioneer(mocked_clients):
     from blueye.sdk import Pioneer
-    return Pioneer()
+    return Pioneer(autoConnect=False)
 
 
 class TestLights:
