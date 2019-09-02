@@ -56,6 +56,9 @@ class Pioneer:
             raise ValueError("Error occured while trying to set lights to"
                              f"({upper},{lower})") from e
 
+    def thruster_setpoint(self, surge, sway, heave, yaw):
+        self._tcpclient.motion_input(surge, sway, heave, yaw, 0, 0)
+
 
 if __name__ == "__main__":
     pioneer = Pioneer()
