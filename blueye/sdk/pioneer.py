@@ -1,13 +1,8 @@
 #!/usr/bin/env python3
-import pprint
 import threading
 from typing import Iterator, Tuple
 
-import cv2
-
 from blueye.protocol import TcpClient, UdpClient
-from blueye.sdk.diagnostics import get_diagnostic_data
-from blueye.sdk.video import get_image, save_image
 
 
 class PioneerStateWatcher(threading.Thread):
@@ -56,23 +51,6 @@ class Pioneer:
         except ValueError as e:
             raise ValueError("Error occured while trying to set lights to"
                              f"({upper},{lower})") from e
-
-    @property
-    def depth(self):
-        return self._pioneer_state["depth"]
-
-    @property
-    def drone_info(self):
-        return get_diagnostic_data(self._ip, "drone_info")
-
-    def print_drone_info(self):
-        pprint.pprint(self.drone_info)
-
-    def get_image(self):
-        get_image(ip=self._ip)
-
-    def save_image(self, filename):
-        save_image(ip=self._ip, filename=filename)
 
 
 if __name__ == "__main__":
