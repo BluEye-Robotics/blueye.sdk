@@ -38,6 +38,7 @@ class Pioneer:
         self._stateWatcher = PioneerStateWatcher()
         if autoConnect is True:
             self._stateWatcher.start()
+            self.thruster_setpoint(0, 0, 0, 0)
 
     @property
     def lights(self) -> (int, int):
