@@ -59,7 +59,3 @@ class Pioneer:
 
 if __name__ == "__main__":
     pioneer = Pioneer()
-    pioneer.print_drone_info()
-    pioneer.save_image("test.png")
-    print(pioneer.depth)
-    pioneer.show_video()
