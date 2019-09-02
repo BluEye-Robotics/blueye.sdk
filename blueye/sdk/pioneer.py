@@ -16,6 +16,7 @@ class PioneerStateWatcher(threading.Thread):
         self.calibration_state = None
         self._udpclient = UdpClient()
         self._exit_flag = threading.Event()
+        self.daemon = True
 
     def run(self):
         while not self._exit_flag.is_set():
