@@ -15,15 +15,18 @@ class PioneerStateWatcher(threading.Thread):
         self.general_state = None
         self.calibration_state = None
         self._udpclient = UdpClient()
-        self._stop_thread = False
+        self._exit_flag = threading.Event()
 
     def run(self):
-        while self._stop_thread is not True:
+        while not self._exit_flag.is_set():
             data_packet = self._udpclient.get_data_dict()
             if data_packet["command_type"] == 1:
                 self.general_state = data_packet
             elif data_packet["command_type"] == 2:
                 self.calibration_state = data_packet
+
+    def stop(self):
+        self._exit_flag.set()
 
 
 class Pioneer:
