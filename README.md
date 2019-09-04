@@ -9,13 +9,13 @@ pip install blueye.sdk
 ```
 
 ## Tests
-to run the tests do:
+To run the tests when connected to a surface unit with a active drone, do:
 
 ```shell
 pytest
 ```
 
-To run tests when not connected to a drone, i.e tests that uses mocks not drone hardware do:
+To run tests when not connected to a drone, do:
 
 ``` shell
 pytest -k "not connected_to_drone"
