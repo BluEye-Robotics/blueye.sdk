@@ -56,6 +56,36 @@ class Pioneer:
     def thruster_setpoint(self, surge, sway, heave, yaw):
         self._tcpclient.motion_input(surge, sway, heave, yaw, 0, 0)
 
+    @property
+    def auto_depth_active(self) -> bool:
+        state = self._stateWatcher.general_state
+        if(state["control_mode"] is 3 or 9):
+            return True
+        else:
+            return False
+
+    @auto_depth_active.setter
+    def auto_depth_active(self, active: bool):
+        if active:
+            self._tcpclient.auto_depth_on()
+        else:
+            self._tcpclient.auto_depth_off()
+
+    @property
+    def auto_heading_active(self) -> bool:
+        state = self._stateWatcher.general_state
+        if(state["control_mode"] is 7 or 9):
+            return True
+        else:
+            return False
+
+    @auto_heading_active.setter
+    def auto_heading_active(self, active: bool):
+        if active:
+            self._tcpclient.auto_heading_on()
+        else:
+            self._tcpclient.auto_heading_off()
+
 
 if __name__ == "__main__":
     pioneer = Pioneer()
