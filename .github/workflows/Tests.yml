@@ -28,4 +28,4 @@ jobs:
       run: poetry install
 
     - name: Run tests
-      run: poetry run pytest
+      run: poetry run pytest -k "not connected_to_drone"
