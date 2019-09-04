@@ -14,16 +14,7 @@ def mocked_pioneer(mocked_clients):
 
 
 class TestLights:
-    def test_lights_returns_tuple(self, mocked_pioneer):
+    def test_lights_returns_value(self, mocked_pioneer):
         mocked_pioneer._stateWatcher.general_state = {
-            "lights_upper": 0, "lights_lower": 0}
-        assert mocked_pioneer.lights == (0, 0)
-
-    def test_tuple_unpacking_fails_with_one_value(self, mocked_pioneer):
-        with pytest.raises(TypeError):
-            mocked_pioneer.lights = 1
-
-    def test_tuple_unpacking_fails_with_more_than_two_values(self,
-                                                             mocked_pioneer):
-        with pytest.raises(TypeError):
-            mocked_pioneer.lights = 1, 2, 3
+            "lights_upper": 0}
+        assert mocked_pioneer.lights == 0

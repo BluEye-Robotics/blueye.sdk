@@ -41,21 +41,17 @@ class Pioneer:
             self.thruster_setpoint(0, 0, 0, 0)
 
     @property
-    def lights(self) -> (int, int):
+    def lights(self) -> int:
         state = self._stateWatcher.general_state
-        return (state["lights_upper"], state["lights_lower"])
+        return (state["lights_upper"])
 
     @lights.setter
-    def lights(self, upper_lower_iterator: Iterator[Tuple[int, int]]):
+    def lights(self, brightness: int):
         try:
-            upper, lower = upper_lower_iterator
-        except (TypeError, ValueError) as e:
-            raise TypeError("Lights require a tuple with two values") from e
-        try:
-            self._tcpclient.set_lights(upper, lower)
+            self._tcpclient.set_lights(brightness, 0)
         except ValueError as e:
-            raise ValueError("Error occured while trying to set lights to"
-                             f"({upper},{lower})") from e
+            raise ValueError("Error occured while trying to set lights to: "
+                             f"{brightness}") from e
 
     def thruster_setpoint(self, surge, sway, heave, yaw):
         self._tcpclient.motion_input(surge, sway, heave, yaw, 0, 0)
