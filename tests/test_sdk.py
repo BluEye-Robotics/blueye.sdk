@@ -32,6 +32,9 @@ class TestFunctionsWhenConnectedToDrone:
         sleep(0.1)  # wait for new UDP message
         assert(pioneer.auto_heading_active == True)
 
+    def test_run_ping(self, pioneer):
+        pioneer.ping()
+
 
 class TestLights:
     def test_lights_returns_value(self, mocked_pioneer):
