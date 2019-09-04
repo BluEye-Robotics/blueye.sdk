@@ -58,8 +58,10 @@ class Pioneer:
 
     @property
     def auto_depth_active(self) -> bool:
+        AUTO_DEPTH_MODE = 3
+        AUTO_HEADING_AND_AUTO_DEPTH_MODE = 9
         state = self._stateWatcher.general_state
-        if(state["control_mode"] is 3 or 9):
+        if(state["control_mode"] is AUTO_DEPTH_MODE or AUTO_HEADING_AND_AUTO_DEPTH_MODE):
             return True
         else:
             return False
@@ -73,8 +75,10 @@ class Pioneer:
 
     @property
     def auto_heading_active(self) -> bool:
+        AUTO_HEADING_MODE = 7
+        AUTO_HEADING_AND_AUTO_DEPTH_MODE = 9
         state = self._stateWatcher.general_state
-        if(state["control_mode"] is 7 or 9):
+        if(state["control_mode"] is AUTO_HEADING_MODE or AUTO_HEADING_AND_AUTO_DEPTH_MODE):
             return True
         else:
             return False
