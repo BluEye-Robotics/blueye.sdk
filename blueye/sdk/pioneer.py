@@ -33,34 +33,34 @@ class PioneerStateWatcher(threading.Thread):
 class Pioneer:
     def __init__(self, ip="192.168.1.101", tcpPort=2011, autoConnect=True):
         self._ip = ip
-        self._tcpclient = TcpClient(
+        self._tcp_client = TcpClient(
             ip=ip, port=tcpPort, autoConnect=autoConnect)
-        self._stateWatcher = PioneerStateWatcher()
+        self._state_watcher = PioneerStateWatcher()
         if autoConnect is True:
-            self._stateWatcher.start()
+            self._state_watcher.start()
             self.thruster_setpoint(0, 0, 0, 0)
 
     @property
     def lights(self) -> int:
-        state = self._stateWatcher.general_state
+        state = self._state_watcher.general_state
         return (state["lights_upper"])
 
     @lights.setter
     def lights(self, brightness: int):
         try:
-            self._tcpclient.set_lights(brightness, 0)
+            self._tcp_client.set_lights(brightness, 0)
         except ValueError as e:
             raise ValueError("Error occured while trying to set lights to: "
                              f"{brightness}") from e
 
     def thruster_setpoint(self, surge, sway, heave, yaw):
-        self._tcpclient.motion_input(surge, sway, heave, yaw, 0, 0)
+        self._tcp_client.motion_input(surge, sway, heave, yaw, 0, 0)
 
     @property
     def auto_depth_active(self) -> bool:
         AUTO_DEPTH_MODE = 3
         AUTO_HEADING_AND_AUTO_DEPTH_MODE = 9
-        state = self._stateWatcher.general_state
+        state = self._state_watcher.general_state
         if(state["control_mode"] is AUTO_DEPTH_MODE or AUTO_HEADING_AND_AUTO_DEPTH_MODE):
             return True
         else:
@@ -69,15 +69,15 @@ class Pioneer:
     @auto_depth_active.setter
     def auto_depth_active(self, active: bool):
         if active:
-            self._tcpclient.auto_depth_on()
+            self._tcp_client.auto_depth_on()
         else:
-            self._tcpclient.auto_depth_off()
+            self._tcp_client.auto_depth_off()
 
     @property
     def auto_heading_active(self) -> bool:
         AUTO_HEADING_MODE = 7
         AUTO_HEADING_AND_AUTO_DEPTH_MODE = 9
-        state = self._stateWatcher.general_state
+        state = self._state_watcher.general_state
         if(state["control_mode"] is AUTO_HEADING_MODE or AUTO_HEADING_AND_AUTO_DEPTH_MODE):
             return True
         else:
