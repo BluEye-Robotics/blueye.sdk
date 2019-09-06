@@ -94,6 +94,21 @@ class Pioneer:
         """Ping drone, a exception is thrown by TcpClient if drone does not answer"""
         self._tcpclient.ping()
 
+    @property
+    def camera_is_recording(self) -> bool:
+        state = self._stateWatcher.general_state
+        if(state["camera_record_time"] != -1):
+            return True
+        else:
+            return False
+
+    @camera_is_recording.setter
+    def camera_is_recording(self, start_recording: bool):
+        if start_recording:
+            self._tcpclient.start_recording()
+        else:
+            self._tcpclient.stop_recording()
+
 
 if __name__ == "__main__":
     pioneer = Pioneer()

@@ -5,6 +5,7 @@ from time import sleep
 @pytest.fixture(scope="class")
 def pioneer():
     from blueye.sdk import Pioneer
+    sleep(1)  # wait for to drone send first UDP message
     return Pioneer()
 
 
@@ -34,6 +35,15 @@ class TestFunctionsWhenConnectedToDrone:
 
     def test_run_ping(self, pioneer):
         pioneer.ping()
+
+    @pytest.mark.skip(reason="a camera stream must have been run before camera recording is possible")
+    def test_camera_recording(self, pioneer):
+        pioneer.camera_is_recording = True
+        sleep(1)
+        assert(pioneer.camera_is_recording == True)
+        pioneer.camera_is_recording = False
+        sleep(1)
+        assert(pioneer.camera_is_recording == False)
 
 
 class TestLights:
