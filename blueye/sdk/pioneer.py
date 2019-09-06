@@ -91,7 +91,7 @@ class Pioneer:
             self._tcpclient.auto_heading_off()
 
     def ping(self):
-        """Ping drone, a exception is thrown by TcpClient if drone does not answer"""
+        """Ping drone, an exception is thrown by TcpClient if drone does not answer"""
         self._tcpclient.ping()
 
     @property
