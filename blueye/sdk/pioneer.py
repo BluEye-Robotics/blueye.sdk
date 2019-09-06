@@ -30,12 +30,34 @@ class PioneerStateWatcher(threading.Thread):
         self._exit_flag.set()
 
 
+class Camera:
+    def __init__(self, tcp_client, state_watcher):
+        self._tcpclient = tcp_client
+        self._state_watcher = state_watcher
+
+    @property
+    def is_recording(self) -> bool:
+        state = self._state_watcher.general_state
+        if(state["camera_record_time"] != -1):
+            return True
+        else:
+            return False
+
+    @is_recording.setter
+    def is_recording(self, start_recording: bool):
+        if start_recording:
+            self._tcpclient.start_recording()
+        else:
+            self._tcpclient.stop_recording()
+
+
 class Pioneer:
     def __init__(self, ip="192.168.1.101", tcpPort=2011, autoConnect=True):
         self._ip = ip
         self._tcp_client = TcpClient(
             ip=ip, port=tcpPort, autoConnect=autoConnect)
         self._state_watcher = PioneerStateWatcher()
+        self.camera = Camera(self._tcp_client, self._state_watcher)
         if autoConnect is True:
             self._state_watcher.start()
             self.thruster_setpoint(0, 0, 0, 0)
@@ -86,28 +108,13 @@ class Pioneer:
     @auto_heading_active.setter
     def auto_heading_active(self, active: bool):
         if active:
-            self._tcpclient.auto_heading_on()
+            self._tcp_client.auto_heading_on()
         else:
-            self._tcpclient.auto_heading_off()
+            self._tcp_client.auto_heading_off()
 
     def ping(self):
         """Ping drone, an exception is thrown by TcpClient if drone does not answer"""
-        self._tcpclient.ping()
-
-    @property
-    def camera_is_recording(self) -> bool:
-        state = self._stateWatcher.general_state
-        if(state["camera_record_time"] != -1):
-            return True
-        else:
-            return False
-
-    @camera_is_recording.setter
-    def camera_is_recording(self, start_recording: bool):
-        if start_recording:
-            self._tcpclient.start_recording()
-        else:
-            self._tcpclient.stop_recording()
+        self._tcp_client.ping()
 
 
 if __name__ == "__main__":

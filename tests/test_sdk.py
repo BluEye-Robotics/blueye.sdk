@@ -38,12 +38,12 @@ class TestFunctionsWhenConnectedToDrone:
 
     @pytest.mark.skip(reason="a camera stream must have been run before camera recording is possible")
     def test_camera_recording(self, pioneer):
-        pioneer.camera_is_recording = True
+        pioneer.camera.is_recording = True
         sleep(1)
-        assert(pioneer.camera_is_recording == True)
-        pioneer.camera_is_recording = False
+        assert(pioneer.camera.is_recording == True)
+        pioneer.camera.is_recording = False
         sleep(1)
-        assert(pioneer.camera_is_recording == False)
+        assert(pioneer.camera.is_recording == False)
 
 
 class TestLights:
