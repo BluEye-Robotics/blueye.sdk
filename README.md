@@ -20,3 +20,10 @@ To run tests when not connected to a drone, do:
 ``` shell
 pytest -k "not connected_to_drone"
 ```
+
+## Documentation in portray
+To generate the documentation locally run
+
+``` shell
+portray in_browser
+```
