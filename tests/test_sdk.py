@@ -25,7 +25,7 @@ def mocked_pioneer(mocked_clients):
 class TestFunctionsWhenConnectedToDrone:
     def test_auto_heading(self, pioneer):
         pioneer.auto_heading_active = True
-        sleep(0.1)  # wait for new UDP message
+        sleep(0.3)  # wait for new UDP message
         assert(pioneer.auto_heading_active == True)
 
     def test_auto_depth(self, pioneer):
