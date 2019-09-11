@@ -45,6 +45,12 @@ class TestFunctionsWhenConnectedToDrone:
         sleep(1)
         assert(pioneer.camera.is_recording == False)
 
+    def test_camera_exposure(self, pioneer):
+        exposure_value = 1200
+        pioneer.camera.exposure = exposure_value
+        sleep(1)
+        assert(pioneer.camera.exposure == exposure_value)
+
 
 class TestLights:
     def test_lights_returns_value(self, mocked_pioneer):

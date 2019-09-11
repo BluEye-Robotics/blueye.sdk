@@ -32,7 +32,7 @@ class PioneerStateWatcher(threading.Thread):
 
 class Camera:
     def __init__(self, tcp_client, state_watcher):
-        self._tcpclient = tcp_client
+        self._tcp_client = tcp_client
         self._state_watcher = state_watcher
 
     @property
@@ -46,12 +46,34 @@ class Camera:
     @is_recording.setter
     def is_recording(self, start_recording: bool):
         if start_recording:
-            self._tcpclient.start_recording()
+            self._tcp_client.start_recording()
         else:
-            self._tcpclient.stop_recording()
+            self._tcpc_lient.stop_recording()
+
+    @property
+    def exposure(self) -> int:
+        camera_parameters = self._tcp_client.get_camera_parameters()
+        exposure = camera_parameters[2]
+        return exposure
+
+    @exposure.setter
+    def exposure(self, exposure: int):
+        self._tcp_client.set_camera_exposure(exposure)
 
 
 class Pioneer:
+    """A class providing a interface to the Blueye pioneer's basic functions
+
+    Example of basic usage:
+    >>> from blueye.sdk import Pioneer
+    >>> from time import sleep
+    >>> p = Pioneer()
+    >>> p.lights = 10
+    >>> sleep(3)
+    >>> print(f"The current light intensity is: {p.lights}")
+    >>> p.lights = 0
+    """
+
     def __init__(self, ip="192.168.1.101", tcpPort=2011, autoConnect=True):
         self._ip = ip
         self._tcp_client = TcpClient(
