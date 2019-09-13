@@ -50,12 +50,14 @@ class TestFunctionsWhenConnectedToDrone:
         assert pioneer.camera.is_recording == False
 
     def test_camera_exposure(self, pioneer):
+        test_read_parameter = pioneer.camera.exposure
         exposure_value = 1200
         pioneer.camera.exposure = exposure_value
         sleep(1)
         assert pioneer.camera.exposure == exposure_value
 
     def test_camera_whitebalance(self, pioneer):
+        test_read_parameter = pioneer.camera.whitebalance
         whitebalance_value = 3200
         pioneer.camera.whitebalance = whitebalance_value
         sleep(1)
