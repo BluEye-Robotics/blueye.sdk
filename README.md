@@ -28,3 +28,11 @@ To generate the documentation locally run
 ``` shell
 portray in_browser
 ```
+
+## Formatting with black
+Run `black .` to autoformat, or add the pre-commit hook
+
+```shell
+pre-commit install
+```
+to have it done done automatically on every commit.
