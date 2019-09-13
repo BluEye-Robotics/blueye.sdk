@@ -162,7 +162,3 @@ class Pioneer:
     def ping(self):
         """Ping drone, an exception is thrown by TcpClient if drone does not answer"""
         self._tcp_client.ping()
-
-
-if __name__ == "__main__":
-    pioneer = Pioneer()
