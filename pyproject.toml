@@ -11,6 +11,7 @@ packages = [
 [tool.poetry.dependencies]
 python = "^3.7"
 "blueye.protocol" = { path = "../blueye.protocol/" }
+xbox360controller = {version = "^1.1.2", optional = true }
 
 [tool.poetry.dev-dependencies]
 pytest = "5.0.1"
@@ -22,6 +23,8 @@ pre-commit = "^1.18.3"
 black = "^19.3b0"
 mkdocs-macros-plugin = "^0.2.4"
 
+[tool.poetry.extras]
+examples = ["xbox360controller"]
 
 [tool.portray.mkdocs]
 plugins = ["search", "macros"]
