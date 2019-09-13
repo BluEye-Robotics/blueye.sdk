@@ -6,7 +6,7 @@ from .camera import Camera
 from blueye.protocol import TcpClient, UdpClient
 
 
-class PioneerStateWatcher(threading.Thread):
+class _PioneerStateWatcher(threading.Thread):
     """
     Subscribes to UDP messages from the drone and stores the latest data
     """
@@ -38,7 +38,7 @@ class Pioneer:
     def __init__(self, ip="192.168.1.101", tcpPort=2011, autoConnect=True):
         self._ip = ip
         self._tcp_client = TcpClient(ip=ip, port=tcpPort, autoConnect=autoConnect)
-        self._state_watcher = PioneerStateWatcher()
+        self._state_watcher = _PioneerStateWatcher()
         self.camera = Camera(self._tcp_client, self._state_watcher)
         if autoConnect is True:
             self.connect()
