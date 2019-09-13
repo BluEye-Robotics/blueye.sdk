@@ -20,6 +20,12 @@ pytest-mock = "^1.10.4"
 portray = "^1.2.4"
 pre-commit = "^1.18.3"
 black = "^19.3b0"
+mkdocs-macros-plugin = "^0.2.4"
+
+
+[tool.portray.mkdocs]
+plugins = ["search", "macros"]
+python_module = "doc_utils" # For macros plugin
 
 [tool.portray.mkdocs.theme]
 favicon = "docs/blueye_b.svg"
