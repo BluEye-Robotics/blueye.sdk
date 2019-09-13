@@ -19,6 +19,7 @@ pep8 = "^1.7"
 pytest-mock = "^1.10.4"
 portray = "^1.2.4"
 pre-commit = "^1.18.3"
+black = "^19.3b0"
 
 [tool.portray.mkdocs.theme]
 favicon = "docs/blueye_b.svg"

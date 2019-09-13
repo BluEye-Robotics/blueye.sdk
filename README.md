@@ -30,9 +30,11 @@ portray in_browser
 ```
 
 ## Formatting with black
-Run `black .` to autoformat, or add the pre-commit hook
+To keep the code style consistent [`Black`](https://pypi.org/project/black/) is used for code formatting.
+To format code with black run `black .` in the project root directory.
+Adding a pre-commit hook ensures black is run before every commit
 
 ```shell
 pre-commit install
 ```
-to have it done done automatically on every commit.
+adds a pre-commit hook for black formatting.
