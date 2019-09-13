@@ -48,7 +48,7 @@ class Camera:
         if start_recording:
             self._tcp_client.start_recording()
         else:
-            self._tcpc_lient.stop_recording()
+            self._tcp_client.stop_recording()
 
     @property
     def exposure(self) -> int:
