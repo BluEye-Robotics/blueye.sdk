@@ -1,5 +1,6 @@
 # blueye.sdk
 [![Tests](https://github.com/BluEye-Robotics/blueye.sdk/workflows/Tests/badge.svg)](https://github.com/BluEye-Robotics/blueye.sdk/actions)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 
 A Python package for remote control of the Blueye Pioneer underwater drone.
 
