@@ -50,6 +50,13 @@ class TestFunctionsWhenConnectedToDrone:
         sleep(1)
         assert pioneer.camera.is_recording == False
 
+    def test_camera_bitrate(self, pioneer):
+        test_read_parameter = pioneer.camera.bitrate
+        bitrate_value = 3000000
+        pioneer.camera.bitrate = bitrate_value
+        sleep(1)
+        assert pioneer.camera.bitrate == bitrate_value
+
     def test_camera_exposure(self, pioneer):
         test_read_parameter = pioneer.camera.exposure
         exposure_value = 1200

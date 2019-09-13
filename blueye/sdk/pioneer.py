@@ -51,6 +51,16 @@ class Camera:
             self._tcp_client.stop_recording()
 
     @property
+    def bitrate(self) -> int:
+        camera_parameters = self._tcp_client.get_camera_parameters()
+        bitrate = camera_parameters[1]
+        return bitrate
+
+    @bitrate.setter
+    def bitrate(self, bitrate: int):
+        self._tcp_client.set_camera_bitrate(bitrate)
+
+    @property
     def exposure(self) -> int:
         camera_parameters = self._tcp_client.get_camera_parameters()
         exposure = camera_parameters[2]
