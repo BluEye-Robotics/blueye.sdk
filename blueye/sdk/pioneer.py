@@ -70,6 +70,16 @@ class Camera:
     def whitebalance(self, whitebalance: int):
         self._tcp_client.set_camera_whitebalance(whitebalance)
 
+    @property
+    def hue(self) -> int:
+        camera_parameters = self._tcp_client.get_camera_parameters()
+        hue = camera_parameters[4]
+        return hue
+
+    @hue.setter
+    def hue(self, hue: int):
+        self._tcp_client.set_camera_hue(hue)
+
 
 class Pioneer:
     """A class providing a interface to the Blueye pioneer's basic functions
