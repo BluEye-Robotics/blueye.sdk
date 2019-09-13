@@ -77,6 +77,12 @@ class TestFunctionsWhenConnectedToDrone:
         pioneer.camera.resolution = resolution_value
         assert pioneer.camera.resolution == resolution_value
 
+    def test_camera_framerate(self, pioneer):
+        test_read_parameter = pioneer.camera.framerate
+        framerate_value = 25
+        pioneer.camera.framerate = framerate_value
+        assert pioneer.camera.framerate == framerate_value
+
 
 class TestLights:
     def test_lights_returns_value(self, mocked_pioneer):
