@@ -44,11 +44,26 @@ class Pioneer:
             self.connect()
 
     def connect(self):
+        """Start receiving telemetry info from the drone, and publishing watchdog messages
+
+        When watchdog message are published the thrusters are armed, to stop the drone from moving
+        unexpectedly when connecting all thruster set points are set to zero when connecting.
+        """
         self._state_watcher.start()
+        self._tcp_client.connect()
+        self._tcp_client.start()
         self.thruster_setpoint(0, 0, 0, 0)
 
     @property
     def lights(self) -> int:
+        """Get or set the brightness of the pioneers bottom canister lights
+
+        *Arguments*:
+            brightness (int): Set the brightness of the bottom canister LED's in the range <0, 255>
+
+        *Returns*:
+            brightness (int): The brightness of the bottom canister LED's in the range <0, 255>
+        """
         state = self._state_watcher.general_state
         return state["lights_upper"]
 
@@ -62,10 +77,37 @@ class Pioneer:
             ) from e
 
     def thruster_setpoint(self, surge, sway, heave, yaw):
+        """Control the thrusters of the pioneer
+
+        Set reference values between -1 and 1 for each controllable degree of freedom on the Pioneer.
+        The reference values are mapped linearly to a thruster force, a set point of -1 correspons
+        to maximum negative force and a set point of 1 corresponds to maximum positive force. For the
+        yaw direction the reference is a moment not a force, as the yaw direction is rotational not
+        translational.
+
+        *Arguments*:<br/>
+            **surge** (float): Force set point in the surge direction in range <-1, 1>, a positive set point makes the drone move forward <br/>
+            **sway** (float): Force set point in the sway direction in range <-1, 1>, a positive set point makes the drone move to the right <br/>
+            **heave** (float): Force set point in the heave direction in range <-1, 1>, a positive set point makes the drone move down. <br/>
+            **yaw** (float): Moment set point in the sway direction in range <-1, 1>, a positive set point makes the drone rotate clockwise.
+        """
         self._tcp_client.motion_input(surge, sway, heave, yaw, 0, 0)
 
     @property
     def auto_depth_active(self) -> bool:
+        """Enable or disable the auto depth control mode
+
+        When auto depth is active, input for the heave direction to the thruster_setpoint function
+        specifies a speed set point instead of a force set point. A control loop on the Pioneer will
+        then attempt to maintain the wanted speed in the heave direction as long as auto depth is
+        active.
+
+        *Arguments*:
+            active (bool): Activate auto depth mode if active is true, de-activte if false
+
+        *Returns*:
+            active (int): Returns true if auto depth is active, false if it is not active
+        """
         AUTO_DEPTH_MODE = 3
         AUTO_HEADING_AND_AUTO_DEPTH_MODE = 9
         state = self._state_watcher.general_state
@@ -83,6 +125,19 @@ class Pioneer:
 
     @property
     def auto_heading_active(self) -> bool:
+        """Enable or disable the auto heading control mode
+
+        When auto heading is active, input for the yaw direction to the thruster_setpoint function
+        specifies a angular speed set point instead of a moment set point. A control loop on the
+        Pioneer will then attempt to maintain the wanted angular velocity in the yaw direction as
+        long as auto heading is active.
+
+        *Arguments*:
+            active (bool): Activate auto heading mode if active is true, de-activte if false
+
+        *Returns*:
+            active (int): Returns true if auto heading mode is active, false if it is not active
+        """
         AUTO_HEADING_MODE = 7
         AUTO_HEADING_AND_AUTO_DEPTH_MODE = 9
         state = self._state_watcher.general_state
