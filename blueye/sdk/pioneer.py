@@ -50,8 +50,9 @@ class Pioneer:
         unexpectedly when connecting all thruster set points are set to zero when connecting.
         """
         self._state_watcher.start()
-        self._tcp_client.connect()
-        self._tcp_client.start()
+        if self._tcp_client._sock is None and not self._tcp_client.isAlive():
+            self._tcp_client.connect()
+            self._tcp_client.start()
         self.thruster_setpoint(0, 0, 0, 0)
 
     @property
