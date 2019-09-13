@@ -50,8 +50,11 @@ class Pioneer:
         self._state_watcher = PioneerStateWatcher()
         self.camera = Camera(self._tcp_client, self._state_watcher)
         if autoConnect is True:
-            self._state_watcher.start()
-            self.thruster_setpoint(0, 0, 0, 0)
+            self.connect()
+
+    def connect(self):
+        self._state_watcher.start()
+        self.thruster_setpoint(0, 0, 0, 0)
 
     @property
     def lights(self) -> int:
