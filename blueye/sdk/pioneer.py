@@ -40,6 +40,8 @@ class Pioneer:
         self._tcp_client = TcpClient(ip=ip, port=tcpPort, autoConnect=autoConnect)
         self._state_watcher = _PioneerStateWatcher()
         self.camera = Camera(self._tcp_client, self._state_watcher)
+
+        self.current_thruster_setpoints = {"surge": 0, "sway": 0, "heave": 0, "yaw": 0}
         if autoConnect is True:
             self.connect()
 
@@ -53,7 +55,7 @@ class Pioneer:
         if self._tcp_client._sock is None and not self._tcp_client.isAlive():
             self._tcp_client.connect()
             self._tcp_client.start()
-        self.thruster_setpoint(0, 0, 0, 0)
+        self.update_setpoint()
 
     @property
     def lights(self) -> int:
@@ -79,7 +81,46 @@ class Pioneer:
                 "Error occured while trying to set lights to: " f"{brightness}"
             ) from e
 
-    def thruster_setpoint(self, surge, sway, heave, yaw):
+    @property
+    def surge(self) -> float:
+        return self.current_thruster_setpoints["surge"]
+
+    @surge.setter
+    def surge(self, surge_value: float):
+        self.current_thruster_setpoints["surge"] = surge_value
+        self.update_setpoint()
+
+    @property
+    def sway(self) -> float:
+        return self.current_thruster_setpoints["sway"]
+
+    @sway.setter
+    def sway(self, sway_value: float):
+        self.current_thruster_setpoints["sway"] = sway_value
+        self.update_setpoint()
+
+    @property
+    def heave(self) -> float:
+        return self.current_thruster_setpoints["heave"]
+
+    @heave.setter
+    def heave(self, heave_value: float):
+        self.current_thruster_setpoints["heave"] = heave_value
+        self.update_setpoint()
+
+    @property
+    def yaw(self) -> float:
+        return self.current_thruster_setpoints["yaw"]
+
+    @yaw.setter
+    def yaw(self, yaw_value: float):
+        self.current_thruster_setpoints["yaw"] = yaw_value
+        self.update_setpoint()
+
+    def update_setpoint(self):
+        self.send_thruster_setpoint(*self.current_thruster_setpoints.values())
+
+    def send_thruster_setpoint(self, surge, sway, heave, yaw):
         """Control the thrusters of the pioneer
 
         Set reference values between -1 and 1 for each controllable degree of freedom on the Pioneer.
