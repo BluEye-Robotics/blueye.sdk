@@ -29,3 +29,23 @@ jobs:
 
     - name: Run tests
       run: poetry run pytest -k "not connected_to_drone"
+
+  CheckFormatting:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.7
+
+    - name: Install Black
+      run: pip install black
+
+    - name: Check formatting
+      run: black --check .
+
+    - name: Print diff
+      if: failure()
+      run: black --diff .
