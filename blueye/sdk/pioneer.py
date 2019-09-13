@@ -33,15 +33,6 @@ class PioneerStateWatcher(threading.Thread):
 
 class Pioneer:
     """A class providing a interface to the Blueye pioneer's basic functions
-
-    Example of basic usage:
-    >>> from blueye.sdk import Pioneer
-    >>> from time import sleep
-    >>> p = Pioneer()
-    >>> p.lights = 10
-    >>> sleep(3)
-    >>> print(f"The current light intensity is: {p.lights}")
-    >>> p.lights = 0
     """
 
     def __init__(self, ip="192.168.1.101", tcpPort=2011, autoConnect=True):
