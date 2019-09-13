@@ -85,11 +85,13 @@ class Pioneer:
         yaw direction the reference is a moment not a force, as the yaw direction is rotational not
         translational.
 
-        *Arguments*:<br/>
-            **surge** (float): Force set point in the surge direction in range <-1, 1>, a positive set point makes the drone move forward <br/>
-            **sway** (float): Force set point in the sway direction in range <-1, 1>, a positive set point makes the drone move to the right <br/>
-            **heave** (float): Force set point in the heave direction in range <-1, 1>, a positive set point makes the drone move down. <br/>
-            **yaw** (float): Moment set point in the sway direction in range <-1, 1>, a positive set point makes the drone rotate clockwise.
+
+        Arguments:
+
+        * **surge** (float): Force set point in the surge direction in range <-1, 1>, a positive set point makes the drone move forward
+        * **sway** (float): Force set point in the sway direction in range <-1, 1>, a positive set point makes the drone move to the right
+        * **heave** (float): Force set point in the heave direction in range <-1, 1>, a positive set point makes the drone move down.
+        * **yaw** (float): Moment set point in the sway direction in range <-1, 1>, a positive set point makes the drone rotate clockwise.
         """
         self._tcp_client.motion_input(surge, sway, heave, yaw, 0, 0)
 
