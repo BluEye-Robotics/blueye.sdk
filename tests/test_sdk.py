@@ -70,6 +70,12 @@ class TestFunctionsWhenConnectedToDrone:
         sleep(1)
         assert pioneer.camera.hue == hue_value
 
+    def test_camera_resolution(self, pioneer):
+        test_read_parameter = pioneer.camera.resolution
+        resolution_value = 480
+        pioneer.camera.resolution = resolution_value
+        assert pioneer.camera.resolution == resolution_value
+
 
 class TestLights:
     def test_lights_returns_value(self, mocked_pioneer):

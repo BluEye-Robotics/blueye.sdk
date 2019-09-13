@@ -80,6 +80,16 @@ class Camera:
     def hue(self, hue: int):
         self._tcp_client.set_camera_hue(hue)
 
+    @property
+    def resolution(self) -> int:
+        camera_parameters = self._tcp_client.get_camera_parameters()
+        resolution = camera_parameters[5]
+        return resolution
+
+    @resolution.setter
+    def resolution(self, resolution: int):
+        self._tcp_client.set_camera_resolution(resolution)
+
 
 class Pioneer:
     """A class providing a interface to the Blueye pioneer's basic functions
