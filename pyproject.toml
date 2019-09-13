@@ -26,3 +26,6 @@ favicon = "docs/blueye_b.svg"
 logo = "docs/blueye_b.svg"
 name = "material"
 palette = {primary = "white", accent = "blue"}
+
+[tool.black]
+line-lenght = 100
