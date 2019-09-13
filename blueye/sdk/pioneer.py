@@ -60,10 +60,12 @@ class Pioneer:
         """Get or set the brightness of the pioneers bottom canister lights
 
         *Arguments*:
-            brightness (int): Set the brightness of the bottom canister LED's in the range <0, 255>
+
+        * brightness (int): Set the brightness of the bottom canister LED's in the range <0, 255>
 
         *Returns*:
-            brightness (int): The brightness of the bottom canister LED's in the range <0, 255>
+
+        * brightness (int): The brightness of the bottom canister LED's in the range <0, 255>
         """
         state = self._state_watcher.general_state
         return state["lights_upper"]
@@ -106,10 +108,12 @@ class Pioneer:
         active.
 
         *Arguments*:
-            active (bool): Activate auto depth mode if active is true, de-activte if false
+
+        * active (bool): Activate auto depth mode if active is true, de-activte if false
 
         *Returns*:
-            active (int): Returns true if auto depth is active, false if it is not active
+
+        * active (int): Returns true if auto depth is active, false if it is not active
         """
         AUTO_DEPTH_MODE = 3
         AUTO_HEADING_AND_AUTO_DEPTH_MODE = 9
@@ -136,10 +140,12 @@ class Pioneer:
         long as auto heading is active.
 
         *Arguments*:
-            active (bool): Activate auto heading mode if active is true, de-activte if false
+
+        * active (bool): Activate auto heading mode if active is true, de-activte if false
 
         *Returns*:
-            active (int): Returns true if auto heading mode is active, false if it is not active
+
+        * active (int): Returns true if auto heading mode is active, false if it is not active
         """
         AUTO_HEADING_MODE = 7
         AUTO_HEADING_AND_AUTO_DEPTH_MODE = 9
