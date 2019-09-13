@@ -4,6 +4,9 @@ version = "0.1.0"
 description = "SDK for controlling a Blueye Pioneer"
 authors = ["Sindre Hansen <sindre.hansen@blueye.no>",
            "Aksel Lenes <aksel.lenes@blueye.no"]
+packages = [
+  { include = "blueye" }
+]
 
 [tool.poetry.dependencies]
 python = "^3.7"
@@ -29,4 +32,3 @@ line-lenght = 100
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
-
