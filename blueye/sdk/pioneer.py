@@ -38,7 +38,7 @@ class Camera:
     @property
     def is_recording(self) -> bool:
         state = self._state_watcher.general_state
-        if(state["camera_record_time"] != -1):
+        if state["camera_record_time"] != -1:
             return True
         else:
             return False
@@ -76,8 +76,7 @@ class Pioneer:
 
     def __init__(self, ip="192.168.1.101", tcpPort=2011, autoConnect=True):
         self._ip = ip
-        self._tcp_client = TcpClient(
-            ip=ip, port=tcpPort, autoConnect=autoConnect)
+        self._tcp_client = TcpClient(ip=ip, port=tcpPort, autoConnect=autoConnect)
         self._state_watcher = PioneerStateWatcher()
         self.camera = Camera(self._tcp_client, self._state_watcher)
         if autoConnect is True:
@@ -87,15 +86,16 @@ class Pioneer:
     @property
     def lights(self) -> int:
         state = self._state_watcher.general_state
-        return (state["lights_upper"])
+        return state["lights_upper"]
 
     @lights.setter
     def lights(self, brightness: int):
         try:
             self._tcp_client.set_lights(brightness, 0)
         except ValueError as e:
-            raise ValueError("Error occured while trying to set lights to: "
-                             f"{brightness}") from e
+            raise ValueError(
+                "Error occured while trying to set lights to: " f"{brightness}"
+            ) from e
 
     def thruster_setpoint(self, surge, sway, heave, yaw):
         self._tcp_client.motion_input(surge, sway, heave, yaw, 0, 0)
@@ -105,7 +105,7 @@ class Pioneer:
         AUTO_DEPTH_MODE = 3
         AUTO_HEADING_AND_AUTO_DEPTH_MODE = 9
         state = self._state_watcher.general_state
-        if(state["control_mode"] is AUTO_DEPTH_MODE or AUTO_HEADING_AND_AUTO_DEPTH_MODE):
+        if state["control_mode"] is AUTO_DEPTH_MODE or AUTO_HEADING_AND_AUTO_DEPTH_MODE:
             return True
         else:
             return False
@@ -122,7 +122,10 @@ class Pioneer:
         AUTO_HEADING_MODE = 7
         AUTO_HEADING_AND_AUTO_DEPTH_MODE = 9
         state = self._state_watcher.general_state
-        if(state["control_mode"] is AUTO_HEADING_MODE or AUTO_HEADING_AND_AUTO_DEPTH_MODE):
+        if (
+            state["control_mode"] is AUTO_HEADING_MODE
+            or AUTO_HEADING_AND_AUTO_DEPTH_MODE
+        ):
             return True
         else:
             return False

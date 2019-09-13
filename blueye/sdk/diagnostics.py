@@ -7,8 +7,9 @@ import http.client
 
 
 def get_diagnostic_data(ip, name, port=80, post_data=None, method=None):
-    data = get_website_json("http://%s:%d/diagnostics/%s" %
-                            (ip, port, name), post_data, method=method)
+    data = get_website_json(
+        "http://%s:%d/diagnostics/%s" % (ip, port, name), post_data, method=method
+    )
     return data
 
 
@@ -35,7 +36,7 @@ def get_website(url, post_data=None, method=None, decode_utf8=True):
         if method is not None:
             url = urllib.request.Request(url, method=method)
         if post_data is not None:
-            post_data = urllib.parse.urlencode(post_data).encode('utf-8')
+            post_data = urllib.parse.urlencode(post_data).encode("utf-8")
             data = urllib.request.urlopen(url, post_data).read()
         else:
             data = urllib.request.urlopen(url).read()
