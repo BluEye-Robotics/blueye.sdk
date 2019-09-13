@@ -42,6 +42,7 @@ class TestFunctionsWhenConnectedToDrone:
         reason="a camera stream must have been run before camera recording is possible"
     )
     def test_camera_recording(self, pioneer):
+        test_read_property = pioneer.camera.is_recording
         pioneer.camera.is_recording = True
         sleep(1)
         assert pioneer.camera.is_recording == True
