@@ -60,6 +60,16 @@ class Camera:
     def exposure(self, exposure: int):
         self._tcp_client.set_camera_exposure(exposure)
 
+    @property
+    def whitebalance(self) -> int:
+        camera_parameters = self._tcp_client.get_camera_parameters()
+        whitebalance = camera_parameters[3]
+        return whitebalance
+
+    @whitebalance.setter
+    def whitebalance(self, whitebalance: int):
+        self._tcp_client.set_camera_whitebalance(whitebalance)
+
 
 class Pioneer:
     """A class providing a interface to the Blueye pioneer's basic functions

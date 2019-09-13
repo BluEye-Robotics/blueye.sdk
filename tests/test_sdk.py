@@ -55,6 +55,12 @@ class TestFunctionsWhenConnectedToDrone:
         sleep(1)
         assert pioneer.camera.exposure == exposure_value
 
+    def test_camera_whitebalance(self, pioneer):
+        whitebalance_value = 3200
+        pioneer.camera.whitebalance = whitebalance_value
+        sleep(1)
+        assert pioneer.camera.whitebalance == whitebalance_value
+
 
 class TestLights:
     def test_lights_returns_value(self, mocked_pioneer):
