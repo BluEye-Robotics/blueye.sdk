@@ -40,8 +40,10 @@ jobs:
       with:
         python-version: 3.7
 
+    # Install the version of black specified in pyproject.toml
+    # (without having to install poetry)
     - name: Install Black
-      run: pip install black
+      run: pip install $(sed -n 's/black = \"\^\(.*\)\"/black~=\1/p' pyproject.toml)
 
     - name: Check formatting
       run: black --check .
