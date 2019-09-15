@@ -27,6 +27,8 @@ mkdocs-macros-plugin = "^0.2.4"
 examples = ["xbox360controller"]
 
 [tool.portray.mkdocs]
+repo_url = "https://github.com/BluEye-Robotics/blueye.sdk"
+repo_name = ""
 plugins = ["search", "macros"]
 python_module = "doc_utils" # For macros plugin
 
