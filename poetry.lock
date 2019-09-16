@@ -421,7 +421,7 @@ description = "Your Project with Great Documentation"
 name = "portray"
 optional = false
 python-versions = ">=3.6,<4.0"
-version = "1.2.4"
+version = "1.3.0"
 
 [package.dependencies]
 GitPython = ">=3.0,<4.0"
@@ -431,6 +431,7 @@ mkdocs-material = ">=4.4,<5.0"
 pdocs = ">=1.0,<2.0"
 pymdown-extensions = ">=6.0,<7.0"
 toml = ">=0.10.0,<0.11.0"
+yaspin = "0.15.0"
 
 [[package]]
 category = "dev"
@@ -640,6 +641,14 @@ version = "1.1.2"
 
 [[package]]
 category = "dev"
+description = "Yet Another Terminal Spinner"
+name = "yaspin"
+optional = false
+python-versions = "*"
+version = "0.15.0"
+
+[[package]]
+category = "dev"
 description = "Backport of pathlib-compatible object wrapper for zip files"
 name = "zipp"
 optional = false
@@ -657,7 +666,7 @@ testing = ["pathlib2", "contextlib2", "unittest2"]
 examples = ["xbox360controller"]
 
 [metadata]
-content-hash = "d98289ff64eef5df7048b85bd44d4ce91edd5ad98a1839f77979bdac22d5bb2c"
+content-hash = "e688e8c7886e53a0e93ce73518a28ae013444a02e1be68336dbb9d5bd1069620"
 python-versions = "^3.7"
 
 [metadata.hashes]
@@ -699,7 +708,7 @@ pdocs = ["23a0346f56c08ab5701ca9b14630aa1f0f32f1c29ee7efcfc8bc512cd272f89b", "9c
 pep562 = ["58cb1cc9ee63d93e62b4905a50357618d526d289919814bea1f0da8f53b79395", "d2a48b178ebf5f8dd31709cc26a19808ef794561fa2fe50ea01ea2bad4d667ef"]
 pep8 = ["b22cfae5db09833bb9bd7c8463b53e1a9c9b39f12e304a8d0bba729c501827ee", "fe249b52e20498e59e0b5c5256aa52ee99fc295b26ec9eaa85776ffdb9fe6374"]
 pluggy = ["0db4b7601aae1d35b4a033282da476845aa19185c1e6964b25cf324b5e4ec3e6", "fa5fa1622fa6dd5c030e9cad086fa19ef6a0cf6d7a2d12318e10cb49d6d68f34"]
-portray = ["ccf6041368c5fe7e2e5281a2b0d55329921c61e486423c71683d5d5300997a5d", "fb4d70381ea059ebe61f351f977cf05e08502ec059cf7a61f949e4425fab9baf"]
+portray = ["854338090ae4c82560ae5ff8a4c9b815fdd7276a0aa418c26afdd606f47c7f00", "bef75f30e6a571ce9b85e4f82392312d49877feccd1b8fcaa9febdaab68ef18b"]
 pre-commit = ["1d3c0587bda7c4e537a46c27f2c84aa006acc18facf9970bf947df596ce91f3f", "fa78ff96e8e9ac94c748388597693f18b041a181c94a4f039ad20f45287ba44a"]
 py = ["64f65755aee5b381cea27766a3a147c3f15b9b6b9ac88676de66ba2ae36793fa", "dc639b046a6e2cff5bbe40194ad65936d6ba360b52b3c3fe1d08a82dd50b5e53"]
 pycodestyle = ["95a2219d12372f05704562a14ec30bc76b05a5b297b21a5dfe3f6fac3491ae56", "e40a936c9a450ad81df37f549d676d127b1b66000a6c500caa2b085bc0ca976c"]
@@ -719,4 +728,5 @@ urllib3 = ["b246607a25ac80bedac05c6f282e3cdaf3afb65420fd024ac94435cabe6e18d1", "
 virtualenv = ["680af46846662bb38c5504b78bad9ed9e4f3ba2d54f54ba42494fdf94337fe30", "f78d81b62d3147396ac33fc9d77579ddc42cc2a98dd9ea38886f616b33bc7fb2"]
 wcwidth = ["3df37372226d6e63e1b1e1eda15c594bca98a22d33a23832a90998faa96bc65e", "f4ebe71925af7b40a864553f761ed559b43544f8f71746c2d756c7fe788ade7c"]
 xbox360controller = ["e555ae16f7528ee2ea7528a15178e5c7c71e8e060b88c749071e74b7f6a1c76b"]
+yaspin = ["0ee4668936d0053de752c9a4963929faa3a832bd0ba823877d27855592dc80aa", "5a938bdc7bab353fd8942d0619d56c6b5159a80997dc1c387a479b39e6dc9391"]
 zipp = ["3718b1cbcd963c7d4c5511a8240812904164b7f381b647143a89d3b98f9bcd8e", "f06903e9f1f43b12d371004b4ac7b06ab39a44adc747266928ae6debfa7b3335"]
