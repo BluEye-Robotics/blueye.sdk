@@ -93,5 +93,5 @@ class TestFunctionsWhenConnectedToDrone:
 
 class TestLights:
     def test_lights_returns_value(self, mocked_pioneer):
-        mocked_pioneer._state_watcher.general_state = {"lights_upper": 0}
+        mocked_pioneer._state_watcher._general_state = {"lights_upper": 0}
         assert mocked_pioneer.lights == 0
