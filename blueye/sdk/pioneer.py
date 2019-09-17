@@ -176,7 +176,10 @@ class Pioneer:
         AUTO_DEPTH_MODE = 3
         AUTO_HEADING_AND_AUTO_DEPTH_MODE = 9
         state = self._state_watcher.general_state
-        if state["control_mode"] is AUTO_DEPTH_MODE or AUTO_HEADING_AND_AUTO_DEPTH_MODE:
+        if (
+            state["control_mode"] is AUTO_DEPTH_MODE
+            or state["control_mode"] is AUTO_HEADING_AND_AUTO_DEPTH_MODE
+        ):
             return True
         else:
             return False
@@ -210,7 +213,7 @@ class Pioneer:
         state = self._state_watcher.general_state
         if (
             state["control_mode"] is AUTO_HEADING_MODE
-            or AUTO_HEADING_AND_AUTO_DEPTH_MODE
+            or state["control_mode"] is AUTO_HEADING_AND_AUTO_DEPTH_MODE
         ):
             return True
         else:
