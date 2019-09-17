@@ -3,8 +3,9 @@ import threading
 import time
 from typing import Iterator, Tuple
 
-from .camera import Camera
 from blueye.protocol import TcpClient, UdpClient
+
+from .camera import Camera
 
 
 class _PioneerStateWatcher(threading.Thread):
