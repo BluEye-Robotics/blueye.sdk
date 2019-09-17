@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import threading
+import time
 from typing import Iterator, Tuple
 
 from .camera import Camera
@@ -13,19 +14,35 @@ class _PioneerStateWatcher(threading.Thread):
 
     def __init__(self):
         threading.Thread.__init__(self)
-        self.general_state = None
-        self.calibration_state = None
+        self._general_state = None
+        self._calibration_state = None
         self._udpclient = UdpClient()
         self._exit_flag = threading.Event()
         self.daemon = True
+
+    @property
+    def general_state(self) -> dict:
+        start = time.time()
+        while self._general_state is None:
+            if time.time() - start > 3:
+                raise TimeoutError("No state message received from drone")
+        return self._general_state
+
+    @property
+    def calibration_state(self) -> dict:
+        start = time.time()
+        while self._calibration_state is None:
+            if time.time() - start > 3:
+                raise TimeoutError("No state message received from drone")
+        return self._calibration_state
 
     def run(self):
         while not self._exit_flag.is_set():
             data_packet = self._udpclient.get_data_dict()
             if data_packet["command_type"] == 1:
-                self.general_state = data_packet
+                self._general_state = data_packet
             elif data_packet["command_type"] == 2:
-                self.calibration_state = data_packet
+                self._calibration_state = data_packet
 
     def stop(self):
         self._exit_flag.set()
