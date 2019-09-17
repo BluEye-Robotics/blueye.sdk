@@ -1,12 +1,12 @@
+from time import sleep, time
+
 import pytest
-from time import sleep
 
 
 @pytest.fixture(scope="class")
 def pioneer():
     from blueye.sdk import Pioneer
 
-    sleep(1)  # wait for to drone send first UDP message
     return Pioneer()
 
 
@@ -23,17 +23,25 @@ def mocked_pioneer(mocked_clients):
     return Pioneer(autoConnect=False)
 
 
+def wait_for_new_udp_message(pioneer):
+    start = time()
+    old_udp_time = pioneer._state_watcher.general_state["time"]
+    while pioneer._state_watcher.general_state["time"] == old_udp_time:
+        if time() - start > 3:
+            raise TimeoutError
+
+
 @pytest.mark.connected_to_drone
 class TestFunctionsWhenConnectedToDrone:
     def test_auto_heading(self, pioneer):
         pioneer.auto_heading_active = True
-        sleep(0.3)  # wait for new UDP message
         assert pioneer.auto_heading_active == True
+        wait_for_new_udp_message(pioneer)
 
     def test_auto_depth(self, pioneer):
         pioneer.auto_depth_active = True
-        sleep(0.1)  # wait for new UDP message
         assert pioneer.auto_heading_active == True
+        wait_for_new_udp_message(pioneer)
 
     def test_run_ping(self, pioneer):
         pioneer.ping()
