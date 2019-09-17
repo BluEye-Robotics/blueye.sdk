@@ -4,6 +4,7 @@ import time
 from typing import Iterator, Tuple
 
 from blueye.protocol import TcpClient, UdpClient
+from blueye.protocol.exceptions import ResponseTimeout
 
 from .camera import Camera
 
@@ -73,6 +74,15 @@ class Pioneer:
         if self._tcp_client._sock is None and not self._tcp_client.isAlive():
             self._tcp_client.connect()
             self._tcp_client.start()
+        try:
+            # Ensure that we are able to communicate with the drone
+            self.ping()
+        except ResponseTimeout as e:
+            raise ConnectionError(
+                f"Found drone at {self._tcp_client._ip}:{self._tcp_client._port}, "
+                "but was unable to establish communication with it. "
+                "Is there another client connected?"
+            ) from e
         self.update_setpoint()
 
     @property
