@@ -33,15 +33,17 @@ def wait_for_new_udp_message(pioneer):
 
 @pytest.mark.connected_to_drone
 class TestFunctionsWhenConnectedToDrone:
-    def test_auto_heading(self, pioneer):
-        pioneer.auto_heading_active = True
-        assert pioneer.auto_heading_active == True
+    @pytest.mark.parametrize("new_state", [True, False])
+    def test_auto_heading(self, pioneer, new_state):
+        pioneer.auto_heading_active = new_state
         wait_for_new_udp_message(pioneer)
+        assert pioneer.auto_heading_active == new_state
 
-    def test_auto_depth(self, pioneer):
-        pioneer.auto_depth_active = True
-        assert pioneer.auto_heading_active == True
+    @pytest.mark.parametrize("new_state", [True, False])
+    def test_auto_depth(self, pioneer, new_state):
+        pioneer.auto_depth_active = new_state
         wait_for_new_udp_message(pioneer)
+        assert pioneer.auto_depth_active == new_state
 
     def test_run_ping(self, pioneer):
         pioneer.ping()
