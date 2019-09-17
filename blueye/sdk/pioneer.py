@@ -167,11 +167,11 @@ class Pioneer:
 
         *Arguments*:
 
-        * active (bool): Activate auto depth mode if active is true, de-activte if false
+        * active (bool): Activate auto depth mode if active is true, de-activate if false
 
         *Returns*:
 
-        * active (int): Returns true if auto depth is active, false if it is not active
+        * active (bool): Returns true if auto depth is active, false if it is not active
         """
         AUTO_DEPTH_MODE = 3
         AUTO_HEADING_AND_AUTO_DEPTH_MODE = 9
@@ -202,11 +202,11 @@ class Pioneer:
 
         *Arguments*:
 
-        * active (bool): Activate auto heading mode if active is true, de-activte if false
+        * active (bool): Activate auto heading mode if active is true, de-activate if false
 
         *Returns*:
 
-        * active (int): Returns true if auto heading mode is active, false if it is not active
+        * active (bool): Returns true if auto heading mode is active, false if it is not active
         """
         AUTO_HEADING_MODE = 7
         AUTO_HEADING_AND_AUTO_DEPTH_MODE = 9
