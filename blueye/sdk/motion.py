@@ -85,6 +85,10 @@ class Motion:
         * **heave** (float): Force set point in the heave direction in range <-1, 1>, a positive set point makes the drone move down.
         * **yaw** (float): Moment set point in the sway direction in range <-1, 1>, a positive set point makes the drone rotate clockwise.
         """
+        self.current_thruster_setpoints["surge"] = surge
+        self.current_thruster_setpoints["sway"] = sway
+        self.current_thruster_setpoints["heave"] = heave
+        self.current_thruster_setpoints["yaw"] = yaw
         self._tcp_client.motion_input(surge, sway, heave, yaw, 0, 0)
 
     @property
