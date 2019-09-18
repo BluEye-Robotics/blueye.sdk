@@ -36,14 +36,24 @@ class TestFunctionsWhenConnectedToDrone:
     @pytest.mark.parametrize("new_state", [True, False])
     def test_auto_heading(self, pioneer, new_state):
         pioneer.motion.auto_heading_active = new_state
-        wait_for_new_udp_message(pioneer)
-        assert pioneer.motion.auto_heading_active == new_state
+        TIMEOUT = 1
+        start = time()
+        while not pioneer.motion.auto_heading_active is new_state:
+            if time() - start > TIMEOUT:
+                pytest.fail(
+                    f"Control mode did not update within the set timeout of: {TIMEOUT} sec"
+                )
 
     @pytest.mark.parametrize("new_state", [True, False])
     def test_auto_depth(self, pioneer, new_state):
         pioneer.motion.auto_depth_active = new_state
-        wait_for_new_udp_message(pioneer)
-        assert pioneer.motion.auto_depth_active == new_state
+        TIMEOUT = 1
+        start = time()
+        while not pioneer.motion.auto_depth_active is new_state:
+            if time() - start > TIMEOUT:
+                pytest.fail(
+                    f"Control mode did not update within the set timeout of: {TIMEOUT} sec"
+                )
 
     def test_run_ping(self, pioneer):
         pioneer.ping()
