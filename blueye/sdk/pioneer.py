@@ -10,8 +10,7 @@ from .camera import Camera
 
 
 class _PioneerStateWatcher(threading.Thread):
-    """
-    Subscribes to UDP messages from the drone and stores the latest data
+    """Subscribes to UDP messages from the drone and stores the latest data
     """
 
     def __init__(self):
