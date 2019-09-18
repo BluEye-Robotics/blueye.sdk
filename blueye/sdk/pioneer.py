@@ -121,6 +121,21 @@ class Pioneer:
         return self._state_watcher.general_state["depth"]
 
     @property
+    def pose(self) -> dict:
+        """Get the current orientation of the drone
+
+        *Returns*:
+
+        * pose (dict): Dictionary with roll, pitch, and yaw in degrees.
+        """
+        pose = {
+            "roll": self._state_watcher.general_state["roll"],
+            "pitch": self._state_watcher.general_state["pitch"],
+            "yaw": self._state_watcher.general_state["yaw"],
+        }
+        return pose
+
+    @property
     def surge(self) -> float:
         return self.current_thruster_setpoints["surge"]
 
