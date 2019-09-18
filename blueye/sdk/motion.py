@@ -7,6 +7,12 @@ class Motion:
 
     @property
     def surge(self) -> float:
+        """ Set force reference for the surge direction
+
+        Arguments:
+
+        * **surge** (float): Force set point in the surge direction in range <-1, 1>, a positive set point makes the drone move forward
+        """
         return self.current_thruster_setpoints["surge"]
 
     @surge.setter
@@ -16,6 +22,12 @@ class Motion:
 
     @property
     def sway(self) -> float:
+        """ Set force reference for the sway direction
+
+        Arguments:
+
+        * **sway** (float): Force set point in the sway direction in range <-1, 1>, a positive set point makes the drone move to the right
+        """
         return self.current_thruster_setpoints["sway"]
 
     @sway.setter
@@ -25,6 +37,12 @@ class Motion:
 
     @property
     def heave(self) -> float:
+        """ Set force reference for the heave direction
+
+        Arguments:
+
+        * **heave** (float): Force set point in the heave direction in range <-1, 1>, a positive set point makes the drone move downwards
+        """
         return self.current_thruster_setpoints["heave"]
 
     @heave.setter
@@ -34,6 +52,12 @@ class Motion:
 
     @property
     def yaw(self) -> float:
+        """ Set force reference for the yaw direction
+
+        Arguments:
+
+        * **yaw** (float): Moment set point in the sway direction in range <-1, 1>, a positive set point makes the drone rotate clockwise.
+        """
         return self.current_thruster_setpoints["yaw"]
 
     @yaw.setter
