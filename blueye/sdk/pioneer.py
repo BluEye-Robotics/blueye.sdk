@@ -110,6 +110,17 @@ class Pioneer:
             ) from e
 
     @property
+    def depth(self) -> int:
+        """Get the current depth in millimeters
+
+        *Returns*:
+
+        * depth (int): The depth in millimeters of water column.
+        """
+
+        return self._state_watcher.general_state["depth"]
+
+    @property
     def surge(self) -> float:
         return self.current_thruster_setpoints["surge"]
 
