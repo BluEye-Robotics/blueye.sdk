@@ -11,7 +11,8 @@ class Motion:
 
         Arguments:
 
-        * **surge** (float): Force set point in the surge direction in range <-1, 1>, a positive set point makes the drone move forward
+        * **surge** (float): Force set point in the surge direction in range <-1, 1>,
+                             a positive set point makes the drone move forward
         """
         return self.current_thruster_setpoints["surge"]
 
@@ -26,7 +27,8 @@ class Motion:
 
         Arguments:
 
-        * **sway** (float): Force set point in the sway direction in range <-1, 1>, a positive set point makes the drone move to the right
+        * **sway** (float): Force set point in the sway direction in range <-1, 1>,
+                            a positive set point makes the drone move to the right
         """
         return self.current_thruster_setpoints["sway"]
 
@@ -41,7 +43,8 @@ class Motion:
 
         Arguments:
 
-        * **heave** (float): Force set point in the heave direction in range <-1, 1>, a positive set point makes the drone move downwards
+        * **heave** (float): Force set point in the heave direction in range <-1, 1>,
+                             a positive set point makes the drone move downwards
         """
         return self.current_thruster_setpoints["heave"]
 
@@ -56,7 +59,8 @@ class Motion:
 
         Arguments:
 
-        * **yaw** (float): Moment set point in the sway direction in range <-1, 1>, a positive set point makes the drone rotate clockwise.
+        * **yaw** (float): Moment set point in the sway direction in range <-1, 1>,
+                           a positive set point makes the drone rotate clockwise.
         """
         return self.current_thruster_setpoints["yaw"]
 
@@ -80,10 +84,14 @@ class Motion:
 
         Arguments:
 
-        * **surge** (float): Force set point in the surge direction in range <-1, 1>, a positive set point makes the drone move forward
-        * **sway** (float): Force set point in the sway direction in range <-1, 1>, a positive set point makes the drone move to the right
-        * **heave** (float): Force set point in the heave direction in range <-1, 1>, a positive set point makes the drone move down.
-        * **yaw** (float): Moment set point in the sway direction in range <-1, 1>, a positive set point makes the drone rotate clockwise.
+        * **surge** (float): Force set point in the surge direction in range <-1, 1>,
+                             a positive set point makes the drone move forward
+        * **sway** (float): Force set point in the sway direction in range <-1, 1>,
+                             a positive set point makes the drone move to the right
+        * **heave** (float): Force set point in the heave direction in range <-1, 1>,
+                             a positive set point makes the drone move down.
+        * **yaw** (float): Moment set point in the sway direction in range <-1, 1>,
+                             a positive set point makes the drone rotate clockwise.
         """
         self.current_thruster_setpoints["surge"] = surge
         self.current_thruster_setpoints["sway"] = sway
