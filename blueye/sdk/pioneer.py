@@ -126,12 +126,12 @@ class Pioneer:
 
         *Returns*:
 
-        * pose (dict): Dictionary with roll, pitch, and yaw in degrees.
+        * pose (dict): Dictionary with roll, pitch, and yaw in degrees, from 0 to 359.
         """
         pose = {
-            "roll": self._state_watcher.general_state["roll"],
-            "pitch": self._state_watcher.general_state["pitch"],
-            "yaw": self._state_watcher.general_state["yaw"],
+            "roll": (self._state_watcher.general_state["roll"] + 360) % 360,
+            "pitch": (self._state_watcher.general_state["pitch"] + 360) % 360,
+            "yaw": (self._state_watcher.general_state["yaw"] + 360) % 360,
         }
         return pose
 

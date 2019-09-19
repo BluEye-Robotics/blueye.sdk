@@ -106,3 +106,19 @@ class TestLights:
     def test_lights_returns_value(self, mocked_pioneer):
         mocked_pioneer._state_watcher._general_state = {"lights_upper": 0}
         assert mocked_pioneer.lights == 0
+
+
+class TestPose:
+    @pytest.mark.parametrize(
+        "old_angle, new_angle", [(0, 0), (180, 180), (-180, 180), (-1, 359)]
+    )
+    def test_angle_conversion(self, mocked_pioneer, old_angle, new_angle):
+        mocked_pioneer._state_watcher._general_state = {
+            "roll": old_angle,
+            "pitch": old_angle,
+            "yaw": old_angle,
+        }
+        pose = mocked_pioneer.pose
+        assert pose["roll"] == new_angle
+        assert pose["pitch"] == new_angle
+        assert pose["yaw"] == new_angle
