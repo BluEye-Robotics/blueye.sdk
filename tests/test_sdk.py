@@ -23,12 +23,15 @@ def mocked_pioneer(mocked_clients):
     return Pioneer(autoConnect=False)
 
 
-def wait_for_new_udp_message(pioneer):
-    start = time()
-    old_udp_time = pioneer._state_watcher.general_state["time"]
-    while pioneer._state_watcher.general_state["time"] == old_udp_time:
-        if time() - start > 3:
-            raise TimeoutError
+def polling_assert_with_timeout(cls, property_name, value_to_wait_for, timeout):
+    """Waits for a property to change on the given class"""
+    start_time = time()
+    property_getter = type(cls).__dict__[property_name].__get__
+    value = property_getter(cls)
+    while value != value_to_wait_for:
+        if time() - start_time > timeout:
+            assert value == value_to_wait_for
+        value = property_getter(cls)
 
 
 @pytest.mark.connected_to_drone
@@ -36,14 +39,12 @@ class TestFunctionsWhenConnectedToDrone:
     @pytest.mark.parametrize("new_state", [True, False])
     def test_auto_heading(self, pioneer, new_state):
         pioneer.auto_heading_active = new_state
-        wait_for_new_udp_message(pioneer)
-        assert pioneer.auto_heading_active == new_state
+        polling_assert_with_timeout(pioneer, "auto_heading_active", new_state, 3)
 
     @pytest.mark.parametrize("new_state", [True, False])
     def test_auto_depth(self, pioneer, new_state):
         pioneer.auto_depth_active = new_state
-        wait_for_new_udp_message(pioneer)
-        assert pioneer.auto_depth_active == new_state
+        polling_assert_with_timeout(pioneer, "auto_depth_active", new_state, 3)
 
     def test_run_ping(self, pioneer):
         pioneer.ping()
@@ -54,51 +55,51 @@ class TestFunctionsWhenConnectedToDrone:
     def test_camera_recording(self, pioneer):
         test_read_property = pioneer.camera.is_recording
         pioneer.camera.is_recording = True
-        sleep(1)
-        assert pioneer.camera.is_recording == True
+        polling_assert_with_timeout(pioneer.camera, "is_recording", True, 1)
         pioneer.camera.is_recording = False
-        sleep(1)
-        assert pioneer.camera.is_recording == False
+        polling_assert_with_timeout(pioneer.camera, "is_recording", False, 1)
 
     def test_camera_bitrate(self, pioneer):
         test_read_parameter = pioneer.camera.bitrate
-        bitrate_value = 3000000
-        pioneer.camera.bitrate = bitrate_value
-        sleep(1)
-        assert pioneer.camera.bitrate == bitrate_value
+        pioneer.camera.bitrate = 2000000
+        polling_assert_with_timeout(pioneer.camera, "bitrate", 2000000, 1)
+        pioneer.camera.bitrate = 3000000
+        polling_assert_with_timeout(pioneer.camera, "bitrate", 3000000, 1)
 
     def test_camera_exposure(self, pioneer):
         test_read_parameter = pioneer.camera.exposure
-        exposure_value = 1200
-        pioneer.camera.exposure = exposure_value
-        sleep(1)
-        assert pioneer.camera.exposure == exposure_value
+        pioneer.camera.exposure = 1200
+        polling_assert_with_timeout(pioneer.camera, "exposure", 1200, 1)
+        pioneer.camera.exposure = 1400
+        polling_assert_with_timeout(pioneer.camera, "exposure", 1400, 1)
 
     def test_camera_whitebalance(self, pioneer):
         test_read_parameter = pioneer.camera.whitebalance
-        whitebalance_value = 3200
-        pioneer.camera.whitebalance = whitebalance_value
-        sleep(1)
-        assert pioneer.camera.whitebalance == whitebalance_value
+        pioneer.camera.whitebalance = 3200
+        polling_assert_with_timeout(pioneer.camera, "whitebalance", 3200, 1)
+        pioneer.camera.whitebalance = 3400
+        polling_assert_with_timeout(pioneer.camera, "whitebalance", 3400, 1)
 
     def test_camera_hue(self, pioneer):
         test_read_parameter = pioneer.camera.hue
-        hue_value = 20
-        pioneer.camera.hue = hue_value
-        sleep(1)
-        assert pioneer.camera.hue == hue_value
+        pioneer.camera.hue = 20
+        polling_assert_with_timeout(pioneer.camera, "hue", 20, 1)
+        pioneer.camera.hue = 30
+        polling_assert_with_timeout(pioneer.camera, "hue", 30, 1)
 
     def test_camera_resolution(self, pioneer):
         test_read_parameter = pioneer.camera.resolution
-        resolution_value = 480
-        pioneer.camera.resolution = resolution_value
-        assert pioneer.camera.resolution == resolution_value
+        pioneer.camera.resolution = 480
+        polling_assert_with_timeout(pioneer.camera, "resolution", 480, 1)
+        pioneer.camera.resolution = 720
+        polling_assert_with_timeout(pioneer.camera, "resolution", 720, 1)
 
     def test_camera_framerate(self, pioneer):
         test_read_parameter = pioneer.camera.framerate
-        framerate_value = 25
-        pioneer.camera.framerate = framerate_value
-        assert pioneer.camera.framerate == framerate_value
+        pioneer.camera.framerate = 25
+        polling_assert_with_timeout(pioneer.camera, "framerate", 25, 1)
+        pioneer.camera.framerate = 30
+        polling_assert_with_timeout(pioneer.camera, "framerate", 30, 1)
 
 
 class TestLights:
