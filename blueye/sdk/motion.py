@@ -1,4 +1,14 @@
 class Motion:
+    """Control the motion of the Pioneer, and set automatic control modes
+
+    Motion can be set one degree of freedom at a time by using the 4 motion properties
+    (surge, sway, heave and yaw) or for all 4 degrees of freedom in one go through the
+    `send_thruster_setpoint` method.
+    The current thruster setpoint state is stored in the `current_thruster_setpoints`
+    variable, this is done because the Pioneer does not report back its current thruster
+    setpoint.
+    """
+
     def __init__(self, _tcp_client, _state_watcher):
         self._tcp_client = _tcp_client
         self._state_watcher = _state_watcher
