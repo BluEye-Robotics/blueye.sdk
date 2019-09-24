@@ -15,10 +15,12 @@ jobs:
         ref: master
     - name: "Fix path to blueye.protocol"
       run: sed -i 's@../blueye.protocol/@blueye.protocol/@' pyproject.toml
-    - uses: docker://abatilo/actions-poetry:3.7.4-stretch
+    - name: poetry install
+      uses: docker://abatilo/actions-poetry:3.7.4-stretch
       with:
         args: install
-    - uses: docker://abatilo/actions-poetry:3.7.4-stretch
+    - name: Run pytest
+      uses: docker://abatilo/actions-poetry:3.7.4-stretch
       with:
         args: "run pytest -k 'not connected_to_drone' tests"
 
@@ -34,13 +36,17 @@ jobs:
         ref: master
     - name: "Fix path to blueye.protocol"
       run: sed -i 's@../blueye.protocol/@blueye.protocol/@' pyproject.toml
-    - uses:  docker://abatilo/actions-poetry:3.7.4-stretch
+
+    - name: poetry install
+      uses:  docker://abatilo/actions-poetry:3.7.4-stretch
       with:
         args: install
-    - uses: docker://abatilo/actions-poetry:3.7.4-stretch
+    - name: Check formatting
+      uses: docker://abatilo/actions-poetry:3.7.4-stretch
       with:
         args: run black --exclude blueye.protocol --check .
-    - uses: docker://abatilo/actions-poetry:3.7.4-stretch
+    - name: Print formatting diff
+      uses: docker://abatilo/actions-poetry:3.7.4-stretch
       if: failure()
       with:
         args: run black --exclude blueye.protocol --diff .
