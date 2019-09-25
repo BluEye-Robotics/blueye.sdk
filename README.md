@@ -9,8 +9,10 @@ A Python package for remote control of the Blueye Pioneer underwater drone.
 pip install blueye.sdk
 ```
 
+# Development
+
 ## Tests
-To run the tests when connected to a surface unit with a active drone, do:
+To run the tests when connected to a surface unit with an active drone, do:
 
 ```shell
 pytest
@@ -22,14 +24,16 @@ To run tests when not connected to a drone, do:
 pytest -k "not connected_to_drone"
 ```
 
-## Documentation in portray
-To generate the documentation locally run
+## Documentation
+The documentation is written in markdown and converted to html with
+[portray](https://timothycrosley.github.io/portray/). To generate and open the
+documentation locally run
 
 ``` shell
 portray in_browser
 ```
 
-## Formatting with black
+## Formatting
 To keep the code style consistent [`Black`](https://pypi.org/project/black/) is used for code formatting.
 To format code with black run `black .` in the project root directory.
 Adding a pre-commit hook ensures black is run before every commit
