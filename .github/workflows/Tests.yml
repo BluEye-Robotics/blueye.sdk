@@ -12,7 +12,7 @@ jobs:
         repository: Blueye-Robotics/blueye.protocol
         path: blueye.sdk/blueye.protocol
         token: ${{ secrets.GIT_TOKEN }}
-        ref: baca99e
+        ref: master
     - name: "Fix path to blueye.protocol"
       run: sed -i 's@../blueye.protocol/@blueye.protocol/@' pyproject.toml
     - name: poetry install
@@ -33,7 +33,7 @@ jobs:
         repository: Blueye-Robotics/blueye.protocol
         path: blueye.sdk/blueye.protocol
         token: ${{ secrets.GIT_TOKEN }}
-        ref: baca99e
+        ref: master
     - name: "Fix path to blueye.protocol"
       run: sed -i 's@../blueye.protocol/@blueye.protocol/@' pyproject.toml
 
