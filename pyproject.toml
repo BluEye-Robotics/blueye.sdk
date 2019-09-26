@@ -42,5 +42,5 @@ palette = {primary = "white", accent = "blue"}
 line-lenght = 100
 
 [build-system]
-requires = ["poetry>=1.0.0b"]
+requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
