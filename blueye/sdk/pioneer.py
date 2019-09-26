@@ -71,6 +71,9 @@ class slaveTcpClient:
 
 class Pioneer:
     """A class providing a interface to the Blueye pioneer's basic functions
+
+    Automatically connects to the drone using the default ip and port when instantiated, this
+    behaviour can be disabled by setting `autoConnect=False`.
     """
 
     def __init__(self, ip="192.168.1.101", tcpPort=2011, autoConnect=True):
