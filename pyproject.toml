@@ -38,6 +38,22 @@ logo = "docs/blueye_b.svg"
 name = "material"
 palette = {primary = "white", accent = "blue"}
 
+[[tool.portray.mkdocs.nav]]
+Intro = "docs/intro.md"
+
+[[tool.portray.mkdocs.nav]]
+"Quick Start" = "docs/quick_start.md"
+
+[[tool.portray.mkdocs.nav]]
+    [[tool.portray.mkdocs.nav.Movement]]
+    "1. From the CLI" = "docs/movement/1.-from-the-CLI.md"
+    [[tool.portray.mkdocs.nav.Movement]]
+    "2. With an XBox Controller" = "docs/movement/2.-with-an-xbox-controller.md"
+    
+[[tool.portray.mkdocs.nav]]
+    [[tool.portray.mkdocs.nav.Video]]
+    "1. Basic Gstreamer Pipeline" = "docs/video/1.-basic-gstreamer-pipeline.md"
+
 [tool.black]
 line-lenght = 100
 
