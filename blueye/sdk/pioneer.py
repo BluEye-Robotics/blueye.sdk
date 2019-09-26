@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import threading
 import time
+import warnings
 from typing import Iterator, Tuple
 
 from blueye.protocol import TcpClient, UdpClient
@@ -48,6 +49,24 @@ class _PioneerStateWatcher(threading.Thread):
 
     def stop(self):
         self._exit_flag.set()
+
+
+class SlaveModeWarning(UserWarning):
+    """Raised when trying to perform action not possible in slave mode"""
+
+
+class slaveTcpClient:
+    """A dummy TCP client that warns you if you use any of its functions"""
+
+    def __getattr__(self, name):
+        def method(*args):
+            warnings.warn(
+                f"Unable to call {name}{args} with client in slave mode",
+                SlaveModeWarning,
+                stacklevel=2,
+            )
+
+        return method
 
 
 class Pioneer:
