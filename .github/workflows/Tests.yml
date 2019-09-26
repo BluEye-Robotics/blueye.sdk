@@ -7,14 +7,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-    - uses: actions/checkout@v1
-      with:
-        repository: Blueye-Robotics/blueye.protocol
-        path: blueye.sdk/blueye.protocol
-        token: ${{ secrets.GIT_TOKEN }}
-        ref: master
-    - name: "Fix path to blueye.protocol"
-      run: sed -i 's@../blueye.protocol/@blueye.protocol/@' pyproject.toml
     - name: poetry install
       uses: docker://abatilo/actions-poetry:3.7.4-stretch
       with:
@@ -28,15 +20,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-    - uses: actions/checkout@v1
-      with:
-        repository: Blueye-Robotics/blueye.protocol
-        path: blueye.sdk/blueye.protocol
-        token: ${{ secrets.GIT_TOKEN }}
-        ref: master
-    - name: "Fix path to blueye.protocol"
-      run: sed -i 's@../blueye.protocol/@blueye.protocol/@' pyproject.toml
-
     - name: poetry install
       uses:  docker://abatilo/actions-poetry:3.7.4-stretch
       with:
@@ -44,9 +27,9 @@ jobs:
     - name: Check formatting
       uses: docker://abatilo/actions-poetry:3.7.4-stretch
       with:
-        args: run black --exclude blueye.protocol --check .
+        args: run black --check .
     - name: Print formatting diff
       uses: docker://abatilo/actions-poetry:3.7.4-stretch
       if: failure()
       with:
-        args: run black --exclude blueye.protocol --diff .
+        args: run black --diff .
