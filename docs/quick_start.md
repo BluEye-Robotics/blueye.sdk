@@ -68,4 +68,4 @@ For a overview of all available properties and their valid input ranges see the
 
 ### Explore the examples
 For further examples on how to use the SDK to control the Pioneer have a look at the
-[motion examples](./motion)
+[motion examples](../movement/2.-with-an-xbox-controller/)
