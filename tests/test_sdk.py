@@ -23,6 +23,13 @@ def mocked_pioneer(mocked_clients):
     return Pioneer(autoConnect=False)
 
 
+@pytest.fixture
+def mocked_slave_pioneer(mocked_clients):
+    from blueye.sdk import Pioneer
+
+    return Pioneer(autoConnect=False, slaveModeEnabled=True)
+
+
 def polling_assert_with_timeout(cls, property_name, value_to_wait_for, timeout):
     """Waits for a property to change on the given class"""
     start_time = time()
@@ -122,3 +129,13 @@ class TestPose:
         assert pose["roll"] == new_angle
         assert pose["pitch"] == new_angle
         assert pose["yaw"] == new_angle
+
+
+class TestSlaveMode:
+    def test_warning_is_raised(self, mocker, mocked_slave_pioneer):
+        mocked_warn = mocker.patch("warnings.warn", autospec=True)
+
+        # Call function that requires tcp connection
+        mocked_slave_pioneer.lights = 0
+
+        mocked_warn.assert_called_once()
