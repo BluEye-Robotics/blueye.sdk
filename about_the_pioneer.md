@@ -3,7 +3,7 @@ The Blueye Pioneer is a underwater drone designed for inspections. It is produce
 Here is a [`youtube video`](https://www.youtube.com/watch?v=_-AEtr6xOP8) that gives a overview of the system and some specifications.
 
 
-![Pioneer at the Tautra Reef](./media/pioneer-at-reef.gif)
+![Pioneer at the Tautra Reef](./docs/media/pioneer-at-reef.gif)
 
 ## This SDK and the Pioneer
 The Pioneer is normally controlled via a mobile device through the [Blueye app](https://play.google.com/store/apps/details?id=no.blueye.blueyeapp). The mobile device
@@ -13,4 +13,4 @@ This python SDK exposes the functionality of the Blueye app through ay thon obje
 To control the Pioneer you connect your laptop to the surface unit WiFi and run code that interface with the Pioneer through the Pioneer Python object.
 
 
-Check out the [`Quick Start Guide`](./quick_start.md) to get started with using the SDK.
+Check out the [`Quick Start Guide`](./docs/quick_start.md) to get started with using the SDK.
