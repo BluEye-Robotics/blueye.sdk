@@ -75,4 +75,10 @@ For lower latency streaming you can see the [`Gstreamer instructions`](./video/1
 
 ### Explore the examples
 For further examples on how to use the SDK to control the Pioneer have a look at the
-[motion examples](../movement/2.-with-an-xbox-controller/)
+[motion examples](../movement/2.-with-an-xbox-controller/).
+
+Remember to install the example dependencies before running the examples.
+
+```shell
+poetry install --extras examples
+```
