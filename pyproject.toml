@@ -45,6 +45,9 @@ Intro = "docs/intro.md"
 "Quick Start" = "docs/quick_start.md"
 
 [[tool.portray.mkdocs.nav]]
+"About the Pioneer" = "docs/about_the_pioneer.md"
+
+[[tool.portray.mkdocs.nav]]
     [[tool.portray.mkdocs.nav.Movement]]
     "1. From the CLI" = "docs/movement/1.-from-the-CLI.md"
     [[tool.portray.mkdocs.nav.Movement]]
