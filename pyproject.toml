@@ -33,8 +33,8 @@ plugins = ["search", "macros"]
 python_module = "doc_utils" # For macros plugin
 
 [tool.portray.mkdocs.theme]
-favicon = "docs/blueye_b.svg"
-logo = "docs/blueye_b.svg"
+favicon = "docs/media/blueye_b.svg"
+logo = "docs/media/blueye_b.svg"
 name = "material"
 palette = {primary = "white", accent = "blue"}
 
