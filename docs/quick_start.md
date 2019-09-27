@@ -65,6 +65,13 @@ print(f"Current depth in millimeters: {p.depth}")
 For a overview of all available properties and their valid input ranges see the
 [`Reference section`](../../../reference/blueye/sdk/pioneer/) of the documentation.
 
+### Watching the video stream
+The easiest way to open the  RTSP video stream is using [`VLC media player`](https://www.videolan.org/vlc/index.html).
+Once VLC is downloaded you can start the stream like this, the RTSP URL is: `rtsp://192.168.1.101:8554/test`
+![text](./rtsp-in-vlc.gif)
+
+
+For lower latency streaming you can see the [`Gstreamer instructions`](./video/1.-basic-gstreamer-pipeline.md)
 
 ### Explore the examples
 For further examples on how to use the SDK to control the Pioneer have a look at the
