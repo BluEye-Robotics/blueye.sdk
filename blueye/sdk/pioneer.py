@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import threading
 import time
+import warnings
 from typing import Iterator, Tuple
 
 from blueye.protocol import TcpClient, UdpClient
@@ -50,13 +51,43 @@ class _PioneerStateWatcher(threading.Thread):
         self._exit_flag.set()
 
 
+class SlaveModeWarning(UserWarning):
+    """Raised when trying to perform action not possible in slave mode"""
+
+
+class slaveTcpClient:
+    """A dummy TCP client that warns you if you use any of its functions"""
+
+    def __getattr__(self, name):
+        def method(*args):
+            warnings.warn(
+                f"Unable to call {name}{args} with client in slave mode",
+                SlaveModeWarning,
+                stacklevel=2,
+            )
+
+        return method
+
+
 class Pioneer:
     """A class providing a interface to the Blueye pioneer's basic functions
+
+    Automatically connects to the drone using the default ip and port when instantiated, this
+    behaviour can be disabled by setting `autoConnect=False`.
+
+    The drone only supports one client controlling it at a time, but if you pass
+    `slaveModeEnabled=True` you will still be able to receive data from the drone.
     """
 
-    def __init__(self, ip="192.168.1.101", tcpPort=2011, autoConnect=True):
+    def __init__(
+        self, ip="192.168.1.101", tcpPort=2011, autoConnect=True, slaveModeEnabled=False
+    ):
         self._ip = ip
-        self._tcp_client = TcpClient(ip=ip, port=tcpPort, autoConnect=autoConnect)
+        self._slaveModeEnabled = slaveModeEnabled
+        if slaveModeEnabled:
+            self._tcp_client = slaveTcpClient()
+        else:
+            self._tcp_client = TcpClient(ip=ip, port=tcpPort, autoConnect=autoConnect)
         self._state_watcher = _PioneerStateWatcher()
         self.camera = Camera(self._tcp_client, self._state_watcher)
         self.motion = Motion(self._tcp_client, self._state_watcher)
@@ -71,19 +102,20 @@ class Pioneer:
         unexpectedly when connecting all thruster set points are set to zero when connecting.
         """
         self._state_watcher.start()
-        if self._tcp_client._sock is None and not self._tcp_client.isAlive():
-            self._tcp_client.connect()
-            self._tcp_client.start()
-        try:
-            # Ensure that we are able to communicate with the drone
-            self.ping()
-        except ResponseTimeout as e:
-            raise ConnectionError(
-                f"Found drone at {self._tcp_client._ip}:{self._tcp_client._port}, "
-                "but was unable to establish communication with it. "
-                "Is there another client connected?"
-            ) from e
-        self.motion.update_setpoint()
+        if self._slaveModeEnabled is False:
+            if self._tcp_client._sock is None and not self._tcp_client.isAlive():
+                self._tcp_client.connect()
+                self._tcp_client.start()
+            try:
+                # Ensure that we are able to communicate with the drone
+                self.ping()
+            except ResponseTimeout as e:
+                raise ConnectionError(
+                    f"Found drone at {self._tcp_client._ip}:{self._tcp_client._port}, "
+                    "but was unable to establish communication with it. "
+                    "Is there another client connected?"
+                ) from e
+            self.motion.update_setpoint()
 
     @property
     def lights(self) -> int:
