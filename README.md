@@ -48,3 +48,6 @@ Adding a pre-commit hook ensures black is run before every commit
 pre-commit install
 ```
 adds a pre-commit hook for black formatting.
+
+## Can't find what you are looking for?
+This SDK is stil very much a work in progress, if you feel features are missing or something feels clunky, please open a [issue](https://github.com/BluEye-Robotics/blueye.sdk/issues) and suggest a change. Bug reports and fixes are of course always welcome!
