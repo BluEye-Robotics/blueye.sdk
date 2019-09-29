@@ -10,7 +10,7 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.7"
-"blueye.protocol" = { path = "../blueye.protocol/" }
+"blueye.protocol" = "^1.1.2"
 xbox360controller = {version = "^1.1.2", optional = true }
 asciimatics = {version = "^1.11.0", optional = true}
 

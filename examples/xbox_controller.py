@@ -18,13 +18,13 @@ class JoystickHandler:
 
     def left_axis_moved(self, axis):
         """Map left joystick to heave and yaw"""
-        self.pioneer.heave = axis.y
-        self.pioneer.yaw = axis.x
+        self.pioneer.motion.heave = axis.y
+        self.pioneer.motion.yaw = axis.x
 
     def right_axis_moved(self, axis):
         """Map right joystick to surge and sway"""
-        self.pioneer.surge = axis.y
-        self.pioneer.sway = axis.x
+        self.pioneer.motion.surge = axis.y
+        self.pioneer.motion.sway = axis.x
 
 
 try:
