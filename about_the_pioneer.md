@@ -12,7 +12,7 @@ is connected via WiFi to a surface unit, and the Pioneer is connected to the sur
 ![SDK demo](./docs/media/sdk-demo.gif)
 
 This python SDK exposes the functionality of the Blueye app through a Python object. The SDK enables remote control of the Pioneer as well as reading telemetry data and viewing video streams, it is not meant for executing code on the Pioneer.
-To control the Pioneer you connect your laptop to the surface unit WiFi and run code that interface with the Pioneer through the Pioneer Python object.
+To control the Pioneer you connect your laptop to the surface unit WiFi and run code that interfaces with the Pioneer through the Pioneer Python object.
 
 
 Check out the [`Quick Start Guide`](./docs/quick_start.md) to get started with using the SDK.
