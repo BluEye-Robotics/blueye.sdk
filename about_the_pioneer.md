@@ -1,6 +1,6 @@
 # About The Pioneer
 The Blueye Pioneer is a underwater drone designed for inspections. It is produced and sold by the Norwegian company [`Blueye Robotics`](https://www.blueyerobotics.com/).
-Here is a [`youtube video`](https://www.youtube.com/watch?v=_-AEtr6xOP8) that gives a overview of the system and some specifications.
+Here is a [`youtube video`](https://www.youtube.com/watch?v=_-AEtr6xOP8) that gives a overview of the system and its specifications.
 
 
 ![Pioneer at the Tautra Reef](./docs/media/pioneer-at-reef.gif)
