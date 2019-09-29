@@ -7,6 +7,9 @@ _________________
 _________________
 A Python package for remote control of the Blueye Pioneer underwater drone.
 
+
+![SDK demo](./docs/media/sdk-demo.gif)
+
 ## Installation
 ```shell
 pip install blueye.sdk
