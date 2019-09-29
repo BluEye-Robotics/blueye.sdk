@@ -1,6 +1,6 @@
 ## Installation
 The SDK requires Python 3.7 or higher. We recommend setting up a virtual environment like
-[`pyenv`](https://github.com/pyenv/pyenv) for managing your python version, see below for instructions.
+[`pyenv`](https://github.com/pyenv/pyenv) for managing your python version, see below for linux instructions.
 
 ### Virtual environment with pyenv
 Install pyenv, for more instructions see the [pyenv-installer](https://github.com/pyenv/pyenv-installer)
