@@ -4,17 +4,24 @@ on: [push]
 
 jobs:
   Test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
     - uses: actions/checkout@v1
-    - name: poetry install
-      uses: docker://abatilo/actions-poetry:3.7.4-stretch
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v1
       with:
-        args: install
-    - name: Run pytest
-      uses: docker://abatilo/actions-poetry:3.7.4-stretch
+        python-version: 3.7
+    - name: Install poetry
+      uses: dschep/install-poetry-action@v1.2
       with:
-        args: "run pytest -k 'not connected_to_drone' tests"
+        version: 0.12.17
+    - name: Install dependencies
+      run: poetry install
+    - name: Run tests
+      run: poetry run pytest -k "not connected_to_drone"
 
   CheckFormatting:
     runs-on: ubuntu-latest
