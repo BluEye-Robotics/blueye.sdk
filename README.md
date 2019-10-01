@@ -13,7 +13,7 @@ A Python package for remote control of the Blueye Pioneer underwater drone.
 
 ![SDK demo](./docs/media/sdk-demo.gif)
 
-# About The Pioneer
+## About The Pioneer
 The Blueye Pioneer is a underwater drone designed for inspections. It is produced and sold by the Norwegian company [`Blueye Robotics`](https://www.blueyerobotics.com/).
 Here is a [`youtube video`](https://www.youtube.com/watch?v=_-AEtr6xOP8) that gives a overview of the system and its specifications.
 
