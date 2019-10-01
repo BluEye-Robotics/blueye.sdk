@@ -5,6 +5,9 @@ _________________
 
 [Read Latest Documentation](https://blueye-robotics.github.io/blueye.sdk/) - [Browse GitHub Code Repository](https://github.com/BluEye-Robotics/blueye.sdk)
 _________________
+
+**Note: This is a pre-release -- Please report any issues you might encounter**
+_________________
 A Python package for remote control of the Blueye Pioneer underwater drone.
 
 
