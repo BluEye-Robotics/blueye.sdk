@@ -1,38 +1,71 @@
 ## Installation
-The SDK requires Python 3.7 or higher. We recommend setting up a virtual environment like
-[`pyenv`](https://github.com/pyenv/pyenv) for managing your python version, see below for linux instructions.
+The SDK requires Python 3.7 or higher. Since many operating systems do not package the newest
+version of Python we recommend using [`pyenv`](https://github.com/pyenv/pyenv) or something similar
+for configuring multiple python versions on the same system. Pyenv also has the added benefit of
+managing your virtual environments for you, though you are of course free to use other tools for
+that as well.
 
-### Virtual environment with pyenv
-Install pyenv, for more instructions see the [pyenv-installer](https://github.com/pyenv/pyenv-installer)
+The instructions below show the necessary steps to get started with the SDK on a fresh install:
 
-``` shell
-curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
-pyenv update
-```
+??? abstract "Windows"
+    ???+ Warning ""
+        Currently there are no instructions for windows, these will come later.
 
-Install the needed dependencies for building python 3.7.4
-``` shell
-apt install -y make build-essential libssl-dev zlib1g-dev libbz2-dev \
-libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
-xz-utils tk-dev libffi-dev liblzma-dev python-openssl
-```
-Then build python with pyenv
-```
-pyenv install 3.7.4
-```
+??? abstract "Mac OS"
+    ???+ Warning ""
+        Currently there are no instructions for Mac OS, these will come later.
 
-Create a virtual environment, and activate it
-```
-pyenv virtualenv 3.7.4 blueye_sdk
-pyenv activate blueye_sdk
-```
+???+ abstract "Linux"
+    These instructions are directed at Ubuntu, but the process should be similar for other
+    distributions.
 
-### Install
-Install `blueye.sdk` into your virtual environment
+    **Install the necessary Python version**
 
-``` python
-pip3 install blueye.sdk
-```
+    Install pyenv, for more instructions see the [pyenv-installer](https://github.com/pyenv/pyenv-installer)
+
+    ```
+    curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
+    pyenv update
+    ```
+
+    Install the needed dependencies for building python 3.7.4
+
+    ```
+    apt install -y make build-essential libssl-dev zlib1g-dev libbz2-dev \
+    libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
+    xz-utils tk-dev libffi-dev liblzma-dev python-openssl
+    ```
+    Then build python with pyenv
+    ```
+    pyenv install 3.7.4
+    ```
+
+    **Create a virtual environment**
+
+    Using a virtual environment is not strictly necessary, but it greatly simplifies the
+    development of Python packages.
+
+    Since we already have pyenv installed we'll use it to create a virtual environment,
+
+    ```
+    pyenv virtualenv 3.7.4 blueye.sdk
+    pyenv activate blueye.sdk
+    ```
+
+    **Install the SDK**
+
+    Now we're ready to install the SDK, which should be as simple as
+
+    ```
+    pip install blueye.sdk
+    ```
+
+    or, if you want to include the dependencies required for running the examples shown in this
+    documentation you should run
+
+    ```
+    pip install "blueye.sdk[examples]"
+    ```
 
 ## Connect to the Pioneer
 To use the SDK your computer must be connected to the Pioneer via the surface unit WiFi.

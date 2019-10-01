@@ -740,7 +740,7 @@ testing = ["pathlib2", "contextlib2", "unittest2"]
 examples = ["xbox360controller", "asciimatics"]
 
 [metadata]
-content-hash = "92654e6c0d0a04e8138fb453a0292184841807ae0a8f0481ec0a6faf337029fe"
+content-hash = "2c751ac77e96acf5c49f292cfd02e748a3b3f097e66f75b7239a86304f5b6ff9"
 python-versions = "^3.7"
 
 [metadata.hashes]
