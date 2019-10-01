@@ -73,7 +73,7 @@ Once VLC is downloaded you can start the stream like this, the RTSP URL is: `rts
 ![text](./media/rtsp-in-vlc.gif)
 
 
-For lower latency streaming you can see the [`Gstreamer instructions`](./video/basic-gstreamer-pipeline.md)
+For lower latency streaming (on a PC) you can see the [`Gstreamer instructions`](./video/basic-gstreamer-pipeline.md), or if you just want to watch a low latency stream you can download the Blueye Dive Buddy ([iOS](https://apps.apple.com/us/app/blueye-dive-buddy/id1453884806?ls=1)/[Android](https://play.google.com/store/apps/details?id=no.blueye.divebuddy))
 
 Or you can use the buddy app ([`android`](https://play.google.com/store/apps/details?id=no.blueye.divebuddy&hl=en)/[`iOS`](https://apps.apple.com/no/app/blueye-dive-buddy/id1453884806?l=nb)). The normal blueye app can not be used to spectate when controlling the drone from the SDK because it will interfere with the commands sent from the SDK. But the Buddy app is only a spectator and can be used together with the SDK.
 ### Explore the examples

@@ -6,7 +6,7 @@ Here is a [`youtube video`](https://www.youtube.com/watch?v=_-AEtr6xOP8) that gi
 ![Pioneer at the Tautra Reef](./docs/media/pioneer-at-reef.gif)
 
 ## This SDK and the Pioneer
-The Pioneer is normally controlled via a mobile device through the [Blueye app](https://play.google.com/store/apps/details?id=no.blueye.blueyeapp). The mobile device
+The Pioneer is normally controlled via a mobile device through the Blueye App ([iOS](https://apps.apple.com/no/app/blueye/id1369714041)/[Android](https://play.google.com/store/apps/details?id=no.blueye.blueyeapp)). The mobile device
 is connected via WiFi to a surface unit, and the Pioneer is connected to the surface unit via a tether cable.
 
 ![SDK demo](./docs/media/sdk-demo.gif)
