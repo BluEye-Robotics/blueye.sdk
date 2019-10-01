@@ -40,9 +40,6 @@ Turn on the drone and connect to the surface unit WiFi. For a how to on turning 
 and surface unit you can watch the
 [quick start video](https://support.blueye.no/hc/en-us/articles/360006901473-Quick-Start-Guide).
 
-To verify that things are working you can run the tests ```pytest```, they should pass if you
-are connected to the drone and the virtual environment is active.
-
 ## Control the Pioneer
 
 Most of the pioneers functionality is controlled using python properties,
