@@ -80,5 +80,5 @@ For further examples on how to use the SDK to control the Pioneer have a look at
 Remember to install the example dependencies before running the examples.
 
 ```shell
-poetry install --extras examples
+pip install "blueye.sdk[examples]"
 ```
