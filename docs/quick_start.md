@@ -71,11 +71,11 @@ Once VLC is downloaded you can start the stream like this, the RTSP URL is: `rts
 ![text](./media/rtsp-in-vlc.gif)
 
 
-For lower latency streaming you can see the [`Gstreamer instructions`](./video/1.-basic-gstreamer-pipeline.md)
+For lower latency streaming you can see the [`Gstreamer instructions`](./video/basic-gstreamer-pipeline.md)
 
 ### Explore the examples
 For further examples on how to use the SDK to control the Pioneer have a look at the
-[motion examples](../movement/2.-with-an-xbox-controller/).
+[motion examples](../movement/from-the-CLI/).
 
 Remember to install the example dependencies before running the examples.
 
