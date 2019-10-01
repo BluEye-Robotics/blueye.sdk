@@ -33,10 +33,26 @@ plugins = ["search", "macros"]
 python_module = "doc_utils" # For macros plugin
 
 [tool.portray.mkdocs.theme]
-favicon = "docs/blueye_b.svg"
-logo = "docs/blueye_b.svg"
+favicon = "docs/media/blueye_b.svg"
+logo = "docs/media/blueye_b.svg"
 name = "material"
 palette = {primary = "white", accent = "blue"}
+
+[[tool.portray.mkdocs.nav]]
+"About the Pioneer" = "README.md"
+
+[[tool.portray.mkdocs.nav]]
+"Quick Start" = "docs/quick_start.md"
+
+[[tool.portray.mkdocs.nav]]
+    [[tool.portray.mkdocs.nav.Movement]]
+    "From the CLI" = "docs/movement/from-the-CLI.md"
+    [[tool.portray.mkdocs.nav.Movement]]
+    "With an XBox Controller" = "docs/movement/with-an-xbox-controller.md"
+
+[[tool.portray.mkdocs.nav]]
+    [[tool.portray.mkdocs.nav.Video]]
+    "Basic Gstreamer Pipeline" = "docs/video/basic-gstreamer-pipeline.md"
 
 [tool.black]
 line-lenght = 100
