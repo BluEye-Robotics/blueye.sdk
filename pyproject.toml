@@ -8,6 +8,11 @@ packages = [
   { include = "blueye" }
 ]
 
+readme = "README.md"
+repository="https://github.com/blueye-robotics/blueye.sdk"
+homepage ="https://www.blueyerobotics.com"
+keywords = ["Blueye", "Pioneer", "Robotics", "SDK", "Software Development Kit"]
+
 [tool.poetry.dependencies]
 python = "^3.7"
 "blueye.protocol" = "^1.1.2"
