@@ -27,6 +27,7 @@ pre-commit = "^1.18.3"
 black = "^19.3b0"
 mkdocs-macros-plugin = "^0.2.4"
 flake8 = "^3.7.8"
+pymdown-extensions = "^6.1"
 
 [tool.poetry.extras]
 examples = ["xbox360controller", "asciimatics"]
@@ -37,6 +38,18 @@ repo_name = ""
 plugins = ["search", "macros"]
 python_module = "doc_utils" # For macros plugin
 site_name = "Blueye SDK"
+markdown_extensions = ["admonition",
+                       "pymdownx.arithmatex",
+                       "pymdownx.caret",
+                       "pymdownx.critic",
+                       "pymdownx.details",
+                       "pymdownx.inlinehilite",
+                       "pymdownx.magiclink",
+                       "pymdownx.mark",
+                       "pymdownx.smartsymbols",
+                       "pymdownx.superfences",
+                       "pymdownx.tilde",
+                       ]
 
 [tool.portray.mkdocs.theme]
 favicon = "docs/media/blueye_b.svg"
