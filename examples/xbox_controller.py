@@ -23,7 +23,7 @@ class JoystickHandler:
 
     def right_axis_moved(self, axis):
         """Map right joystick to surge and sway"""
-        self.pioneer.motion.surge = axis.y
+        self.pioneer.motion.surge = -axis.y
         self.pioneer.motion.sway = axis.x
 
 
