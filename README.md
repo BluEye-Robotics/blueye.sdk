@@ -1,44 +1,28 @@
 # blueye.sdk
 [![Tests](https://github.com/BluEye-Robotics/blueye.sdk/workflows/Tests/badge.svg)](https://github.com/BluEye-Robotics/blueye.sdk/actions)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
+_________________
 
+[Read Latest Documentation](https://blueye-robotics.github.io/blueye.sdk/) - [Browse GitHub Code Repository](https://github.com/BluEye-Robotics/blueye.sdk)
+_________________
 A Python package for remote control of the Blueye Pioneer underwater drone.
 
-## Installation
-```shell
-pip install blueye.sdk
-```
 
-# Development
+![SDK demo](./docs/media/sdk-demo.gif)
 
-## Tests
-To run the tests when connected to a surface unit with an active drone, do:
+# About The Pioneer
+The Blueye Pioneer is a underwater drone designed for inspections. It is produced and sold by the Norwegian company [`Blueye Robotics`](https://www.blueyerobotics.com/).
+Here is a [`youtube video`](https://www.youtube.com/watch?v=_-AEtr6xOP8) that gives a overview of the system and its specifications.
 
-```shell
-pytest
-```
 
-To run tests when not connected to a drone, do:
+![Pioneer at the Tautra Reef](./docs/media/pioneer-at-reef.gif)
 
-``` shell
-pytest -k "not connected_to_drone"
-```
+## This SDK and the Pioneer
+The Pioneer is normally controlled via a mobile device through the Blueye App ([iOS](https://apps.apple.com/no/app/blueye/id1369714041)/[Android](https://play.google.com/store/apps/details?id=no.blueye.blueyeapp)). The mobile device
+is connected via WiFi to a surface unit, and the Pioneer is connected to the surface unit via a tether cable.
 
-## Documentation
-The documentation is written in markdown and converted to html with
-[portray](https://timothycrosley.github.io/portray/). To generate and open the
-documentation locally run
+This python SDK exposes the functionality of the Blueye app through a Python object. The SDK enables remote control of the Pioneer as well as reading telemetry data and viewing video streams, it is not meant for executing code on the Pioneer.
+To control the Pioneer you connect your laptop to the surface unit WiFi and run code that interfaces with the Pioneer through the Pioneer Python object.
 
-``` shell
-portray in_browser
-```
 
-## Formatting
-To keep the code style consistent [`Black`](https://pypi.org/project/black/) is used for code formatting.
-To format code with black run `black .` in the project root directory.
-Adding a pre-commit hook ensures black is run before every commit
-
-```shell
-pre-commit install
-```
-adds a pre-commit hook for black formatting.
+Check out the [`Quick Start Guide`](./docs/quick_start.md) to get started with using the SDK.
