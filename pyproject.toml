@@ -39,7 +39,7 @@ name = "material"
 palette = {primary = "white", accent = "blue"}
 
 [[tool.portray.mkdocs.nav]]
-"About the Pioneer" = "about_the_pioneer.md"
+"About the Pioneer" = "README.md"
 
 [[tool.portray.mkdocs.nav]]
 "Quick Start" = "docs/quick_start.md"
