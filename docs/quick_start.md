@@ -8,8 +8,52 @@ that as well.
 The instructions below show the necessary steps to get started with the SDK on a fresh install:
 
 ??? abstract "Windows"
-    ???+ Warning ""
-        Currently there are no instructions for windows, these will come later.
+    **Install Python**
+
+    Install Python 3.7 or higher, you can find the latest python versions [here](https://www.python.org/downloads/).
+    Remember to check the option "Add Python to path" when installing.
+
+    **Install virtualenv for managing Python versions (optional)**
+
+    Using a virtual environment is not strictly necessary, but it greatly simplifies the
+    development of Python packages.
+    ```shell
+    # Upgrade pip version
+    python -m pip install --upgrade pip
+    pip install virtualenv
+    ```
+
+    Next, we create a virtual environment
+
+    ```shell
+    cd .\Desktop
+    mkdir pioneer_project
+    cd .\pioneer_project
+    # Replace "C:\Program Files\Python37\python.exe" with the path
+    # to the python version you want to use in the line below
+    virtualenv blueye_sdk_env -p "C:\Program Files\Python37\python.exe"
+    ```
+    activate the virtual environment
+    ```shell
+    .\Desktop\pioneer_project\blueye_sdk_env\Scripts\activate
+    ```
+    if you are not allowed to activate the virtual environment, you might have to allow running unsigned scripts,
+    see [this link](http://tritoneco.com/2014/02/21/fix-for-powershell-script-not-digitally-signed/) for instructions.
+
+    **Install the SDK**
+
+    Now we're ready to install the SDK, which should be as simple as
+
+    ```
+    pip install blueye.sdk
+    ```
+
+    or, if you want to include the dependencies required for running the examples shown in this
+    documentation you should run
+
+    ```
+    pip install "blueye.sdk[examples]"
+    ```
 
 ??? abstract "Mac OS"
     ???+ Warning ""
