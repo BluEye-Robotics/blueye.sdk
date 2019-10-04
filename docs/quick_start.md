@@ -10,7 +10,7 @@ The instructions below show the necessary steps to get started with the SDK on a
 ??? abstract "Windows"
     **Install Python**
 
-    Install Python 3.7 or higher, you can find the lates python versions [here](https://www.python.org/downloads/).
+    Install Python 3.7 or higher, you can find the latest python versions [here](https://www.python.org/downloads/).
     Remember to check the option "Add Python to path" when installing.
 
     **Install virtualenv for managing Python versions (optional)**
