@@ -93,8 +93,8 @@ p.lights = 0
 # properties can also be used for reading telemetry data from the drone
 print(f"Current depth in millimeters: {p.depth}")
 ```
-For a overview of all available properties and their valid input ranges see the
-[`Reference section`](../../../reference/blueye/sdk/pioneer/) of the documentation.
+For a overview of the properties that are availabe for controlling and reading data from the Pioneer, go to the
+[`Reference section`](https://blueye-robotics.github.io/blueye.sdk/reference/blueye/sdk/pioneer/) of the documentation.The valid input ranges and descriptions of the different properties can also be found there.
 
 ### Watching the video stream
 The easiest way to open the  RTSP video stream is using [`VLC media player`](https://www.videolan.org/vlc/index.html).
