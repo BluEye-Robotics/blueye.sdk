@@ -28,4 +28,4 @@ This python SDK exposes the functionality of the Blueye app through a Python obj
 To control the Pioneer you connect your laptop to the surface unit WiFi and run code that interfaces with the Pioneer through the Pioneer Python object.
 
 
-Check out the [`Quick Start Guide`](./docs/quick_start.md) to get started with using the SDK.
+Check out the [`Quick Start Guide`](https://blueye-robotics.github.io/blueye.sdk/docs/quick_start/) to get started with using the SDK.
