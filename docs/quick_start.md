@@ -35,7 +35,7 @@ The instructions below show the necessary steps to get started with the SDK on a
     ```
     activate the virtual environment
     ```shell
-    .\Desktop\pioneer_project\blueye_sdk_env\Scripts\activate
+    .\blueye_sdk_env\Scripts\activate.bat
     ```
     if you are not allowed to activate the virtual environment, you might have to allow running unsigned scripts,
     see [this link](http://tritoneco.com/2014/02/21/fix-for-powershell-script-not-digitally-signed/) for instructions.
