@@ -40,3 +40,16 @@ jobs:
       if: failure()
       with:
         args: run black --diff .
+
+  PublishCoverage:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: poetry install
+      uses:  docker://abatilo/actions-poetry:3.7.4-stretch
+      with:
+        args: install
+    - name: Publish coverage report
+      uses: docker://abatilo/actions-poetry:3.7.4-stretch
+      with:
+        args: run COVERALLS_REPO_TOKEN=${{ secrets.COVERALLS_TOKEN }} coveralls
