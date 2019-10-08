@@ -44,12 +44,13 @@ jobs:
   PublishCoverage:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
-    - name: poetry install
-      uses:  docker://abatilo/actions-poetry:3.7.4-stretch
+    - name: Checkout repo
+      uses: actions/checkout@v1
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v1
       with:
-        args: install
+        python-version: 3.7
+    - name: Install python-coveralls
+      run: pip install python-coveralls
     - name: Publish coverage report
-      uses: docker://abatilo/actions-poetry:3.7.4-stretch
-      with:
-        args: run COVERALLS_REPO_TOKEN=${{ secrets.COVERALLS_TOKEN }} coveralls
+      run: COVERALLS_REPO_TOKEN=${{ secrets.COVERALLS_TOKEN }} coveralls
