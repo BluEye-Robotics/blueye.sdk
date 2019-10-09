@@ -1,7 +1,7 @@
 # blueye.sdk
 [![Tests](https://github.com/BluEye-Robotics/blueye.sdk/workflows/Tests/badge.svg)](https://github.com/BluEye-Robotics/blueye.sdk/actions)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
-[![Coverage Status](https://coveralls.io/repos/github/BluEye-Robotics/blueye.sdk/badge.svg?branch=master)](https://coveralls.io/github/BluEye-Robotics/blueye.sdk?branch=master)
+[![codecov](https://codecov.io/gh/BluEye-Robotics/blueye.sdk/branch/master/graph/badge.svg)](https://codecov.io/gh/BluEye-Robotics/blueye.sdk)
 _________________
 
 [Read Latest Documentation](https://blueye-robotics.github.io/blueye.sdk/) - [Browse GitHub Code Repository](https://github.com/BluEye-Robotics/blueye.sdk)
