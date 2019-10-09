@@ -28,6 +28,7 @@ black = "^19.3b0"
 mkdocs-macros-plugin = "^0.2.4"
 flake8 = "^3.7.8"
 pymdown-extensions = "^6.1"
+pytest-cov = "^2.8.1"
 
 [tool.poetry.extras]
 examples = ["xbox360controller", "asciimatics"]
