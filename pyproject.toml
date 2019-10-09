@@ -66,9 +66,9 @@ palette = {primary = "white", accent = "blue"}
 
 [[tool.portray.mkdocs.nav]]
     [[tool.portray.mkdocs.nav.Movement]]
-    "From the CLI" = "docs/movement/from-the-CLI.md"
+    "Control from the CLI" = "docs/movement/from-the-CLI.md"
     [[tool.portray.mkdocs.nav.Movement]]
-    "With an XBox Controller" = "docs/movement/with-an-xbox-controller.md"
+    "Control with a gamepad" = "docs/movement/with-a-gamepad.md"
 
 [[tool.portray.mkdocs.nav]]
     [[tool.portray.mkdocs.nav.Video]]
