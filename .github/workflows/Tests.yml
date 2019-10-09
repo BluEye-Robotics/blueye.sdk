@@ -21,7 +21,11 @@ jobs:
     - name: Install dependencies
       run: poetry install
     - name: Run tests
-      run: poetry run pytest -k "not connected_to_drone"
+      run: poetry run pytest -k "not connected_to_drone" --cov-report=xml --cov blueye
+    - name: Upload coverage
+      run: bash <(curl -s https://codecov.io/bash) -F ${{ matrix.os}}
+      env:
+        CODECOV_TOKEN: "${{ secrets.CODECOV_TOKEN }}"
 
   CheckFormatting:
     runs-on: ubuntu-latest
@@ -40,17 +44,3 @@ jobs:
       if: failure()
       with:
         args: run black --diff .
-
-  PublishCoverage:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout repo
-      uses: actions/checkout@v1
-    - name: Set up Python 3.7
-      uses: actions/setup-python@v1
-      with:
-        python-version: 3.7
-    - name: Install python-coveralls
-      run: pip install python-coveralls
-    - name: Publish coverage report
-      run: COVERALLS_REPO_TOKEN=${{ secrets.COVERALLS_TOKEN }} coveralls
