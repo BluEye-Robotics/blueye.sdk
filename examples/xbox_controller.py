@@ -1,42 +1,90 @@
-import signal
+import os
+import threading
+import time
 
-from xbox360controller import Xbox360Controller
-
+import inputs
 from blueye.sdk import Pioneer
 
 
 class JoystickHandler:
+    """Maps pioneer functions to joystick events"""
+
     def __init__(self, pioneer):
         self.pioneer = pioneer
+        self.eventToFunctionMap = {
+            "BTN_NORTH": self.handleXButton,
+            "BTN_WEST": self.handleYButton,
+            "BTN_EAST": self.handleBButton,
+            "BTN_SOUTH": self.handleAButton,
+            "ABS_X": self.handleLeftXAxis,
+            "ABS_Y": self.handleLeftYAxis,
+            "ABS_RX": self.handleRightXAxis,
+            "ABS_RY": self.handleRightYAxis,
+        }
 
-    def button_a_pressed(self, button):
-        """Toggle lights when button A is pressed"""
-        if self.pioneer.lights > 0:
-            self.pioneer.lights = 0
+    def handleXButton(self, value):
+        """Starts/stops the video recording"""
+        self.pioneer.camera.is_recording = value
+
+    def handleYButton(self, value):
+        """Turns lights on or off"""
+        if value:
+            if self.pioneer.lights > 0:
+                self.pioneer.lights = 0
+            else:
+                self.pioneer.lights = 10
+
+    def handleBButton(self, value):
+        """Toggles autoheading"""
+        if value:
+            self.pioneer.motion.auto_heading_active = (
+                not self.pioneer.motion.auto_heading_active
+            )
+
+    def handleAButton(self, value):
+        """Toggles autodepth"""
+        if value:
+            self.pioneer.motion.auto_depth_active = (
+                not self.pioneer.motion.auto_depth_active
+            )
+
+    def filterAndNormalize(self, value, lower=5000, upper=32768):
+        """Normalizing the joystick axis range from (default) -32768<->32678 to -1<->1
+
+        The sticks also tend to not stop at 0 when you let them go but rather some
+        low value, so we'll filter those out as well.
+        """
+        if -lower < value < lower:
+            return 0
+        elif lower < value < upper:
+            return (value - lower) / (upper - lower)
+        elif -upper < value < -lower:
+            return (value + lower) / (upper - lower)
         else:
-            self.pioneer.lights = 10
+            return 0
 
-    def left_axis_moved(self, axis):
-        """Map left joystick to heave and yaw"""
-        self.pioneer.motion.heave = axis.y
-        self.pioneer.motion.yaw = axis.x
+    def handleLeftXAxis(self, value):
+        self.pioneer.motion.yaw = self.filterAndNormalize(value)
 
-    def right_axis_moved(self, axis):
-        """Map right joystick to surge and sway"""
-        self.pioneer.motion.surge = -axis.y
-        self.pioneer.motion.sway = axis.x
+    def handleLeftYAxis(self, value):
+        self.pioneer.motion.heave = self.filterAndNormalize(value)
+
+    def handleRightXAxis(self, value):
+        self.pioneer.motion.sway = self.filterAndNormalize(value)
+
+    def handleRightYAxis(self, value):
+        self.pioneer.motion.surge = -self.filterAndNormalize(value)
 
 
-try:
-    p = Pioneer()
-    jh = JoystickHandler(p)
-    with Xbox360Controller(0, axis_threshold=0) as controller:
-        # Button A events
-        controller.button_a.when_pressed = jh.button_a_pressed
-        # Left and right axis move event
-        controller.axis_l.when_moved = jh.left_axis_moved
-        controller.axis_r.when_moved = jh.right_axis_moved
+if __name__ == "__main__":
+    try:
+        p = Pioneer()
+        handler = JoystickHandler(p)
+        while True:
+            events = inputs.get_gamepad()
+            for event in events:
+                if event.code in handler.eventToFunctionMap:
+                    handler.eventToFunctionMap[event.code](event.state)
 
-        signal.pause()
-except KeyboardInterrupt:
-    pass
+    except KeyboardInterrupt:
+        pass
