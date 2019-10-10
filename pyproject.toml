@@ -73,7 +73,8 @@ palette = {primary = "white", accent = "blue"}
 [[tool.portray.mkdocs.nav]]
     [[tool.portray.mkdocs.nav.Video]]
     "Basic Gstreamer Pipeline" = "docs/video/basic-gstreamer-pipeline.md"
-
+    [[tool.portray.mkdocs.nav.Video]]
+    "Downloading videos" = "docs/video/downloading-videos.md"
 [tool.black]
 line-lenght = 100
 
