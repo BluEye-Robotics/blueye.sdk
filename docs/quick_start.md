@@ -143,7 +143,7 @@ For a overview of the properties that are availabe for controlling and reading d
 ### Watching the video stream
 The easiest way to open the  RTSP video stream is using [`VLC media player`](https://www.videolan.org/vlc/index.html).
 Once VLC is downloaded you can start the stream like this, the RTSP URL is: `rtsp://192.168.1.101:8554/test`
-![text](./media/rtsp-in-vlc.gif)
+![text](https://blueyenostorage.blob.core.windows.net/sdkimages/rtsp-in-vlc.gif)
 
 
 For lower latency streaming (on a PC) you can see the
