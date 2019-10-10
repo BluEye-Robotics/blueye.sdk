@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "blueye.sdk"
-version = "0.1.0"
+version = "0.2.0"
 description = "SDK for controlling a Blueye Pioneer"
 authors = ["Sindre Hansen <sindre.hansen@blueye.no>",
            "Aksel Lenes <aksel.lenes@blueye.no"]
