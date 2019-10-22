@@ -29,6 +29,7 @@ mkdocs-macros-plugin = "^0.2.4"
 flake8 = "^3.7.8"
 pymdown-extensions = "^6.1"
 pytest-cov = "^2.8.1"
+requests-mock = "^1.7.0"
 
 [tool.poetry.extras]
 examples = ["inputs", "asciimatics"]

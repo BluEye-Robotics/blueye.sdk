@@ -9,6 +9,7 @@ from blueye.protocol.exceptions import ResponseTimeout
 
 from .camera import Camera
 from .motion import Motion
+from .logs import Logs
 
 
 class _PioneerStateWatcher(threading.Thread):
@@ -91,6 +92,7 @@ class Pioneer:
         self._state_watcher = _PioneerStateWatcher()
         self.camera = Camera(self._tcp_client, self._state_watcher)
         self.motion = Motion(self._tcp_client, self._state_watcher)
+        self.logs = Logs(ip=ip)
 
         if autoConnect is True:
             self.connect()
