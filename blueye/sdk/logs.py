@@ -31,7 +31,7 @@ class LogFile:
         self.binsize = binsize
         self.downloadPath = "http://" + ip + "/logcsv/" + name
 
-    def humanReadableFilesize(self):
+    def _humanReadableFilesize(self):
         suffix = "B"
         num = self.binsize
         for unit in ["", "Ki", "Mi"]:
@@ -64,7 +64,7 @@ class LogFile:
         name_padded = f"{self.name:28}"
         time_padded = f"{time:20}"
         depth_padded = f"{maxDepthInMeters:11}"
-        size_padded = f"{self.humanReadableFilesize()}"
+        size_padded = f"{self._humanReadableFilesize()}"
         stringRepresentation = name_padded + time_padded + depth_padded + size_padded
         headerString = f"{'Name':28}{'Time':20}{'Max depth':11}{'Size'}\n"
         if formatSpecifier == "withHeader":
@@ -97,14 +97,14 @@ class Logs:
 
     def __init__(self, ip="192.168.1.101"):
         self.ip = ip
-        listOfLogsInDictionaries = self.getListOfLogsFromDrone()
-        self._logs = self.buildLogFilesFromDictionary(listOfLogsInDictionaries)
+        listOfLogsInDictionaries = self._getListOfLogsFromDrone()
+        self._logs = self._buildLogFilesFromDictionary(listOfLogsInDictionaries)
 
-    def getListOfLogsFromDrone(self):
+    def _getListOfLogsFromDrone(self):
         listOfDictionaries = requests.get("http://" + self.ip + "/logcsv").json()
         return listOfDictionaries
 
-    def buildLogFilesFromDictionary(self, listOfLogsInDictionaries):
+    def _buildLogFilesFromDictionary(self, listOfLogsInDictionaries):
         loglist = {}
         for log in listOfLogsInDictionaries:
             loglist[log["name"]] = LogFile(

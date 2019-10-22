@@ -41,7 +41,7 @@ def logListWithTwoLogs(requests_mock):
 )
 def test_humanReadableFilesizes(binsize, expected_output):
     logfile = LogFile(0, "name", "2019-01-01T00:00:00.000000", binsize, "192.168.1.101")
-    assert logfile.humanReadableFilesize() == expected_output
+    assert logfile._humanReadableFilesize() == expected_output
 
 
 @pytest.mark.parametrize(
