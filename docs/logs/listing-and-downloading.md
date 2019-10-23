@@ -38,3 +38,30 @@ The `download()` method takes two optional parameters, `outputPath` and `outputN
 These specify, respectively, which folder the log is downloaded to and what name it's
 stored with.
 
+## Example: Downloading multiple log files
+Downloading multiple log files is solved by a simple Python for-loop. The example below
+shows how one can download the last 3 logs to the current folder:
+
+```python
+from blueye.sdk import Pioneer
+
+p = Pioneer()
+
+for log in p.logs[:-3]:
+    log.download()
+```
+
+## Example: Adding a prefix to log names
+The example code below shows how one can add a simple prefix to all log files when
+downloading:
+
+```python
+from blueye.sdk import Pioneer
+
+p = Pioneer()
+
+prefix = "pre_"
+
+for log in p.logs:
+    log.download(outputName=prefix+log.name)
+```
