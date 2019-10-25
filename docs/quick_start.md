@@ -146,8 +146,8 @@ Once VLC is downloaded you can start the stream like this, the RTSP URL is: `rts
 ![text](https://blueyenostorage.blob.core.windows.net/sdkimages/rtsp-in-vlc.gif)
 
 
-For lower latency streaming (on a PC) you can see the
-[`Gstreamer instructions`](./video/basic-gstreamer-pipeline.md), or if you just want to watch a low
+For lower latency streaming (on a PC) you can see the instructions on using
+[`Gstreamer`](./video/gstreamer-for-video-streaming.md), or if you just want to watch a low
 latency stream you can download the Blueye Dive Buddy
 ([iOS](https://apps.apple.com/us/app/blueye-dive-buddy/id1453884806?ls=1) /
 [Android](https://play.google.com/store/apps/details?id=no.blueye.divebuddy))
