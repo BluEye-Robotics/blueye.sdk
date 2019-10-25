@@ -1,9 +1,11 @@
-## Installing gstreamer
+GStreamer is the lowest latency alternative for streaming video from the drone to your laptop.
+
+## Installing GStreamer
 
 The instructions below show the basic steps for installing gstreamer on the common operating systems.
 
 ??? abstract "Windows"
-    ** Install gstreamer**
+    ** Install GStreamer**
 
     To run the streaming pipeline below you will need a runtime installation of Gstreamer. You can find more in depth instruction
     in the [`gstreamer docs`](https://gstreamer.freedesktop.org/documentation/installing/on-windows.html?gi-language=c)
