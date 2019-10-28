@@ -1,1 +1,1 @@
-Videos can be downloaded from the drone through the mobile app or by using the [`Blueye file transfer`](https://www.blueyerobotics.com/Software/FileTransfer) desktop application for Windows and macOS.
+Videos can be downloaded from the drone through the mobile app or by using the [`Blueye file transfer`](https://www.blueyerobotics.com/Software/FileTransfer) desktop application for Windows, Mac OS and Linux.

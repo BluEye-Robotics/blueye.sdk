@@ -66,14 +66,14 @@ The instructions below show the necessary steps to get started with the SDK on a
     pyenv update
     ```
 
-    If you want pyenv to be loaded each time you open a new terminal you can  add this to your .zshrc or the equivalent for your terimnal
+    If you want pyenv to be loaded each time you open a new terminal you can add this to your .zshrc or the equivalent for your terminal
     ```
     export PATH="$HOME/.pyenv/bin:$PATH"
     eval "$(pyenv init -)"
     eval "$(pyenv virtualenv-init -)"
     ```
 
-    The [Pyenv wiki](https://github.com/pyenv/pyenv/wiki#suggested-build-environment) recomends installing some
+    The [Pyenv wiki](https://github.com/pyenv/pyenv/wiki#suggested-build-environment) recommends installing some
     additional dependencies before building Python.
 
 
