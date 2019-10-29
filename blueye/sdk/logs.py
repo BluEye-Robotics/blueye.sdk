@@ -119,9 +119,18 @@ class Logs:
 
     def __getitem__(self, item):
         if type(item) == str:
-            return self._logs[item]
+            try:
+                return self._logs[item]
+            except KeyError:
+                raise KeyError(f"A log with the name '{item}' does not exist")
         else:
-            return list(self._logs.values())[item]
+            try:
+                return list(self._logs.values())[item]
+            except IndexError:
+                raise IndexError(
+                    f"Tried to access log nr {item}, "
+                    + f"but there are only {len(self._logs.values())} logs available"
+                )
 
     def __str__(self):
         return tabulate.tabulate(

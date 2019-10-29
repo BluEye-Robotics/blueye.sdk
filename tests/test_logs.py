@@ -110,3 +110,13 @@ def test_logListIsIterable(logListWithTwoLogs):
     for log in logListWithTwoLogs:
         names += log.name
     assert names == expected_names
+
+
+def test_LogsRaisesKeyError(logListWithTwoLogs):
+    with pytest.raises(KeyError):
+        logListWithTwoLogs["nonExistingLogName"]
+
+
+def test_LogsRaisesIndexError(logListWithTwoLogs):
+    with pytest.raises(IndexError):
+        logListWithTwoLogs[3]
