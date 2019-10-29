@@ -74,25 +74,23 @@ def test_defaultDownloadPath(requests_mock, mocker):
 def test_logfileFormattingWithHeader():
     log = LogFile(1000, "log1.csv", "2019-01-01T00:00:00.000000", 1024, "192.168.1.101")
     expected_output = (
-        "Name                        Time                Max depth  Size\n"
-        + "log1.csv                    01. Jan 2019 00:00  1.00 m     1.0 KiB"
+        "Name      Time                Max depth    Size\n"
+        + "log1.csv  01. Jan 2019 00:00  1.00 m       1.0 KiB"
     )
     assert f"{log:withHeader}" == expected_output
 
 
 def test_logfileFormattingWithoutHeader():
     log = LogFile(1000, "log1.csv", "2019-01-01T00:00:00.000000", 1024, "192.168.1.101")
-    expected_output = (
-        "log1.csv                    01. Jan 2019 00:00  1.00 m     1.0 KiB"
-    )
+    expected_output = "log1.csv  01. Jan 2019 00:00  1.00 m  1.0 KiB"
     assert f"{log}" == expected_output
 
 
 def test_loglistFormatting(logListWithTwoLogs):
     expected_output = (
-        "Name                        Time                Max depth  Size\n"
-        + "log1.csv                    01. Jan 2019 00:00  1.00 m     1.0 KiB\n"
-        + "log2.csv                    02. Jan 2019 00:00  2.00 m     2.0 KiB\n"
+        "Name      Time                Max depth    Size\n"
+        + "log1.csv  01. Jan 2019 00:00  1.00 m       1.0 KiB\n"
+        + "log2.csv  02. Jan 2019 00:00  2.00 m       2.0 KiB"
     )
     assert f"{logListWithTwoLogs}" == expected_output
 
