@@ -81,6 +81,8 @@ palette = {primary = "white", accent = "blue"}
 [[tool.portray.mkdocs.nav]]
     [[tool.portray.mkdocs.nav.Logs]]
     "Listing and downloading log files" = "docs/logs/listing-and-downloading.md"
+    [[tool.portray.mkdocs.nav.Logs]]
+    "Log file format" = "docs/logs/log-file-format.md"
 
 [tool.black]
 line-lenght = 100
