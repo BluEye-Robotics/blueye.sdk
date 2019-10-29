@@ -20,6 +20,32 @@ The instructions below show the basic steps for installing gstreamer on the comm
     You can test the installation by trying the basic pipeline from the section below when connected to a drone.
 
 
+
+???+ abstract "Linux"
+    ** Install GStreamer**
+
+    To run the streaming pipeline below you will need a runtime installation of Gstreamer. You can find more in depth instruction
+    for your linux distribution at the [`gstreamer docs`](https://gstreamer.freedesktop.org/documentation/installing/on-linux.html?gi-language=c)
+
+    The basic steps for installing on Ubuntu or Debian are
+
+    Install gstreamer and plugins
+    ```shell
+    apt-get install libgstreamer1.0-0 gstreamer1.0-plugins-base gstreamer1.0-plugins-good \
+    gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc \
+    gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa
+    ```
+    Verify that gstreamer is installed
+    ```shell
+    which gst-launch-1.0
+    ```
+    You can test the installation by trying the basic pipeline from the next section when connected to a drone. Or with
+
+    ``` shell
+    gst-launch-1.0 videotestsrc ! autovideosink
+    ```
+
+
 ## Basic streaming pipeline
 After installing you can run this pipeline in your terminal:
 
