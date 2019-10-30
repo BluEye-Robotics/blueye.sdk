@@ -100,10 +100,12 @@ class Logs:
     the last 10 logs you can do `p.logs[:-10]`.
     """
 
-    def __init__(self, ip="192.168.1.101"):
+    def __init__(self, ip="192.168.1.101", autoDownloadIndex=True):
         self.ip = ip
-        listOfLogsInDictionaries = self._getListOfLogsFromDrone()
-        self._logs = self._buildLogFilesFromDictionary(listOfLogsInDictionaries)
+        if autoDownloadIndex:
+            self.refreshLogIndex()
+        else:
+            self._logs = {}
 
     def _getListOfLogsFromDrone(self):
         listOfDictionaries = requests.get("http://" + self.ip + "/logcsv").json()
@@ -116,6 +118,16 @@ class Logs:
                 log["maxdepth"], log["name"], log["timestamp"], log["binsize"], self.ip
             )
         return loglist
+
+    def refreshLogIndex(self):
+        """Refresh the log index from the drone
+
+        This is method is run on instantiation by default, but if you would like to
+        check for new log files it can be called at any time.
+        """
+
+        listOfLogsInDictionaries = self._getListOfLogsFromDrone()
+        self._logs = self._buildLogFilesFromDictionary(listOfLogsInDictionaries)
 
     def __getitem__(self, item):
         if type(item) == str:
