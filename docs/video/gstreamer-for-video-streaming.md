@@ -2,15 +2,14 @@ GStreamer is the lowest latency alternative for streaming video from the drone t
 
 ## Installing GStreamer
 
-The instructions below show the basic steps for installing GStreamer on the common operating systems.
+To run the streaming pipeline in the next section you will need a runtime installation of GStreamer.
+The instructions below show the basic steps for installing GStreamer on the most common operating systems.
+You can find more in depth instruction for your specific operating system in the [`GStreamer docs`](https://gstreamer.freedesktop.org/documentation/installing/?gi-language=c).
+
 
 ??? abstract "Windows"
-    ** Install GStreamer**
 
-    To run the streaming pipeline below you will need a runtime installation of GStreamer. You can find more in depth instruction
-    in the [`GStreamer docs`](https://gstreamer.freedesktop.org/documentation/installing/on-windows.html?gi-language=c).
-
-    The basic installation steps are:
+    On Windows the basic installation steps are:
 
     1. Download the relevant installer for your computer from https://gstreamer.freedesktop.org/download .
     Using the latest stable relase should be fine, at the time of writing that is `1.16.1 runtime installer`
@@ -20,33 +19,18 @@ The instructions below show the basic steps for installing GStreamer on the comm
 
 ??? abstract "Mac OS"
 
-    ** Install GStreamer**
-
-    To run the streaming pipeline below you will need a runtime installation of GStreamer. You can find more in depth instruction
-    in the [`GStreamer docs`](https://gstreamer.freedesktop.org/documentation/installing/on-mac-osx.html?gi-language=c).
-
-    GStreamer and its plugins can be installed with brew
+    On Mac OS GStreamer and its plugins can be installed using brew
     ```shell
     brew install gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav
     ```
 
 ???+ abstract "Linux"
-    ** Install GStreamer**
 
-    To run the streaming pipeline below you will need a runtime installation of GStreamer. You can find more in depth instruction
-    for your linux distribution at the [`GStreamer docs`](https://gstreamer.freedesktop.org/documentation/installing/on-linux.html?gi-language=c)
-
-    The basic steps for installing on Ubuntu or Debian are
-
-    Install GStreamer and plugins
+    On Ubuntu and Debian GStreamer and its plugins can be installed using apt.
     ```shell
     apt-get install libgstreamer1.0-0 gstreamer1.0-plugins-base gstreamer1.0-plugins-good \
     gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc \
     gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa
-    ```
-    Verify that GStreamer is installed
-    ```shell
-    which gst-launch-1.0
     ```
 
 You can test the installation by trying the basic pipeline from the next section when connected to a drone. Or with
@@ -72,4 +56,4 @@ After installing you can run this pipeline in your terminal:
         ! fpsdisplaysink sync=false
     ```
 
-Running the pipeline will open a new window with the camera stream with information about packet loss and camera frame rate.
+Running the pipeline will open a window with the camera stream and information about packet loss and camera frame rate.
