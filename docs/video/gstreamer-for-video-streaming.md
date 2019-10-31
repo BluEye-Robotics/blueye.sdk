@@ -17,7 +17,6 @@ The instructions below show the basic steps for installing gstreamer on the comm
     2. Run the installer. When asked to choose a setup type choose to do a __complete__ installation. This is because some plugins that are needed for the basic pipeline later are not included if you choose to install the typical setup
     3. To run gstreamer commands form the terminal, gstreamer must be added to the  PATH environment variable. This can be done from the advanved system settings. Add `%GSTREAMER_1_0_ROOT_X86_64%\bin` to path. Or you can run gst-launch-1.0.exe from the folder it is installed in, typically `C:\gstreamer\1.0\x86_64\bin`
 
-    You can test the installation by trying the basic pipeline from the section below when connected to a drone.
 
 ??? abstract "Mac OS"
 
@@ -49,12 +48,12 @@ The instructions below show the basic steps for installing gstreamer on the comm
     ```shell
     which gst-launch-1.0
     ```
-    You can test the installation by trying the basic pipeline from the next section when connected to a drone. Or with
 
-    ``` shell
-    gst-launch-1.0 videotestsrc ! autovideosink
-    ```
+You can test the installation by trying the basic pipeline from the next section when connected to a drone. Or with
 
+``` shell
+gst-launch-1.0 videotestsrc ! autovideosink
+```
 
 ## Basic streaming pipeline
 After installing you can run this pipeline in your terminal:
