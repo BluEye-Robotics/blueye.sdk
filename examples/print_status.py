@@ -1,5 +1,4 @@
 from time import sleep
-from typing import Tuple
 
 from asciimatics.effects import Print
 from asciimatics.renderers import Box
