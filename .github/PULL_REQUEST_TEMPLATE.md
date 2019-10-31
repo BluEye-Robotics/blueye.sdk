@@ -3,7 +3,7 @@
 -->
 <!-- Add the issue number that is fixed by this PR (In the form Fixes #123) -->
 **Description**
-<!-- Please, describe how this PR will be useful. If it has any tricky technical detail, please explain too. -->
+<!-- Describe the contents of the Pull request and problems it solves. -->
 
 Fixes #
 
@@ -16,9 +16,7 @@ Fixes #
 -
 -
 
-**Related Issue**
-<!-- If it has any issue related to this PR, please add a reference here. -->
+#### Checklist before merging
 
-#### Checklist
-
-- [ ] run `Hardware-in-the-loop` tests.
+- [ ] Run the tests while connected to a drone
+- [ ] Update the package version according to [semver](https://semver.org/)
