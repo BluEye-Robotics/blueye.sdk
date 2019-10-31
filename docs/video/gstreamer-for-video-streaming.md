@@ -14,7 +14,7 @@ You can find more in depth instruction for your specific operating system in the
     1. Download the relevant installer for your computer from https://gstreamer.freedesktop.org/download .
     Using the latest stable relase should be fine, at the time of writing that is `1.16.1 runtime installer`
     2. Run the installer. When asked to choose a setup type choose to do a __complete__ installation. This is because some plugins that are needed for the basic pipeline later are not included if you choose to install the typical setup
-    3. To run GStreamer commands form the terminal, GStreamer must be added to the  PATH environment variable. This can be done from the advanved system settings. Add `%GSTREAMER_1_0_ROOT_X86_64%\bin` to path. Alternatively you can choose to run gst-launch-1.0.exe from the folder it is installed in, typically `C:\gstreamer\1.0\x86_64\bin`
+    3. To run GStreamer commands form the terminal, GStreamer must be added to the PATH environment variable. This can be done from the advanced system settings. Add `%GSTREAMER_1_0_ROOT_X86_64%\bin` to path. Alternatively you can choose to run gst-launch-1.0.exe from the folder it is installed in, typically `C:\gstreamer\1.0\x86_64\bin`
 
 
 ??? abstract "Mac OS"
