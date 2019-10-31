@@ -2,7 +2,6 @@
 import threading
 import time
 import warnings
-from typing import Iterator, Tuple
 
 from blueye.protocol import TcpClient, UdpClient
 from blueye.protocol.exceptions import ResponseTimeout

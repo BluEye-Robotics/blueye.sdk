@@ -1,5 +1,13 @@
 # Development
 
+## Project structure and context
+`blueye.sdk` is a Python package that exposes the functionality of the Blueye app.
+The SDK depends on three projects:
+
+* [`ProtocolDefinitons`](https://github.com/BluEye-Robotics/ProtocolDefinitions) : TCP commands are sent from a computer or mobile device to the drone, and UDP messages with telemetry data are sent from the drone back to the top side device. These TCP commands and UDP telemetry messages are defined as json files in this project.
+* [`blueye.protocol`](https://github.com/BluEye-Robotics/blueye.protocol) : Implements a TCP client for connecting to the Pioneer and sending the TCP commands defined in `ProtocolDefinitions`, and a UDP client for receiving and parsing the telemetry messages defined in `ProtocolDefinitions`
+* [`blueye.sdk`](https://github.com/BluEye-Robotics/blueye.sdk) : Wraps the TCP and UDP client from `blueye.protocol` into an easy to use Python object. `blueye.sdk` also adds functionality for downloading log files from the drone.
+
 ## Tests
 To run the tests when connected to a surface unit with an active drone, do:
 

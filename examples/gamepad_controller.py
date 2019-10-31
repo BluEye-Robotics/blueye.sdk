@@ -1,8 +1,5 @@
-import os
-import threading
-import time
-
 import inputs
+
 from blueye.sdk import Pioneer
 
 

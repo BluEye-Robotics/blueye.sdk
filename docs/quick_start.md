@@ -56,8 +56,70 @@ The instructions below show the necessary steps to get started with the SDK on a
     ```
 
 ??? abstract "Mac OS"
-    ???+ Warning ""
-        Currently there are no instructions for Mac OS, these will come later.
+
+    ** Install the necessary Python version**
+
+    Install pyenv, for more instructions see the [pyenv-installer](https://github.com/pyenv/pyenv-installer)
+
+    ```
+    curl https://pyenv.run | bash
+    pyenv update
+    ```
+
+    If you want pyenv to be loaded each time you open a new terminal you can add this to your .zshrc or the equivalent for your terminal
+    ```
+    export PATH="$HOME/.pyenv/bin:$PATH"
+    eval "$(pyenv init -)"
+    eval "$(pyenv virtualenv-init -)"
+    ```
+
+    The [Pyenv wiki](https://github.com/pyenv/pyenv/wiki#suggested-build-environment) recommends installing some
+    additional dependencies before building Python.
+
+
+    ```shell
+    # optional, but recommended:
+    brew install openssl readline sqlite3 xz zlib
+    ```
+
+    When running Mojave or higher (10.14+) you will also need to install the additional SDK headers:
+    ```shell
+    sudo installer -pkg /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg -target /
+    ```
+    Then build Python with pyenv
+
+    ```
+    pyenv install 3.7.4
+    ```
+
+    **Create a virtual environment**
+
+    Using a virtual environment is not strictly necessary, but it greatly simplifies the
+    development of Python packages.
+
+    Since we already have pyenv installed we'll use it to create a virtual environment,
+
+    ```
+    pyenv virtualenv 3.7.4 blueye.sdk
+    pyenv activate blueye.sdk
+    ```
+
+    **Install the SDK**
+
+    Now we're ready to install the SDK, which should be as simple as.
+
+    ```
+    pip install blueye.sdk
+    ```
+
+    or, if you want to include the dependencies required for running the examples shown in this
+    documentation you should run
+
+    ```
+    pip install "blueye.sdk[examples]"
+    ```
+
+
 
 ???+ abstract "Linux"
     These instructions are directed at Ubuntu, but the process should be similar for other
