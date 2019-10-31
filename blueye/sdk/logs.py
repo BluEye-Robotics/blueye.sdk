@@ -44,9 +44,9 @@ class LogFile:
         num = self.binsize
         for unit in ["", "Ki", "Mi"]:
             if abs(num) < 1024.0:
-                return "%3.1f %s%s" % (num, unit, suffix)
+                return f"{num:3.1f} {unit}{suffix}"
             num /= 1024.0
-        return "%.1f %s%s" % (num, "Gi", suffix)
+        return f"{num:.1f} Gi{suffix}"
 
     def download(self, outputPath=None, outputName=None):
         """
