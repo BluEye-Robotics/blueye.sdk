@@ -16,10 +16,10 @@ class LogFile:
     print(p.logs[0])
     ```
 
-    or, if you want to display the header you can format the object with `withHeader`:
+    or, if you want to display the header you can format the object with `with_header`:
 
     ```
-    print(f"{p.logs[0]:withHeader}")
+    print(f"{p.logs[0]:with_header}")
     ```
 
     Calling the download() method on a log object will pull the CSV (Comma Separated
@@ -31,15 +31,15 @@ class LogFile:
         self.name = name
         self.timestamp = datetime.fromisoformat(timestamp)
         self.binsize = binsize
-        self.downloadPath = "http://" + ip + "/logcsv/" + name
-        self._formattedValues = [
+        self.download_path = "http://" + ip + "/logcsv/" + name
+        self._formatted_values = [
             self.name,
             self.timestamp.strftime("%d. %b %Y %H:%M"),
             f"{self.maxdepth/1000:.2f} m",
-            self._humanReadableFilesize(),
+            self._human_readable_filesize(),
         ]
 
-    def _humanReadableFilesize(self):
+    def _human_readable_filesize(self):
         suffix = "B"
         num = self.binsize
         for unit in ["", "Ki", "Mi"]:
@@ -48,26 +48,26 @@ class LogFile:
             num /= 1024.0
         return f"{num:.1f} Gi{suffix}"
 
-    def download(self, outputPath=None, outputName=None):
+    def download(self, output_path=None, output_name=None):
         """
         Download the specified log to your local file system
 
-        If you specify an outputPath the log file will be downloaded to that directory
+        If you specify an output_path the log file will be downloaded to that directory
         instead of the current one.
 
-        Specifying outputName will overwrite the default file name with whatever you
+        Specifying output_name will overwrite the default file name with whatever you
         have specified (be sure to include the .csv extension).
         """
-        log = requests.get(self.downloadPath).content
-        if outputPath is None:
-            outputPath = "./"
-        if outputName is None:
-            outputName = self.name
-        with open(f"{outputPath}{outputName}", "wb") as f:
+        log = requests.get(self.download_path).content
+        if output_path is None:
+            output_path = "./"
+        if output_name is None:
+            output_name = self.name
+        with open(f"{output_path}{output_name}", "wb") as f:
             f.write(log)
 
-    def __format__(self, formatSpecifier):
-        if formatSpecifier == "withHeader":
+    def __format__(self, format_specifier):
+        if format_specifier == "with_header":
             return tabulate.tabulate(
                 [self], headers=["Name", "Time", "Max depth", "Size"], tablefmt="plain"
             )
@@ -78,7 +78,7 @@ class LogFile:
         return f"{self}"
 
     def __getitem__(self, item):
-        return self._formattedValues[item]
+        return self._formatted_values[item]
 
 
 class Logs:
@@ -100,34 +100,34 @@ class Logs:
     the last 10 logs you can do `p.logs[:-10]`.
     """
 
-    def __init__(self, ip="192.168.1.101", autoDownloadIndex=True):
+    def __init__(self, ip="192.168.1.101", auto_download_index=True):
         self.ip = ip
-        if autoDownloadIndex:
-            self.refreshLogIndex()
+        if auto_download_index:
+            self.refresh_log_index()
         else:
             self._logs = {}
 
-    def _getListOfLogsFromDrone(self):
-        listOfDictionaries = requests.get("http://" + self.ip + "/logcsv").json()
-        return listOfDictionaries
+    def _get_list_of_logs_from_drone(self):
+        list_of_dictionaries = requests.get("http://" + self.ip + "/logcsv").json()
+        return list_of_dictionaries
 
-    def _buildLogFilesFromDictionary(self, listOfLogsInDictionaries):
+    def _build_log_files_from_dictionary(self, list_of_logs_in_dictionaries):
         loglist = {}
-        for log in listOfLogsInDictionaries:
+        for log in list_of_logs_in_dictionaries:
             loglist[log["name"]] = LogFile(
                 log["maxdepth"], log["name"], log["timestamp"], log["binsize"], self.ip
             )
         return loglist
 
-    def refreshLogIndex(self):
+    def refresh_log_index(self):
         """Refresh the log index from the drone
 
         This is method is run on instantiation by default, but if you would like to
         check for new log files it can be called at any time.
         """
 
-        listOfLogsInDictionaries = self._getListOfLogsFromDrone()
-        self._logs = self._buildLogFilesFromDictionary(listOfLogsInDictionaries)
+        list_of_logs_in_dictionaries = self._get_list_of_logs_from_drone()
+        self._logs = self._build_log_files_from_dictionary(list_of_logs_in_dictionaries)
 
     def __getitem__(self, item):
         if type(item) == str:

@@ -92,7 +92,7 @@ class Pioneer:
         self._state_watcher = _PioneerStateWatcher()
         self.camera = Camera(self._tcp_client, self._state_watcher)
         self.motion = Motion(self._tcp_client, self._state_watcher)
-        self.logs = Logs(ip=ip, autoDownloadIndex=autoConnect)
+        self.logs = Logs(ip=ip, auto_download_index=autoConnect)
 
         if autoConnect is True:
             self.connect()
@@ -104,7 +104,7 @@ class Pioneer:
         unexpectedly when connecting all thruster set points are set to zero when connecting.
         """
         self._state_watcher.start()
-        self.logs.refreshLogIndex()
+        self.logs.refresh_log_index()
         if self._slaveModeEnabled is False:
             if self._tcp_client._sock is None and not self._tcp_client.isAlive():
                 self._tcp_client.connect()

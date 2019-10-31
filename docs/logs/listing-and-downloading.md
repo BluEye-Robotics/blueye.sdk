@@ -34,7 +34,7 @@ maximum depth reached, as well as the size of the log file.
 When you want to download a log file all you have to do is to call the `download()`
 method on the desired log and the file will be downloaded to your current folder.
 
-The `download()` method takes two optional parameters, `outputPath` and `outputName`.
+The `download()` method takes two optional parameters, `output_path` and `output_name`.
 These specify, respectively, which folder the log is downloaded to and what name it's
 stored with.
 
@@ -63,5 +63,5 @@ p = Pioneer()
 prefix = "pre_"
 
 for log in p.logs:
-    log.download(outputName=prefix+log.name)
+    log.download(output_name=prefix+log.name)
 ```
