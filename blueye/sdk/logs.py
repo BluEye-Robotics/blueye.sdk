@@ -19,7 +19,7 @@ class LogFile:
     or, if you want to display the header you can format the object with `withHeader`:
 
     ```
-    print(f{p.logs[0]:withHeader})
+    print(f"{p.logs[0]:withHeader}")
     ```
 
     Calling the download() method on a log object will pull the CSV (Comma Separated
