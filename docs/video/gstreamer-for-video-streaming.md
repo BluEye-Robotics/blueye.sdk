@@ -2,20 +2,20 @@ GStreamer is the lowest latency alternative for streaming video from the drone t
 
 ## Installing GStreamer
 
-The instructions below show the basic steps for installing gstreamer on the common operating systems.
+The instructions below show the basic steps for installing GStreamer on the common operating systems.
 
 ??? abstract "Windows"
     ** Install GStreamer**
 
-    To run the streaming pipeline below you will need a runtime installation of Gstreamer. You can find more in depth instruction
-    in the [`gstreamer docs`](https://gstreamer.freedesktop.org/documentation/installing/on-windows.html?gi-language=c)
+    To run the streaming pipeline below you will need a runtime installation of GStreamer. You can find more in depth instruction
+    in the [`GStreamer docs`](https://gstreamer.freedesktop.org/documentation/installing/on-windows.html?gi-language=c).
 
     The basic installation steps are:
 
     1. Download the relevant installer for your computer from https://gstreamer.freedesktop.org/download .
     Using the latest stable relase should be fine, at the time of writing that is `1.16.1 runtime installer`
     2. Run the installer. When asked to choose a setup type choose to do a __complete__ installation. This is because some plugins that are needed for the basic pipeline later are not included if you choose to install the typical setup
-    3. To run gstreamer commands form the terminal, gstreamer must be added to the  PATH environment variable. This can be done from the advanved system settings. Add `%GSTREAMER_1_0_ROOT_X86_64%\bin` to path. Or you can run gst-launch-1.0.exe from the folder it is installed in, typically `C:\gstreamer\1.0\x86_64\bin`
+    3. To run GStreamer commands form the terminal, GStreamer must be added to the  PATH environment variable. This can be done from the advanved system settings. Add `%GSTREAMER_1_0_ROOT_X86_64%\bin` to path. Alternatively you can choose to run gst-launch-1.0.exe from the folder it is installed in, typically `C:\gstreamer\1.0\x86_64\bin`
 
 
 ??? abstract "Mac OS"
@@ -33,18 +33,18 @@ The instructions below show the basic steps for installing gstreamer on the comm
 ???+ abstract "Linux"
     ** Install GStreamer**
 
-    To run the streaming pipeline below you will need a runtime installation of Gstreamer. You can find more in depth instruction
-    for your linux distribution at the [`gstreamer docs`](https://gstreamer.freedesktop.org/documentation/installing/on-linux.html?gi-language=c)
+    To run the streaming pipeline below you will need a runtime installation of GStreamer. You can find more in depth instruction
+    for your linux distribution at the [`GStreamer docs`](https://gstreamer.freedesktop.org/documentation/installing/on-linux.html?gi-language=c)
 
     The basic steps for installing on Ubuntu or Debian are
 
-    Install gstreamer and plugins
+    Install GStreamer and plugins
     ```shell
     apt-get install libgstreamer1.0-0 gstreamer1.0-plugins-base gstreamer1.0-plugins-good \
     gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc \
     gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa
     ```
-    Verify that gstreamer is installed
+    Verify that GStreamer is installed
     ```shell
     which gst-launch-1.0
     ```
@@ -72,4 +72,4 @@ After installing you can run this pipeline in your terminal:
         ! fpsdisplaysink sync=false
     ```
 
-Running the pipeline will open a new window with the camera stream and some meta information about packet loss and the camera frame rate.
+Running the pipeline will open a new window with the camera stream with information about packet loss and camera frame rate.
