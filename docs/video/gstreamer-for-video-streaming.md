@@ -19,7 +19,7 @@ You can find more in depth instruction for your specific operating system in the
 
 ??? abstract "Mac OS"
 
-    On Mac OS GStreamer and its plugins can be installed using brew
+    On Mac OS GStreamer and its plugins can be installed using [brew](https://brew.sh/)
     ```shell
     brew install gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav
     ```
