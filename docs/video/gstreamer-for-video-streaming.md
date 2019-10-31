@@ -19,7 +19,17 @@ The instructions below show the basic steps for installing gstreamer on the comm
 
     You can test the installation by trying the basic pipeline from the section below when connected to a drone.
 
+??? abstract "Mac OS"
 
+    ** Install GStreamer**
+
+    To run the streaming pipeline below you will need a runtime installation of GStreamer. You can find more in depth instruction
+    in the [`GStreamer docs`](https://gstreamer.freedesktop.org/documentation/installing/on-mac-osx.html?gi-language=c).
+
+    GStreamer and its plugins can be installed with brew
+    ```shell
+    brew install gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav
+    ```
 
 ???+ abstract "Linux"
     ** Install GStreamer**
@@ -54,7 +64,7 @@ After installing you can run this pipeline in your terminal:
     gst-launch-1.0 rtspsrc location=rtsp://192.168.1.101:8554/test latency=0 ! rtph264depay ! avdec_h264 ! videoconvert ! fpsdisplaysink sync=false
     ```
 
-???+ abstract "Linux"
+???+ abstract "Linux and Mac OS"
     ``` shell
     gst-launch-1.0 rtspsrc location=rtsp://192.168.1.101:8554/test latency=0 \
         ! rtph264depay \
