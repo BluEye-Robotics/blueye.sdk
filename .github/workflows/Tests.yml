@@ -18,7 +18,7 @@ jobs:
     - name: Install poetry
       uses: dschep/install-poetry-action@v1.2
       with:
-        version: 0.12.17
+        version: 1.0.0b3
     - name: Install dependencies
       run: poetry install
     - name: Run tests
