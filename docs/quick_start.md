@@ -89,7 +89,7 @@ The instructions below show the necessary steps to get started with the SDK on a
     Then build Python with pyenv
 
     ```
-    pyenv install 3.7.4
+    pyenv install 3.8.0
     ```
 
     **Create a virtual environment**
@@ -100,7 +100,7 @@ The instructions below show the necessary steps to get started with the SDK on a
     Since we already have pyenv installed we'll use it to create a virtual environment,
 
     ```
-    pyenv virtualenv 3.7.4 blueye.sdk
+    pyenv virtualenv 3.8.0 blueye.sdk
     pyenv activate blueye.sdk
     ```
 
@@ -134,7 +134,7 @@ The instructions below show the necessary steps to get started with the SDK on a
     pyenv update
     ```
 
-    Install the needed dependencies for building python 3.7.4
+    Install the needed dependencies for building python 3.8.0
 
     ```
     apt install -y make build-essential libssl-dev zlib1g-dev libbz2-dev \
@@ -143,7 +143,7 @@ The instructions below show the necessary steps to get started with the SDK on a
     ```
     Then build python with pyenv
     ```
-    pyenv install 3.7.4
+    pyenv install 3.8.0
     ```
 
     **Create a virtual environment**
@@ -154,7 +154,7 @@ The instructions below show the necessary steps to get started with the SDK on a
     Since we already have pyenv installed we'll use it to create a virtual environment,
 
     ```
-    pyenv virtualenv 3.7.4 blueye.sdk
+    pyenv virtualenv 3.8.0 blueye.sdk
     pyenv activate blueye.sdk
     ```
 
