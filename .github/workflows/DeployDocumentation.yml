@@ -22,10 +22,12 @@ jobs:
       run: poetry install
     - name: Build documentation
       run: poetry run portray -- as_html --overwrite
-    - name: Build and Deploy
+
+    - name: Deploy documentation
       uses: JamesIves/github-pages-deploy-action@master
       env:
         ACCESS_TOKEN: ${{ secrets.GIT_TOKEN }}
         BASE_BRANCH: master
         BRANCH: gh-pages
         FOLDER: site
+      if: github.branch == "master"
