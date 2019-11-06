@@ -1,6 +1,6 @@
 name: Build and deploy documentation
 
-on: push
+on: [push]
 
 jobs:
   DeployDocumentation:
