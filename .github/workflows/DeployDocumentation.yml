@@ -10,17 +10,14 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v1
-
+    - name: Install poetry
+      uses: dschep/install-poetry-action@v1.2
+      with:
+        version: 1.0.0b3
     - name: Install dependencies
-      uses: docker://abatilo/actions-poetry:3.7.4-stretch
-      with:
-        args: install
-
+      run: poetry install
     - name: Build documentation
-      uses: docker://abatilo/actions-poetry:3.7.4-stretch
-      with:
-        args: run portray as_html --overwrite
-
+      run: poetry run portray -- as_html --overwrite
     - name: Build and Deploy
       uses: JamesIves/github-pages-deploy-action@master
       env:
