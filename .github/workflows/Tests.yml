@@ -24,7 +24,7 @@ jobs:
     - name: Run tests
       run: poetry run pytest -- -k "not connected_to_drone" --cov-report=xml --cov blueye
     - name: Upload coverage
-      run: curl -s https://codecov.io/bash | bash -s - -F $(echo ${{ matrix.os}} | cut -d "-" -f 1 | sed "s/$/python${{ matrix.python }}/ | sed "s/\.//")"
+      run: curl -s https://codecov.io/bash | bash -s - -F $(echo ${{ matrix.os}} | cut -d "-" -f 1 | sed "s/$/python${{ matrix.python }}/" | sed "s/\.//")"
       shell: bash
       env:
         CODECOV_TOKEN: "${{ secrets.CODECOV_TOKEN }}"
