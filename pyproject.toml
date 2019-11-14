@@ -78,7 +78,7 @@ palette = {primary = "white", accent = "blue"}
     [[tool.portray.mkdocs.nav.Video]]
     "GStreamer for video streaming" = "docs/video/gstreamer-for-video-streaming.md"
     [[tool.portray.mkdocs.nav.Video]]
-    "Downloading videos" = "docs/video/downloading-videos.md"
+    "Downloading videos and images" = "docs/video/downloading.md"
 
 [[tool.portray.mkdocs.nav]]
     [[tool.portray.mkdocs.nav.Logs]]
