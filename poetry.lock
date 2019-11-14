@@ -8,6 +8,17 @@ version = "1.4.3"
 
 [[package]]
 category = "main"
+description = "Bash tab completion for argparse"
+name = "argcomplete"
+optional = true
+python-versions = "*"
+version = "1.10.0"
+
+[package.extras]
+test = ["coverage", "flake8", "pexpect", "wheel"]
+
+[[package]]
+category = "main"
 description = "A cross-platform package to replace curses (mouse/keyboard input & text colours/positioning) and create ASCII animations"
 name = "asciimatics"
 optional = true
@@ -87,7 +98,7 @@ numpy = ">=1.17,<2.0"
 setuptools = ">=40"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Python package for providing Mozilla's CA Bundle."
 name = "certifi"
 optional = false
@@ -106,7 +117,7 @@ version = "2.0.1"
 six = "*"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Universal encoding detector for Python 2 and 3"
 name = "chardet"
 optional = false
@@ -241,7 +252,7 @@ version = "1.4.7"
 license = ["editdistance"]
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Internationalized Domain Names in Applications (IDNA)"
 name = "idna"
 optional = false
@@ -316,6 +327,20 @@ version = "2.6.1"
 [package.dependencies]
 six = "*"
 tornado = "*"
+
+[[package]]
+category = "main"
+description = "Powerful and Pythonic XML processing library combining libxml2/libxslt with the ElementTree API."
+name = "lxml"
+optional = true
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, != 3.4.*"
+version = "4.4.1"
+
+[package.extras]
+cssselect = ["cssselect (>=0.7)"]
+html5 = ["html5lib"]
+htmlsoup = ["beautifulsoup4"]
+source = ["Cython (>=0.29.7)"]
 
 [[package]]
 category = "dev"
@@ -753,7 +778,7 @@ python-versions = "*"
 version = "0.7.3"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Python HTTP for Humans."
 name = "requests"
 optional = false
@@ -838,7 +863,7 @@ python-versions = "*"
 version = "1.4.0"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
 name = "urllib3"
 optional = false
@@ -871,6 +896,19 @@ python-versions = "*"
 version = "0.1.7"
 
 [[package]]
+category = "main"
+description = "WebDAV client, based on original package https://github.com/designerror/webdav-client-python but uses requests instead of PyCURL"
+name = "webdavclient3"
+optional = true
+python-versions = "*"
+version = "0.12"
+
+[package.dependencies]
+argcomplete = "*"
+lxml = "*"
+requests = "*"
+
+[[package]]
 category = "dev"
 description = "Yet Another Terminal Spinner"
 name = "yaspin"
@@ -898,13 +936,17 @@ testing = ["pathlib2", "contextlib2", "unittest2"]
 examples = ["inputs", "asciimatics", "pandas", "matplotlib"]
 
 [metadata]
-content-hash = "87129e7d5fa6feb8d0b43c8e970355f90de274e9121c60de41cc4c7e0764e1c8"
+content-hash = "21d7e0eb7c1a27463162a87fa8c540c243170ca1abab54cf174e210f78c798f4"
 python-versions = "^3.7"
 
 [metadata.files]
 appdirs = [
     {file = "appdirs-1.4.3-py2.py3-none-any.whl", hash = "sha256:d8b24664561d0d34ddfaec54636d502d7cea6e29c3eaf68f3df6180863e2166e"},
     {file = "appdirs-1.4.3.tar.gz", hash = "sha256:9e5896d1372858f8dd3344faf4e5014d21849c756c8d5701f78f8a103b372d92"},
+]
+argcomplete = [
+    {file = "argcomplete-1.10.0-py2.py3-none-any.whl", hash = "sha256:2f2052ea5156eb5cc7edce9c0ddc937e30c49c1097d51b24f34350a08632a264"},
+    {file = "argcomplete-1.10.0.tar.gz", hash = "sha256:45836de8cc63d2f6e06b898cef1e4ce1e9907d246ec77ac8e64f23f153d6bec1"},
 ]
 asciimatics = [
     {file = "asciimatics-1.11.0-py2.py3-none-any.whl", hash = "sha256:6c7ad130a0663ecb1b3a731b82c51d6662f1d2c4760de2b8ffc9c1faba775360"},
@@ -1095,6 +1137,34 @@ kiwisolver = [
 livereload = [
     {file = "livereload-2.6.1-py2.py3-none-any.whl", hash = "sha256:78d55f2c268a8823ba499305dcac64e28ddeb9a92571e12d543cd304faf5817b"},
     {file = "livereload-2.6.1.tar.gz", hash = "sha256:89254f78d7529d7ea0a3417d224c34287ebfe266b05e67e51facaf82c27f0f66"},
+]
+lxml = [
+    {file = "lxml-4.4.1-cp27-cp27m-macosx_10_6_intel.macosx_10_9_intel.macosx_10_9_x86_64.macosx_10_10_intel.macosx_10_10_x86_64.whl", hash = "sha256:1f4f214337f6ee5825bf90a65d04d70aab05526c08191ab888cb5149501923c5"},
+    {file = "lxml-4.4.1-cp27-cp27m-manylinux1_i686.whl", hash = "sha256:e9c028b5897901361d81a4718d1db217b716424a0283afe9d6735fe0caf70f79"},
+    {file = "lxml-4.4.1-cp27-cp27m-manylinux1_x86_64.whl", hash = "sha256:02ca7bf899da57084041bb0f6095333e4d239948ad3169443f454add9f4e9cb4"},
+    {file = "lxml-4.4.1-cp27-cp27m-win32.whl", hash = "sha256:4dffd405390a45ecb95ab5ab1c1b847553c18b0ef8ed01e10c1c8b1a76452916"},
+    {file = "lxml-4.4.1-cp27-cp27m-win_amd64.whl", hash = "sha256:c27eaed872185f047bb7f7da2d21a7d8913457678c9a100a50db6da890bc28b9"},
+    {file = "lxml-4.4.1-cp27-cp27mu-manylinux1_i686.whl", hash = "sha256:a63b4fd3e2cabdcc9d918ed280bdde3e8e9641e04f3c59a2a3109644a07b9832"},
+    {file = "lxml-4.4.1-cp27-cp27mu-manylinux1_x86_64.whl", hash = "sha256:fe489d486cd00b739be826e8c1be188ddb74c7a1ca784d93d06fda882a6a1681"},
+    {file = "lxml-4.4.1-cp35-cp35m-manylinux1_i686.whl", hash = "sha256:726c17f3e0d7a7200718c9a890ccfeab391c9133e363a577a44717c85c71db27"},
+    {file = "lxml-4.4.1-cp35-cp35m-manylinux1_x86_64.whl", hash = "sha256:17e3950add54c882e032527795c625929613adbd2ce5162b94667334458b5a36"},
+    {file = "lxml-4.4.1-cp35-cp35m-win32.whl", hash = "sha256:d11874b3c33ee441059464711cd365b89fa1a9cf19ae75b0c189b01fbf735b84"},
+    {file = "lxml-4.4.1-cp35-cp35m-win_amd64.whl", hash = "sha256:be78485e5d5f3684e875dab60f40cddace2f5b2a8f7fede412358ab3214c3a6f"},
+    {file = "lxml-4.4.1-cp36-cp36m-macosx_10_6_intel.macosx_10_9_intel.macosx_10_9_x86_64.macosx_10_10_intel.macosx_10_10_x86_64.whl", hash = "sha256:891fe897b49abb7db470c55664b198b1095e4943b9f82b7dcab317a19116cd38"},
+    {file = "lxml-4.4.1-cp36-cp36m-manylinux1_i686.whl", hash = "sha256:17cae1730a782858a6e2758fd20dd0ef7567916c47757b694a06ffafdec20046"},
+    {file = "lxml-4.4.1-cp36-cp36m-manylinux1_x86_64.whl", hash = "sha256:b0b84408d4eabc6de9dd1e1e0bc63e7731e890c0b378a62443e5741cfd0ae90a"},
+    {file = "lxml-4.4.1-cp36-cp36m-win32.whl", hash = "sha256:796685d3969815a633827c818863ee199440696b0961e200b011d79b9394bbe7"},
+    {file = "lxml-4.4.1-cp36-cp36m-win_amd64.whl", hash = "sha256:a471628e20f03dcdfde00770eeaf9c77811f0c331c8805219ca7b87ac17576c5"},
+    {file = "lxml-4.4.1-cp37-cp37m-macosx_10_6_intel.macosx_10_9_intel.macosx_10_9_x86_64.macosx_10_10_intel.macosx_10_10_x86_64.whl", hash = "sha256:760c12276fee05c36f95f8040180abc7fbebb9e5011447a97cdc289b5d6ab6fc"},
+    {file = "lxml-4.4.1-cp37-cp37m-manylinux1_i686.whl", hash = "sha256:0a920ff98cf1aac310470c644bc23b326402d3ef667ddafecb024e1713d485f1"},
+    {file = "lxml-4.4.1-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:6b899931a5648862c7b88c795eddff7588fb585e81cecce20f8d9da16eff96e0"},
+    {file = "lxml-4.4.1-cp37-cp37m-win32.whl", hash = "sha256:096b82c5e0ea27ce9138bcbb205313343ee66a6e132f25c5ed67e2c8d960a1bc"},
+    {file = "lxml-4.4.1-cp37-cp37m-win_amd64.whl", hash = "sha256:2e8f77db25b0a96af679e64ff9bf9dddb27d379c9900c3272f3041c4d1327c9d"},
+    {file = "lxml-4.4.1-cp38-cp38-manylinux1_i686.whl", hash = "sha256:ae88588d687bd476be588010cbbe551e9c2872b816f2da8f01f6f1fda74e1ef0"},
+    {file = "lxml-4.4.1-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:1409b14bf83a7d729f92e2a7fbfe7ec929d4883ca071b06e95c539ceedb6497c"},
+    {file = "lxml-4.4.1-cp38-cp38-win32.whl", hash = "sha256:c7fccd08b14aa437fe096c71c645c0f9be0655a9b1a4b7cffc77bcb23b3d61d2"},
+    {file = "lxml-4.4.1-cp38-cp38-win_amd64.whl", hash = "sha256:9277562f175d2334744ad297568677056861070399cec56ff06abbe2564d1232"},
+    {file = "lxml-4.4.1.tar.gz", hash = "sha256:c81cb40bff373ab7a7446d6bbca0190bccc5be3448b47b51d729e37799bb5692"},
 ]
 mako = [
     {file = "Mako-1.1.0.tar.gz", hash = "sha256:a36919599a9b7dc5d86a7a8988f23a9a3a3d083070023bab23d64f7f1d1e0a4b"},
@@ -1438,6 +1508,9 @@ virtualenv = [
 wcwidth = [
     {file = "wcwidth-0.1.7-py2.py3-none-any.whl", hash = "sha256:f4ebe71925af7b40a864553f761ed559b43544f8f71746c2d756c7fe788ade7c"},
     {file = "wcwidth-0.1.7.tar.gz", hash = "sha256:3df37372226d6e63e1b1e1eda15c594bca98a22d33a23832a90998faa96bc65e"},
+]
+webdavclient3 = [
+    {file = "webdavclient3-0.12.tar.gz", hash = "sha256:57f6201d8a285b8aad8788e1e78328f79be9ab8730e8a3f4db340d1b9a0425c2"},
 ]
 yaspin = [
     {file = "yaspin-0.15.0-py2.py3-none-any.whl", hash = "sha256:0ee4668936d0053de752c9a4963929faa3a832bd0ba823877d27855592dc80aa"},
