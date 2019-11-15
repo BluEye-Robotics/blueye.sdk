@@ -936,7 +936,7 @@ testing = ["pathlib2", "contextlib2", "unittest2"]
 examples = ["inputs", "asciimatics", "pandas", "matplotlib", "webdavclient3"]
 
 [metadata]
-content-hash = "ec36ca83b81691fa9a8fa7d31b09640f7fbc870bb94f6070af173dc6bb02d603"
+content-hash = "5c2f7d1373e3f01bfb79f65dadbc512d6f5d306ff6f2b7146f1c45fc791ea7ef"
 python-versions = "^3.7"
 
 [metadata.files]
