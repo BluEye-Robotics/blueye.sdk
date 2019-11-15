@@ -144,8 +144,9 @@ class TestSlaveMode:
 def test_documentation_opener(mocker):
     mocked_webbrowser_open = mocker.patch("webbrowser.open", autospec=True)
     import blueye.sdk
+    import os
 
-    blueye.sdk.__file__ = "/root/blueye/sdk/__init__.py"
+    blueye.sdk.__file__ = os.path.abspath("/root/blueye/sdk/__init__.py")
 
     blueye.sdk.open_local_documentation()
 
