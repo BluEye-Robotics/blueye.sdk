@@ -227,3 +227,15 @@ Remember to install the example dependencies before running the examples.
 ```shell
 pip install "blueye.sdk[examples]"
 ```
+
+### Local documentation
+Since the drone surface unit (usually) does not have internet access it can be a bit tricky to
+reference this documentation while developing on the drone. Luckily when you install the SDK from
+PyPI it includes a pre-built, local copy of this documentation. This documentation can be viewed by
+executing the following Python snippet:
+
+```python
+import blueye.sdk
+
+blueye.sdk.open_local_documentation()
+```
