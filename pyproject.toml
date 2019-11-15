@@ -8,7 +8,7 @@ packages = [
   { include = "blueye" }
 ]
 
-include= ["site/*"]
+include= ["blueye.sdk_docs/**/*"]
 readme = "README.md"
 repository="https://github.com/blueye-robotics/blueye.sdk"
 homepage ="https://www.blueyerobotics.com"
