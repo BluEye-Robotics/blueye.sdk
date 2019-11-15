@@ -139,3 +139,14 @@ class TestSlaveMode:
         mocked_slave_pioneer.lights = 0
 
         mocked_warn.assert_called_once()
+
+
+def test_documentation_opener(mocker):
+    mocked_webbrowser_open = mocker.patch("webbrowser.open", autospec=True)
+    import blueye.sdk
+
+    blueye.sdk.__file__ = "/root/blueye/sdk/__init__.py"
+
+    blueye.sdk.open_local_documentation()
+
+    mocked_webbrowser_open.assert_called_with("/root/blueye.sdk_docs/README.html")
