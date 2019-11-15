@@ -18,7 +18,7 @@ jobs:
       with:
         version: 1.0.0b3
     - name: Update mkdocs config for local browsing
-      run: sed -i "s/\[tool.portray.mkdocs\]$/&use_directory_urls = false/" pyproject.toml
+      run: sed -i "s/\[tool.portray.mkdocs\]$/&\nuse_directory_urls = false/" pyproject.toml
     - name: Build documentation for publishing
       run: poetry run portray -- as_html --overwrite --output_dir blueye.sdk_docs
     - name: Build package with poetry, including documentation
