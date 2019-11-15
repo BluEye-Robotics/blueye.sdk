@@ -828,7 +828,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "2.0.5"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Pretty-print tabular data"
 name = "tabulate"
 optional = false
@@ -936,7 +936,7 @@ testing = ["pathlib2", "contextlib2", "unittest2"]
 examples = ["inputs", "asciimatics", "pandas", "matplotlib", "webdavclient3"]
 
 [metadata]
-content-hash = "7440fab271c82955c73b6720081ea0027177be97b339a13fe768911f1c8f262c"
+content-hash = "5c2f7d1373e3f01bfb79f65dadbc512d6f5d306ff6f2b7146f1c45fc791ea7ef"
 python-versions = "^3.7"
 
 [metadata.files]
