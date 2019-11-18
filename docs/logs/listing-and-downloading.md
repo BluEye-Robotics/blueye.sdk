@@ -1,6 +1,6 @@
 # Logs from the Pioneer
 
-For every dive will the Pioneer will create a new comma-separated-value file where it
+For every dive the Pioneer will create a new comma-separated-value file where it
 stores telemetry data such as depth, temperature, etc. These files can be downloaded to
 your local system where you can plot them or use them however you see fit.
 
