@@ -1,8 +1,9 @@
 # Logs from the Pioneer
 
-For every dive the Pioneer will create a new comma-separated-value file where it
-stores telemetry data such as depth, temperature, etc. These files can be downloaded to
-your local system where you can plot them or use them however you see fit.
+When the Pioneer is powered on a new comma-separated-value file where it
+stores telemetry data such as depth, temperature, and more is created. The drone will log data
+as long as it is powered on. These files can be downloaded to your local system where you can plot
+them or use them however you see fit.
 
 ## Listing the log files
 If your drone has completed 5 dives and you do
