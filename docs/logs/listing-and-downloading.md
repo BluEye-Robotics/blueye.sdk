@@ -30,6 +30,13 @@ The first part of the filename (the part before the -) is the unique ID of your 
 and second part is the dive number. In addition we see the start time of the dive, the
 maximum depth reached, as well as the size of the log file.
 
+
+You might notice that there can be more log files listed then the amount of dives you have done.
+This is due to the fact that the Pioneer creates a new log file whenever it is turned on,
+regardless of whether you actually took the drone for a dive. To easier separate out the
+log files that result from actual dives you can filter out all the dives with a max depth
+below some threshold. The Blueye app does this, filtering out all log files with a max depth
+below 20 cm.
 ## Downloading a log file to your computer
 When you want to download a log file all you have to do is to call the `download()`
 method on the desired log and the file will be downloaded to your current folder.
