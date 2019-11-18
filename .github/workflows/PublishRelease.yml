@@ -17,6 +17,8 @@ jobs:
       uses: dschep/install-poetry-action@v1.2
       with:
         version: 1.0.0b3
+    - name: Install dependencies
+      run: poetry install
     - name: Update mkdocs config for local browsing
       run: sed -i "s/\[tool.portray.mkdocs\]$/&\nuse_directory_urls = false/" pyproject.toml
     - name: Build documentation for publishing
