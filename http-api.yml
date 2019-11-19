@@ -1,0 +1,44 @@
+openapi: '3.0.2'
+info:
+  title: Blueye HTTP API
+  version: '1.0'
+servers:
+  - url: http://192.168.1.101/
+
+paths:
+  /diagnostics/drone_info:
+    get:
+      summary: Returns a list of drone information.
+      responses:
+        '200':
+          description: A JSON string of drone information.
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/DroneInfo'
+
+components:
+  schemas:
+    DroneInfo:
+      type: object
+      properties:
+        commit_id_csys:
+          type: string
+        features:
+          type: string
+        hardware_id:
+          type: string
+        manufacturer:
+          type: string
+        model_description:
+          type: string
+        model_name:
+          type: string
+        model_url:
+          type: string
+        operating_system:
+          type: string
+        serial_number:
+          type: string
+        sw_version:
+          type: string
