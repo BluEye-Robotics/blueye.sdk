@@ -17,6 +17,37 @@ paths:
               schema:
                 $ref: '#components/schemas/DroneInfo'
 
+  /logcsv:
+    get:
+      summary: Returns a list of logs on the drone.
+      responses:
+        '200':
+          description: Array of logs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Log'
+
+  /logcsv/{filename}:
+    get:
+      summary: Returns a comma-separated-value file with the requested name
+      parameters:
+        - name: filename
+          in: path
+          description: Filename of log to download
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Comma-separated-value file with log data
+          content:
+            text/csv:
+              schema:
+                type: string
+
 components:
   schemas:
     DroneInfo:
@@ -42,3 +73,16 @@ components:
           type: string
         sw_version:
           type: string
+
+    Log:
+      type: object
+      properties:
+        name:
+          type: string
+        binsize:
+          type: integer
+        timestamp:
+          type: string
+        maxdepth:
+          type: number
+          format: float
