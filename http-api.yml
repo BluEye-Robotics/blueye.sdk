@@ -8,7 +8,10 @@ servers:
 paths:
   /diagnostics/drone_info:
     get:
-      summary: Returns a list of drone information.
+      summary: Drone information
+      description: |
+        Returns a JSON string of drone information. Using this endpoint is the easiest way to check
+        if there is a drone connected to your network.
       responses:
         '200':
           description: A JSON string of drone information.
