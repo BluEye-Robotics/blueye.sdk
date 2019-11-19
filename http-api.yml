@@ -19,6 +19,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DroneInfo'
+      x-code-samples:
+        - lang: "curl"
+          source: |
+            curl -X GET "http://192.168.1.101/diagnostics/drone_info"
+
+        - lang: "Python"
+          source: |
+            import requests
+            response = requests.get("http://192.168.1.101/diagnostics/drone_info")
+            print(response.json())
 
   /logcsv:
     get:
