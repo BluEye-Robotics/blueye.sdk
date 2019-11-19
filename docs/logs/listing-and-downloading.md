@@ -1,8 +1,9 @@
 # Logs from the Pioneer
 
-For every dive will the Pioneer will create a new comma-separated-value file where it
-stores telemetry data such as depth, temperature, etc. These files can be downloaded to
-your local system where you can plot them or use them however you see fit.
+When the Pioneer is powered on a new comma-separated-value file where it
+stores telemetry data such as depth, temperature, and more is created. The drone will log data
+as long as it is powered on. These files can be downloaded to your local system where you can plot
+them or use them however you see fit.
 
 ## Listing the log files
 If your drone has completed 5 dives and you do
@@ -30,6 +31,13 @@ The first part of the filename (the part before the -) is the unique ID of your 
 and second part is the dive number. In addition we see the start time of the dive, the
 maximum depth reached, as well as the size of the log file.
 
+
+You might notice that there can be more log files listed then the amount of dives you have done.
+This is due to the fact that the Pioneer creates a new log file whenever it is turned on,
+regardless of whether you actually took the drone for a dive. To easier separate out the
+log files that result from actual dives you can filter out all the dives with a max depth
+below some threshold. The Blueye app does this, filtering out all log files with a max depth
+below 20 cm.
 ## Downloading a log file to your computer
 When you want to download a log file all you have to do is to call the `download()`
 method on the desired log and the file will be downloaded to your current folder.
