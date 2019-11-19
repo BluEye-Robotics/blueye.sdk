@@ -92,10 +92,19 @@ components:
       properties:
         name:
           type: string
+          description: |
+            Name of the logfile. First part is the drones unique id, second part is the dive count.
+          example: ea9ac92e1817a1d4-00073.csv
         binsize:
           type: integer
+          description: Size of the log file. Unit is bytes.
+          example: 1099448
         timestamp:
           type: string
+          description: Start time of the dive. Unit is ISO8601 datetime without timezone data.
+          example: "2019-01-01T00:00:00.000001"
         maxdepth:
           type: number
           format: float
+          description: Maximum depth reached during the dive. Unit is millimeters.
+          example: 21050
