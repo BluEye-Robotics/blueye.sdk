@@ -27,7 +27,7 @@ client.list()
 ```
 
 ## Understanding the file name formats
-An example output from listing available files could be.
+An example output from listing available files could be:
 
 ``` shell
 'video_BYEDP000105_2019-08-13_103035.jpg'
@@ -38,7 +38,7 @@ The format of the file names are described below.
 
 ### Video files
 For each video recorded on the drone two files will be created, a `.mp4` file with the actual video, and
-a `.jpg` file with a thumbnail image from the video file. Other then the file extension the file names will be identical.
+a `.jpg` file with a thumbnail image from the video file. Other than the file extension the file names will be identical.
 An example of a video + thumbnail pair could be:
 ``` shell
 'video_BYEDP000105_2019-08-13_103035.jpg'
@@ -47,7 +47,7 @@ An example of a video + thumbnail pair could be:
 The file names break down to:
 
 
-| File Type Prefix | Drone Serial Number | Timestamp( yyyy-MM-dd_hhmmss) | File Extension |
+| File Type Prefix | Drone Serial Number | Timestamp (yyyy-MM-dd_hhmmss) | File Extension |
 | -------------    | :-------------:     | -----:                        | -----:         |
 | video            | BYEDP000105         | 2019-08-13_103035             | .mp4           |
 | video            | BYEDP000105         | 2019-08-13_103035             | .jpg           |
@@ -65,6 +65,6 @@ An example still image file could be:
 ```
 The file name breaks down to:
 
-| File Type Prefix | Drone Serial Number | Timestamp( yyyy-MM-dd_hhmmss.SSS) | File Extension |
+| File Type Prefix | Drone Serial Number | Timestamp (yyyy-MM-dd_hhmmss.SSS) | File Extension |
 | -------------    | :-------------:     | -----:                            | -----:         |
 | picture          | BYEDP000105         | 2019-09-27_074152.431             | .jpg           |
