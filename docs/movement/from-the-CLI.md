@@ -6,7 +6,7 @@ This is a super simple example showing how you make the drone move from the comm
 import time
 from blueye.sdk import Pioneer
 p = Pioneer()
-p.motion.surge = 1
+p.motion.surge = 0.4
 time.sleep(1)
 p.motion.surge = 0
 ```
