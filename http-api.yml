@@ -46,6 +46,16 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Log'
+      x-code-samples:
+        - lang: "curl"
+          source: |
+            curl -X GET "http://192.168.1.101/logcsv"
+
+        - lang: "Python"
+          source: |
+            import requests
+            response = requests.get("http://192.168.1.101/logcsv")
+            print(response.json())
 
   /logcsv/{filename}:
     get:
@@ -65,6 +75,19 @@ paths:
             text/csv:
               schema:
                 type: string
+      x-code-samples:
+        - lang: "curl"
+          source: |
+            # To get log with filename ea9ac92e1817a1d4-00090.csv
+            curl -X GET "http://192.168.1.101/logcsv/ea9ac92e1817a1d4-00090.csv"
+
+        - lang: "Python"
+          source: |
+            import requests
+            logname = "ea9ac92e1817a1d4-00090.csv"
+            response = requests.get(f"http://192.168.1.101/logcsv/{logname}")
+            with open(logname, "wb") as f:
+              f.write(response.content)
 
 components:
   schemas:
