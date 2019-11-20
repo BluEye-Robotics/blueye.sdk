@@ -32,7 +32,11 @@ paths:
 
   /logcsv:
     get:
-      summary: Returns a list of logs on the drone.
+      summary: Array of logs
+      description: |
+        Returns an array of logs from the drone. Each array item represents an available log file on
+        the drone. Use the /logcsv/{filename} endpoint to get the full log.
+
       responses:
         '200':
           description: Array of logs
@@ -45,7 +49,8 @@ paths:
 
   /logcsv/{filename}:
     get:
-      summary: Returns a comma-separated-value file with the requested name
+      summary: CSV log-file
+      description: Downloads a comma-separated-value (CSV) log-file with the requested name.
       parameters:
         - name: filename
           in: path
