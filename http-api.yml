@@ -96,24 +96,41 @@ components:
       properties:
         commit_id_csys:
           type: string
+          description: Commit-id of the software currently running on the drone.
+          example: "299238949a"
         features:
           type: string
+          description: Comma-separated list of available features on the drone.
+          example: "lasers,jetpack"
         hardware_id:
           type: string
+          description: Unique hardware id of the built-in single board computer.
+          example: ea9ac92e1817a1d4
         manufacturer:
           type: string
+          example: "Blueye Robotics"
         model_description:
           type: string
+          example: "Blueye Pioneer Underwater Drone"
         model_name:
           type: string
+          example: "Blueye Pioneer"
         model_url:
           type: string
+          example: "https://www.blueyerobotics.com"
         operating_system:
           type: string
+          example: "blunux"
         serial_number:
           type: string
+          description: Serial number for the whole drone package as it left the factory.
+          example: "BYEDP123456"
         sw_version:
           type: string
+          description: |
+            Human-friendly name of software running on the drone.
+            Format is $(Major).$(Minor).$(Build)-$(Yocto version)-$(Branch)
+          example: "1.4.7-warrior-master"
 
     Log:
       type: object
