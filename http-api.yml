@@ -5,9 +5,15 @@ info:
 servers:
   - url: http://192.168.1.101/
 
+tags:
+  - name: "Diagnostics"
+  - name: "Logs"
+
 paths:
   /diagnostics/drone_info:
     get:
+      tags:
+        - "Diagnostics"
       summary: Drone information
       description: |
         Returns a JSON string of drone information. Using this endpoint is the easiest way to check
@@ -32,6 +38,8 @@ paths:
 
   /logcsv:
     get:
+      tags:
+        - "Logs"
       summary: Array of logs
       description: |
         Returns an array of logs from the drone. Each array item represents an available log file on
@@ -59,6 +67,8 @@ paths:
 
   /logcsv/{filename}:
     get:
+      tags:
+        - "Logs"
       summary: CSV log-file
       description: Downloads a comma-separated-value (CSV) log-file with the requested name.
       parameters:
