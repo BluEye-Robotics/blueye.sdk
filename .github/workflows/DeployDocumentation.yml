@@ -18,6 +18,8 @@ jobs:
         version: 1.0.0b3
     - name: Install dependencies
       run: poetry install
+    - name: Build HTTP documentation
+      run: npx redoc-cli bundle http-api.yml --output docs/http-api.html
     - name: Build documentation
       run: poetry run portray -- as_html --overwrite
 

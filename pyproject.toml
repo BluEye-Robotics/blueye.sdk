@@ -91,6 +91,9 @@ palette = {primary = "white", accent = "blue"}
     [[tool.portray.mkdocs.nav.Logs]]
     "Plotting log files" = "docs/logs/plotting.md"
 
+[[tool.portray.mkdocs.nav]]
+"HTTP API" = "docs/http-api.html"
+
 [tool.black]
 line-lenght = 100
 

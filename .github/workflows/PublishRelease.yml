@@ -21,6 +21,8 @@ jobs:
       run: poetry install
     - name: Update mkdocs config for local browsing
       run: sed -i "s/\[tool.portray.mkdocs\]$/&\nuse_directory_urls = false/" pyproject.toml
+    - name: Build HTTP documentation
+      run: npx redoc-cli bundle http-api.yml --output docs/http-api.html
     - name: Build documentation for publishing
       run: poetry run portray -- as_html --overwrite --output_dir blueye.sdk_docs
     - name: Build package with poetry, including documentation
