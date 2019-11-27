@@ -8,6 +8,7 @@ servers:
 tags:
   - name: "Diagnostics"
   - name: "Logs"
+  - name: "Subtitles"
 
 paths:
   /diagnostics/drone_info:
@@ -98,7 +99,150 @@ paths:
             response = requests.get(f"http://192.168.1.101/logcsv/{logname}")
             with open(logname, "wb") as f:
               f.write(response.content)
+  /srt:
+    get:
+      tags:
+        - "Subtitles"
+      summary: Download subtitle file
+      description: |
+        Downloads a subtitle file (srt) for a video file containing log data from the dive. The data
+        is gathered from the videos accompanying logfile. By passing in varius queries it is
+        possible to select which data one wants displayed, and where to display it.
+      parameters:
+        - name: file
+          in: query
+          description: "Name of the videofile to download subtitle file for."
+          required: true
+          schema:
+            type: string
+            example: "video_BYEDP123456_2019-01-01_000001.mp4"
+        - name: title
+          in: query
+          description: "Title of the video."
+          required: false
+          schema:
+            type: string
+            default: ""
+        - name: length-units
+          in: query
+          description: Unit to use for depth. Use "meter" for metric units, and "feet" for imperial.
+          required: false
+          schema:
+            type: string
+            default: "meter"
+            enum:
+              - "meter"
+              - "feet"
+        - name: temp-units
+          in: query
+          description: |
+            Unit to use for temperature. Use "celsius" for metric units, and "fahrenheit" for
+            imperial.
+          required: false
+          schema:
+            type: string
+            default: "celsius"
+        - name: placement
+          in: query
+          description: |
+            Where to place the subtitle. Use "top" for placing on the top, "bottom" for placing on
+            the bottom, and "" for using the player default.
+          required: false
+          schema:
+            type: string
+            default: "top"
+            enum:
+              - "top"
+              - "bottom"
+              - ""
+        - name: field-date
+          in: query
+          description: Enable or disable the date field. "1" to enable, "0" to disable.
+          required: false
+          schema:
+            type: integer
+            default: 0
+            enum:
+              - 0
+              - 1
 
+        - name: field-depth
+          in: query
+          description: Enable or disable the depth field. "1" to enable, "0" to disable.
+          required: false
+          schema:
+            type: integer
+            default: 1
+            enum:
+              - 0
+              - 1
+        - name: field-heading
+          in: query
+          description: Enable or disable the heading field. "1" to enable, "0" to disable.
+          required: false
+          schema:
+            type: integer
+            default: 1
+            enum:
+              - 0
+              - 1
+        - name: field-temp
+          in: query
+          description: Enable or disable the temperature field. "1" to enable, "0" to disable.
+          required: false
+          schema:
+            type: integer
+            default: 1
+            enum:
+              - 0
+              - 1
+        - name: date-format
+          in: query
+          description: "Format of the date/time."
+          required: false
+          schema:
+            type: string
+            default: "%Y-%m-%d %H:%M:%S"
+            externalDocs:
+              description: Python3 documentation for datetime formatting
+              url: https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior
+        - name: tz_offset
+          in: query
+          description: |
+            The drone stores all time in UTC+0, so if you were diving in another timezone and want
+            to correct for that in the displayed time you can add a timezone offset here. The unit
+            is minutes and both positive and negative values are supported.
+          required: false
+          schema:
+            type: integer
+            default: 0
+            format: int32
+
+      responses:
+        '200':
+          description: Subtitle file for the requested video file
+          content:
+            text/srt:
+              schema:
+                type: object
+      x-code-samples:
+        - lang: "curl"
+          source: |
+            curl -X GET -G "http://192.168.1.101/srt" \
+              -d "file=video_BYEDP000000_2019-11-20_093727.mp4" \
+              -d "title=My title"
+
+        - lang: "Python"
+          source: |
+            import requests
+            videoName = "video_BYEDP123456_2019-01-01_000001"
+            parameters = {
+                          "file": f"{videoName}.mp4",
+                          "title": "My title"
+                         }
+            response = requests.get("http://192.168.1.101/srt", params=parameters)
+            with open(f"{videoName}.srt", "wb") as f:
+              f.write(response.content)
 components:
   schemas:
     DroneInfo:
