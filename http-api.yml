@@ -36,7 +36,41 @@ paths:
             import requests
             response = requests.get("http://192.168.1.101/diagnostics/drone_info")
             print(response.json())
+  /diagnostics/iperf:
+    post:
+      tags:
+        - "Diagnostics"
+      summary: Tether bandwidth test
+      description: |
+        Performs a bandwidth test on the connection between the surface unit and the drone. Set the
+        test duration with the "duration"-parameter. A longer duration should yield a more accurate
+        result.
+      parameters:
+        - in: query
+          name: "duration"
+          description: Duration of the test to perform. Unit is seconds.
+          required: false
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: A JSON string with the performance test results.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IperfResult"
+      x-code-samples:
+        - lang: "curl"
+          source: |
+            curl -X POST "http://192.168.1.101/diagnostics/iperf" -d duration=5
 
+        - lang: "Python"
+          source: |
+            import requests
+            response = requests.post("http://192.168.1.101/diagnostics/iperf",
+                                      data={"duration": 5})
+            print(response.json())
   /logcsv:
     get:
       tags:
@@ -285,6 +319,27 @@ components:
             Human-friendly name of software running on the drone.
             Format is $(Major).$(Minor).$(Build)-$(Yocto version)-$(Branch)
           example: "1.4.7-warrior-master"
+
+    IperfResult:
+      type: object
+      properties:
+        received_Mbps:
+          type: number
+          format: float
+          description: Bandwidth from surface unit to drone. Unit is Mbps.
+          example: 79.55458795899487
+        sent_Mbps:
+          type: number
+          format: float
+          description: Bandwidth from drone to surface unit. Unit is Mbps.
+          example: 80.37122746322603
+        success:
+          type: boolean
+          description: If the test was succesful or not.
+          enum:
+            - true
+            - false
+          example: true
 
     Log:
       type: object
