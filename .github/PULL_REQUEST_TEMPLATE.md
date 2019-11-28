@@ -1,20 +1,14 @@
-<!--
-(Thanks for sending a pull request! Please make sure you fill out the blanks below.)
+<!-- 
+(Thanks for sending a pull request! 
+Please make sure you fill out the blanks below.)
 -->
-<!-- Add the issue number that is fixed by this PR (In the form Fixes #123) -->
+
 **Description**
 <!-- Describe the contents of the Pull request and problems it solves. -->
 
+<!-- Add the issue number that is fixed by this PR (In the form Fixes #123) --> 
 Fixes #
 
-#### Short description of what this resolves:
-
-
-#### Changes proposed in this pull request:
-
--
--
--
 
 #### Checklist before merging
 
