@@ -36,6 +36,7 @@ paths:
             import requests
             response = requests.get("http://192.168.1.101/diagnostics/drone_info")
             print(response.json())
+
   /diagnostics/iperf:
     post:
       tags:
@@ -71,6 +72,7 @@ paths:
             response = requests.post("http://192.168.1.101/diagnostics/iperf",
                                       data={"duration": 5})
             print(response.json())
+
   /logcsv:
     get:
       tags:
@@ -133,6 +135,7 @@ paths:
             response = requests.get(f"http://192.168.1.101/logcsv/{logname}")
             with open(logname, "wb") as f:
               f.write(response.content)
+
   /srt:
     get:
       tags:
@@ -277,6 +280,7 @@ paths:
             response = requests.get("http://192.168.1.101/srt", params=parameters)
             with open(f"{videoName}.srt", "wb") as f:
               f.write(response.content)
+
 components:
   schemas:
     DroneInfo:
