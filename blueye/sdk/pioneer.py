@@ -181,6 +181,16 @@ class Pioneer:
         }
         return pose
 
+    @property
+    def battery_state_of_charge(self) -> int:
+        """Get the battery state of charge
+
+        *Returns*:
+
+        * state_of_charge (int): Current state of charge of the drone battery in percent, from 0 to 100
+        """
+        return self._state_watcher.general_state["battery_state_of_charge_rel"]
+
     def ping(self):
         """Ping drone, an exception is thrown by TcpClient if drone does not answer"""
         self._tcp_client.ping()
