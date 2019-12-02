@@ -189,3 +189,9 @@ def test_software_version(mocked_pioneer):
     mocked_pioneer._update_drone_info()
     assert mocked_pioneer.software_version == "1.4.7-warrior-master"
     assert mocked_pioneer.software_version_short == "1.4.7"
+
+
+def test_depth_reading(mocked_pioneer):
+    depth = 10000
+    mocked_pioneer._state_watcher._general_state = {"depth": depth}
+    assert mocked_pioneer.depth == depth
