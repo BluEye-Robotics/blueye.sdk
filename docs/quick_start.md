@@ -200,7 +200,20 @@ p.lights = 0
 print(f"Current depth in millimeters: {p.depth}")
 ```
 For a overview of the properties that are availabe for controlling and reading data from the Pioneer, go to the
-[`Reference section`](https://blueye-robotics.github.io/blueye.sdk/reference/blueye/sdk/pioneer/) of the documentation.The valid input ranges and descriptions of the different properties can also be found there.
+[`Reference section`](https://blueye-robotics.github.io/blueye.sdk/reference/blueye/sdk/pioneer/) of the documentation.
+The valid input ranges and descriptions of the different properties can also be found there.
+
+
+!!! Tip
+    You can explore the properties of the Pioneer interactively using an interactive python interpreter like
+    [`iPython`](https://ipython.readthedocs.io/en/stable/interactive/tutorial.html), install it with:
+    ```shell
+    pip install ipython
+    ```
+    By instantiating a Pioneer object and using the completion key (normally the `tab-key ↹`) you can get a interactive list of
+    the available properties on the Pioneer, it is then easy to try setting and getting the different properties.
+    ![`iPython`](https://blueyenostorage.blob.core.windows.net/sdkimages/ipython-exploration.gif)
+
 
 ### Watching the video stream
 The easiest way to open the  RTSP video stream is using [`VLC media player`](https://www.videolan.org/vlc/index.html).
