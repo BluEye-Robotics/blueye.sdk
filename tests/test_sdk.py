@@ -83,6 +83,14 @@ class TestFunctionsWhenConnectedToDrone:
         pioneer.camera.is_recording = False
         polling_assert_with_timeout(pioneer.camera, "is_recording", False, 1)
 
+    @pytest.mark.skip(
+        reason="a camera stream must have been run before camera recording is possible"
+    )
+    def test_camera_record_time(self, pioneer):
+        test_read_property = pioneer.camera.record_time
+        pioneer.camera.is_recording = True
+        polling_assert_with_timeout(pioneer.camera, "record_time", 1, 3)
+
     def test_camera_bitrate(self, pioneer):
         test_read_parameter = pioneer.camera.bitrate
         pioneer.camera.bitrate = 2000000

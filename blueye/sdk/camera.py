@@ -77,3 +77,7 @@ class Camera:
     @framerate.setter
     def framerate(self, framerate: int):
         self._tcp_client.set_camera_framerate(framerate)
+
+    @property
+    def record_time(self) -> int:
+        return self._state_watcher.general_state["camera_record_time"]
