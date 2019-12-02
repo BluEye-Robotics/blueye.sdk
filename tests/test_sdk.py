@@ -195,3 +195,9 @@ def test_depth_reading(mocked_pioneer):
     depth = 10000
     mocked_pioneer._state_watcher._general_state = {"depth": depth}
     assert mocked_pioneer.depth == depth
+
+
+def test_battery_state_of_charge_reading(mocked_pioneer):
+    SoC = 77
+    mocked_pioneer._state_watcher._general_state = {"battery_state_of_charge_rel": SoC}
+    assert mocked_pioneer.battery_state_of_charge == SoC
