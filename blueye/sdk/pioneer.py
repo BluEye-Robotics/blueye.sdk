@@ -115,6 +115,7 @@ class Pioneer:
         """
         self._state_watcher.start()
         self.logs.refresh_log_index()
+        self._update_drone_info()
         if self._slaveModeEnabled is False:
             if self._tcp_client._sock is None and not self._tcp_client.isAlive():
                 self._tcp_client.connect()
