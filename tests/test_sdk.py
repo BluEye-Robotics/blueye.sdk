@@ -17,9 +17,26 @@ def mocked_clients(mocker):
 
 
 @pytest.fixture
-def mocked_pioneer(mocked_clients):
+def mocked_pioneer(mocked_clients, requests_mock):
+    import json
     from blueye.sdk import Pioneer
 
+    dummy_drone_info = {
+        "commit_id_csys": "299238949a",
+        "features": "lasers,harpoon",
+        "hardware_id": "ea9ac92e1817a1d4",
+        "manufacturer": "Blueye Robotics",
+        "model_description": "Blueye Pioneer Underwater Drone",
+        "model_name": "Blueye Pioneer",
+        "model_url": "https://www.blueyerobotics.com",
+        "operating_system": "blunux",
+        "serial_number": "BYEDP123456",
+        "sw_version": "1.4.7-warrior-master",
+    }
+    requests_mock.get(
+        "http://192.168.1.101/diagnostics/drone_info",
+        content=json.dumps(dummy_drone_info).encode(),
+    )
     return Pioneer(autoConnect=False)
 
 
@@ -153,3 +170,14 @@ def test_documentation_opener(mocker):
     mocked_webbrowser_open.assert_called_with(
         os.path.abspath("/root/blueye.sdk_docs/README.html")
     )
+
+
+def test_feature_list(mocked_pioneer):
+    mocked_pioneer._update_drone_info()
+    assert mocked_pioneer.features == ["lasers", "harpoon"]
+
+
+def test_software_version(mocked_pioneer):
+    mocked_pioneer._update_drone_info()
+    assert mocked_pioneer.software_version == "1.4.7-warrior-master"
+    assert mocked_pioneer.software_version_short == "1.4.7"

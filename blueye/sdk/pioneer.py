@@ -3,12 +3,14 @@ import threading
 import time
 import warnings
 
+import requests
+
 from blueye.protocol import TcpClient, UdpClient
 from blueye.protocol.exceptions import ResponseTimeout
 
 from .camera import Camera
-from .motion import Motion
 from .logs import Logs
+from .motion import Motion
 
 
 class _PioneerStateWatcher(threading.Thread):
@@ -96,6 +98,15 @@ class Pioneer:
         if autoConnect is True:
             self.connect()
 
+    def _update_drone_info(self):
+        """Request and store information about the connected drone"""
+        response = requests.get(f"http://{self._ip}/diagnostics/drone_info").json()
+        self.features = list(filter(None, response["features"].split(",")))
+        self.software_version = response["sw_version"]
+        self.software_version_short = self.software_version.split("-")[0]
+        self.serial_number = response["serial_number"]
+        self.uuid = response["hardware_id"]
+
     def connect(self):
         """Start receiving telemetry info from the drone, and publishing watchdog messages
 
@@ -104,6 +115,7 @@ class Pioneer:
         """
         self._state_watcher.start()
         self.logs.refresh_log_index()
+        self._update_drone_info()
         if self._slaveModeEnabled is False:
             if self._tcp_client._sock is None and not self._tcp_client.isAlive():
                 self._tcp_client.connect()
