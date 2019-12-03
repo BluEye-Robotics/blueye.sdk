@@ -157,3 +157,11 @@ class Camera:
         * record_time (int): The length in seconds of the current recording, -1 if the camera is not currently recording
         """
         return self._state_watcher.general_state["camera_record_time"]
+
+    def take_picture(self):
+        """Takes a still picture and stores it locally on the drone
+
+        These pictures can be downloaded with the Blueye App, or by any WebDAV compatible client.
+        """
+
+        self._tcp_client.take_still_picture()
