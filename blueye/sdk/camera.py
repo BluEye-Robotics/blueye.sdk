@@ -5,6 +5,16 @@ class Camera:
 
     @property
     def is_recording(self) -> bool:
+        """Start or stop a camera recording
+
+        *Arguments*:
+
+        * is_recording (bool): Set to True to start a recording, set to False to stop the current recording
+
+        *Returns*:
+
+        * is_recording (bool): True if the camera is currently recording, False if not
+        """
         state = self._state_watcher.general_state
         if state["camera_record_time"] != -1:
             return True
@@ -20,6 +30,16 @@ class Camera:
 
     @property
     def bitrate(self) -> int:
+        """Set or get the camera bitrate
+
+        *Arguments*:
+
+        * bitrate (int): Set the camera bitrate in bits, Valid values are in range <1 000 000, 16 000 000>
+
+        *Returns*:
+
+        * bitrate (int): Get the camera bitrate
+        """
         camera_parameters = self._tcp_client.get_camera_parameters()
         bitrate = camera_parameters[1]
         return bitrate
@@ -30,6 +50,16 @@ class Camera:
 
     @property
     def exposure(self) -> int:
+        """Set or get the camera exposure
+
+        *Arguments*:
+
+        * exposure (int): Set the camera exposure_value: 1 = 1/1000th of a second, 5 = 1/200th of a second. Valid values are in the range <1, 5000>
+
+        *Returns*:
+
+        * exposure (int): Get the camera exposure
+        """
         camera_parameters = self._tcp_client.get_camera_parameters()
         exposure = camera_parameters[2]
         return exposure
@@ -40,6 +70,16 @@ class Camera:
 
     @property
     def whitebalance(self) -> int:
+        """Set or get the camera white balance
+
+        *Arguments*:
+
+        * whitebalance (int): Set the camera white balance. Valid values are in the range <2800, 9300>
+
+        *Returns*:
+
+        * whitebalance (int): Get the camera white balance
+        """
         camera_parameters = self._tcp_client.get_camera_parameters()
         whitebalance = camera_parameters[3]
         return whitebalance
@@ -50,6 +90,16 @@ class Camera:
 
     @property
     def hue(self) -> int:
+        """Set or get the camera hue
+
+        *Arguments*:
+
+        * hue (int): Set the camera hue. Valid values are in the range <-40, 40>
+
+        *Returns*:
+
+        * hue (int): Get the camera hue
+        """
         camera_parameters = self._tcp_client.get_camera_parameters()
         hue = camera_parameters[4]
         return hue
@@ -60,6 +110,16 @@ class Camera:
 
     @property
     def resolution(self) -> int:
+        """Set or get the camera resolution
+
+        *Arguments*:
+
+        * resolution (int): Set the camera in vertical pixels. Valid values are 480, 720 or 1080
+
+        *Returns*:
+
+        * resolution (int): Get the camera resolution
+        """
         camera_parameters = self._tcp_client.get_camera_parameters()
         resolution = camera_parameters[5]
         return resolution
@@ -70,6 +130,16 @@ class Camera:
 
     @property
     def framerate(self) -> int:
+        """Set or get the camera frame rate
+
+        *Arguments*:
+
+        * framerate (int): Set the camera frame rate in frames per second. Valid values are 25 or 30
+
+        *Returns*:
+
+        * framerate (int): Get the camera frame rate
+        """
         camera_parameters = self._tcp_client.get_camera_parameters()
         framerate = camera_parameters[6]
         return framerate
@@ -77,3 +147,13 @@ class Camera:
     @framerate.setter
     def framerate(self, framerate: int):
         self._tcp_client.set_camera_framerate(framerate)
+
+    @property
+    def record_time(self) -> int:
+        """Set or get the duration of the current camera recording
+
+        *Returns*:
+
+        * record_time (int): The length in seconds of the current recording, -1 if the camera is not currently recording
+        """
+        return self._state_watcher.general_state["camera_record_time"]

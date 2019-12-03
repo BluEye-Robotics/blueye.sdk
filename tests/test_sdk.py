@@ -1,4 +1,4 @@
-from time import sleep, time
+from time import time
 
 import pytest
 
@@ -82,6 +82,14 @@ class TestFunctionsWhenConnectedToDrone:
         polling_assert_with_timeout(pioneer.camera, "is_recording", True, 1)
         pioneer.camera.is_recording = False
         polling_assert_with_timeout(pioneer.camera, "is_recording", False, 1)
+
+    @pytest.mark.skip(
+        reason="a camera stream must have been run before camera recording is possible"
+    )
+    def test_camera_record_time(self, pioneer):
+        test_read_property = pioneer.camera.record_time
+        pioneer.camera.is_recording = True
+        polling_assert_with_timeout(pioneer.camera, "record_time", 1, 3)
 
     def test_camera_bitrate(self, pioneer):
         test_read_parameter = pioneer.camera.bitrate
@@ -181,3 +189,15 @@ def test_software_version(mocked_pioneer):
     mocked_pioneer._update_drone_info()
     assert mocked_pioneer.software_version == "1.4.7-warrior-master"
     assert mocked_pioneer.software_version_short == "1.4.7"
+
+
+def test_depth_reading(mocked_pioneer):
+    depth = 10000
+    mocked_pioneer._state_watcher._general_state = {"depth": depth}
+    assert mocked_pioneer.depth == depth
+
+
+def test_battery_state_of_charge_reading(mocked_pioneer):
+    SoC = 77
+    mocked_pioneer._state_watcher._general_state = {"battery_state_of_charge_rel": SoC}
+    assert mocked_pioneer.battery_state_of_charge == SoC
