@@ -16,7 +16,7 @@ keywords = ["Blueye", "Pioneer", "Robotics", "SDK", "Software Development Kit"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
-"blueye.protocol" = "^1.1.2"
+"blueye.protocol" = "^1.1.5"
 asciimatics = {version = "^1.11.0", optional = true}
 inputs = {version = "^0.5", optional = true}
 pandas = {version = "^0.25.2", optional = true}
