@@ -30,4 +30,4 @@ jobs:
         BASE_BRANCH: master
         BRANCH: gh-pages
         FOLDER: site
-      if: github.ref == 'master'
+      if: github.ref == 'refs/heads/master'
