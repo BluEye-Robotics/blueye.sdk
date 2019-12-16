@@ -1,14 +1,15 @@
 openapi: '3.0.2'
 info:
   title: Blueye HTTP API
-  version: '1.0.0'
+  version: '1.0.1'
 servers:
   - url: http://192.168.1.101/
 
 tags:
   - name: "Diagnostics"
-  - name: "Logs"
   - name: "Subtitles"
+  - name: "Dive data"
+  - name: "Pictures"
 
 paths:
   /diagnostics/drone_info:
@@ -76,7 +77,7 @@ paths:
   /logcsv:
     get:
       tags:
-        - "Logs"
+        - "Dive data"
       summary: Array of logs
       description: |
         Returns an array of logs from the drone. Each array item represents an available log file on
@@ -105,7 +106,7 @@ paths:
   /logcsv/{filename}:
     get:
       tags:
-        - "Logs"
+        - "Dive data"
       summary: CSV log-file
       description: Downloads a comma-separated-value (CSV) log-file with the requested name.
       parameters:
@@ -115,6 +116,15 @@ paths:
           required: true
           schema:
             type: string
+        - name: format
+          in: query
+          description: Add format=dashware to get a CSV file customized for use in Dashware to create video overlays
+          required: false
+          schema:
+            type: string
+            example: "dashware"
+            default: ""
+
       responses:
         '200':
           description: Comma-separated-value file with log data
@@ -136,6 +146,102 @@ paths:
             with open(logname, "wb") as f:
               f.write(response.content)
 
+  /pix4d:
+    get:
+      tags:
+        - "Dive data"
+      summary: Download CSV file with data for creating scaled 3D models
+      description: |
+        Download CSV file with data for creating scaled 3D models in Pix4d
+      parameters:
+        - name: file
+          in: query
+          description: "Name of the video file to download data for"
+          required: true
+          schema:
+            type: string
+            example: "video_BYEDP123456_2019-01-01_000001.mp4"
+        - name: frame-step
+          in: query
+          description: "Amout of steps between each frame grab"
+          required: false
+          schema:
+            type: integer
+            example: "20"
+      responses:
+        '200':
+          description: Comma-separated-value file with log data
+          content:
+            text/csv:
+              schema:
+                type: string
+      x-code-samples:
+        - lang: "curl"
+          source: |
+            # To get CSV logfile for filename video_BYEDP123456_2019-01-01_000001.mp4
+            curl -X GET "http://192.168.1.101/pix4d/?file=video_BYEDP123456_2019-01-01_000001.mp4"
+
+        - lang: "Python"
+          source: |
+            import requests
+            filename = "video_BYEDP123456_2019-01-01_000001.mp4"
+            response = requests.get(f"http://192.168.1.101/pix4d?file={filename}")
+            with open(logname, "wb") as f:
+              f.write(response.content)
+
+  /agisoft:
+    get:
+      tags:
+        - "Dive data"
+      summary: Download CSV file with data for creating scaled 3D models
+      description: |
+        Download CSV file with data for creating scaled 3D models in Pix4d
+      parameters:
+        - name: file
+          in: query
+          description: "Name of the video file to download data for"
+          required: true
+          schema:
+            type: string
+            example: "video_BYEDP123456_2019-01-01_000001.mp4"
+        - name: frame-step
+          in: query
+          description: "Amout of steps between each frame grab"
+          required: false
+          schema:
+            type: integer
+            example: "20"
+        - name: mag-dist
+          in: query
+          description: "How much you trust your magnetic sensor data"
+          required: false
+          schema:
+            type: integer
+            default: "180"
+            enum:
+              - "15"
+              - "60"
+              - "180"
+      responses:
+        '200':
+          description: Comma-separated-value file with log data
+          content:
+            text/csv:
+              schema:
+                type: string
+      x-code-samples:
+        - lang: "curl"
+          source: |
+            # To get log CSV for videofile video_BYEDP123456_2019-01-01_000001.mp4
+            curl -X GET "http://192.168.1.101/agisoft/?file=video_BYEDP123456_2019-01-01_000001.mp4"
+
+        - lang: "Python"
+          source: |
+            import requests
+            filename = "video_BYEDP123456_2019-01-01_000001.mp4"
+            response = requests.get(f"http://192.168.1.101/agisoft?file={filename}")
+            with open(logname, "wb") as f:
+              f.write(response.content)
   /srt:
     get:
       tags:
@@ -202,7 +308,6 @@ paths:
             enum:
               - 0
               - 1
-
         - name: field-depth
           in: query
           description: Enable or disable the depth field. "1" to enable, "0" to disable.
@@ -254,6 +359,18 @@ paths:
             type: integer
             default: 0
             format: int32
+        - name: format
+          in: query
+          description: |
+            Subtitles can also be retrived in the WEBVTT format. Use format=vtt to get a .vtt file instead of a .srt file.
+          required: false
+          schema:
+            type: string
+            default: "srt"
+            enum:
+              - "srt"
+              - "vtt"
+              - ""
 
       responses:
         '200':
@@ -280,6 +397,189 @@ paths:
             response = requests.get("http://192.168.1.101/srt", params=parameters)
             with open(f"{videoName}.srt", "wb") as f:
               f.write(response.content)
+
+  /picture:
+    get:
+      tags:
+        - "Pictures"
+      summary: Download pictures
+      description: |
+        Downloads a picture (jpg).
+      parameters:
+        - name: file
+          in: query
+          description: "Name of the image file to download"
+          required: true
+          schema:
+            type: string
+            example: "picture_BYEDP060031_2019-09-24_120841.320.jpg"
+      responses:
+        '200':
+            description: Picture
+            content:
+              image/jpeg:
+                schema:
+                  type: object
+
+  /picture/thumbnail:
+    get:
+      tags:
+        - "Pictures"
+      summary: Download pictures with metadata overlay  
+      description: |
+        Downloads a picture (jpg) with metadata from when the photo was captured.
+      parameters:
+        - name: file
+          in: query
+          description: "Name of the image file to download"
+          required: true
+          schema:
+            type: string
+            example: "picture_BYEDP060031_2019-09-24_120841.320.jpg"
+      responses:
+        '200':
+            description: Picture thumbnail
+            content:
+              image/jpeg:
+                schema:
+                  type: object
+
+
+  /picture/overlay:
+    get:
+      tags:
+        - "Pictures"
+      summary: Download pictures with metadata overlay  
+      description: |
+        Downloads a picture (jpg) with metadata from when the photo was captured.
+      parameters:
+        - name: file
+          in: query
+          description: "Name of the image file to download"
+          required: true
+          schema:
+            type: string
+            example: "picture_BYEDP060031_2019-09-24_120841.320.jpg"
+        - name: title
+          in: query
+          description: "Title of the image."
+          required: false
+          schema:
+            type: string
+            default: ""
+        - name: subtitle
+          in: query
+          description: "Subtitle of the image"
+          required: false
+          schema:
+            type: string
+            default: ""
+        - name: length-units
+          in: query
+          description: Unit to use for depth. Use "meter" for metric units, and "feet" for imperial.
+          required: false
+          schema:
+            type: string
+            default: "meter"
+            enum:
+              - "meter"
+              - "feet"
+        - name: temp-units
+          in: query
+          description: |
+            Unit to use for temperature. Use "celsius" for metric units, and "fahrenheit" for
+            imperial.
+          required: false
+          schema:
+            type: string
+            default: "celsius"
+        - name: field-date
+          in: query
+          description: Enable or disable the date field. "1" to enable, "0" to disable.
+          required: false
+          schema:
+            type: integer
+            default: 1
+            enum:
+              - 0
+              - 1
+        - name: field-depth
+          in: query
+          description: Enable or disable the depth field. "1" to enable, "0" to disable.
+          required: false
+          schema:
+            type: integer
+            default: 1
+            enum:
+              - 0
+              - 1
+        - name: field-heading
+          in: query
+          description: Enable or disable the heading field. "1" to enable, "0" to disable.
+          required: false
+          schema:
+            type: integer
+            default: 1
+            enum:
+              - 0
+              - 1
+        - name: field-temp
+          in: query
+          description: Enable or disable the temperature field. "1" to enable, "0" to disable.
+          required: false
+          schema:
+            type: integer
+            default: 1
+            enum:
+              - 0
+              - 1
+        - name: date-format
+          in: query
+          description: "Format of the date/time."
+          required: false
+          schema:
+            type: string
+            default: "%Y-%m-%d %H:%M:%S"
+            externalDocs:
+              description: Python3 documentation for datetime formatting
+              url: https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior
+        - name: tz_offset
+          in: query
+          description: |
+            The drone stores all time in UTC+0, so if you were diving in another timezone and want
+            to correct for that in the displayed time you can add a timezone offset here. The unit
+            is minutes and both positive and negative values are supported.
+          required: false
+          schema:
+            type: integer
+            default: 60
+            format: int32
+
+      responses:
+        '200':
+          description: Picture with overlay metadata
+          content:
+            image/jpeg:
+              schema:
+                type: object
+      x-code-samples:
+        - lang: "curl"
+          source: |
+            curl -X GET -G "http://192.168.1.101/picture/overlay" \
+              -d "file=picture_BYEDP060031_2019-09-24_120841.320.jpg" \
+              -d "title=My title"
+
+        - lang: "Python"
+          source: |
+            import requests
+            videoName = "video_BYEDP123456_2019-01-01_000001"
+            parameters = {
+                          "file": f"{videoName}.mp4",
+                          "title": "My title"
+                         }
+            response = requests.get("http://192.168.1.101/srt", params=parameters)
+            with open(f"{videoName}.srt", "wb") as f:
+              f.write(response.content)       
 
 components:
   schemas:
