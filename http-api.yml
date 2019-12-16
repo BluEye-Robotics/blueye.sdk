@@ -572,14 +572,14 @@ paths:
         - lang: "Python"
           source: |
             import requests
-            videoName = "video_BYEDP123456_2019-01-01_000001"
+            fileName = "picture_BYEDP060031_2019-09-24_120841.320"
             parameters = {
-                          "file": f"{videoName}.mp4",
+                          "file": f"{fileName}.jpg",
                           "title": "My title"
                          }
-            response = requests.get("http://192.168.1.101/srt", params=parameters)
-            with open(f"{videoName}.srt", "wb") as f:
-              f.write(response.content)       
+            response = requests.get("http://192.168.1.101/picture/overlay", params=parameters)
+            with open(f"{fileName}_overlay.jpg", "wb") as f:
+              f.write(response.content)
 
 components:
   schemas:
