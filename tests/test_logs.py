@@ -7,7 +7,7 @@ from blueye.sdk.logs import LogFile, Logs
 
 
 @pytest.fixture
-def log_list_with_two_logs(requests_mock):
+def log_list_with_two_logs(requests_mock, mocker):
     dummy_json = json.dumps(
         [
             {
@@ -26,7 +26,8 @@ def log_list_with_two_logs(requests_mock):
     )
 
     requests_mock.get(f"http://192.168.1.101/logcsv", content=str.encode(dummy_json))
-    return Logs("192.168.1.101")
+    mocked_pioneer = mocker.patch("blueye.sdk.Pioneer", autospec=True, _ip="192.168.1.101")
+    return Logs(mocked_pioneer)
 
 
 @pytest.mark.parametrize(
