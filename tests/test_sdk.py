@@ -2,6 +2,8 @@ from time import time
 
 import pytest
 
+import blueye.sdk
+
 
 @pytest.fixture(scope="class")
 def pioneer():
@@ -19,7 +21,6 @@ def mocked_clients(mocker):
 @pytest.fixture
 def mocked_pioneer(mocked_clients, requests_mock):
     import json
-    from blueye.sdk import Pioneer
 
     dummy_drone_info = {
         "commit_id_csys": "299238949a",
@@ -42,7 +43,6 @@ def mocked_pioneer(mocked_clients, requests_mock):
 
 @pytest.fixture
 def mocked_slave_pioneer(mocked_clients):
-    from blueye.sdk import Pioneer
 
     return Pioneer(autoConnect=False, slaveModeEnabled=True)
 
@@ -168,7 +168,6 @@ class TestSlaveMode:
 
 def test_documentation_opener(mocker):
     mocked_webbrowser_open = mocker.patch("webbrowser.open", autospec=True)
-    import blueye.sdk
     import os
 
     blueye.sdk.__file__ = os.path.abspath("/root/blueye/sdk/__init__.py")
