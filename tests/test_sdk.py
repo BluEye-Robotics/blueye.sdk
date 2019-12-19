@@ -230,3 +230,11 @@ def test_battery_state_of_charge_reading(mocked_pioneer):
     SoC = 77
     mocked_pioneer._state_watcher._general_state = {"battery_state_of_charge_rel": SoC}
     assert mocked_pioneer.battery_state_of_charge == SoC
+
+
+@pytest.mark.parametrize("version", ["1.4.7", "1.4.8", "1.5.0", "2.0.0"])
+def test_still_picture_works_with_new_drone_version(mocked_pioneer, version):
+    mocked_pioneer.software_version_short = version
+    mocked_pioneer.camera.take_picture()
+    mocked_pioneer._tcp_client.take_still_picture.assert_called_once()
+    mocked_pioneer._tcp_client.reset_mock()

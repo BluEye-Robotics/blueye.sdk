@@ -1,3 +1,6 @@
+from packaging import version
+
+
 class Camera:
     def __init__(self, parent_drone):
         self._tcp_client = parent_drone._tcp_client
@@ -163,6 +166,14 @@ class Camera:
         """Takes a still picture and stores it locally on the drone
 
         These pictures can be downloaded with the Blueye App, or by any WebDAV compatible client.
+        This feature was added with drone version 1.4.7, so if you try to use it with an older
+        version this method will raise a RunTimeError.
         """
-
-        self._tcp_client.take_still_picture()
+        if version.parse(self._parent_drone.software_version_short) >= version.parse(
+            "1.4.7"
+        ):
+            self._tcp_client.take_still_picture()
+        else:
+            raise RuntimeError(
+                "Drone software version is too old. Requires version 1.4.7 or higher."
+            )
