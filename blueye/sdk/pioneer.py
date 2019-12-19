@@ -91,7 +91,7 @@ class Pioneer:
         else:
             self._tcp_client = TcpClient(ip=ip, port=tcpPort, autoConnect=autoConnect)
         self._state_watcher = _PioneerStateWatcher()
-        self.camera = Camera(self._tcp_client, self._state_watcher)
+        self.camera = Camera(self)
         self.motion = Motion(self._tcp_client, self._state_watcher)
         self.logs = Logs(ip=ip, auto_download_index=autoConnect)
 

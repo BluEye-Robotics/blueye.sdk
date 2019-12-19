@@ -1,7 +1,8 @@
 class Camera:
-    def __init__(self, tcp_client, state_watcher):
-        self._tcp_client = tcp_client
-        self._state_watcher = state_watcher
+    def __init__(self, parent_drone):
+        self._tcp_client = parent_drone._tcp_client
+        self._state_watcher = parent_drone._state_watcher
+        self._parent_drone = parent_drone
 
     @property
     def is_recording(self) -> bool:
