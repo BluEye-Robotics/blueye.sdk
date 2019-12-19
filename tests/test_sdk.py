@@ -1,4 +1,5 @@
 from time import time
+from unittest.mock import Mock
 
 import pytest
 
@@ -13,13 +14,7 @@ def pioneer():
 
 
 @pytest.fixture
-def mocked_clients(mocker):
-    mocker.patch("blueye.protocol.UdpClient", autospec=True)
-    mocker.patch("blueye.protocol.TcpClient", autospec=True)
-
-
-@pytest.fixture
-def mocked_pioneer(mocked_clients, requests_mock):
+def mocked_requests(requests_mock):
     import json
 
     dummy_drone_info = {
@@ -38,13 +33,48 @@ def mocked_pioneer(mocked_clients, requests_mock):
         "http://192.168.1.101/diagnostics/drone_info",
         content=json.dumps(dummy_drone_info).encode(),
     )
-    return Pioneer(autoConnect=False)
+
+    dummy_logs = json.dumps(
+        [
+            {
+                "maxdepth": 1000,
+                "name": "log1.csv",
+                "timestamp": "2019-01-01T00:00:00.000000",
+                "binsize": 1024,
+            },
+            {
+                "maxdepth": 2000,
+                "name": "log2.csv",
+                "timestamp": "2019-01-02T00:00:00.000000",
+                "binsize": 2048,
+            },
+        ]
+    )
+    requests_mock.get(f"http://192.168.1.101/logcsv", content=str.encode(dummy_logs))
 
 
 @pytest.fixture
-def mocked_slave_pioneer(mocked_clients):
+def mocked_pioneer(mocker, mocked_requests):
+    mocker.patch("blueye.sdk.pioneer.UdpClient", autospec=True)
+    mocker.patch("blueye.sdk.pioneer.TcpClient", create=True)
+    p = blueye.sdk.Pioneer(autoConnect=False)
+    # Mocking out the run function to avoid blowing up the stack when the thread continuously calls
+    # the get_data_dict function (which won't block since it's mocked).
+    p._state_watcher.run = Mock()
+    p.connect()
+    return p
 
-    return Pioneer(autoConnect=False, slaveModeEnabled=True)
+
+@pytest.fixture
+def mocked_slave_pioneer(mocker, mocked_requests):
+    mocker.patch("blueye.sdk.pioneer.UdpClient", autospec=True)
+    mocker.patch("blueye.sdk.pioneer.TcpClient", create=True)
+    p = blueye.sdk.Pioneer(autoConnect=False, slaveModeEnabled=True)
+    # Mocking out the run function to avoid blowing up the stack when the thread continuously calls
+    # the get_data_dict function (which won't block since it's mocked).
+    p._state_watcher.run = Mock()
+    p.connect()
+    return p
 
 
 def polling_assert_with_timeout(cls, property_name, value_to_wait_for, timeout):
