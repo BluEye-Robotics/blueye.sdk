@@ -418,7 +418,7 @@ paths:
         - name: file
           in: query
           description: "Name of the image file to download"
-          required: true
+          required: false
           schema:
             type: string
             example: "picture_BYEDP060031_2019-09-24_120841.320.jpg"
