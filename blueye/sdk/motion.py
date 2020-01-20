@@ -9,9 +9,10 @@ class Motion:
     setpoint.
     """
 
-    def __init__(self, _tcp_client, _state_watcher):
-        self._tcp_client = _tcp_client
-        self._state_watcher = _state_watcher
+    def __init__(self, parent_drone):
+        self._parent_drone = parent_drone
+        self._tcp_client = parent_drone._tcp_client
+        self._state_watcher = parent_drone._state_watcher
 
         self.current_thruster_setpoints = {"surge": 0, "sway": 0, "heave": 0, "yaw": 0}
 

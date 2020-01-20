@@ -1,7 +1,11 @@
+from packaging import version
+
+
 class Camera:
-    def __init__(self, tcp_client, state_watcher):
-        self._tcp_client = tcp_client
-        self._state_watcher = state_watcher
+    def __init__(self, parent_drone):
+        self._tcp_client = parent_drone._tcp_client
+        self._state_watcher = parent_drone._state_watcher
+        self._parent_drone = parent_drone
 
     @property
     def is_recording(self) -> bool:
@@ -157,3 +161,19 @@ class Camera:
         * record_time (int): The length in seconds of the current recording, -1 if the camera is not currently recording
         """
         return self._state_watcher.general_state["camera_record_time"]
+
+    def take_picture(self):
+        """Takes a still picture and stores it locally on the drone
+
+        These pictures can be downloaded with the Blueye App, or by any WebDAV compatible client.
+        This feature was added with drone version 1.4.7, so if you try to use it with an older
+        version this method will raise a RunTimeError.
+        """
+        if version.parse(self._parent_drone.software_version_short) >= version.parse(
+            "1.4.7"
+        ):
+            self._tcp_client.take_still_picture()
+        else:
+            raise RuntimeError(
+                "Drone software version is too old. Requires version 1.4.7 or higher."
+            )
