@@ -413,7 +413,7 @@ paths:
         - "Pictures"
       summary: Download pictures
       description: |
-        Downloads a picture (jpg). If no parameter is set you'll get a list of all images.
+        Downloads a picture (jpg) if get param filename is specified. If no parameter is set you'll get a list of all images.
       parameters:
         - name: file
           in: query
@@ -426,6 +426,12 @@ paths:
         '200':
             description: Picture
             content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    filename:
+                      type: string
               image/jpeg:
                 schema:
                   type: object
