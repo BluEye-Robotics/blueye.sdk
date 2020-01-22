@@ -34,16 +34,12 @@ class JoystickHandler:
     def handleBButton(self, value):
         """Toggles autoheading"""
         if value:
-            self.pioneer.motion.auto_heading_active = (
-                not self.pioneer.motion.auto_heading_active
-            )
+            self.pioneer.motion.auto_heading_active = not self.pioneer.motion.auto_heading_active
 
     def handleAButton(self, value):
         """Toggles autodepth"""
         if value:
-            self.pioneer.motion.auto_depth_active = (
-                not self.pioneer.motion.auto_depth_active
-            )
+            self.pioneer.motion.auto_depth_active = not self.pioneer.motion.auto_depth_active
 
     def filterAndNormalize(self, value, lower=5000, upper=32768):
         """Normalizing the joystick axis range from (default) -32768<->32678 to -1<->1

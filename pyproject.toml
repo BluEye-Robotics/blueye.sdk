@@ -96,7 +96,7 @@ palette = {primary = "white", accent = "blue"}
 "HTTP API" = "docs/http-api.html"
 
 [tool.black]
-line-lenght = 100
+line-length = 100
 
 [build-system]
 requires = ["poetry>=1.0.0b3"]
