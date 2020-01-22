@@ -428,10 +428,9 @@ paths:
             content:
               application/json:
                 schema:
-                  type: object
-                  properties:
-                    filename:
-                      type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Picture'
               image/jpeg:
                 schema:
                   type: object
@@ -681,3 +680,12 @@ components:
           format: float
           description: Maximum depth reached during the dive. Unit is millimeters.
           example: 21050
+
+    Picture:
+      type: object
+      properties:
+        name:
+          type: string
+          description: |
+            Filename of the picture. Stored in the format "picture_DRONEID_TIMESTAMP.jpg"
+          example: picture_BYEDP123456_2019-01-01_000001.001.jpg
