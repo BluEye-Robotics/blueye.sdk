@@ -1,4 +1,15 @@
+import numpy as np
 from packaging import version
+
+
+def _tilt_angle_from_debug_flags(flags: int) -> int:
+    """Helper function for decoding tilt angle from debug flags"""
+
+    tilt_angle_array = np.array(
+        np.right_shift(np.bitwise_and(flags, 0x0000FF0000000000), 40),
+        dtype=[("tilt_angle", np.int8)],
+    ).astype([("tilt_angle", np.float)])
+    return tilt_angle_array["tilt_angle"] / 2
 
 
 class Camera:
@@ -199,3 +210,20 @@ class Camera:
         # the tilt command.
         thruster_setpoints = self._parent_drone.motion.current_thruster_setpoints.values()
         self._tcp_client.motion_input_tilt(*thruster_setpoints, 0, 0, speed)
+
+    def get_tilt_angle(self) -> int:
+        """Return the current angle of the camera tilt
+
+        Requires a drone with the tilt feature, and a software version newer than <TODO>.
+        A RuntimeError is raised if either of those requirements are not met.
+        """
+
+        if "tilt" not in self._parent_drone.features:
+            raise RuntimeError("The connected drone does not support tilting the camera.")
+        if version.parse(self._parent_drone.software_version_short) < version.parse("1.5.0"):
+            raise RuntimeError(
+                "Drone software version is too old. Requires version 1.5.0 or higher."
+            )
+
+        debug_flags = self._parent_drone._state_watcher.general_state["debug_flags"]
+        return _tilt_angle_from_debug_flags(debug_flags)
