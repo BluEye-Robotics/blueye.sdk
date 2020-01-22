@@ -175,3 +175,27 @@ class Camera:
             raise RuntimeError(
                 "Drone software version is too old. Requires version 1.4.7 or higher."
             )
+
+    def set_tilt_speed(self, speed: int):
+        """Set the speed and direction of the camera tilt
+
+        *Arguments*:
+
+        * speed (int): Speed and direction of the tilt. 1 is max speed up,
+                       -1 is max speed down.
+
+        Requires a drone with the tilt feature, and a software version newer than <TODO>.
+        A RuntimeError is raised if either of those requirements are not met.
+        """
+        if "tilt" not in self._parent_drone.features:
+            raise RuntimeError("The connected drone does not support tilting the camera.")
+        if version.parse(self._parent_drone.software_version_short) < version.parse("1.5.0"):
+            raise RuntimeError(
+                "Drone software version is too old. Requires version 1.5.0 or higher."
+            )
+
+        # The tilt command is grouped together with the thruster commands, so to avoid messing with
+        # the thruster setpoint while tilting we need to get the current setpoint and send it with
+        # the tilt command.
+        thruster_setpoints = self._parent_drone.motion.current_thruster_setpoints.values()
+        self._tcp_client.motion_input_tilt(*thruster_setpoints, 0, 0, speed)

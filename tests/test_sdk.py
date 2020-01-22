@@ -303,3 +303,38 @@ def test_establish_tcp_connection_ignores_RuntimeErrors(mocked_pioneer):
     mocked_pioneer._tcp_client.start.side_effect = RuntimeError
     mocked_pioneer._establish_tcp_connection()
     assert mocked_pioneer.connection_established is True
+
+
+@pytest.mark.parametrize("version", ["0.1.2", "1.2.3"])
+def test_tilt_fails_on_old_version(mocked_pioneer, version):
+    mocked_pioneer.software_version_short = version
+    mocked_pioneer.features = ["tilt"]
+    with pytest.raises(RuntimeError):
+        mocked_pioneer.camera.set_tilt_speed(0)
+
+
+def test_tilt_fails_on_drone_without_tilt(mocked_pioneer):
+    mocked_pioneer.features = []
+    with pytest.raises(RuntimeError):
+        mocked_pioneer.camera.set_tilt_speed(0)
+
+
+@pytest.mark.parametrize(
+    "thruster_setpoints, tilt_speed",
+    [((0, 0, 0, 0), 0), ((1, 1, 1, 1), 1), ((-1, -1, -1, -1), -1), ((0.1, 0.2, 0.3, 0.4), 0.5),],
+)
+def test_tilt_calls_motion_input_with_correct_arguments(
+    mocked_pioneer, thruster_setpoints, tilt_speed
+):
+    mocked_pioneer.features = ["tilt"]
+    mocked_pioneer.software_version_short = "1.5.0"
+    mocked_pioneer.motion.current_thruster_setpoints = {
+        "surge": thruster_setpoints[0],
+        "sway": thruster_setpoints[1],
+        "heave": thruster_setpoints[2],
+        "yaw": thruster_setpoints[3],
+    }
+    mocked_pioneer.camera.set_tilt_speed(tilt_speed)
+    mocked_pioneer._tcp_client.motion_input_tilt.assert_called_with(
+        *thruster_setpoints, 0, 0, tilt_speed
+    )
