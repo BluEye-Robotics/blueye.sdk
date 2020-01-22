@@ -440,7 +440,7 @@ paths:
     get:
       tags:
         - "Pictures"
-      summary: Download a thumbnail of a picture with metadata overlay  
+      summary: Download a thumbnail of a picture with metadata overlay
       description: |
         Downloads a picture (jpg) with metadata from when the photo was captured.
       parameters:
@@ -464,7 +464,7 @@ paths:
     get:
       tags:
         - "Pictures"
-      summary: Download pictures with metadata overlay  
+      summary: Download pictures with metadata overlay
       description: |
         Downloads a picture (jpg) with metadata from when the photo was captured.
       parameters:
