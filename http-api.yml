@@ -391,7 +391,7 @@ paths:
         - lang: "curl"
           source: |
             curl -X GET -G "http://192.168.1.101/srt" \
-              -d "file=video_BYEDP000000_2019-11-20_093727.mp4" \
+              -d "file=video_BYEDP123456_2019-01-01_000001.mp4" \
               -d "title=My title"
 
         - lang: "Python"
@@ -420,7 +420,7 @@ paths:
           required: false
           schema:
             type: string
-            example: "picture_BYEDP060031_2019-09-24_120841.320.jpg"
+            example: "picture_BYEDP123456_2019-01-01_000001.001.jpg"
       responses:
         '200':
             description: Picture
@@ -448,7 +448,7 @@ paths:
           required: true
           schema:
             type: string
-            example: "picture_BYEDP060031_2019-09-24_120841.320.jpg"
+            example: "picture_BYEDP123456_2019-01-01_000001.001.jpg"
       responses:
         '200':
             description: Picture thumbnail
@@ -472,7 +472,7 @@ paths:
           required: true
           schema:
             type: string
-            example: "picture_BYEDP060031_2019-09-24_120841.320.jpg"
+            example: "picture_BYEDP123456_2019-01-01_000001.001.jpg"
         - name: title
           in: query
           description: "Title of the image."
@@ -579,13 +579,13 @@ paths:
         - lang: "curl"
           source: |
             curl -X GET -G "http://192.168.1.101/picture/overlay" \
-              -d "file=picture_BYEDP060031_2019-09-24_120841.320.jpg" \
+              -d "file=picture_BYEDP123456_2019-01-01_000001.001.jpg" \
               -d "title=My title"
 
         - lang: "Python"
           source: |
             import requests
-            fileName = "picture_BYEDP060031_2019-09-24_120841.320"
+            fileName = "picture_BYEDP123456_2019-01-01_000001.001"
             parameters = {
                           "file": f"{fileName}.jpg",
                           "title": "My title"
