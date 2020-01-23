@@ -238,7 +238,7 @@ paths:
         - lang: "curl"
           source: |
             # To get log CSV for videofile video_BYEDP123456_2019-01-01_000001.mp4
-            curl -X GET "http://192.168.1.101/agisoft/?file" \
+            curl -X GET "http://192.168.1.101/agisoft \
               -d "file=video_BYEDP123456_2019-01-01_000001.mp4"
 
         - lang: "Python"
