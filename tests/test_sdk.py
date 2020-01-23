@@ -310,15 +310,15 @@ def test_tilt_fails_on_old_version(mocked_pioneer, version):
     mocked_pioneer.software_version_short = version
     mocked_pioneer.features = ["tilt"]
     with pytest.raises(RuntimeError):
-        mocked_pioneer.camera.set_tilt_speed(0)
-        mocked_pioneer.camera.get_tilt_angle()
+        mocked_pioneer.camera.tilt.set_speed(0)
+        _ = mocked_pioneer.camera.tilt.angle
 
 
 def test_tilt_fails_on_drone_without_tilt(mocked_pioneer):
     mocked_pioneer.features = []
     with pytest.raises(RuntimeError):
-        mocked_pioneer.camera.set_tilt_speed(0)
-        mocked_pioneer.camera.get_tilt_angle()
+        mocked_pioneer.camera.tilt.set_speed(0)
+        _ = mocked_pioneer.camera.tilt.angle
 
 
 @pytest.mark.parametrize(
@@ -336,7 +336,7 @@ def test_tilt_calls_motion_input_with_correct_arguments(
         "heave": thruster_setpoints[2],
         "yaw": thruster_setpoints[3],
     }
-    mocked_pioneer.camera.set_tilt_speed(tilt_speed)
+    mocked_pioneer.camera.tilt.set_speed(tilt_speed)
     mocked_pioneer._tcp_client.motion_input_tilt.assert_called_with(
         *thruster_setpoints, 0, 0, tilt_speed
     )
@@ -357,4 +357,4 @@ def test_tilt_returns_expected_angle(mocked_pioneer, debug_flags, expected_angle
     mocked_pioneer.features = ["tilt"]
     mocked_pioneer.software_version_short = "1.5.0"
     mocked_pioneer._state_watcher._general_state = {"debug_flags": debug_flags}
-    assert mocked_pioneer.camera.get_tilt_angle() == expected_angle
+    assert mocked_pioneer.camera.tilt.angle == expected_angle
