@@ -433,6 +433,22 @@ paths:
               image/jpeg:
                 schema:
                   type: object
+      x-code-samples:
+        - lang: "curl"
+          source: |
+            curl -X GET -G "http://192.168.1.101/picture" \
+              -d "file=picture_BYEDP123456_2019-01-01_000001.001.jpg"
+
+        - lang: "Python"
+          source: |
+            import requests
+            videoName = "picture_BYEDP123456_2019-01-01_000001.001"
+            parameters = {
+                          "file": f"{pictureName}.jpg"
+                         }
+            response = requests.get("http://192.168.1.101/picture", params=parameters)
+            with open(f"{pictureName}.jpg", "wb") as f:
+              f.write(response.content)
 
   /picture/thumbnail:
     get:
@@ -456,7 +472,22 @@ paths:
               image/jpeg:
                 schema:
                   type: object
+      x-code-samples:
+        - lang: "curl"
+          source: |
+            curl -X GET -G "http://192.168.1.101/picture/thumbnail" \
+              -d "file=picture_BYEDP123456_2019-01-01_000001.001.jpg"
 
+        - lang: "Python"
+          source: |
+            import requests
+            pictureName = "picture_BYEDP123456_2019-01-01_000001.001"
+            parameters = {
+                          "file": f"{pictureName}.jpg",
+                         }
+            response = requests.get("http://192.168.1.101/picture/thumbnail", params=parameters)
+            with open(f"{pictureName}.jpg", "wb") as f:
+              f.write(response.content)
 
   /picture/overlay:
     get:
