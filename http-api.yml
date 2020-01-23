@@ -611,18 +611,16 @@ paths:
           source: |
             curl -X GET -G "http://192.168.1.101/picture/overlay" \
               -d "file=picture_BYEDP123456_2019-01-01_000001.001.jpg" \
-              -d "title=My title"
 
         - lang: "Python"
           source: |
             import requests
-            fileName = "picture_BYEDP123456_2019-01-01_000001.001"
+            pictureName = "picture_BYEDP123456_2019-01-01_000001.001"
             parameters = {
-                          "file": f"{fileName}.jpg",
-                          "title": "My title"
+                          "file": f"{pictureName}.jpg",
                          }
             response = requests.get("http://192.168.1.101/picture/overlay", params=parameters)
-            with open(f"{fileName}_overlay.jpg", "wb") as f:
+            with open(f"{pictureName}_overlay.jpg", "wb") as f:
               f.write(response.content)
 
 components:
