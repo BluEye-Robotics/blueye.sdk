@@ -218,15 +218,20 @@ paths:
             example: "20"
         - name: mag-dist
           in: query
-          description: "How much you trust your magnetic sensor data"
+          description: |
+            Expected compass variance induced from magnetic disturbance in degrees.
+
+            The most important data for an accurate 3D model are roll and pitch, which are not
+            affected by magnetic disturbance, so the default is set quite high (180). If you trust
+            that the data has not been skewed by magnetic interference you can set this to a
+            medium (60) or even low (10) value.
           required: false
           schema:
             type: integer
             default: "180"
-            enum:
-              - "15"
-              - "60"
-              - "180"
+            minimum: 1
+            maximum: 360
+            example: 180
       responses:
         '200':
           description: Comma-separated-value file with log data
