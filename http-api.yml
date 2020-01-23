@@ -200,7 +200,7 @@ paths:
         - "Dive data"
       summary: Download CSV file with data for creating scaled 3D models
       description: |
-        Download CSV file with data for creating scaled 3D models in Pix4d
+        Download CSV file with data for creating scaled 3D models in Agisoft
       parameters:
         - name: file
           in: query
