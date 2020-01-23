@@ -311,12 +311,14 @@ def test_tilt_fails_on_old_version(mocked_pioneer, version):
     mocked_pioneer.features = ["tilt"]
     with pytest.raises(RuntimeError):
         mocked_pioneer.camera.set_tilt_speed(0)
+        mocked_pioneer.camera.get_tilt_angle()
 
 
 def test_tilt_fails_on_drone_without_tilt(mocked_pioneer):
     mocked_pioneer.features = []
     with pytest.raises(RuntimeError):
         mocked_pioneer.camera.set_tilt_speed(0)
+        mocked_pioneer.camera.get_tilt_angle()
 
 
 @pytest.mark.parametrize(
