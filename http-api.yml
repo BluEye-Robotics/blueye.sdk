@@ -362,7 +362,7 @@ paths:
             externalDocs:
               description: Python3 documentation for datetime formatting
               url: https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior
-        - name: tz_offset
+        - name: tz-offset
           in: query
           description: |
             The drone stores all time in UTC+0, so if you were diving in another timezone and want
@@ -592,7 +592,7 @@ paths:
             externalDocs:
               description: Python3 documentation for datetime formatting
               url: https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior
-        - name: tz_offset
+        - name: tz-offset
           in: query
           description: |
             The drone stores all time in UTC+0, so if you were diving in another timezone and want
