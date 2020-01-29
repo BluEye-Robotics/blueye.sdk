@@ -101,7 +101,11 @@ class Pioneer:
     def _update_drone_info(self):
         """Request and store information about the connected drone"""
         response = requests.get(f"http://{self._ip}/diagnostics/drone_info").json()
-        self.features = list(filter(None, response["features"].split(",")))
+        try:
+            self.features = list(filter(None, response["features"].split(",")))
+        except KeyError:
+            # Drone versions older than 1.4.7 did not have this field.
+            self.features = []
         self.software_version = response["sw_version"]
         self.software_version_short = self.software_version.split("-")[0]
         self.serial_number = response["serial_number"]
