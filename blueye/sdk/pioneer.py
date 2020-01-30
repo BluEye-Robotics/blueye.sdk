@@ -87,7 +87,7 @@ class Pioneer:
         if slaveModeEnabled:
             self._tcp_client = slaveTcpClient()
         else:
-            self._tcp_client = TcpClient(ip=ip, port=tcpPort, autoConnect=autoConnect)
+            self._tcp_client = TcpClient(ip=ip, port=tcpPort, autoConnect=False)
         self._state_watcher = _PioneerStateWatcher()
         self.camera = Camera(self)
         self.motion = Motion(self)
@@ -115,7 +115,6 @@ class Pioneer:
         When watchdog message are published the thrusters are armed, to stop the drone from moving
         unexpectedly when connecting all thruster set points are set to zero when connecting.
         """
-        self._state_watcher.start()
         self._update_drone_info()
         if self._slaveModeEnabled is False:
             if self._tcp_client._sock is None and not self._tcp_client.isAlive():
@@ -131,6 +130,7 @@ class Pioneer:
                     "Is there another client connected?"
                 ) from e
             self.motion.update_setpoint()
+        self._state_watcher.start()
 
     @property
     def lights(self) -> int:
