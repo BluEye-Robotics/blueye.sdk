@@ -214,6 +214,28 @@ def test_feature_list(mocked_pioneer):
     assert mocked_pioneer.features == ["lasers", "harpoon"]
 
 
+def test_feature_list_is_empty_on_old_versions(mocked_pioneer, requests_mock):
+    import json
+
+    dummy_drone_info = {
+        "commit_id_csys": "299238949a",
+        "hardware_id": "ea9ac92e1817a1d4",
+        "manufacturer": "Blueye Robotics",
+        "model_description": "Blueye Pioneer Underwater Drone",
+        "model_name": "Blueye Pioneer",
+        "model_url": "https://www.blueyerobotics.com",
+        "operating_system": "blunux",
+        "serial_number": "BYEDP123456",
+        "sw_version": "1.3.2-rocko-master",
+    }
+    requests_mock.get(
+        "http://192.168.1.101/diagnostics/drone_info",
+        content=json.dumps(dummy_drone_info).encode(),
+    )
+    mocked_pioneer._update_drone_info()
+    assert mocked_pioneer.features == []
+
+
 def test_software_version(mocked_pioneer):
     mocked_pioneer._update_drone_info()
     assert mocked_pioneer.software_version == "1.4.7-warrior-master"
