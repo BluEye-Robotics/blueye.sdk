@@ -256,3 +256,16 @@ def test_still_picture_works_with_new_drone_version(mocked_pioneer, version):
     mocked_pioneer.camera.take_picture()
     mocked_pioneer._tcp_client.take_still_picture.assert_called_once()
     mocked_pioneer._tcp_client.reset_mock()
+
+
+def test_update_drone_info_raises_ConnectionError_when_not_connected(
+    requests_mock, mocked_pioneer
+):
+    import requests
+
+    requests_mock.get(
+        "http://192.168.1.101/diagnostics/drone_info",
+        exc=requests.exceptions.ConnectTimeout,
+    )
+    with pytest.raises(ConnectionError):
+        mocked_pioneer._update_drone_info()

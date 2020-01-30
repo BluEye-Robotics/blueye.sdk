@@ -98,7 +98,14 @@ class Pioneer:
 
     def _update_drone_info(self):
         """Request and store information about the connected drone"""
-        response = requests.get(f"http://{self._ip}/diagnostics/drone_info").json()
+        try:
+            response = requests.get(f"http://{self._ip}/diagnostics/drone_info", timeout=3).json()
+        except (
+            requests.ConnectTimeout,
+            requests.ReadTimeout,
+            requests.ConnectionError,
+        ):
+            raise ConnectionError("Could not establish connection with drone")
         try:
             self.features = list(filter(None, response["features"].split(",")))
         except KeyError:
