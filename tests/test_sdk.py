@@ -58,6 +58,7 @@ def mocked_pioneer(mocker, mocked_requests):
     mocker.patch("blueye.sdk.pioneer.UdpClient", autospec=True)
     mocker.patch("blueye.sdk.pioneer.TcpClient", create=True)
     p = blueye.sdk.Pioneer(autoConnect=False)
+    p._wait_for_udp_communication = Mock()
     # Mocking out the run function to avoid blowing up the stack when the thread continuously calls
     # the get_data_dict function (which won't block since it's mocked).
     p._state_watcher.run = Mock()
@@ -70,6 +71,7 @@ def mocked_slave_pioneer(mocker, mocked_requests):
     mocker.patch("blueye.sdk.pioneer.UdpClient", autospec=True)
     mocker.patch("blueye.sdk.pioneer.TcpClient", create=True)
     p = blueye.sdk.Pioneer(autoConnect=False, slaveModeEnabled=True)
+    p._wait_for_udp_communication = Mock()
     # Mocking out the run function to avoid blowing up the stack when the thread continuously calls
     # the get_data_dict function (which won't block since it's mocked).
     p._state_watcher.run = Mock()
@@ -275,3 +277,14 @@ def test_update_drone_info_raises_ConnectionError_when_not_connected(
     )
     with pytest.raises(ConnectionError):
         mocked_pioneer._update_drone_info()
+
+
+def test_wait_for_udp_com_raises_ConnectionError_on_timeout(mocker):
+    import socket
+
+    mocked_udp = mocker.patch("blueye.sdk.pioneer.UdpClient", autospec=True).return_value
+
+    mocked_udp.attach_mock(mocker.patch("blueye.sdk.pioneer.socket.socket", autospec=True), "_sock")
+    mocked_udp.get_data_dict.side_effect = socket.timeout
+    with pytest.raises(ConnectionError):
+        blueye.sdk.Pioneer._wait_for_udp_communication(1)

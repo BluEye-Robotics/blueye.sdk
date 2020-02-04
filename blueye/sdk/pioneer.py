@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import socket
 import threading
 import time
 import warnings
@@ -94,7 +95,7 @@ class Pioneer:
         self.logs = Logs(self)
 
         if autoConnect is True:
-            self.connect()
+            self.connect(timeout=3)
 
     def _update_drone_info(self):
         """Request and store information about the connected drone"""
@@ -116,12 +117,26 @@ class Pioneer:
         self.serial_number = response["serial_number"]
         self.uuid = response["hardware_id"]
 
-    def connect(self):
+    @staticmethod
+    def _wait_for_udp_communication(timeout: int):
+        """Simple helper for waiting for drone to come online
+
+        Raises ConnectionError if no connection is established in the specified timeout.
+        """
+        temp_udp_client = UdpClient()
+        temp_udp_client._sock.settimeout(timeout)
+        try:
+            temp_udp_client.get_data_dict()
+        except socket.timeout as e:
+            raise ConnectionError("Could not establish connection with drone") from e
+
+    def connect(self, timeout=None):
         """Start receiving telemetry info from the drone, and publishing watchdog messages
 
         When watchdog message are published the thrusters are armed, to stop the drone from moving
         unexpectedly when connecting all thruster set points are set to zero when connecting.
         """
+        self._wait_for_udp_communication(timeout)
         self._update_drone_info()
         if self._slaveModeEnabled is False:
             if self._tcp_client._sock is None and not self._tcp_client.isAlive():
