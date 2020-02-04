@@ -1,9 +1,9 @@
 from time import time
 from unittest.mock import Mock
 
-import pytest
-
 import blueye.sdk
+import pytest
+import requests
 
 
 @pytest.fixture(scope="class")
@@ -258,14 +258,20 @@ def test_still_picture_works_with_new_drone_version(mocked_pioneer, version):
     mocked_pioneer._tcp_client.reset_mock()
 
 
+@pytest.mark.parametrize(
+    "exception",
+    [
+        requests.exceptions.ConnectTimeout,
+        requests.exceptions.ReadTimeout,
+        requests.exceptions.ConnectionError,
+    ],
+)
 def test_update_drone_info_raises_ConnectionError_when_not_connected(
-    requests_mock, mocked_pioneer
+    requests_mock, mocked_pioneer, exception
 ):
-    import requests
 
     requests_mock.get(
-        "http://192.168.1.101/diagnostics/drone_info",
-        exc=requests.exceptions.ConnectTimeout,
+        "http://192.168.1.101/diagnostics/drone_info", exc=exception,
     )
     with pytest.raises(ConnectionError):
         mocked_pioneer._update_drone_info()
