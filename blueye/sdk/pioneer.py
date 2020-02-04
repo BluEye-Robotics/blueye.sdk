@@ -3,9 +3,9 @@ import socket
 import threading
 import time
 import warnings
+from json import JSONDecodeError
 
 import requests
-
 from blueye.protocol import TcpClient, UdpClient
 from blueye.protocol.exceptions import ResponseTimeout
 
@@ -105,6 +105,7 @@ class Pioneer:
             requests.ConnectTimeout,
             requests.ReadTimeout,
             requests.ConnectionError,
+            JSONDecodeError,
         ):
             raise ConnectionError("Could not establish connection with drone")
         try:
