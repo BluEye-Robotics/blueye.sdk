@@ -7,7 +7,7 @@ from json import JSONDecodeError
 
 import requests
 from blueye.protocol import TcpClient, UdpClient
-from blueye.protocol.exceptions import ResponseTimeout
+from blueye.protocol.exceptions import NoConnectionToDrone, ResponseTimeout
 
 from .camera import Camera
 from .logs import Logs
@@ -93,6 +93,7 @@ class Pioneer:
         self.camera = Camera(self)
         self.motion = Motion(self)
         self.logs = Logs(self)
+        self.connection_established = False
 
         if autoConnect is True:
             self.connect(timeout=3)
@@ -139,21 +140,32 @@ class Pioneer:
         """
         self._wait_for_udp_communication(timeout)
         self._update_drone_info()
-        if self._slaveModeEnabled is False:
-            if self._tcp_client._sock is None and not self._tcp_client.isAlive():
-                self._tcp_client.connect()
-                self._tcp_client.start()
+        if not self.connection_established and self._slaveModeEnabled is False:
             try:
-                # Ensure that we are able to communicate with the drone
+                self._tcp_client.connect()
+            except NoConnectionToDrone:
+                raise ConnectionError("Could not establish connection with drone")
+            try:
+                self._tcp_client.start()
+            except RuntimeError:
+                # Ignore multiple starts
+                pass
+            self.connection_established = True
+        if self._slaveModeEnabled is False:
+            try:
                 self.ping()
+                self.motion.update_setpoint()
             except ResponseTimeout as e:
                 raise ConnectionError(
                     f"Found drone at {self._tcp_client._ip}:{self._tcp_client._port}, "
                     "but was unable to establish communication with it. "
                     "Is there another client connected?"
                 ) from e
-            self.motion.update_setpoint()
-        self._state_watcher.start()
+        try:
+            self._state_watcher.start()
+        except RuntimeError:
+            # Ignore multiple starts
+            pass
 
     @property
     def lights(self) -> int:
