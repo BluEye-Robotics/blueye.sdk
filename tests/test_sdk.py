@@ -54,9 +54,24 @@ def mocked_requests(requests_mock):
 
 
 @pytest.fixture
-def mocked_pioneer(mocker, mocked_requests):
-    mocker.patch("blueye.sdk.pioneer.UdpClient", autospec=True)
-    mocker.patch("blueye.sdk.pioneer.TcpClient", create=True)
+def mocked_TcpClient(mocker):
+    """Fixture for mocking the TcpClient from blueye.protocol
+
+    Note: This mock is passed create=True, which has the potential to be dangerous since it would
+    allow you to test against methods that don't exist on the actual class. Due to the way methods
+    are added to TcpClient (they are instantiated on runtime, depending on which version of the
+    protocol is requested) mocking the class in the usual way would be quite cumbersome.
+    """
+    return mocker.patch("blueye.sdk.pioneer.TcpClient", create=True)
+
+
+@pytest.fixture
+def mocked_UdpClient(mocker):
+    return mocker.patch("blueye.sdk.pioneer.UdpClient", autospec=True)
+
+
+@pytest.fixture
+def mocked_pioneer(mocker, mocked_TcpClient, mocked_UdpClient, mocked_requests):
     p = blueye.sdk.Pioneer(autoConnect=False)
     p._wait_for_udp_communication = Mock()
     # Mocking out the run function to avoid blowing up the stack when the thread continuously calls
@@ -67,9 +82,7 @@ def mocked_pioneer(mocker, mocked_requests):
 
 
 @pytest.fixture
-def mocked_slave_pioneer(mocker, mocked_requests):
-    mocker.patch("blueye.sdk.pioneer.UdpClient", autospec=True)
-    mocker.patch("blueye.sdk.pioneer.TcpClient", create=True)
+def mocked_slave_pioneer(mocker, mocked_TcpClient, mocked_UdpClient, mocked_requests):
     p = blueye.sdk.Pioneer(autoConnect=False, slaveModeEnabled=True)
     p._wait_for_udp_communication = Mock()
     # Mocking out the run function to avoid blowing up the stack when the thread continuously calls
