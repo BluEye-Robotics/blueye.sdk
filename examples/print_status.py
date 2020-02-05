@@ -12,13 +12,9 @@ def print_state(screen: ManagedScreen, pioneer: Pioneer):
     """Updates and prints some of the information from the drone"""
     screen.print_at(f"Lights: {pioneer.lights * 100 // 255:3d} %", 2, 1)
 
+    screen.print_at(f"Auto-depth: {'On' if pioneer.motion.auto_depth_active else 'Off':>5}", 2, 3)
     screen.print_at(
-        f"Auto-depth: {'On' if pioneer.motion.auto_depth_active else 'Off':>5}", 2, 3
-    )
-    screen.print_at(
-        f"Auto-heading: {'On' if pioneer.motion.auto_heading_active else 'Off':>3}",
-        2,
-        4,
+        f"Auto-heading: {'On' if pioneer.motion.auto_heading_active else 'Off':>3}", 2, 4,
     )
 
     screen.print_at(f"Depth: {pioneer.depth} mm", 2, 6)

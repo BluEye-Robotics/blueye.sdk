@@ -169,9 +169,7 @@ class Camera:
         This feature was added with drone version 1.4.7, so if you try to use it with an older
         version this method will raise a RunTimeError.
         """
-        if version.parse(self._parent_drone.software_version_short) >= version.parse(
-            "1.4.7"
-        ):
+        if version.parse(self._parent_drone.software_version_short) >= version.parse("1.4.7"):
             self._tcp_client.take_still_picture()
         else:
             raise RuntimeError(

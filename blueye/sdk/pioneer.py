@@ -81,9 +81,7 @@ class Pioneer:
     `slaveModeEnabled=True` you will still be able to receive data from the drone.
     """
 
-    def __init__(
-        self, ip="192.168.1.101", tcpPort=2011, autoConnect=True, slaveModeEnabled=False
-    ):
+    def __init__(self, ip="192.168.1.101", tcpPort=2011, autoConnect=True, slaveModeEnabled=False):
         self._ip = ip
         self._slaveModeEnabled = slaveModeEnabled
         if slaveModeEnabled:
@@ -155,9 +153,7 @@ class Pioneer:
         try:
             self._tcp_client.set_lights(brightness, 0)
         except ValueError as e:
-            raise ValueError(
-                "Error occured while trying to set lights to: " f"{brightness}"
-            ) from e
+            raise ValueError("Error occured while trying to set lights to: " f"{brightness}") from e
 
     @property
     def depth(self) -> int:

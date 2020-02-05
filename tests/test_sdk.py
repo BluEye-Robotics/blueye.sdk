@@ -171,9 +171,7 @@ class TestLights:
 
 
 class TestPose:
-    @pytest.mark.parametrize(
-        "old_angle, new_angle", [(0, 0), (180, 180), (-180, 180), (-1, 359)]
-    )
+    @pytest.mark.parametrize("old_angle, new_angle", [(0, 0), (180, 180), (-180, 180), (-1, 359)])
     def test_angle_conversion(self, mocked_pioneer, old_angle, new_angle):
         mocked_pioneer._state_watcher._general_state = {
             "roll": old_angle,
@@ -204,9 +202,7 @@ def test_documentation_opener(mocker):
 
     blueye.sdk.open_local_documentation()
 
-    mocked_webbrowser_open.assert_called_with(
-        os.path.abspath("/root/blueye.sdk_docs/README.html")
-    )
+    mocked_webbrowser_open.assert_called_with(os.path.abspath("/root/blueye.sdk_docs/README.html"))
 
 
 def test_feature_list(mocked_pioneer):
