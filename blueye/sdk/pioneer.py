@@ -132,6 +132,18 @@ class Pioneer:
         except socket.timeout as e:
             raise ConnectionError("Could not establish connection with drone") from e
 
+    def _establish_tcp_connection(self):
+        try:
+            self._tcp_client.connect()
+        except NoConnectionToDrone:
+            raise ConnectionError("Could not establish connection with drone")
+        try:
+            self._tcp_client.start()
+        except RuntimeError:
+            # Ignore multiple starts
+            pass
+        self.connection_established = True
+
     def connect(self, timeout=None):
         """Start receiving telemetry info from the drone, and publishing watchdog messages
 
@@ -140,18 +152,10 @@ class Pioneer:
         """
         self._wait_for_udp_communication(timeout)
         self._update_drone_info()
-        if not self.connection_established and self._slaveModeEnabled is False:
-            try:
-                self._tcp_client.connect()
-            except NoConnectionToDrone:
-                raise ConnectionError("Could not establish connection with drone")
-            try:
-                self._tcp_client.start()
-            except RuntimeError:
-                # Ignore multiple starts
-                pass
-            self.connection_established = True
+
         if self._slaveModeEnabled is False:
+            if not self.connection_established:
+                self._establish_tcp_connection()
             try:
                 self.ping()
                 self.motion.update_setpoint()

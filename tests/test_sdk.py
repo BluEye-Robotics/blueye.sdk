@@ -288,3 +288,18 @@ def test_wait_for_udp_com_raises_ConnectionError_on_timeout(mocker):
     mocked_udp.get_data_dict.side_effect = socket.timeout
     with pytest.raises(ConnectionError):
         blueye.sdk.Pioneer._wait_for_udp_communication(1)
+
+
+def test_establish_tcp_connection_raises_ConnectionError(mocked_pioneer):
+    from blueye.protocol.exceptions import NoConnectionToDrone
+
+    mocked_pioneer._tcp_client.connect.side_effect = NoConnectionToDrone("", "")
+    with pytest.raises(ConnectionError):
+        mocked_pioneer._establish_tcp_connection()
+
+
+def test_establish_tcp_connection_ignores_RuntimeErrors(mocked_pioneer):
+    mocked_pioneer.connection_established = False
+    mocked_pioneer._tcp_client.start.side_effect = RuntimeError
+    mocked_pioneer._establish_tcp_connection()
+    assert mocked_pioneer.connection_established is True
