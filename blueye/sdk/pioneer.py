@@ -84,6 +84,7 @@ class Pioneer:
 
     def __init__(self, ip="192.168.1.101", tcpPort=2011, autoConnect=True, slaveModeEnabled=False):
         self._ip = ip
+        self._port = tcpPort
         self._slaveModeEnabled = slaveModeEnabled
         if slaveModeEnabled:
             self._tcp_client = slaveTcpClient()
@@ -165,6 +166,12 @@ class Pioneer:
                     "but was unable to establish communication with it. "
                     "Is there another client connected?"
                 ) from e
+            except BrokenPipeError:
+                # Have lost connection to drone, need to reestablish TCP client
+                self._tcp_client.stop()
+                self.connection_established = False
+                self._tcp_client = TcpClient(ip=self._ip, port=self._port, autoConnect=False)
+                self._establish_tcp_connection()
         try:
             self._state_watcher.start()
         except RuntimeError:
