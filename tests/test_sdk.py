@@ -335,7 +335,7 @@ class TestTilt:
         self, mocked_pioneer, thruster_setpoints, tilt_speed
     ):
         mocked_pioneer.features = ["tilt"]
-        mocked_pioneer.software_version_short = "1.5.0"
+        mocked_pioneer.software_version_short = "1.5.33"
         mocked_pioneer.motion.current_thruster_setpoints = {
             "surge": thruster_setpoints[0],
             "sway": thruster_setpoints[1],
@@ -360,6 +360,6 @@ class TestTilt:
     )
     def test_tilt_returns_expected_angle(self, mocked_pioneer, debug_flags, expected_angle):
         mocked_pioneer.features = ["tilt"]
-        mocked_pioneer.software_version_short = "1.5.0"
+        mocked_pioneer.software_version_short = "1.5.33"
         mocked_pioneer._state_watcher._general_state = {"debug_flags": debug_flags}
         assert mocked_pioneer.camera.tilt.angle == expected_angle

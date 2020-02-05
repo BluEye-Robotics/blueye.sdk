@@ -28,15 +28,13 @@ class Tilt:
         * speed (int): Speed and direction of the tilt. 1 is max speed up,
                        -1 is max speed down.
 
-        Requires a drone with the tilt feature, and a software version newer than <TODO>.
+        Requires a drone with the tilt feature, and software version 1.5 or newer.
         A RuntimeError is raised if either of those requirements are not met.
         """
         if "tilt" not in self._parent_drone.features:
             raise RuntimeError("The connected drone does not support tilting the camera.")
-        if version.parse(self._parent_drone.software_version_short) < version.parse("1.5.0"):
-            raise RuntimeError(
-                "Drone software version is too old. Requires version 1.5.0 or higher."
-            )
+        if version.parse(self._parent_drone.software_version_short) < version.parse("1.5"):
+            raise RuntimeError("Drone software version is too old. Requires version 1.5 or higher.")
 
         # The tilt command is grouped together with the thruster commands, so to avoid messing with
         # the thruster setpoint while tilting we need to get the current setpoint and send it with
@@ -48,16 +46,14 @@ class Tilt:
     def angle(self) -> int:
         """Return the current angle of the camera tilt
 
-        Requires a drone with the tilt feature, and a software version newer than <TODO>.
+        Requires a drone with the tilt feature, and software version 1.5 or newer.
         A RuntimeError is raised if either of those requirements are not met.
         """
 
         if "tilt" not in self._parent_drone.features:
             raise RuntimeError("The connected drone does not support tilting the camera.")
-        if version.parse(self._parent_drone.software_version_short) < version.parse("1.5.0"):
-            raise RuntimeError(
-                "Drone software version is too old. Requires version 1.5.0 or higher."
-            )
+        if version.parse(self._parent_drone.software_version_short) < version.parse("1.5"):
+            raise RuntimeError("Drone software version is too old. Requires version 1.5 or higher.")
 
         debug_flags = self._parent_drone._state_watcher.general_state["debug_flags"]
         return self._tilt_angle_from_debug_flags(debug_flags)
