@@ -124,8 +124,8 @@ class Logs:
     def refresh_log_index(self):
         """Refresh the log index from the drone
 
-        This is method is run on instantiation by default, but if you would like to
-        check for new log files it can be called at any time.
+        This is method is run on the first log access by default, but if you would like to check
+        for new log files it can be called at any time.
         """
 
         list_of_logs_in_dictionaries = self._get_list_of_logs_from_drone()
