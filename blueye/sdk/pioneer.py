@@ -159,7 +159,7 @@ class Pioneer:
                 self._establish_tcp_connection()
             try:
                 self.ping()
-                self.motion.update_setpoint()
+                self.motion.send_thruster_setpoint(0, 0, 0, 0)
             except ResponseTimeout as e:
                 raise ConnectionError(
                     f"Found drone at {self._tcp_client._ip}:{self._tcp_client._port}, "
