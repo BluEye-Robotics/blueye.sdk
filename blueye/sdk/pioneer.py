@@ -162,8 +162,7 @@ class Pioneer:
                 self.motion.send_thruster_setpoint(0, 0, 0, 0)
             except ResponseTimeout as e:
                 raise ConnectionError(
-                    f"Found drone at {self._tcp_client._ip}:{self._tcp_client._port}, "
-                    "but was unable to establish communication with it. "
+                    f"Found drone at {self._tcp_client._ip} but was unable to take control of it. "
                     "Is there another client connected?"
                 ) from e
             except BrokenPipeError:
