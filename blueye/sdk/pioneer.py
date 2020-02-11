@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
+import socket
 import threading
 import time
 import warnings
+from json import JSONDecodeError
 
 import requests
-
 from blueye.protocol import TcpClient, UdpClient
-from blueye.protocol.exceptions import ResponseTimeout
+from blueye.protocol.exceptions import NoConnectionToDrone, ResponseTimeout
 
 from .camera import Camera
 from .logs import Logs
@@ -83,22 +84,32 @@ class Pioneer:
 
     def __init__(self, ip="192.168.1.101", tcpPort=2011, autoConnect=True, slaveModeEnabled=False):
         self._ip = ip
+        self._port = tcpPort
         self._slaveModeEnabled = slaveModeEnabled
         if slaveModeEnabled:
             self._tcp_client = slaveTcpClient()
         else:
-            self._tcp_client = TcpClient(ip=ip, port=tcpPort, autoConnect=autoConnect)
+            self._tcp_client = TcpClient(ip=ip, port=tcpPort, autoConnect=False)
         self._state_watcher = _PioneerStateWatcher()
         self.camera = Camera(self)
         self.motion = Motion(self)
-        self.logs = Logs(self, auto_download_index=autoConnect)
+        self.logs = Logs(self)
+        self.connection_established = False
 
         if autoConnect is True:
-            self.connect()
+            self.connect(timeout=3)
 
     def _update_drone_info(self):
         """Request and store information about the connected drone"""
-        response = requests.get(f"http://{self._ip}/diagnostics/drone_info").json()
+        try:
+            response = requests.get(f"http://{self._ip}/diagnostics/drone_info", timeout=3).json()
+        except (
+            requests.ConnectTimeout,
+            requests.ReadTimeout,
+            requests.ConnectionError,
+            JSONDecodeError,
+        ):
+            raise ConnectionError("Could not establish connection with drone")
         try:
             self.features = list(filter(None, response["features"].split(",")))
         except KeyError:
@@ -109,29 +120,62 @@ class Pioneer:
         self.serial_number = response["serial_number"]
         self.uuid = response["hardware_id"]
 
-    def connect(self):
+    @staticmethod
+    def _wait_for_udp_communication(timeout: int):
+        """Simple helper for waiting for drone to come online
+
+        Raises ConnectionError if no connection is established in the specified timeout.
+        """
+        temp_udp_client = UdpClient()
+        temp_udp_client._sock.settimeout(timeout)
+        try:
+            temp_udp_client.get_data_dict()
+        except socket.timeout as e:
+            raise ConnectionError("Could not establish connection with drone") from e
+
+    def _establish_tcp_connection(self):
+        try:
+            self._tcp_client.connect()
+        except NoConnectionToDrone:
+            raise ConnectionError("Could not establish connection with drone")
+        try:
+            self._tcp_client.start()
+        except RuntimeError:
+            # Ignore multiple starts
+            pass
+        self.connection_established = True
+
+    def connect(self, timeout=None):
         """Start receiving telemetry info from the drone, and publishing watchdog messages
 
         When watchdog message are published the thrusters are armed, to stop the drone from moving
         unexpectedly when connecting all thruster set points are set to zero when connecting.
         """
-        self._state_watcher.start()
-        self.logs.refresh_log_index()
+        self._wait_for_udp_communication(timeout)
         self._update_drone_info()
+
         if self._slaveModeEnabled is False:
-            if self._tcp_client._sock is None and not self._tcp_client.isAlive():
-                self._tcp_client.connect()
-                self._tcp_client.start()
+            if not self.connection_established:
+                self._establish_tcp_connection()
             try:
-                # Ensure that we are able to communicate with the drone
                 self.ping()
+                self.motion.send_thruster_setpoint(0, 0, 0, 0)
             except ResponseTimeout as e:
                 raise ConnectionError(
-                    f"Found drone at {self._tcp_client._ip}:{self._tcp_client._port}, "
-                    "but was unable to establish communication with it. "
+                    f"Found drone at {self._tcp_client._ip} but was unable to take control of it. "
                     "Is there another client connected?"
                 ) from e
-            self.motion.update_setpoint()
+            except BrokenPipeError:
+                # Have lost connection to drone, need to reestablish TCP client
+                self._tcp_client.stop()
+                self.connection_established = False
+                self._tcp_client = TcpClient(ip=self._ip, port=self._port, autoConnect=False)
+                self._establish_tcp_connection()
+        try:
+            self._state_watcher.start()
+        except RuntimeError:
+            # Ignore multiple starts
+            pass
 
     @property
     def lights(self) -> int:

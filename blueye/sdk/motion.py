@@ -101,7 +101,7 @@ class Motion:
                              a positive set point makes the drone move to the right
         * **heave** (float): Force set point in the heave direction in range <-1, 1>,
                              a positive set point makes the drone move down.
-        * **yaw** (float): Moment set point in the sway direction in range <-1, 1>,
+        * **yaw** (float): Moment set point in the yaw direction in range <-1, 1>,
                              a positive set point makes the drone rotate clockwise.
         """
         self.current_thruster_setpoints["surge"] = surge

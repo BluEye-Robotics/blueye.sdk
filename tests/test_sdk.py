@@ -1,9 +1,9 @@
 from time import time
 from unittest.mock import Mock
 
-import pytest
-
 import blueye.sdk
+import pytest
+import requests
 
 
 @pytest.fixture(scope="class")
@@ -58,6 +58,7 @@ def mocked_pioneer(mocker, mocked_requests):
     mocker.patch("blueye.sdk.pioneer.UdpClient", autospec=True)
     mocker.patch("blueye.sdk.pioneer.TcpClient", create=True)
     p = blueye.sdk.Pioneer(autoConnect=False)
+    p._wait_for_udp_communication = Mock()
     # Mocking out the run function to avoid blowing up the stack when the thread continuously calls
     # the get_data_dict function (which won't block since it's mocked).
     p._state_watcher.run = Mock()
@@ -70,6 +71,7 @@ def mocked_slave_pioneer(mocker, mocked_requests):
     mocker.patch("blueye.sdk.pioneer.UdpClient", autospec=True)
     mocker.patch("blueye.sdk.pioneer.TcpClient", create=True)
     p = blueye.sdk.Pioneer(autoConnect=False, slaveModeEnabled=True)
+    p._wait_for_udp_communication = Mock()
     # Mocking out the run function to avoid blowing up the stack when the thread continuously calls
     # the get_data_dict function (which won't block since it's mocked).
     p._state_watcher.run = Mock()
@@ -256,3 +258,48 @@ def test_still_picture_works_with_new_drone_version(mocked_pioneer, version):
     mocked_pioneer.camera.take_picture()
     mocked_pioneer._tcp_client.take_still_picture.assert_called_once()
     mocked_pioneer._tcp_client.reset_mock()
+
+
+@pytest.mark.parametrize(
+    "exception",
+    [
+        requests.exceptions.ConnectTimeout,
+        requests.exceptions.ReadTimeout,
+        requests.exceptions.ConnectionError,
+    ],
+)
+def test_update_drone_info_raises_ConnectionError_when_not_connected(
+    requests_mock, mocked_pioneer, exception
+):
+
+    requests_mock.get(
+        "http://192.168.1.101/diagnostics/drone_info", exc=exception,
+    )
+    with pytest.raises(ConnectionError):
+        mocked_pioneer._update_drone_info()
+
+
+def test_wait_for_udp_com_raises_ConnectionError_on_timeout(mocker):
+    import socket
+
+    mocked_udp = mocker.patch("blueye.sdk.pioneer.UdpClient", autospec=True).return_value
+
+    mocked_udp.attach_mock(mocker.patch("blueye.sdk.pioneer.socket.socket", autospec=True), "_sock")
+    mocked_udp.get_data_dict.side_effect = socket.timeout
+    with pytest.raises(ConnectionError):
+        blueye.sdk.Pioneer._wait_for_udp_communication(1)
+
+
+def test_establish_tcp_connection_raises_ConnectionError(mocked_pioneer):
+    from blueye.protocol.exceptions import NoConnectionToDrone
+
+    mocked_pioneer._tcp_client.connect.side_effect = NoConnectionToDrone("", "")
+    with pytest.raises(ConnectionError):
+        mocked_pioneer._establish_tcp_connection()
+
+
+def test_establish_tcp_connection_ignores_RuntimeErrors(mocked_pioneer):
+    mocked_pioneer.connection_established = False
+    mocked_pioneer._tcp_client.start.side_effect = RuntimeError
+    mocked_pioneer._establish_tcp_connection()
+    assert mocked_pioneer.connection_established is True

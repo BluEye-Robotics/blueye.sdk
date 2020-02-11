@@ -119,3 +119,12 @@ def test_logs_raises_KeyError(log_list_with_two_logs):
 def test_logs_raises_IndexError(log_list_with_two_logs):
     with pytest.raises(IndexError):
         log_list_with_two_logs[3]
+
+
+def test_index_is_downloaded_on_first_access(log_list_with_two_logs):
+    """Tests that logs are not downloaded before someone attempts to access the logs. And that the
+    logs are downloaded after an access is attempted.
+    """
+    assert log_list_with_two_logs._logs == {}
+    _ = log_list_with_two_logs[0]
+    assert len(log_list_with_two_logs[::]) == 2

@@ -100,9 +100,10 @@ class Logs:
     the last 10 logs you can do `p.logs[:-10]`.
     """
 
-    def __init__(self, parent_drone, auto_download_index=True):
+    def __init__(self, parent_drone, auto_download_index=False):
         self.ip = parent_drone._ip
         self._parent_drone = parent_drone
+        self.index_downloaded = False
         if auto_download_index:
             self.refresh_log_index()
         else:
@@ -123,14 +124,17 @@ class Logs:
     def refresh_log_index(self):
         """Refresh the log index from the drone
 
-        This is method is run on instantiation by default, but if you would like to
-        check for new log files it can be called at any time.
+        This is method is run on the first log access by default, but if you would like to check
+        for new log files it can be called at any time.
         """
 
         list_of_logs_in_dictionaries = self._get_list_of_logs_from_drone()
         self._logs = self._build_log_files_from_dictionary(list_of_logs_in_dictionaries)
+        self.index_downloaded = True
 
     def __getitem__(self, item):
+        if not self.index_downloaded:
+            self.refresh_log_index()
         if type(item) == str:
             try:
                 return self._logs[item]
