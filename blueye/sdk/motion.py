@@ -109,9 +109,6 @@ class Motion:
             self._current_thruster_setpoints["yaw"] = yaw_value
             self._send_motion_input_message()
 
-    def update_setpoint(self):
-        self.send_thruster_setpoint(*self.current_thruster_setpoints.values())
-
     def send_thruster_setpoint(self, surge, sway, heave, yaw):
         """Control the thrusters of the pioneer
 
