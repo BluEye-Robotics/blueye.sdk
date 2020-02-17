@@ -6,10 +6,13 @@ import warnings
 from json import JSONDecodeError
 
 import requests
+from packaging import version
+
 from blueye.protocol import TcpClient, UdpClient
 from blueye.protocol.exceptions import NoConnectionToDrone, ResponseTimeout
 
 from .camera import Camera
+from .constants import WaterSalinity
 from .logs import Logs
 from .motion import Motion
 
@@ -72,6 +75,34 @@ class slaveTcpClient:
         return method
 
 
+class Config:
+    def __init__(self, parent_drone):
+        self._parent_drone = parent_drone
+        self._water_density = WaterSalinity.salt
+
+    @property
+    def water_density(self):
+        """Get or set the current water density for increased pressure sensor accuracy
+
+        Setting the water density is only supported on drones with software version 1.5 or higher.
+        Older software versions will assume a water density of 1025 grams per liter.
+
+        The WaterSalinity class contains three typical densities for salt, bracking, and fresh
+        water (these are the same values that the Blueye app uses).
+        """
+        return self._water_density
+
+    @water_density.setter
+    def water_density(self, density: int):
+        if version.parse(self._parent_drone.software_version_short) < version.parse("1.5"):
+            raise RuntimeError(
+                "Drone software version is too old. Setting water density requires version 1.5"
+                " or higher."
+            )
+        self._water_density = density
+        self._parent_drone._tcp_client.set_water_density(density)
+
+
 class Pioneer:
     """A class providing a interface to the Blueye pioneer's basic functions
 
@@ -94,6 +125,7 @@ class Pioneer:
         self.camera = Camera(self)
         self.motion = Motion(self)
         self.logs = Logs(self)
+        self.config = Config(self)
         self.connection_established = False
 
         if autoConnect is True:
