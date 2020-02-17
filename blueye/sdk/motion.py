@@ -4,17 +4,33 @@ class Motion:
     Motion can be set one degree of freedom at a time by using the 4 motion properties
     (surge, sway, heave and yaw) or for all 4 degrees of freedom in one go through the
     `send_thruster_setpoint` method.
-    The current thruster setpoint state is stored in the `current_thruster_setpoints`
-    variable, this is done because the Pioneer does not report back its current thruster
-    setpoint.
     """
 
     def __init__(self, parent_drone):
         self._parent_drone = parent_drone
         self._tcp_client = parent_drone._tcp_client
         self._state_watcher = parent_drone._state_watcher
+        self._current_thruster_setpoints = {"surge": 0, "sway": 0, "heave": 0, "yaw": 0}
 
-        self.current_thruster_setpoints = {"surge": 0, "sway": 0, "heave": 0, "yaw": 0}
+    @property
+    def current_thruster_setpoints(self):
+        """ Returns the current setpoints for the thrusters
+
+        We maintain this state in the SDK since the drone does not report back it's current
+        setpoint.
+
+        For setting the setpoints you should use the dedicated properties/functions for that, trying
+        to set them directly with this property will raise an AttributeError.
+        """
+
+        return self._current_thruster_setpoints
+
+    @current_thruster_setpoints.setter
+    def current_thruster_setpoints(self, *args, **kwargs):
+        raise AttributeError(
+            "Do not set the setpoints directly, use the surge, sway, heave, yaw properties or the "
+            "send_thruster_setpoint function for that."
+        )
 
     @property
     def surge(self) -> float:

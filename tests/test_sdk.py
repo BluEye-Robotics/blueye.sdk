@@ -349,7 +349,7 @@ class TestTilt:
     ):
         mocked_pioneer.features = ["tilt"]
         mocked_pioneer.software_version_short = "1.5.33"
-        mocked_pioneer.motion.current_thruster_setpoints = {
+        mocked_pioneer.motion._current_thruster_setpoints = {
             "surge": thruster_setpoints[0],
             "sway": thruster_setpoints[1],
             "heave": thruster_setpoints[2],
