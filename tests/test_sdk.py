@@ -54,9 +54,24 @@ def mocked_requests(requests_mock):
 
 
 @pytest.fixture
-def mocked_pioneer(mocker, mocked_requests):
-    mocker.patch("blueye.sdk.pioneer.UdpClient", autospec=True)
-    mocker.patch("blueye.sdk.pioneer.TcpClient", create=True)
+def mocked_TcpClient(mocker):
+    """Fixture for mocking the TcpClient from blueye.protocol
+
+    Note: This mock is passed create=True, which has the potential to be dangerous since it would
+    allow you to test against methods that don't exist on the actual class. Due to the way methods
+    are added to TcpClient (they are instantiated on runtime, depending on which version of the
+    protocol is requested) mocking the class in the usual way would be quite cumbersome.
+    """
+    return mocker.patch("blueye.sdk.pioneer.TcpClient", create=True)
+
+
+@pytest.fixture
+def mocked_UdpClient(mocker):
+    return mocker.patch("blueye.sdk.pioneer.UdpClient", autospec=True)
+
+
+@pytest.fixture
+def mocked_pioneer(mocker, mocked_TcpClient, mocked_UdpClient, mocked_requests):
     p = blueye.sdk.Pioneer(autoConnect=False)
     p._wait_for_udp_communication = Mock()
     # Mocking out the run function to avoid blowing up the stack when the thread continuously calls
@@ -67,9 +82,7 @@ def mocked_pioneer(mocker, mocked_requests):
 
 
 @pytest.fixture
-def mocked_slave_pioneer(mocker, mocked_requests):
-    mocker.patch("blueye.sdk.pioneer.UdpClient", autospec=True)
-    mocker.patch("blueye.sdk.pioneer.TcpClient", create=True)
+def mocked_slave_pioneer(mocker, mocked_TcpClient, mocked_UdpClient, mocked_requests):
     p = blueye.sdk.Pioneer(autoConnect=False, slaveModeEnabled=True)
     p._wait_for_udp_communication = Mock()
     # Mocking out the run function to avoid blowing up the stack when the thread continuously calls
@@ -303,3 +316,63 @@ def test_establish_tcp_connection_ignores_RuntimeErrors(mocked_pioneer):
     mocked_pioneer._tcp_client.start.side_effect = RuntimeError
     mocked_pioneer._establish_tcp_connection()
     assert mocked_pioneer.connection_established is True
+
+
+class TestTilt:
+    @pytest.mark.parametrize("version", ["0.1.2", "1.2.3"])
+    def test_tilt_fails_on_old_version(self, mocked_pioneer, version):
+        mocked_pioneer.software_version_short = version
+        mocked_pioneer.features = ["tilt"]
+        with pytest.raises(RuntimeError):
+            mocked_pioneer.camera.tilt.set_speed(0)
+        with pytest.raises(RuntimeError):
+            _ = mocked_pioneer.camera.tilt.angle
+
+    def test_tilt_fails_on_drone_without_tilt(self, mocked_pioneer):
+        mocked_pioneer.features = []
+        with pytest.raises(RuntimeError):
+            mocked_pioneer.camera.tilt.set_speed(0)
+        with pytest.raises(RuntimeError):
+            _ = mocked_pioneer.camera.tilt.angle
+
+    @pytest.mark.parametrize(
+        "thruster_setpoints, tilt_speed",
+        [
+            ((0, 0, 0, 0), 0),
+            ((1, 1, 1, 1), 1),
+            ((-1, -1, -1, -1), -1),
+            ((0.1, 0.2, 0.3, 0.4), 0.5),
+        ],
+    )
+    def test_tilt_calls_motion_input_with_correct_arguments(
+        self, mocked_pioneer, thruster_setpoints, tilt_speed
+    ):
+        mocked_pioneer.features = ["tilt"]
+        mocked_pioneer.software_version_short = "1.5.33"
+        mocked_pioneer.motion._current_thruster_setpoints = {
+            "surge": thruster_setpoints[0],
+            "sway": thruster_setpoints[1],
+            "heave": thruster_setpoints[2],
+            "yaw": thruster_setpoints[3],
+        }
+        mocked_pioneer.camera.tilt.set_speed(tilt_speed)
+        mocked_pioneer._tcp_client.motion_input_tilt.assert_called_with(
+            *thruster_setpoints, 0, 0, tilt_speed
+        )
+
+    @pytest.mark.parametrize(
+        "debug_flags, expected_angle",
+        [
+            (0x0000440000000000, 34.0),
+            (0x12344456789ABCDE, 34.0),
+            (0x0000000000000000, 0.0),
+            (0x12340056789ABCDE, 0.0),
+            (0x0000BE0000000000, -33.0),
+            (0x1234BE56789ABCDE, -33.0),
+        ],
+    )
+    def test_tilt_returns_expected_angle(self, mocked_pioneer, debug_flags, expected_angle):
+        mocked_pioneer.features = ["tilt"]
+        mocked_pioneer.software_version_short = "1.5.33"
+        mocked_pioneer._state_watcher._general_state = {"debug_flags": debug_flags}
+        assert mocked_pioneer.camera.tilt.angle == expected_angle
