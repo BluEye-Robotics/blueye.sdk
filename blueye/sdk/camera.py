@@ -25,8 +25,7 @@ class Tilt:
 
         *Arguments*:
 
-        * speed (int): Speed and direction of the tilt. 1 is max speed up,
-                       -1 is max speed down.
+        * speed (int): Speed and direction of the tilt. 1 is max speed up, -1 is max speed down.
 
         Requires a drone with the tilt feature, and software version 1.5 or newer.
         A RuntimeError is raised if either of those requirements are not met.
@@ -39,8 +38,9 @@ class Tilt:
         # The tilt command is grouped together with the thruster commands, so to avoid messing with
         # the thruster setpoint while tilting we need to get the current setpoint and send it with
         # the tilt command.
-        thruster_setpoints = self._parent_drone.motion.current_thruster_setpoints.values()
-        self._parent_drone._tcp_client.motion_input_tilt(*thruster_setpoints, 0, 0, speed)
+        with self._parent_drone.motion.thruster_lock:
+            thruster_setpoints = self._parent_drone.motion.current_thruster_setpoints.values()
+            self._parent_drone._tcp_client.motion_input_tilt(*thruster_setpoints, 0, 0, speed)
 
     @property
     def angle(self) -> int:

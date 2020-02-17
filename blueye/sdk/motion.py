@@ -1,3 +1,6 @@
+import threading
+
+
 class Motion:
     """Control the motion of the Pioneer, and set automatic control modes
 
@@ -10,6 +13,7 @@ class Motion:
         self._parent_drone = parent_drone
         self._tcp_client = parent_drone._tcp_client
         self._state_watcher = parent_drone._state_watcher
+        self.thruster_lock = threading.Lock()
         self._current_thruster_setpoints = {"surge": 0, "sway": 0, "heave": 0, "yaw": 0}
 
     @property
@@ -32,6 +36,11 @@ class Motion:
             "send_thruster_setpoint function for that."
         )
 
+    def _send_motion_input_message(self):
+        """Small helper function for building argument list to motion_input command"""
+        setpoints = self.current_thruster_setpoints.values()
+        self._tcp_client.motion_input(*setpoints, 0, 0)
+
     @property
     def surge(self) -> float:
         """ Set force reference for the surge direction
@@ -45,8 +54,9 @@ class Motion:
 
     @surge.setter
     def surge(self, surge_value: float):
-        self.current_thruster_setpoints["surge"] = surge_value
-        self.update_setpoint()
+        with self.thruster_lock:
+            self._current_thruster_setpoints["surge"] = surge_value
+            self._send_motion_input_message()
 
     @property
     def sway(self) -> float:
@@ -61,8 +71,9 @@ class Motion:
 
     @sway.setter
     def sway(self, sway_value: float):
-        self.current_thruster_setpoints["sway"] = sway_value
-        self.update_setpoint()
+        with self.thruster_lock:
+            self._current_thruster_setpoints["sway"] = sway_value
+            self._send_motion_input_message()
 
     @property
     def heave(self) -> float:
@@ -77,8 +88,9 @@ class Motion:
 
     @heave.setter
     def heave(self, heave_value: float):
-        self.current_thruster_setpoints["heave"] = heave_value
-        self.update_setpoint()
+        with self.thruster_lock:
+            self._current_thruster_setpoints["heave"] = heave_value
+            self._send_motion_input_message()
 
     @property
     def yaw(self) -> float:
@@ -93,8 +105,9 @@ class Motion:
 
     @yaw.setter
     def yaw(self, yaw_value: float):
-        self.current_thruster_setpoints["yaw"] = yaw_value
-        self.update_setpoint()
+        with self.thruster_lock:
+            self._current_thruster_setpoints["yaw"] = yaw_value
+            self._send_motion_input_message()
 
     def update_setpoint(self):
         self.send_thruster_setpoint(*self.current_thruster_setpoints.values())
@@ -120,11 +133,12 @@ class Motion:
         * **yaw** (float): Moment set point in the yaw direction in range <-1, 1>,
                              a positive set point makes the drone rotate clockwise.
         """
-        self.current_thruster_setpoints["surge"] = surge
-        self.current_thruster_setpoints["sway"] = sway
-        self.current_thruster_setpoints["heave"] = heave
-        self.current_thruster_setpoints["yaw"] = yaw
-        self._tcp_client.motion_input(surge, sway, heave, yaw, 0, 0)
+        with self.thruster_lock:
+            self._current_thruster_setpoints["surge"] = surge
+            self._current_thruster_setpoints["sway"] = sway
+            self._current_thruster_setpoints["heave"] = heave
+            self._current_thruster_setpoints["yaw"] = yaw
+            self._send_motion_input_message()
 
     @property
     def auto_depth_active(self) -> bool:
