@@ -102,6 +102,14 @@ class Config:
         self._water_density = density
         self._parent_drone._tcp_client.set_water_density(density)
 
+    def set_drone_time(self, time: int):
+        """Set the system for the drone
+
+        This method is used to set the system time for the drone. The argument `time` is expected to
+        be a Unix timestamp (ie. the number of seconds since the epoch).
+        """
+        self._parent_drone._tcp_client.set_system_time(time)
+
 
 class Pioneer:
     """A class providing a interface to the Blueye pioneer's basic functions
