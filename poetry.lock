@@ -200,6 +200,18 @@ pycodestyle = ">=2.5.0,<2.6.0"
 pyflakes = ">=2.1.0,<2.2.0"
 
 [[package]]
+category = "dev"
+description = "Let your Python tests travel through time"
+name = "freezegun"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+version = "0.3.15"
+
+[package.dependencies]
+python-dateutil = ">=1.0,<2.0 || >2.0"
+six = "*"
+
+[[package]]
 category = "main"
 description = "Clean single-source support for Python 3 and 2"
 name = "future"
@@ -744,7 +756,7 @@ dev = ["pre-commit", "tox"]
 category = "main"
 description = "Extensions to the standard Python datetime module"
 name = "python-dateutil"
-optional = true
+optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,>=2.7"
 version = "2.8.1"
 
@@ -948,7 +960,7 @@ testing = ["jaraco.itertools"]
 examples = ["inputs", "asciimatics", "pandas", "matplotlib", "webdavclient3"]
 
 [metadata]
-content-hash = "d637e4a629ee420507a6af673c2a5ddb654a23ccaf6c2da1d3ed4310bd13355c"
+content-hash = "4ad237b800c42994c6a46da8b2ad2b73b2857027696b598efee235c2fcc629f0"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -1064,6 +1076,10 @@ falcon = [
 flake8 = [
     {file = "flake8-3.7.9-py2.py3-none-any.whl", hash = "sha256:49356e766643ad15072a789a20915d3c91dc89fd313ccd71802303fd67e4deca"},
     {file = "flake8-3.7.9.tar.gz", hash = "sha256:45681a117ecc81e870cbf1262835ae4af5e7a8b08e40b944a8a6e6b895914cfb"},
+]
+freezegun = [
+    {file = "freezegun-0.3.15-py2.py3-none-any.whl", hash = "sha256:82c757a05b7c7ca3e176bfebd7d6779fd9139c7cb4ef969c38a28d74deef89b2"},
+    {file = "freezegun-0.3.15.tar.gz", hash = "sha256:e2062f2c7f95cc276a834c22f1a17179467176b624cc6f936e8bc3be5535ad1b"},
 ]
 future = [
     {file = "future-0.18.2.tar.gz", hash = "sha256:b1bead90b70cf6ec3f0710ae53a525360fa360d306a86583adc6bf83a4db537d"},

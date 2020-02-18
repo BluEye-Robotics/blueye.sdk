@@ -3,6 +3,7 @@ from unittest.mock import Mock
 
 import pytest
 import requests
+from freezegun import freeze_time
 
 import blueye.sdk
 from blueye.sdk import Pioneer
@@ -398,3 +399,9 @@ class TestConfig:
         mocked_pioneer.config.water_density = new_value
         assert mocked_pioneer.config.water_density == new_value
         mocked_pioneer._tcp_client.set_water_density.assert_called_once()
+
+    def test_set_drone_time_is_called_on_connetion(self, mocked_pioneer: Pioneer):
+        with freeze_time("2019-01-01"):
+            expected_time = int(time())
+            mocked_pioneer.connect()
+            mocked_pioneer._tcp_client.set_system_time.assert_called_with(expected_time)
