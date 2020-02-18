@@ -76,7 +76,7 @@ class slaveTcpClient:
 
 
 class Config:
-    def __init__(self, parent_drone):
+    def __init__(self, parent_drone: "Pioneer"):
         self._parent_drone = parent_drone
         self._water_density = WaterSalinity.salt
 
