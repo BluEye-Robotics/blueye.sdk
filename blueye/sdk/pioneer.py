@@ -12,7 +12,7 @@ from blueye.protocol import TcpClient, UdpClient
 from blueye.protocol.exceptions import NoConnectionToDrone, ResponseTimeout
 
 from .camera import Camera
-from .constants import WaterSalinity
+from .constants import WaterDensities
 from .logs import Logs
 from .motion import Motion
 
@@ -78,7 +78,7 @@ class slaveTcpClient:
 class Config:
     def __init__(self, parent_drone: "Pioneer"):
         self._parent_drone = parent_drone
-        self._water_density = WaterSalinity.salt
+        self._water_density = WaterDensities.salty
 
     @property
     def water_density(self):
@@ -87,8 +87,8 @@ class Config:
         Setting the water density is only supported on drones with software version 1.5 or higher.
         Older software versions will assume a water density of 1025 grams per liter.
 
-        The WaterSalinity class contains three typical densities for salt, bracking, and fresh
-        water (these are the same values that the Blueye app uses).
+        The WaterDensities class contains typical densities for salty-, brackish-, and fresh water
+        (these are the same values that the Blueye app uses).
         """
         return self._water_density
 

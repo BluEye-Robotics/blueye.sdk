@@ -3,7 +3,11 @@ This file contains constants used by SDK.
 """
 
 
-class WaterSalinity:
+class WaterDensities:
+    """
+    Various typical densities for salt water (in grams/liter)
+    """
+
     fresh = 997
     brackish = 1011
-    salt = 1025
+    salty = 1025
