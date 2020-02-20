@@ -25,7 +25,7 @@ p.config.water_density = 997 # water density in grams per liter for fresh water
 ```
 
 ### Configure camera parameters
-There are 6 different camera parameters that can be set. For a full list of camera parameters and their possible values see the [`camera reference`](https://blueye-robotics.github.io/blueye.sdk/reference/blueye/sdk/pioneer/) section. For example you could set the camera bit rate like this
+There are 6 different camera parameters that can be set. For a full list of camera parameters and their possible values see the [`camera reference`](../../reference/blueye/sdk/camera) section. For example you could set the bit rate like this
 
 ```python
 from blueye.sdk import Pioneer
@@ -35,4 +35,5 @@ p = Pioneer()
 p.camera.bitrate = 8000000 # 8 Mbit bitrate
 
 ```
-Due to a bug in the camera streaming on the drone a camera stream has to have been opened at least once before camera parameters can be set on the drone, see issue [#67](https://github.com/BluEye-Robotics/blueye.sdk/issues/67). For instructions on how to start a video stream see, the [`Quick Start Guide`](https://blueye-robotics.github.io/blueye.sdk/docs/quick_start/).
+
+Due to a bug in the camera streaming on the drone a camera stream has to have been opened at least once before camera parameters can be set on the drone, see issue [#67](https://github.com/BluEye-Robotics/blueye.sdk/issues/67). For instructions on how to start a video stream see, the [`Quick Start Guide`](../quick_start/#watching-the-video-stream).
