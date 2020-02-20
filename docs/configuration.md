@@ -32,8 +32,7 @@ from blueye.sdk import Pioneer
 
 p = Pioneer()
 
-p.camera.bitrate = 8000000 # 8 Mbit bitrate
-
+p.camera.bitrate = 8_000_000 # 8 Mbit bitrate
 ```
 
 Due to a bug in the camera streaming on the drone a camera stream has to have been opened at least once before camera parameters can be set on the drone, see issue [#67](https://github.com/BluEye-Robotics/blueye.sdk/issues/67). For instructions on how to start a video stream see, the [`Quick Start Guide`](../quick_start/#watching-the-video-stream).
