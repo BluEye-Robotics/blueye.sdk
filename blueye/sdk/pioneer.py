@@ -6,10 +6,13 @@ import warnings
 from json import JSONDecodeError
 
 import requests
+from packaging import version
+
 from blueye.protocol import TcpClient, UdpClient
 from blueye.protocol.exceptions import NoConnectionToDrone, ResponseTimeout
 
 from .camera import Camera
+from .constants import WaterDensities
 from .logs import Logs
 from .motion import Motion
 
@@ -72,6 +75,42 @@ class slaveTcpClient:
         return method
 
 
+class Config:
+    def __init__(self, parent_drone: "Pioneer"):
+        self._parent_drone = parent_drone
+        self._water_density = WaterDensities.salty
+
+    @property
+    def water_density(self):
+        """Get or set the current water density for increased pressure sensor accuracy
+
+        Setting the water density is only supported on drones with software version 1.5 or higher.
+        Older software versions will assume a water density of 1025 grams per liter.
+
+        The WaterDensities class contains typical densities for salty-, brackish-, and fresh water
+        (these are the same values that the Blueye app uses).
+        """
+        return self._water_density
+
+    @water_density.setter
+    def water_density(self, density: int):
+        if version.parse(self._parent_drone.software_version_short) < version.parse("1.5"):
+            raise RuntimeError(
+                "Drone software version is too old. Setting water density requires version 1.5"
+                " or higher."
+            )
+        self._water_density = density
+        self._parent_drone._tcp_client.set_water_density(density)
+
+    def set_drone_time(self, time: int):
+        """Set the system for the drone
+
+        This method is used to set the system time for the drone. The argument `time` is expected to
+        be a Unix timestamp (ie. the number of seconds since the epoch).
+        """
+        self._parent_drone._tcp_client.set_system_time(time)
+
+
 class Pioneer:
     """A class providing a interface to the Blueye pioneer's basic functions
 
@@ -94,6 +133,7 @@ class Pioneer:
         self.camera = Camera(self)
         self.motion = Motion(self)
         self.logs = Logs(self)
+        self.config = Config(self)
         self.connection_established = False
 
         if autoConnect is True:
@@ -160,6 +200,10 @@ class Pioneer:
             try:
                 self.ping()
                 self.motion.send_thruster_setpoint(0, 0, 0, 0)
+
+                # The drone runs from a read-only filesystem, and as such does not keep any state,
+                # therefore when we connect to it we should send the current time
+                self.config.set_drone_time(int(time.time()))
             except ResponseTimeout as e:
                 raise ConnectionError(
                     f"Found drone at {self._tcp_client._ip} but was unable to take control of it. "

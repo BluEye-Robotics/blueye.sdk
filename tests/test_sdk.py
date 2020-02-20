@@ -1,15 +1,16 @@
 from time import time
 from unittest.mock import Mock
 
-import blueye.sdk
 import pytest
 import requests
+from freezegun import freeze_time
+
+import blueye.sdk
+from blueye.sdk import Pioneer
 
 
 @pytest.fixture(scope="class")
 def pioneer():
-    from blueye.sdk import Pioneer
-
     return Pioneer()
 
 
@@ -376,3 +377,31 @@ class TestTilt:
         mocked_pioneer.software_version_short = "1.5.33"
         mocked_pioneer._state_watcher._general_state = {"debug_flags": debug_flags}
         assert mocked_pioneer.camera.tilt.angle == expected_angle
+
+
+class TestConfig:
+    def test_water_density_property_returns_correct_value(self, mocked_pioneer: Pioneer):
+        mocked_pioneer.software_version_short = "1.5.33"
+        mocked_pioneer.config._water_density = 1000
+        assert mocked_pioneer.config.water_density == 1000
+
+    @pytest.mark.parametrize("version", ["0.1.2", "1.2.3", "1.4.7"])
+    def test_setting_density_fails_on_old_versions(self, mocked_pioneer: Pioneer, version):
+        mocked_pioneer.software_version_short = version
+        with pytest.raises(RuntimeError):
+            mocked_pioneer.config.water_density = 1000
+
+    @pytest.mark.parametrize("version", ["1.5.0", "1.6.2", "2.1.3"])
+    def test_setting_density_works_on_new_versions(self, mocked_pioneer: Pioneer, version):
+        mocked_pioneer.software_version_short = version
+        old_value = mocked_pioneer.config.water_density
+        new_value = old_value + 10
+        mocked_pioneer.config.water_density = new_value
+        assert mocked_pioneer.config.water_density == new_value
+        mocked_pioneer._tcp_client.set_water_density.assert_called_once()
+
+    def test_set_drone_time_is_called_on_connetion(self, mocked_pioneer: Pioneer):
+        with freeze_time("2019-01-01"):
+            expected_time = int(time())
+            mocked_pioneer.connect()
+            mocked_pioneer._tcp_client.set_system_time.assert_called_with(expected_time)
