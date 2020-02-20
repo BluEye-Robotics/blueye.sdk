@@ -1,5 +1,5 @@
 """
-This file contains constants used by SDK.
+This file contains constants used by the SDK.
 """
 
 
