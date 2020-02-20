@@ -1,4 +1,4 @@
-There are settings on the drone that are remotely configurable from the Blueye mobile app. These can be set directly from the SDK.
+There are settings on the drone that are remotely configurable from the Blueye mobile app. These can also be set directly from the SDK.
 
 ### Configure time and date
 The drone does not keep track of time internally. The SDK sets the time on the drone automatically when you connect initially. But you can also configure time and date manually like this
@@ -11,6 +11,21 @@ p = Pioneer()
 
 time_to_set_on_drone = int(time.time()) # Unix Timestamp
 p.config.set_drone_time(time_to_set_on_drone)
+```
+
+or if we for example want to offset the drone time 5 hours relative to our current system time we can do something like this:
+
+```python
+from blueye.sdk import Pioneer
+from datetime import timezone, timedelta, datetime
+
+p = Pioneer()
+
+offset_in_hours = timedelta(hours=5)
+equivalent_timezone = timezone(offset_in_hours)
+unix_timestamp = datetime.now(tz=equivalent_timezone).timestamp()
+
+p.config.set_drone_time(int(unix_timestamp))
 ```
 
 ### Calibrate pressure sensor for water density
