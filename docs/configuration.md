@@ -13,15 +13,25 @@ time_to_set_on_drone = int(time.time()) # Unix Timestamp
 p.config.set_drone_time(time_to_set_on_drone)
 ```
 
-### Configure water density
+### Calibrate pressure sensor for water density
 The water density on the drone default to a reasonable density for salt water: 1025 grams per liter. For more accurate depth readings, the water density can be configured manually to suit your local conditions
 
 ```python
-from blueye.sdk import Pioneer
+from blueye.sdk import Pioneer, WaterDensities
 
 p = Pioneer()
 
-p.config.water_density = 997 # water density in grams per liter for fresh water
+# Salt water
+p.config.water_density = WaterDensities.salty  # 1025 g/L
+
+# Brackish water
+p.config.water_density = WaterDensities.brackish  # 1011 g/L
+
+# Fresh water
+p.config.water_density = WaterDensities.fresh  # 997 g/L
+
+# Can also be set to arbitrary values
+p.config.water_density = 1234
 ```
 
 ### Configure camera parameters
