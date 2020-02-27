@@ -97,7 +97,7 @@ description = "Python protocol definition for the Blueye Pioneer"
 name = "blueye.protocol"
 optional = false
 python-versions = ">=3.7,<4.0"
-version = "1.2.1"
+version = "1.2.2"
 
 [package.dependencies]
 numpy = ">=1.17,<2.0"
@@ -986,7 +986,7 @@ testing = ["jaraco.itertools", "func-timeout"]
 examples = ["inputs", "asciimatics", "pandas", "matplotlib", "webdavclient3"]
 
 [metadata]
-content-hash = "3f9f7e4bf39dc715a1ab4858d7b6acb21c392c0bb0c688bd42b9c3a56e5b33e4"
+content-hash = "6d37c463dee0b404e2010f4026b34ed0e3818a3b03f9d9bebefccaae7c7fc0c8"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -1019,8 +1019,8 @@ black = [
     {file = "black-19.10b0.tar.gz", hash = "sha256:c2edb73a08e9e0e6f65a0e6af18b059b8b1cdd5bef997d7a0b181df93dc81539"},
 ]
 "blueye.protocol" = [
-    {file = "blueye.protocol-1.2.1-py3-none-any.whl", hash = "sha256:92bdff1196127b78d45767d3675531cc0f074080064c1950cf0f63ffaf2170b5"},
-    {file = "blueye.protocol-1.2.1.tar.gz", hash = "sha256:07a13fbd7ad873f759a03147c525952ed4c0d2f90a0c757e138628865547f2c9"},
+    {file = "blueye.protocol-1.2.2-py3-none-any.whl", hash = "sha256:de456805eefe96e39a0291aeb60eb43ebe8426e6cc66922d862f1c6186281b97"},
+    {file = "blueye.protocol-1.2.2.tar.gz", hash = "sha256:29fac9a48589c44eefe7d4786fa74d27aa6d6da42f8700d26edcdbf7c6712afa"},
 ]
 certifi = [
     {file = "certifi-2019.11.28-py2.py3-none-any.whl", hash = "sha256:017c25db2a153ce562900032d5bc68e9f191e44e9a0f762f373977de9df1fbb3"},

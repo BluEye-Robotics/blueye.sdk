@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "blueye.sdk"
-version = "5.0.0"
+version = "5.0.1"
 description = "SDK for controlling a Blueye Pioneer"
 authors = ["Sindre Hansen <sindre.hansen@blueye.no>",
            "Aksel Lenes <aksel.lenes@blueye.no"]
@@ -16,7 +16,7 @@ keywords = ["Blueye", "Pioneer", "Robotics", "SDK", "Software Development Kit"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
-"blueye.protocol" = "^1.2.1"
+"blueye.protocol" = "^1.2.2"
 asciimatics = {version = "^1.11.0", optional = true}
 inputs = {version = "^0.5", optional = true}
 pandas = {version = "^0.25.2", optional = true}
