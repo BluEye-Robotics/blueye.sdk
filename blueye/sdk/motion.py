@@ -15,6 +15,7 @@ class Motion:
         self._state_watcher = parent_drone._state_watcher
         self.thruster_lock = threading.Lock()
         self._current_thruster_setpoints = {"surge": 0, "sway": 0, "heave": 0, "yaw": 0}
+        self._current_boost_setpoints = {"slow": 0, "boost": 0}
 
     @property
     def current_thruster_setpoints(self):
@@ -38,8 +39,9 @@ class Motion:
 
     def _send_motion_input_message(self):
         """Small helper function for building argument list to motion_input command"""
-        setpoints = self.current_thruster_setpoints.values()
-        self._tcp_client.motion_input(*setpoints, 0, 0)
+        thruster_setpoints = self.current_thruster_setpoints.values()
+        boost_setpoints = self._current_boost_setpoints.values()
+        self._tcp_client.motion_input(*thruster_setpoints, *boost_setpoints)
 
     @property
     def surge(self) -> float:
@@ -135,6 +137,38 @@ class Motion:
             self._current_thruster_setpoints["sway"] = sway
             self._current_thruster_setpoints["heave"] = heave
             self._current_thruster_setpoints["yaw"] = yaw
+            self._send_motion_input_message()
+
+    @property
+    def boost(self) -> float:
+        """ Get or set the boost gain
+
+        Arguments:
+
+        * **boost_gain** (float): Range from 0 to 1.
+        """
+        return self._current_boost_setpoints["boost"]
+
+    @boost.setter
+    def boost(self, boost_gain: float):
+        with self.thruster_lock:
+            self._current_boost_setpoints["boost"] = boost_gain
+            self._send_motion_input_message()
+
+    @property
+    def slow(self) -> float:
+        """ Get or set the "slow gain" (inverse of boost)
+
+        Arguments:
+
+        * **slow_gain** (float): Range from 0 to 1.
+        """
+        return self._current_boost_setpoints["slow"]
+
+    @slow.setter
+    def slow(self, slow_gain: float):
+        with self.thruster_lock:
+            self._current_boost_setpoints["slow"] = slow_gain
             self._send_motion_input_message()
 
     @property
