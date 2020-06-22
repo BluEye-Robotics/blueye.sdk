@@ -49,9 +49,9 @@ class JoystickHandler:
         """
         if -lower < value < lower:
             return 0
-        elif lower < value < upper:
+        elif lower <= value <= upper:
             return (value - lower) / (upper - lower)
-        elif -upper < value < -lower:
+        elif -upper <= value <= -lower:
             return (value + lower) / (upper - lower)
         else:
             return 0
