@@ -15,8 +15,10 @@ class JoystickHandler:
             "BTN_SOUTH": self.handleAButton,
             "ABS_X": self.handleLeftXAxis,
             "ABS_Y": self.handleLeftYAxis,
+            "ABS_Z": self.handleLeftTrigger,
             "ABS_RX": self.handleRightXAxis,
             "ABS_RY": self.handleRightYAxis,
+            "ABS_RZ": self.handleRightTrigger,
         }
 
     def handleXButton(self, value):
@@ -67,6 +69,12 @@ class JoystickHandler:
 
     def handleRightYAxis(self, value):
         self.pioneer.motion.surge = -self.filterAndNormalize(value)
+
+    def handleLeftTrigger(self, value):
+        self.pioneer.motion.slow = self.filterAndNormalize(value, lower=0, upper=255)
+
+    def handleRightTrigger(self, value):
+        self.pioneer.motion.boost = self.filterAndNormalize(value, lower=0, upper=255)
 
 
 if __name__ == "__main__":
