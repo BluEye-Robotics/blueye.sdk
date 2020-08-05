@@ -405,3 +405,23 @@ class TestConfig:
             expected_time = int(time())
             mocked_pioneer.connect()
             mocked_pioneer._tcp_client.set_system_time.assert_called_with(expected_time)
+
+
+class TestMotion:
+    def test_boost_getter_returns_expected_value(self, mocked_pioneer):
+        mocked_pioneer.motion._current_boost_setpoints["boost"] = 1
+        assert mocked_pioneer.motion.boost == 1
+
+    def test_boost_setter_produces_correct_motion_input_arguments(self, mocked_pioneer):
+        boost_gain = 0.5
+        mocked_pioneer.motion.boost = boost_gain
+        mocked_pioneer._tcp_client.motion_input.assert_called_with(0, 0, 0, 0, 0, boost_gain)
+
+    def test_slow_getter_returns_expected_value(self, mocked_pioneer):
+        mocked_pioneer.motion._current_boost_setpoints["slow"] = 1
+        assert mocked_pioneer.motion.slow == 1
+
+    def test_slow_setter_produces_correct_motion_input_arguments(self, mocked_pioneer):
+        slow_gain = 0.3
+        mocked_pioneer.motion.slow = slow_gain
+        mocked_pioneer._tcp_client.motion_input.assert_called_with(0, 0, 0, 0, slow_gain, 0)

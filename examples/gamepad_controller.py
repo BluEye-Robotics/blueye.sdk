@@ -8,22 +8,24 @@ class JoystickHandler:
 
     def __init__(self, pioneer):
         self.pioneer = pioneer
-        self.eventToFunctionMap = {
-            "BTN_NORTH": self.handleXButton,
-            "BTN_WEST": self.handleYButton,
-            "BTN_EAST": self.handleBButton,
-            "BTN_SOUTH": self.handleAButton,
-            "ABS_X": self.handleLeftXAxis,
-            "ABS_Y": self.handleLeftYAxis,
-            "ABS_RX": self.handleRightXAxis,
-            "ABS_RY": self.handleRightYAxis,
+        self.event_to_function_map = {
+            "BTN_NORTH": self.handle_x_button,
+            "BTN_WEST": self.handle_y_button,
+            "BTN_EAST": self.handle_b_button,
+            "BTN_SOUTH": self.handle_a_button,
+            "ABS_X": self.handle_left_x_axis,
+            "ABS_Y": self.handle_left_y_axis,
+            "ABS_Z": self.handle_left_trigger,
+            "ABS_RX": self.handle_right_x_axis,
+            "ABS_RY": self.handle_right_y_axis,
+            "ABS_RZ": self.handle_right_trigger,
         }
 
-    def handleXButton(self, value):
+    def handle_x_button(self, value):
         """Starts/stops the video recording"""
         self.pioneer.camera.is_recording = value
 
-    def handleYButton(self, value):
+    def handle_y_button(self, value):
         """Turns lights on or off"""
         if value:
             if self.pioneer.lights > 0:
@@ -31,17 +33,17 @@ class JoystickHandler:
             else:
                 self.pioneer.lights = 10
 
-    def handleBButton(self, value):
+    def handle_b_button(self, value):
         """Toggles autoheading"""
         if value:
             self.pioneer.motion.auto_heading_active = not self.pioneer.motion.auto_heading_active
 
-    def handleAButton(self, value):
+    def handle_a_button(self, value):
         """Toggles autodepth"""
         if value:
             self.pioneer.motion.auto_depth_active = not self.pioneer.motion.auto_depth_active
 
-    def filterAndNormalize(self, value, lower=5000, upper=32768):
+    def filter_and_normalize(self, value, lower=5000, upper=32768):
         """Normalizing the joystick axis range from (default) -32768<->32678 to -1<->1
 
         The sticks also tend to not stop at 0 when you let them go but rather some
@@ -49,24 +51,30 @@ class JoystickHandler:
         """
         if -lower < value < lower:
             return 0
-        elif lower < value < upper:
+        elif lower <= value <= upper:
             return (value - lower) / (upper - lower)
-        elif -upper < value < -lower:
+        elif -upper <= value <= -lower:
             return (value + lower) / (upper - lower)
         else:
             return 0
 
-    def handleLeftXAxis(self, value):
-        self.pioneer.motion.yaw = self.filterAndNormalize(value)
+    def handle_left_x_axis(self, value):
+        self.pioneer.motion.yaw = self.filter_and_normalize(value)
 
-    def handleLeftYAxis(self, value):
-        self.pioneer.motion.heave = self.filterAndNormalize(value)
+    def handle_left_y_axis(self, value):
+        self.pioneer.motion.heave = self.filter_and_normalize(value)
 
-    def handleRightXAxis(self, value):
-        self.pioneer.motion.sway = self.filterAndNormalize(value)
+    def handle_right_x_axis(self, value):
+        self.pioneer.motion.sway = self.filter_and_normalize(value)
 
-    def handleRightYAxis(self, value):
-        self.pioneer.motion.surge = -self.filterAndNormalize(value)
+    def handle_right_y_axis(self, value):
+        self.pioneer.motion.surge = -self.filter_and_normalize(value)
+
+    def handle_left_trigger(self, value):
+        self.pioneer.motion.slow = self.filter_and_normalize(value, lower=0, upper=255)
+
+    def handle_right_trigger(self, value):
+        self.pioneer.motion.boost = self.filter_and_normalize(value, lower=0, upper=255)
 
 
 if __name__ == "__main__":
@@ -76,8 +84,8 @@ if __name__ == "__main__":
         while True:
             events = inputs.get_gamepad()
             for event in events:
-                if event.code in handler.eventToFunctionMap:
-                    handler.eventToFunctionMap[event.code](event.state)
+                if event.code in handler.event_to_function_map:
+                    handler.event_to_function_map[event.code](event.state)
 
     except KeyboardInterrupt:
         pass
