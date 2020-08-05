@@ -9,23 +9,23 @@ jobs:
     name: Build and publish a release to PyPI
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v1
-    - name: Set up python
-      uses: actions/setup-python@v1
-    - name: Install poetry
-      uses: dschep/install-poetry-action@v1.2
-      with:
-        version: 1.0.0b3
-    - name: Install dependencies
-      run: poetry install
-    - name: Update mkdocs config for local browsing
-      run: sed -i "s/\[tool.portray.mkdocs\]$/&\nuse_directory_urls = false/" pyproject.toml
-    - name: Build HTTP documentation
-      run: npx redoc-cli bundle http-api.yml --output docs/http-api.html
-    - name: Build documentation for publishing
-      run: poetry run portray -- as_html --overwrite --output_dir blueye.sdk_docs
-    - name: Build package with poetry, including documentation
-      run: poetry build
-    - name: Publish to PyPI
-      run: poetry publish --username __token__ --password ${{ secrets.PYPI_TOKEN }}
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Set up python
+        uses: actions/setup-python@v1
+      - name: Install poetry
+        uses: dschep/install-poetry-action@v1.2
+        with:
+          version: 1.0.0b3
+      - name: Install dependencies
+        run: poetry install
+      - name: Update mkdocs config for local browsing
+        run: sed -i "s/\[tool.portray.mkdocs\]$/&\nuse_directory_urls = false/" pyproject.toml
+      - name: Build HTTP documentation
+        run: npx redoc-cli bundle http-api.yml --output docs/http-api.html
+      - name: Build documentation for publishing
+        run: poetry run portray -- as_html --overwrite --output_dir blueye.sdk_docs
+      - name: Build package with poetry, including documentation
+        run: poetry build
+      - name: Publish to PyPI
+        run: poetry publish --username __token__ --password ${{ secrets.PYPI_TOKEN }}
