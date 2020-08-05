@@ -10,48 +10,48 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
         python: [3.7, 3.8]
     steps:
-    - uses: actions/checkout@v1
-    - name: Set up Python
-      uses: actions/setup-python@v1
-      with:
-        python-version:  ${{ matrix.python }}
-    - name: Install poetry
-      uses: dschep/install-poetry-action@v1.2
-      with:
-        version: 1.0.0b3
-    - name: Install dependencies
-      run: poetry install
-    - name: Run tests
-      run: poetry run pytest -- -k "not connected_to_drone" --cov-report=xml --cov blueye
-    - name: Upload coverage
-      run: |
-        curl -s https://codecov.io/bash |\
-        bash -s -- -F \
-          $(echo ${{ matrix.os}} |\
-          cut -d "-" -f 1 |\
-          sed "s/$/_python${{ matrix.python }}/" |\
-          sed "s/\.//")
-      shell: bash
-      env:
-        CODECOV_TOKEN: "${{ secrets.CODECOV_TOKEN }}"
+      - uses: actions/checkout@v1
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install poetry
+        uses: dschep/install-poetry-action@v1.2
+        with:
+          version: 1.0.0b3
+      - name: Install dependencies
+        run: poetry install
+      - name: Run tests
+        run: poetry run pytest -- -k "not connected_to_drone" --cov-report=xml --cov blueye
+      - name: Upload coverage
+        run: |
+          curl -s https://codecov.io/bash |\
+          bash -s -- -F \
+            $(echo ${{ matrix.os}} |\
+            cut -d "-" -f 1 |\
+            sed "s/$/_python${{ matrix.python }}/" |\
+            sed "s/\.//")
+        shell: bash
+        env:
+          CODECOV_TOKEN: "${{ secrets.CODECOV_TOKEN }}"
 
   CheckFormatting:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout source
-      uses: actions/checkout@v1
-    - name: Set up Python
-      uses: actions/setup-python@v1
-      with:
-        python-version:  3.8
-    - name: Install poetry
-      uses: dschep/install-poetry-action@v1.2
-      with:
-        version: 1.0.0b3
-    - name: poetry install
-      run: poetry install
-    - name: Check formatting
-      run: poetry run black -- --check .
-    - name: Print formatting diff
-      run: poetry run black -- --diff .
-      if: failure()
+      - name: Checkout source
+        uses: actions/checkout@v1
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+      - name: Install poetry
+        uses: dschep/install-poetry-action@v1.2
+        with:
+          version: 1.0.0b3
+      - name: poetry install
+        run: poetry install
+      - name: Check formatting
+        run: poetry run black -- --check .
+      - name: Print formatting diff
+        run: poetry run black -- --diff .
+        if: failure()

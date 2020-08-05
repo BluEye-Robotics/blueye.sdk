@@ -6,28 +6,28 @@ jobs:
   DeployDocumentation:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v1
-    - name: Set up Python
-      uses: actions/setup-python@v1
-      with:
-        python-version: 3.8
-    - name: Install poetry
-      uses: dschep/install-poetry-action@v1.2
-      with:
-        version: 1.0.0b3
-    - name: Install dependencies
-      run: poetry install
-    - name: Build HTTP documentation
-      run: npx redoc-cli bundle http-api.yml --output docs/http-api.html
-    - name: Build documentation
-      run: poetry run portray -- as_html --overwrite
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+      - name: Install poetry
+        uses: dschep/install-poetry-action@v1.2
+        with:
+          version: 1.0.0b3
+      - name: Install dependencies
+        run: poetry install
+      - name: Build HTTP documentation
+        run: npx redoc-cli bundle http-api.yml --output docs/http-api.html
+      - name: Build documentation
+        run: poetry run portray -- as_html --overwrite
 
-    - name: Deploy documentation
-      uses: JamesIves/github-pages-deploy-action@master
-      env:
-        ACCESS_TOKEN: ${{ secrets.GIT_TOKEN }}
-        BASE_BRANCH: master
-        BRANCH: gh-pages
-        FOLDER: site
-      if: github.ref == 'refs/heads/master'
+      - name: Deploy documentation
+        uses: JamesIves/github-pages-deploy-action@master
+        env:
+          ACCESS_TOKEN: ${{ secrets.GIT_TOKEN }}
+          BASE_BRANCH: master
+          BRANCH: gh-pages
+          FOLDER: site
+        if: github.ref == 'refs/heads/master'
