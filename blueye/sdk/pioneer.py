@@ -74,6 +74,19 @@ class slaveTcpClient:
         return method
 
 
+class _NoConnectionTcpClient:
+    """A TCP client that raises a ConnectionError if you use any of its functions"""
+
+    def __getattr__(self, name):
+        def method(*args, **kwargs):
+            raise ConnectionError(
+                "The connection to the drone is not established, "
+                "try calling the connect method before retrying"
+            )
+
+        return method
+
+
 class Config:
     def __init__(self, parent_drone: "Pioneer"):
         self._parent_drone = parent_drone
@@ -127,16 +140,22 @@ class Pioneer:
         if slaveModeEnabled:
             self._tcp_client = slaveTcpClient()
         else:
-            self._tcp_client = TcpClient(ip=ip, port=tcpPort, autoConnect=False)
+            self._tcp_client = _NoConnectionTcpClient()
         self._state_watcher = _PioneerStateWatcher()
         self.camera = Camera(self)
         self.motion = Motion(self)
         self.logs = Logs(self)
         self.config = Config(self)
-        self.connection_established = False
 
         if autoConnect is True:
             self.connect(timeout=3)
+
+    @property
+    def connection_established(self):
+        if isinstance(self._tcp_client, _NoConnectionTcpClient):
+            return False
+        else:
+            return True
 
     def _update_drone_info(self):
         """Request and store information about the connected drone"""
@@ -172,17 +191,34 @@ class Pioneer:
         except socket.timeout as e:
             raise ConnectionError("Could not establish connection with drone") from e
 
-    def _establish_tcp_connection(self):
+    def _connect_to_tcp_socket(self):
         try:
             self._tcp_client.connect()
         except NoConnectionToDrone:
             raise ConnectionError("Could not establish connection with drone")
+
+    def _start_watchdog(self):
+        """Starts the thread for petting the watchdog
+
+        _connect_to_tcp_socket() must be called first"""
         try:
             self._tcp_client.start()
         except RuntimeError:
             # Ignore multiple starts
             pass
-        self.connection_established = True
+
+    def _clean_up_tcp_client(self):
+        """Stops the watchdog thread and closes the TCP socket"""
+        self._tcp_client.stop()
+        self._tcp_client._sock.close()
+        self._tcp_client = _NoConnectionTcpClient()
+
+    def _start_state_watcher_thread(self):
+        try:
+            self._state_watcher.start()
+        except RuntimeError:
+            # Ignore multiple starts
+            pass
 
     def connect(self, timeout=None):
         """Start receiving telemetry info from the drone, and publishing watchdog messages
@@ -192,33 +228,34 @@ class Pioneer:
         """
         self._wait_for_udp_communication(timeout)
         self._update_drone_info()
+        self._start_state_watcher_thread()
+        if self._slaveModeEnabled:
+            # No need to touch the TCP stuff if we're in slave mode so we return early
+            return
 
-        if self._slaveModeEnabled is False:
-            if not self.connection_established:
-                self._establish_tcp_connection()
-            try:
-                self.ping()
-                self.motion.send_thruster_setpoint(0, 0, 0, 0)
+        if not self.connection_established:
+            self._tcp_client = TcpClient(ip=self._ip, port=self._port, autoConnect=False)
+            self._connect_to_tcp_socket()
 
-                # The drone runs from a read-only filesystem, and as such does not keep any state,
-                # therefore when we connect to it we should send the current time
-                self.config.set_drone_time(int(time.time()))
-            except ResponseTimeout as e:
-                raise ConnectionError(
-                    f"Found drone at {self._tcp_client._ip} but was unable to take control of it. "
-                    "Is there another client connected?"
-                ) from e
-            except BrokenPipeError:
-                # Have lost connection to drone, need to reestablish TCP client
-                self._tcp_client.stop()
-                self.connection_established = False
-                self._tcp_client = TcpClient(ip=self._ip, port=self._port, autoConnect=False)
-                self._establish_tcp_connection()
         try:
-            self._state_watcher.start()
-        except RuntimeError:
-            # Ignore multiple starts
-            pass
+            self.ping()
+            self.motion.send_thruster_setpoint(0, 0, 0, 0)
+
+            # The drone runs from a read-only filesystem, and as such does not keep any state,
+            # therefore when we connect to it we should send the current time
+            self.config.set_drone_time(int(time.time()))
+
+            self._start_watchdog()
+        except ResponseTimeout as e:
+            self._clean_up_tcp_client()
+            raise ConnectionError(
+                f"Found drone at {self._ip} but was unable to take control of it. "
+                "Is there another client connected?"
+            ) from e
+        except BrokenPipeError:
+            # Have lost connection to drone, need to reestablish TCP client
+            self._clean_up_tcp_client()
+            self.connect(timeout)
 
     @property
     def lights(self) -> int:
