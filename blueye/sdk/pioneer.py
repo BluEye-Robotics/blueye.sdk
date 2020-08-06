@@ -7,7 +7,7 @@ from json import JSONDecodeError
 
 import requests
 from blueye.protocol import TcpClient, UdpClient
-from blueye.protocol.exceptions import NoConnectionToDrone, ResponseTimeout
+from blueye.protocol.exceptions import MismatchedReply, NoConnectionToDrone, ResponseTimeout
 from packaging import version
 
 from .camera import Camera
@@ -252,6 +252,11 @@ class Pioneer:
                 f"Found drone at {self._ip} but was unable to take control of it. "
                 "Is there another client connected?"
             ) from e
+        except MismatchedReply:
+            # The connection is out of sync, likely due to a previous connection being
+            # disconnected mid-transfer. Re-instantiating the connection should solve the issue
+            self._clean_up_tcp_client()
+            self.connect(timeout)
         except BrokenPipeError:
             # Have lost connection to drone, need to reestablish TCP client
             self._clean_up_tcp_client()
