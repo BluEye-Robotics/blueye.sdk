@@ -6,10 +6,9 @@ import warnings
 from json import JSONDecodeError
 
 import requests
-from packaging import version
-
 from blueye.protocol import TcpClient, UdpClient
 from blueye.protocol.exceptions import NoConnectionToDrone, ResponseTimeout
+from packaging import version
 
 from .camera import Camera
 from .constants import WaterDensities
