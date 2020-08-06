@@ -257,6 +257,11 @@ class Pioneer:
             self._clean_up_tcp_client()
             self.connect(timeout)
 
+    def disconnect(self):
+        """Disconnects the TCP connection, allowing another client to take control of the drone"""
+        if self.connection_established and not self._slaveModeEnabled:
+            self._clean_up_tcp_client()
+
     @property
     def lights(self) -> int:
         """Get or set the brightness of the pioneers bottom canister lights
