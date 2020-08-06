@@ -60,7 +60,7 @@ class SlaveModeWarning(UserWarning):
     """Raised when trying to perform action not possible in slave mode"""
 
 
-class slaveTcpClient:
+class _SlaveTcpClient:
     """A dummy TCP client that warns you if you use any of its functions"""
 
     def __getattr__(self, name):
@@ -138,7 +138,7 @@ class Pioneer:
         self._port = tcpPort
         self._slaveModeEnabled = slaveModeEnabled
         if slaveModeEnabled:
-            self._tcp_client = slaveTcpClient()
+            self._tcp_client = _SlaveTcpClient()
         else:
             self._tcp_client = _NoConnectionTcpClient()
         self._state_watcher = _PioneerStateWatcher()
