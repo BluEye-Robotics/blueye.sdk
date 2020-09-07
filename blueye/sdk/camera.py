@@ -61,7 +61,6 @@ class Tilt:
 
 class Camera:
     def __init__(self, parent_drone):
-        self._tcp_client = parent_drone._tcp_client
         self._state_watcher = parent_drone._state_watcher
         self._parent_drone = parent_drone
         self.tilt = Tilt(parent_drone)
@@ -87,9 +86,9 @@ class Camera:
     @is_recording.setter
     def is_recording(self, start_recording: bool):
         if start_recording:
-            self._tcp_client.start_recording()
+            self._parent_drone._tcp_client.start_recording()
         else:
-            self._tcp_client.stop_recording()
+            self._parent_drone._tcp_client.stop_recording()
 
     @property
     def bitrate(self) -> int:
@@ -103,13 +102,13 @@ class Camera:
 
         * bitrate (int): Get the camera bitrate
         """
-        camera_parameters = self._tcp_client.get_camera_parameters()
+        camera_parameters = self._parent_drone._tcp_client.get_camera_parameters()
         bitrate = camera_parameters[1]
         return bitrate
 
     @bitrate.setter
     def bitrate(self, bitrate: int):
-        self._tcp_client.set_camera_bitrate(bitrate)
+        self._parent_drone._tcp_client.set_camera_bitrate(bitrate)
 
     @property
     def exposure(self) -> int:
@@ -123,13 +122,13 @@ class Camera:
 
         * exposure (int): Get the camera exposure
         """
-        camera_parameters = self._tcp_client.get_camera_parameters()
+        camera_parameters = self._parent_drone._tcp_client.get_camera_parameters()
         exposure = camera_parameters[2]
         return exposure
 
     @exposure.setter
     def exposure(self, exposure: int):
-        self._tcp_client.set_camera_exposure(exposure)
+        self._parent_drone._tcp_client.set_camera_exposure(exposure)
 
     @property
     def whitebalance(self) -> int:
@@ -143,13 +142,13 @@ class Camera:
 
         * whitebalance (int): Get the camera white balance
         """
-        camera_parameters = self._tcp_client.get_camera_parameters()
+        camera_parameters = self._parent_drone._tcp_client.get_camera_parameters()
         whitebalance = camera_parameters[3]
         return whitebalance
 
     @whitebalance.setter
     def whitebalance(self, whitebalance: int):
-        self._tcp_client.set_camera_whitebalance(whitebalance)
+        self._parent_drone._tcp_client.set_camera_whitebalance(whitebalance)
 
     @property
     def hue(self) -> int:
@@ -163,13 +162,13 @@ class Camera:
 
         * hue (int): Get the camera hue
         """
-        camera_parameters = self._tcp_client.get_camera_parameters()
+        camera_parameters = self._parent_drone._tcp_client.get_camera_parameters()
         hue = camera_parameters[4]
         return hue
 
     @hue.setter
     def hue(self, hue: int):
-        self._tcp_client.set_camera_hue(hue)
+        self._parent_drone._tcp_client.set_camera_hue(hue)
 
     @property
     def resolution(self) -> int:
@@ -183,13 +182,13 @@ class Camera:
 
         * resolution (int): Get the camera resolution
         """
-        camera_parameters = self._tcp_client.get_camera_parameters()
+        camera_parameters = self._parent_drone._tcp_client.get_camera_parameters()
         resolution = camera_parameters[5]
         return resolution
 
     @resolution.setter
     def resolution(self, resolution: int):
-        self._tcp_client.set_camera_resolution(resolution)
+        self._parent_drone._tcp_client.set_camera_resolution(resolution)
 
     @property
     def framerate(self) -> int:
@@ -203,13 +202,13 @@ class Camera:
 
         * framerate (int): Get the camera frame rate
         """
-        camera_parameters = self._tcp_client.get_camera_parameters()
+        camera_parameters = self._parent_drone._tcp_client.get_camera_parameters()
         framerate = camera_parameters[6]
         return framerate
 
     @framerate.setter
     def framerate(self, framerate: int):
-        self._tcp_client.set_camera_framerate(framerate)
+        self._parent_drone._tcp_client.set_camera_framerate(framerate)
 
     @property
     def record_time(self) -> int:
@@ -229,7 +228,7 @@ class Camera:
         version this method will raise a RunTimeError.
         """
         if version.parse(self._parent_drone.software_version_short) >= version.parse("1.4.7"):
-            self._tcp_client.take_still_picture()
+            self._parent_drone._tcp_client.take_still_picture()
         else:
             raise RuntimeError(
                 "Drone software version is too old. Requires version 1.4.7 or higher."

@@ -11,7 +11,6 @@ class Motion:
 
     def __init__(self, parent_drone):
         self._parent_drone = parent_drone
-        self._tcp_client = parent_drone._tcp_client
         self._state_watcher = parent_drone._state_watcher
         self.thruster_lock = threading.Lock()
         self._current_thruster_setpoints = {"surge": 0, "sway": 0, "heave": 0, "yaw": 0}
@@ -41,7 +40,7 @@ class Motion:
         """Small helper function for building argument list to motion_input command"""
         thruster_setpoints = self.current_thruster_setpoints.values()
         boost_setpoints = self._current_boost_setpoints.values()
-        self._tcp_client.motion_input(*thruster_setpoints, *boost_setpoints)
+        self._parent_drone._tcp_client.motion_input(*thruster_setpoints, *boost_setpoints)
 
     @property
     def surge(self) -> float:
@@ -202,9 +201,9 @@ class Motion:
     @auto_depth_active.setter
     def auto_depth_active(self, active: bool):
         if active:
-            self._tcp_client.auto_depth_on()
+            self._parent_drone._tcp_client.auto_depth_on()
         else:
-            self._tcp_client.auto_depth_off()
+            self._parent_drone._tcp_client.auto_depth_off()
 
     @property
     def auto_heading_active(self) -> bool:
@@ -237,6 +236,6 @@ class Motion:
     @auto_heading_active.setter
     def auto_heading_active(self, active: bool):
         if active:
-            self._tcp_client.auto_heading_on()
+            self._parent_drone._tcp_client.auto_heading_on()
         else:
-            self._tcp_client.auto_heading_off()
+            self._parent_drone._tcp_client.auto_heading_off()
