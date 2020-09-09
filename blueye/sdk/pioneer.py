@@ -123,7 +123,7 @@ class Config:
         self._parent_drone._tcp_client.set_system_time(time)
 
 
-class Pioneer:
+class Drone:
     """A class providing a interface to the Blueye pioneer's basic functions
 
     Automatically connects to the drone using the default ip and port when instantiated, this
@@ -328,3 +328,14 @@ class Pioneer:
     def ping(self):
         """Ping drone, an exception is thrown by TcpClient if drone does not answer"""
         self._tcp_client.ping()
+
+
+class Pioneer(Drone):
+    def __init__(self, *args, **kwargs):
+        warnings.warn(
+            "This class has been deprecated and will be removed in the next major version, "
+            "please use the Drone class instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        super().__init__(*args, **kwargs)
