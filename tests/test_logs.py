@@ -26,8 +26,8 @@ def log_list_with_two_logs(requests_mock, mocker):
     )
 
     requests_mock.get(f"http://192.168.1.101/logcsv", content=str.encode(dummy_json))
-    mocked_pioneer = mocker.patch("blueye.sdk.Pioneer", autospec=True, _ip="192.168.1.101")
-    return Logs(mocked_pioneer)
+    mocked_drone = mocker.patch("blueye.sdk.Drone", autospec=True, _ip="192.168.1.101")
+    return Logs(mocked_drone)
 
 
 @pytest.mark.parametrize(
