@@ -63,12 +63,12 @@ def mocked_TcpClient(mocker):
     are added to TcpClient (they are instantiated on runtime, depending on which version of the
     protocol is requested) mocking the class in the usual way would be quite cumbersome.
     """
-    return mocker.patch("blueye.sdk.pioneer.TcpClient", create=True)
+    return mocker.patch("blueye.sdk.drone.TcpClient", create=True)
 
 
 @pytest.fixture
 def mocked_UdpClient(mocker):
-    return mocker.patch("blueye.sdk.pioneer.UdpClient", autospec=True)
+    return mocker.patch("blueye.sdk.drone.UdpClient", autospec=True)
 
 
 @pytest.fixture
@@ -296,9 +296,9 @@ def test_update_drone_info_raises_ConnectionError_when_not_connected(
 def test_wait_for_udp_com_raises_ConnectionError_on_timeout(mocker):
     import socket
 
-    mocked_udp = mocker.patch("blueye.sdk.pioneer.UdpClient", autospec=True).return_value
+    mocked_udp = mocker.patch("blueye.sdk.drone.UdpClient", autospec=True).return_value
 
-    mocked_udp.attach_mock(mocker.patch("blueye.sdk.pioneer.socket.socket", autospec=True), "_sock")
+    mocked_udp.attach_mock(mocker.patch("blueye.sdk.drone.socket.socket", autospec=True), "_sock")
     mocked_udp.get_data_dict.side_effect = socket.timeout
     with pytest.raises(ConnectionError):
         blueye.sdk.Pioneer._wait_for_udp_communication(1)
