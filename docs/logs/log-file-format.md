@@ -60,12 +60,12 @@ Column | Type    | Unit         | Description
 ### Control force
 Control force is the force exerted on the drone by the control system.
 
-Column | Type  | Unit   | Description
--------|-------|--------|------------------------------
-29     | Float | Newton | Force in the surge direction.
-30     | Float | Newton | Force in the sway direction.
-31     | Float | Newton | Force in the heave direction.
-32     | Float | Newton | Force in the yaw direction.
+Column | Type  | Unit          | Description
+-------|-------|---------------|------------------------------
+29     | Float | Newton        | Force in the surge direction.
+30     | Float | Newton        | Force in the sway direction.
+31     | Float | Newton        | Force in the heave direction.
+32     | Float | Newton-meters | Moment in the yaw direction.
 
 ### Orientation (pose)
 Column | Type  | Unit    | Description
