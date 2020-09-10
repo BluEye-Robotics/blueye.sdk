@@ -1,5 +1,5 @@
 # Log file format
-The log files from the Blueye Pioneer are in essence a recording of the data that is
+The log files from the Blueye drones are in essence a recording of the data that is
 published over UDP stored as a comma-separated-value (CSV) file.
 
 The rest of this page documents the most useful fields of the log files. The column
@@ -49,8 +49,8 @@ Column | Type    | Unit         | Description
 
 ### Lights
 Column | Type    | Unit | Description
--------|---------|------|-------------------------------------------------------------
-17     | Integer | -    | State the of the Pioneers on-board light. Range is 0 to 255.
+-------|---------|------|------------------------------------------------
+17     | Integer | -    | State of the on-board light. Range is 0 to 255.
 
 ### Depth
 Column | Type    | Unit         | Description
