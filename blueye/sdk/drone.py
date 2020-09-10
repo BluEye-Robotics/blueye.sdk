@@ -88,7 +88,7 @@ class _NoConnectionTcpClient:
 
 
 class Config:
-    def __init__(self, parent_drone: "Pioneer"):
+    def __init__(self, parent_drone: "Drone"):
         self._parent_drone = parent_drone
         self._water_density = WaterDensities.salty
 
@@ -124,7 +124,7 @@ class Config:
 
 
 class Drone:
-    """A class providing a interface to the Blueye pioneer's basic functions
+    """A class providing an interface to a Blueye drone's functions
 
     Automatically connects to the drone using the default ip and port when instantiated, this
     behaviour can be disabled by setting `autoConnect=False`.
@@ -269,7 +269,7 @@ class Drone:
 
     @property
     def lights(self) -> int:
-        """Get or set the brightness of the pioneers bottom canister lights
+        """Get or set the brightness of the bottom canister lights
 
         *Arguments*:
 

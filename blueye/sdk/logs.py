@@ -9,17 +9,17 @@ class LogFile:
     This class is a container for a log file stored on the drone
 
     The drone lists the file name, max depth, start time, and file size for each log,
-    and you can show this information by printing the log object, eg. on a Pioneer
-    object called `p`:
+    and you can show this information by printing the log object, eg. on a Drone
+    object called `myDrone`:
 
     ```
-    print(p.logs[0])
+    print(myDrone.logs[0])
     ```
 
     or, if you want to display the header you can format the object with `with_header`:
 
     ```
-    print(f"{p.logs[0]:with_header}")
+    print(f"{myDrone.logs[0]:with_header}")
     ```
 
     Calling the download() method on a log object will pull the CSV (Comma Separated
@@ -84,20 +84,20 @@ class LogFile:
 class Logs:
     """This class is an index of the log files stored on the drone
 
-    To show the available logs you simply print this object, ie. if your Pioneer object
-    is called `p`, you can do:
+    To show the available logs you simply print this object, ie. if your Drone object
+    is called `myDrone`, you can do:
 
     ```
-    print(p.logs)
+    print(myDrone.logs)
     ```
 
     This will print a list of all available logs, with some of their metadata, such as
     name and maxdepth.
 
     You can access logfile objects either by index or by name. Eg. if you want the first
-    logfile in the list you can do `p.logs[0]`, or if you want some particular log you
-    can do `p.logs["exampleName0001.csv"]`. You can even give it a slice, so if you want
-    the last 10 logs you can do `p.logs[:-10]`.
+    logfile in the list you can do `myDrone.logs[0]`, or if you want some particular log you
+    can do `myDrone.logs["exampleName0001.csv"]`. You can even give it a slice, so if you want
+    the last 10 logs you can do `myDrone.logs[:-10]`.
     """
 
     def __init__(self, parent_drone, auto_download_index=False):
