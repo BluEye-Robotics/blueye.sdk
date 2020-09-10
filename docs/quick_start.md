@@ -186,18 +186,18 @@ property of the Pioneer.
 
 ``` python
 import time
-from blueye.sdk import Pioneer
+from blueye.sdk import Drone
 # when the pioneer object is instantiatied a connection to the drone is established
-p = Pioneer()
+myDrone = Drone()
 # setting the lights property of the Pioneer object to 10
-p.lights = 10
+myDrone.lights = 10
 time.sleep(2)
 # we can also get the current brightness of the lights through the lights property
-print(f"Current light intensity: {p.lights}")
-p.lights = 0
+print(f"Current light intensity: {myDrone.lights}")
+myDrone.lights = 0
 
 # properties can also be used for reading telemetry data from the drone
-print(f"Current depth in millimeters: {p.depth}")
+print(f"Current depth in millimeters: {myDrone.depth}")
 ```
 For a overview of the properties that are availabe for controlling and reading data from the Pioneer, go to the
 [`Reference section`](https://blueye-robotics.github.io/blueye.sdk/reference/blueye/sdk/pioneer/) of the documentation.

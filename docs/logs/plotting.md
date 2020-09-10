@@ -6,11 +6,11 @@ it.
 We'll start by downloading a log file from the drone
 
 ```python
-from blueye.sdk import Pioneer
+from blueye.sdk import Drone
 
-p = Pioneer()
+myDrone = Drone()
 
-p.logs[0].download(outputName="log0.csv")
+myDrone.logs[0].download(outputName="log0.csv")
 ```
 
 We can now read the csv-file into a pandas object for easy manipulation

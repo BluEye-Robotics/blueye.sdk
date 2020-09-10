@@ -1,13 +1,13 @@
 import inputs
 
-from blueye.sdk import Pioneer
+from blueye.sdk import Drone
 
 
 class JoystickHandler:
-    """Maps pioneer functions to joystick events"""
+    """Maps drone functions to joystick events"""
 
-    def __init__(self, pioneer):
-        self.pioneer = pioneer
+    def __init__(self, drone):
+        self.drone = drone
         self.event_to_function_map = {
             "BTN_NORTH": self.handle_x_button,
             "BTN_WEST": self.handle_y_button,
@@ -23,25 +23,25 @@ class JoystickHandler:
 
     def handle_x_button(self, value):
         """Starts/stops the video recording"""
-        self.pioneer.camera.is_recording = value
+        self.drone.camera.is_recording = value
 
     def handle_y_button(self, value):
         """Turns lights on or off"""
         if value:
-            if self.pioneer.lights > 0:
-                self.pioneer.lights = 0
+            if self.drone.lights > 0:
+                self.drone.lights = 0
             else:
-                self.pioneer.lights = 10
+                self.drone.lights = 10
 
     def handle_b_button(self, value):
         """Toggles autoheading"""
         if value:
-            self.pioneer.motion.auto_heading_active = not self.pioneer.motion.auto_heading_active
+            self.drone.motion.auto_heading_active = not self.drone.motion.auto_heading_active
 
     def handle_a_button(self, value):
         """Toggles autodepth"""
         if value:
-            self.pioneer.motion.auto_depth_active = not self.pioneer.motion.auto_depth_active
+            self.drone.motion.auto_depth_active = not self.drone.motion.auto_depth_active
 
     def filter_and_normalize(self, value, lower=5000, upper=32768):
         """Normalizing the joystick axis range from (default) -32768<->32678 to -1<->1
@@ -59,28 +59,28 @@ class JoystickHandler:
             return 0
 
     def handle_left_x_axis(self, value):
-        self.pioneer.motion.yaw = self.filter_and_normalize(value)
+        self.drone.motion.yaw = self.filter_and_normalize(value)
 
     def handle_left_y_axis(self, value):
-        self.pioneer.motion.heave = self.filter_and_normalize(value)
+        self.drone.motion.heave = self.filter_and_normalize(value)
 
     def handle_right_x_axis(self, value):
-        self.pioneer.motion.sway = self.filter_and_normalize(value)
+        self.drone.motion.sway = self.filter_and_normalize(value)
 
     def handle_right_y_axis(self, value):
-        self.pioneer.motion.surge = -self.filter_and_normalize(value)
+        self.drone.motion.surge = -self.filter_and_normalize(value)
 
     def handle_left_trigger(self, value):
-        self.pioneer.motion.slow = self.filter_and_normalize(value, lower=0, upper=255)
+        self.drone.motion.slow = self.filter_and_normalize(value, lower=0, upper=255)
 
     def handle_right_trigger(self, value):
-        self.pioneer.motion.boost = self.filter_and_normalize(value, lower=0, upper=255)
+        self.drone.motion.boost = self.filter_and_normalize(value, lower=0, upper=255)
 
 
 if __name__ == "__main__":
     try:
-        p = Pioneer()
-        handler = JoystickHandler(p)
+        myDrone = Drone()
+        handler = JoystickHandler(myDrone)
         while True:
             events = inputs.get_gamepad()
             for event in events:

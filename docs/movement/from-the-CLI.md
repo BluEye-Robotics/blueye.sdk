@@ -4,9 +4,9 @@ This is a super simple example showing how you make the drone move from the comm
 
 ```python
 import time
-from blueye.sdk import Pioneer
-p = Pioneer()
-p.motion.surge = 0.4
+from blueye.sdk import Drone
+myDrone = Drone()
+myDrone.motion.surge = 0.4
 time.sleep(1)
-p.motion.surge = 0
+myDrone.motion.surge = 0
 ```
