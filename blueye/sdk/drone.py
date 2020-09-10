@@ -16,7 +16,7 @@ from .logs import Logs
 from .motion import Motion
 
 
-class _PioneerStateWatcher(threading.Thread):
+class _DroneStateWatcher(threading.Thread):
     """Subscribes to UDP messages from the drone and stores the latest data
     """
 
@@ -141,7 +141,7 @@ class Drone:
             self._tcp_client = _SlaveTcpClient()
         else:
             self._tcp_client = _NoConnectionTcpClient()
-        self._state_watcher = _PioneerStateWatcher()
+        self._state_watcher = _DroneStateWatcher()
         self.camera = Camera(self)
         self.motion = Motion(self)
         self.logs = Logs(self)
