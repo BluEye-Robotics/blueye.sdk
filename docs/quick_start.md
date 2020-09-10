@@ -121,7 +121,7 @@ The instructions below show the necessary steps to get started with the SDK on a
 
 
 
-???+ abstract "Linux"
+??? abstract "Linux"
     These instructions are directed at Ubuntu, but the process should be similar for other
     distributions.
 
