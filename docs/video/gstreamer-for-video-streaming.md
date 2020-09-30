@@ -24,7 +24,7 @@ You can find more in depth instruction for your specific operating system in the
     brew install gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav
     ```
 
-???+ abstract "Linux"
+??? abstract "Linux"
 
     On Ubuntu and Debian GStreamer and its plugins can be installed using apt.
     ```shell
@@ -47,7 +47,7 @@ After installing you can run this pipeline in your terminal:
     gst-launch-1.0 rtspsrc location=rtsp://192.168.1.101:8554/test latency=0 ! rtph264depay ! avdec_h264 ! videoconvert ! fpsdisplaysink sync=false
     ```
 
-???+ abstract "Linux and Mac OS"
+??? abstract "Linux and Mac OS"
     ``` shell
     gst-launch-1.0 rtspsrc location=rtsp://192.168.1.101:8554/test latency=0 \
         ! rtph264depay \

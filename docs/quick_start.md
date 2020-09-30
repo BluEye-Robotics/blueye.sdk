@@ -27,8 +27,8 @@ The instructions below show the necessary steps to get started with the SDK on a
 
     ```shell
     cd .\Desktop
-    mkdir pioneer_project
-    cd .\pioneer_project
+    mkdir drone_project
+    cd .\drone_project
     # Replace "C:\Program Files\Python37\python.exe" with the path
     # to the python version you want to use in the line below
     virtualenv blueye_sdk_env -p "C:\Program Files\Python37\python.exe"
@@ -121,7 +121,7 @@ The instructions below show the necessary steps to get started with the SDK on a
 
 
 
-???+ abstract "Linux"
+??? abstract "Linux"
     These instructions are directed at Ubuntu, but the process should be similar for other
     distributions.
 
@@ -173,45 +173,47 @@ The instructions below show the necessary steps to get started with the SDK on a
     pip install "blueye.sdk[examples]"
     ```
 
-## Connect to the Pioneer
-To use the SDK your computer must be connected to the Pioneer via the surface unit WiFi.
-Turn on the drone and connect to the surface unit WiFi. For a how to on turning on the Pioneer
-and surface unit you can watch the
+## Connect to the drone
+To use the SDK your computer must be connected to the drone via the surface unit WiFi. For a how-to
+on turning on the drone and surface unit you can watch the
 [quick start video](https://support.blueye.no/hc/en-us/articles/360006901473-Quick-Start-Guide).
 
-## Control the Pioneer
-Most of the pioneers functionality is controlled using python properties,
-we can illustrate the use of properties by showing how to control the lights through the `lights`
-property of the Pioneer.
+## Control the drone
+Most of the functionality is controlled using Python properties and we will illustrate the use of
+properties by showing how to control the lights:
 
 ``` python
 import time
-from blueye.sdk import Pioneer
-# when the pioneer object is instantiatied a connection to the drone is established
-p = Pioneer()
-# setting the lights property of the Pioneer object to 10
-p.lights = 10
-time.sleep(2)
-# we can also get the current brightness of the lights through the lights property
-print(f"Current light intensity: {p.lights}")
-p.lights = 0
+from blueye.sdk import Drone
 
-# properties can also be used for reading telemetry data from the drone
-print(f"Current depth in millimeters: {p.depth}")
+# When the Drone object is instantiatied a connection to the drone is established
+myDrone = Drone()
+
+# Setting the lights property to 10
+myDrone.lights = 10
+
+time.sleep(2)
+
+# We can also get the current brightness of the lights through the lights property
+print(f"Current light intensity: {myDrone.lights}")
+myDrone.lights = 0
+
+# Properties can also be used for reading telemetry data from the drone
+print(f"Current depth in millimeters: {myDrone.depth}")
 ```
-For a overview of the properties that are availabe for controlling and reading data from the Pioneer, go to the
-[`Reference section`](https://blueye-robotics.github.io/blueye.sdk/reference/blueye/sdk/pioneer/) of the documentation.
+For an overview of the properties that are available for controlling and reading data from the drone, go to the
+[`Reference section`](../../reference/blueye/sdk/drone) of the documentation.
 The valid input ranges and descriptions of the different properties can also be found there.
 
 
 !!! Tip
-    You can explore the properties of the Pioneer interactively using an interactive python interpreter like
+    You can explore the properties of the drone interactively using an interactive python interpreter like
     [`iPython`](https://ipython.readthedocs.io/en/stable/interactive/tutorial.html), install it with:
     ```shell
     pip install ipython
     ```
-    By instantiating a Pioneer object and using the completion key (normally the `tab-key ↹`) you can get a interactive list of
-    the available properties on the Pioneer, it is then easy to try setting and getting the different properties.
+    By instantiating a Drone object and using the completion key (normally the `tab-key ↹`) you can get a interactive list of
+    the available properties on the drone, it is then easy to try setting and getting the different properties.
     ![`iPython`](https://blueyenostorage.blob.core.windows.net/sdkimages/ipython-exploration.gif)
 
 
@@ -232,7 +234,7 @@ it will interfere with the commands sent from the SDK. The dive buddy app, howev
 spectator and can be used together with the SDK.
 
 ### Explore the examples
-For further examples on how to use the SDK to control the Pioneer have a look at the
+For further examples on how to use the SDK to control the drone have a look at the
 [motion examples](../movement/from-the-CLI/).
 
 Remember to install the example dependencies before running the examples.

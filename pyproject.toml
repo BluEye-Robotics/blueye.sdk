@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "blueye.sdk"
 version = "0.6.0"
-description = "SDK for controlling a Blueye Pioneer"
+description = "SDK for controlling a Blueye underwater drone"
 authors = ["Sindre Hansen <sindre.hansen@blueye.no>",
            "Aksel Lenes <aksel.lenes@blueye.no"]
 packages = [
@@ -12,7 +12,7 @@ include= ["blueye.sdk_docs/**/*"]
 readme = "README.md"
 repository="https://github.com/blueye-robotics/blueye.sdk"
 homepage ="https://www.blueyerobotics.com"
-keywords = ["Blueye", "Pioneer", "Robotics", "SDK", "Software Development Kit"]
+keywords = ["Blueye", "Pioneer", "Pro", "Robotics", "SDK", "Software Development Kit"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
@@ -68,7 +68,7 @@ name = "material"
 palette = {primary = "white", accent = "blue"}
 
 [[tool.portray.mkdocs.nav]]
-"About the Pioneer" = "README.md"
+"About the Blueye Drones" = "README.md"
 
 [[tool.portray.mkdocs.nav]]
 "Quick Start" = "docs/quick_start.md"

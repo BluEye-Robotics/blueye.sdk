@@ -2,7 +2,7 @@ import threading
 
 
 class Motion:
-    """Control the motion of the Pioneer, and set automatic control modes
+    """Control the motion of the drone, and set automatic control modes
 
     Motion can be set one degree of freedom at a time by using the 4 motion properties
     (surge, sway, heave and yaw) or for all 4 degrees of freedom in one go through the
@@ -111,13 +111,13 @@ class Motion:
             self._send_motion_input_message()
 
     def send_thruster_setpoint(self, surge, sway, heave, yaw):
-        """Control the thrusters of the pioneer
+        """Control the thrusters of the drone
 
-        Set reference values between -1 and 1 for each controllable degree of freedom on the Pioneer.
+        Set reference values between -1 and 1 for each controllable degree of freedom on the drone.
         The reference values are mapped linearly to a thruster force, a set point of -1 correspons
-        to maximum negative force and a set point of 1 corresponds to maximum positive force. For the
-        yaw direction the reference is a moment not a force, as the yaw direction is rotational not
-        translational.
+        to maximum negative force and a set point of 1 corresponds to maximum positive force. For
+        the yaw direction the reference is a moment not a force, as the yaw direction is rotational
+        not translational.
 
 
         Arguments:
@@ -175,7 +175,7 @@ class Motion:
         """Enable or disable the auto depth control mode
 
         When auto depth is active, input for the heave direction to the thruster_setpoint function
-        specifies a speed set point instead of a force set point. A control loop on the Pioneer will
+        specifies a speed set point instead of a force set point. A control loop on the drone will
         then attempt to maintain the wanted speed in the heave direction as long as auto depth is
         active.
 
@@ -211,7 +211,7 @@ class Motion:
 
         When auto heading is active, input for the yaw direction to the thruster_setpoint function
         specifies a angular speed set point instead of a moment set point. A control loop on the
-        Pioneer will then attempt to maintain the wanted angular velocity in the yaw direction as
+        drone will then attempt to maintain the wanted angular velocity in the yaw direction as
         long as auto heading is active.
 
         *Arguments*:

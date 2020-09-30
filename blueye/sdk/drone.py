@@ -16,7 +16,7 @@ from .logs import Logs
 from .motion import Motion
 
 
-class _PioneerStateWatcher(threading.Thread):
+class _DroneStateWatcher(threading.Thread):
     """Subscribes to UDP messages from the drone and stores the latest data
     """
 
@@ -88,7 +88,7 @@ class _NoConnectionTcpClient:
 
 
 class Config:
-    def __init__(self, parent_drone: "Pioneer"):
+    def __init__(self, parent_drone: "Drone"):
         self._parent_drone = parent_drone
         self._water_density = WaterDensities.salty
 
@@ -123,8 +123,8 @@ class Config:
         self._parent_drone._tcp_client.set_system_time(time)
 
 
-class Pioneer:
-    """A class providing a interface to the Blueye pioneer's basic functions
+class Drone:
+    """A class providing an interface to a Blueye drone's functions
 
     Automatically connects to the drone using the default ip and port when instantiated, this
     behaviour can be disabled by setting `autoConnect=False`.
@@ -141,7 +141,7 @@ class Pioneer:
             self._tcp_client = _SlaveTcpClient()
         else:
             self._tcp_client = _NoConnectionTcpClient()
-        self._state_watcher = _PioneerStateWatcher()
+        self._state_watcher = _DroneStateWatcher()
         self.camera = Camera(self)
         self.motion = Motion(self)
         self.logs = Logs(self)
@@ -269,7 +269,7 @@ class Pioneer:
 
     @property
     def lights(self) -> int:
-        """Get or set the brightness of the pioneers bottom canister lights
+        """Get or set the brightness of the bottom canister lights
 
         *Arguments*:
 
@@ -328,3 +328,14 @@ class Pioneer:
     def ping(self):
         """Ping drone, an exception is thrown by TcpClient if drone does not answer"""
         self._tcp_client.ping()
+
+
+class Pioneer(Drone):
+    def __init__(self, *args, **kwargs):
+        warnings.warn(
+            "This class has been deprecated and will be removed in the next major version, "
+            "please use the Drone class instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        super().__init__(*args, **kwargs)

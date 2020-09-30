@@ -1,7 +1,7 @@
-# Logs from the Pioneer
+# Logs from the drone
 
-When the Pioneer is powered on a new comma-separated-value file where it
-stores telemetry data such as depth, temperature, and more is created. The drone will log data
+When the drone is powered on a new comma-separated-value file, where it
+stores telemetry data such as depth, temperature, and more, is created. The drone will log data
 as long as it is powered on. These files can be downloaded to your local system where you can plot
 them or use them however you see fit.
 
@@ -9,11 +9,11 @@ them or use them however you see fit.
 If your drone has completed 5 dives and you do
 
 ```python
-from blueye.sdk import Pioneer
+from blueye.sdk import Drone
 
-p = Pioneer()
+myDrone = Drone()
 
-print(p.logs)
+print(myDrone.logs)
 ```
 
 you should see something like the following lines be printed
@@ -31,13 +31,13 @@ The first part of the filename (the part before the -) is the unique ID of your 
 and second part is the dive number. In addition we see the start time of the dive, the
 maximum depth reached, as well as the size of the log file.
 
-
 You might notice that there can be more log files listed then the amount of dives you have done.
-This is due to the fact that the Pioneer creates a new log file whenever it is turned on,
+This is due to the fact that the drone creates a new log file whenever it is turned on,
 regardless of whether you actually took the drone for a dive. To easier separate out the
 log files that result from actual dives you can filter out all the dives with a max depth
 below some threshold. The Blueye app does this, filtering out all log files with a max depth
 below 20 cm.
+
 ## Downloading a log file to your computer
 When you want to download a log file all you have to do is to call the `download()`
 method on the desired log and the file will be downloaded to your current folder.
@@ -51,11 +51,11 @@ Downloading multiple log files is solved by a simple Python for-loop. The exampl
 shows how one can download the last 3 logs to the current folder:
 
 ```python
-from blueye.sdk import Pioneer
+from blueye.sdk import Drone
 
-p = Pioneer()
+myDrone = Drone()
 
-for log in p.logs[:-3]:
+for log in myDrone.logs[:-3]:
     log.download()
 ```
 
@@ -64,12 +64,12 @@ The example code below shows how one can add a simple prefix to all log files wh
 downloading:
 
 ```python
-from blueye.sdk import Pioneer
+from blueye.sdk import Drone
 
-p = Pioneer()
+myDrone = Drone()
 
 prefix = "pre_"
 
-for log in p.logs:
+for log in myDrone.logs:
     log.download(output_name=prefix+log.name)
 ```
