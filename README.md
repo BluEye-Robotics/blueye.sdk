@@ -21,7 +21,7 @@ A Python package for remote control of the Blueye Pioneer and Blueye Pro underwa
 The Blueye Pioneer and Blueye Pro are underwater drones designed for inspections. It is produced and sold by the Norwegian company [`Blueye Robotics`](https://www.blueyerobotics.com/).
 Here is a Youtube video  that gives a overview of the system and its specifications.
 
-[![about the Blueye Pro video](https://images.ctfassets.net/qpo1z0ycuc50/2JLqOXRoSIMe370zfrtgQV/445995589cbdb4e6baa406d97bcbf667/DSC05337_3_Mathilde_edit.jpg?w=1920&q=80)](https://www.youtube.com/watch?v=HI2CQbnCsoU)
+[![about the Blueye Pro video](https://user-images.githubusercontent.com/8504604/94681437-bd52f000-0323-11eb-8cb3-e87c6711cc04.jpg)](https://www.youtube.com/watch?v=HI2CQbnCsoU)
 
 ## This SDK and the Blueye drones
 A Blueye drone is normally controlled via a mobile device through the Blueye App ([iOS](https://apps.apple.com/no/app/blueye/id1369714041)/[Android](https://play.google.com/store/apps/details?id=no.blueye.blueyeapp)). The mobile device
