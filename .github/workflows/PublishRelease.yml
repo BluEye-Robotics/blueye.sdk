@@ -10,11 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
       - name: Set up python
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v2
       - name: Install poetry
-        uses: dschep/install-poetry-action@v1.2
+        uses: dschep/install-poetry-action@v1.3
         with:
           version: 1.0.0b3
       - name: Install dependencies
