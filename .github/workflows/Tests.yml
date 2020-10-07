@@ -22,7 +22,7 @@ jobs:
       - name: Install dependencies
         run: poetry install
       - name: Run tests
-        run: poetry run pytest -- -k "not connected_to_drone" --cov-report=xml --cov blueye
+        run: poetry run pytest -k "not connected_to_drone" --cov-report=xml --cov blueye
       - name: Upload coverage
         run: |
           curl -s https://codecov.io/bash |\
@@ -52,7 +52,7 @@ jobs:
       - name: poetry install
         run: poetry install
       - name: Check formatting
-        run: poetry run black -- --check .
+        run: poetry run black --check .
       - name: Print formatting diff
-        run: poetry run black -- --diff .
+        run: poetry run black --diff .
         if: failure()

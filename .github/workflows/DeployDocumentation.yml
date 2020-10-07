@@ -21,7 +21,7 @@ jobs:
       - name: Build HTTP documentation
         run: npx redoc-cli bundle http-api.yml --output docs/http-api.html
       - name: Build documentation
-        run: poetry run portray -- as_html --overwrite
+        run: poetry run portray as_html --overwrite
 
       - name: Deploy documentation
         uses: JamesIves/github-pages-deploy-action@master
