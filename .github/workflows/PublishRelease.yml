@@ -10,13 +10,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
       - name: Set up python
-        uses: actions/setup-python@v1
-      - name: Install poetry
-        uses: dschep/install-poetry-action@v1.2
+        uses: actions/setup-python@v2
+      - name: Install Poetry
+        uses: abatilo/actions-poetry@v2.0.0
         with:
-          version: 1.0.0b3
+          poetry-version: 1.1.2
       - name: Install dependencies
         run: poetry install
       - name: Update mkdocs config for local browsing
@@ -24,7 +24,7 @@ jobs:
       - name: Build HTTP documentation
         run: npx redoc-cli bundle http-api.yml --output docs/http-api.html
       - name: Build documentation for publishing
-        run: poetry run portray -- as_html --overwrite --output_dir blueye.sdk_docs
+        run: poetry run portray as_html --overwrite --output_dir blueye.sdk_docs
       - name: Build package with poetry, including documentation
         run: poetry build
       - name: Publish to PyPI
