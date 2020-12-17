@@ -616,8 +616,15 @@ paths:
           required: false
           schema:
             type: integer
-            default: 0
+            example:  "...01.jpg&tz-offset=60"
             format: int32
+        - name: logo
+          in: query
+          description: "Add logo to picture. 0 = Default logo set by drone, 1 = Drone default, 2 = Custom logo"
+          required: false
+          schema:
+            type: integer
+            example: "...01.jpg&logo=1"
 
       responses:
         '200':
@@ -641,6 +648,58 @@ paths:
                          }
             response = requests.get("http://192.168.1.101/picture/overlay", params=parameters)
             with open(f"{pictureName}_overlay.jpg", "wb") as f:
+              f.write(response.content)
+  /picture/logo:
+    post:
+      tags:
+        - "Pictures"
+      summary: Upload logo
+      description: |
+        Upload user selectable logo (PNG) which can be enabled by using logo="2" on either 
+        /picture or /picture/overlay or as a watermark on videos
+      parameters:
+        - name: image
+          in: query
+          description: "The file you want to use as a watermark on images"
+          required: true
+          content:
+            image/jpeg:
+              schema:
+                type: object
+      responses:
+        '200':
+            description: Upload sucessful
+            content:
+              text/html:
+                schema:
+                  type: object
+        '400':
+            description: Invalid image file!
+            content:
+              text/html:
+                schema:
+                  type: object
+        '413':
+            description:  Request Entity Too Large
+            content:
+              text/html:
+                schema:
+                  type: object
+      x-code-samples:
+        - lang: "curl"
+          source: |
+            curl -X GET -G "http://192.168.1.101/picture/thumbnail" \
+              -d "file=picture_BYEDP123456_2019-01-01_000001.001.jpg"
+
+        - lang: "Python"
+          source: |
+            import requests
+            pictureName = "picture_BYEDP123456_2019-01-01_000001.001"
+            parameters = {
+                          "file": f"{pictureName}.jpg",
+                         }
+            response = requests.get("http://192.168.1.101/picture/thumbnail", params=parameters)
+            with open(f"{pictureName}.jpg", "wb") as f:
               f.write(response.content)
 
 components:
