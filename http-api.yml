@@ -428,11 +428,11 @@ paths:
             example: "picture_BYEDP123456_2019-01-01_000001.001.jpg"
         - name: logo
           in: query
-          description: "Add logo to picture. 0 = Default logo set by drone, 1 = Drone default, 2 = Custom logo"
+          description: "Add logo to picture. 0 = No logo, 1 = Drone default logo, 2 = User uploaded logo"
           required: false
           schema:
             type: integer
-            example: "picture_BYEDP123456_2019-01-01_000001.001.jpg&logo=1"
+            example: "2"
         - name: tz-offset
           in: query
           description: "Add timezone offset to the picture EXIF data in minutes, can also be negative number.
@@ -440,7 +440,7 @@ paths:
           required: false
           schema:
             type: integer
-            example: "picture_BYEDP123456_2019-01-01_000001.001.jpg&tz-offset=-180"
+            example: "-180"
       responses:
         '200':
             description: Picture
@@ -616,15 +616,17 @@ paths:
           required: false
           schema:
             type: integer
-            example:  "...01.jpg&tz-offset=60"
+            default: 0
+            example:  "60"
             format: int32
         - name: logo
           in: query
-          description: "Add logo to picture. 0 = Default logo set by drone, 1 = Drone default, 2 = Custom logo"
+          description: "Add logo to picture. 0 = No logo, 1 = Drone default logo, 2 = User uploaded logo"
           required: false
           schema:
             type: integer
-            example: "...01.jpg&logo=1"
+            default: 0
+            example: "2"
 
       responses:
         '200':
@@ -649,23 +651,27 @@ paths:
             response = requests.get("http://192.168.1.101/picture/overlay", params=parameters)
             with open(f"{pictureName}_overlay.jpg", "wb") as f:
               f.write(response.content)
-  /picture/logo:
+  /asset/logo:
     post:
       tags:
         - "Pictures"
       summary: Upload logo
       description: |
-        Upload user selectable logo (PNG) which can be enabled by using logo="2" on either 
-        /picture or /picture/overlay or as a watermark on videos
+        Upload user selectable logo for watermarking videos and pictures.
+        Allowed filetype: JPG or PNG. Max resolution: 2000px. Max file size: 5MB.
       parameters:
         - name: image
           in: query
-          description: "The file you want to use as a watermark on images"
+          description: "JPG or PNG, <5MB, <2000px"
           required: true
           content:
-            image/jpeg:
+            'image/png':
               schema:
                 type: object
+            'image/jpeg':
+              schema:
+                type: object
+
       responses:
         '200':
             description: Upload sucessful
@@ -673,34 +679,94 @@ paths:
               text/html:
                 schema:
                   type: object
-        '400':
-            description: Invalid image file!
-            content:
-              text/html:
-                schema:
-                  type: object
-        '413':
-            description:  Request Entity Too Large
-            content:
-              text/html:
-                schema:
-                  type: object
+
       x-code-samples:
         - lang: "curl"
           source: |
-            curl -X GET -G "http://192.168.1.101/picture/thumbnail" \
-              -d "file=picture_BYEDP123456_2019-01-01_000001.001.jpg"
+            curl -X GET "http://192.168.1.101/asset/logo"
 
         - lang: "Python"
           source: |
             import requests
-            pictureName = "picture_BYEDP123456_2019-01-01_000001.001"
-            parameters = {
-                          "file": f"{pictureName}.jpg",
-                         }
-            response = requests.get("http://192.168.1.101/picture/thumbnail", params=parameters)
-            with open(f"{pictureName}.jpg", "wb") as f:
+            response = requests.get("http://192.168.1.101/asset/logo")
+            print(response.text)
+    get:
+      tags:
+        - "Pictures"
+      summary: Download logo
+      description: |
+        Download the user uploaded logo as a PNG
+
+      responses:
+        '200':
+            description: Logo as a PNG file
+            content:
+              image/png:
+                schema:
+                  type: object
+
+      x-code-samples:
+        - lang: "curl"
+          source: |
+            curl -X GET "http://192.168.1.101/asset/logo"
+
+        - lang: "Python"
+          source: |
+            import requests
+            response = requests.get("http://192.168.1.101/asset/logo")
+            with open("logo.png", "wb") as f:
               f.write(response.content)
+
+    delete:
+      tags:
+        - "Pictures"
+      summary: Delete logo
+      description: |
+        Delete the uploaded logo
+      responses:
+        '200':
+            description: Logo as PNG file
+            content:
+              image/png:
+                schema:
+                  type: object
+
+      x-code-samples:
+        - lang: "curl"
+          source: |
+            curl -X DELETE "http://192.168.1.101/asset/logo"
+
+        - lang: "Python"
+          source: |
+            import requests
+            response = requests.delete("http://192.168.1.101/asset/logo")
+            print(response.text)
+
+  /asset/logo/md5:
+    get:
+      tags:
+        - "Pictures"
+      summary: Get logo md5sum
+      description: |
+        Returns uploaded logo md5sum
+      responses:
+        '200':
+          description: A JSON with the user defined logo MD5 checksum
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Md5"
+
+      x-code-samples:
+        - lang: "curl"
+          source: |
+            curl -X GET "http://192.168.1.101/asset/logo/md5"
+
+        - lang: "Python"
+          source: |
+            import requests
+            response = requests.get("http://192.168.1.101/asset/logo/md5")
+            print(response.json())
 
 components:
   schemas:
@@ -796,3 +862,12 @@ components:
           description: |
             Filename of the picture. Stored in the format "picture_DRONEID_TIMESTAMP.jpg"
           example: picture_BYEDP123456_2019-01-01_000001.001.jpg
+
+    Md5:
+      type: object
+      properties:
+        md5sum:
+          type: string
+          description: |
+            MD5 checksum
+          example: "10194c9eb82fd0237342ce80a2747ed2"
