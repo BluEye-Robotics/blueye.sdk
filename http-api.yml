@@ -665,10 +665,7 @@ paths:
           description: "JPG or PNG, <5MB, <2000px"
           required: true
           content:
-            'image/png':
-              schema:
-                type: object
-            'image/jpeg':
+            image:
               schema:
                 type: object
 
