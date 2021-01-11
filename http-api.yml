@@ -675,7 +675,20 @@ paths:
             content:
               text/html:
                 schema:
-                  type: object
+                  type: string
+                  description: Image upload successful!
+
+        '400':
+            description: Upload failed
+            content:
+              text/html:
+                schema:
+                  oneOf:
+                    - $ref: "#/components/schemas/FileNotPresent"
+                    - $ref: "#/components/schemas/FileSizeTooLarge"
+                    - $ref: "#/components/schemas/ImageIsCorrupt"
+                    - $ref: "#/components/schemas/ImageIsInvalid"
+                    - $ref: "#/components/schemas/ImageResolutionTooHigh"
 
       x-code-samples:
         - lang: "curl"
@@ -702,6 +715,14 @@ paths:
                 schema:
                   type: object
 
+        '404':
+            description: No logo found
+            content:
+              text/html:
+                schema:
+                  type: string
+                  description: No custom logo found!
+
       x-code-samples:
         - lang: "curl"
           source: |
@@ -724,9 +745,11 @@ paths:
         '200':
             description: Logo as PNG file
             content:
-              image/png:
+              text/html:
                 schema:
-                  type: object
+                  oneOf:
+                    - $ref: "#/components/schemas/LogoDeleted"
+                    - $ref: "#/components/schemas/NoLogoToDelete"
 
       x-code-samples:
         - lang: "curl"
@@ -754,6 +777,13 @@ paths:
               schema:
                 $ref: "#/components/schemas/Md5"
 
+        '404':
+          description: No custom logo found!
+          content:
+            text/html:
+              schema:
+                type: string
+                description: No custom logo found!
       x-code-samples:
         - lang: "curl"
           source: |
@@ -868,3 +898,52 @@ components:
           description: |
             MD5 checksum
           example: "10194c9eb82fd0237342ce80a2747ed2"
+
+    FileNotPresent:
+      type: object
+      properties:
+        text/html:
+          type: string
+          description: File not present
+
+    FileSizeTooLarge:
+      type: object
+      properties:
+        text/html:
+          type: string
+          description: File size is too large
+
+    ImageIsCorrupt:
+      type: object
+      properties:
+        text/html:
+          type: string
+          description: Image is corrupt
+
+    ImageResolutionTooHigh:
+      type: object
+      properties:
+        text/html:
+          type: string
+          description: Image resolution is too high
+
+    ImageIsInvalid:
+      type: object
+      properties:
+        text/html:
+          type: string
+          description: Invalid image file
+
+    LogoDeleted:
+      type: object
+      properties:
+        text/html:
+          type: string
+          description: Custom logo deleted!
+
+    NoLogoToDelete:
+      type: object
+      properties:
+        text/html:
+          type: string
+          description: No logo found to delete!
