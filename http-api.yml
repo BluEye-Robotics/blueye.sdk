@@ -693,12 +693,16 @@ paths:
       x-code-samples:
         - lang: "curl"
           source: |
-            curl -X GET "http://192.168.1.101/asset/logo"
+            curl -X POST "http://192.168.1.101/asset/logo" --form 'image=@"logo.png"'
 
         - lang: "Python"
           source: |
             import requests
-            response = requests.get("http://192.168.1.101/asset/logo")
+            url = "http://192.168.1.101/asset/logo"
+            files=[
+              ('image', ('logo.png', open('logo.png', 'rb'), 'image/png'))
+            ]
+            response = requests.post(url, files=files)
             print(response.text)
     get:
       tags:
@@ -743,7 +747,7 @@ paths:
         Delete the uploaded logo
       responses:
         '200':
-            description: Logo as PNG file
+            description: Deletes the uploaded logo file
             content:
               text/html:
                 schema:
