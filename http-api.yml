@@ -709,13 +709,16 @@ paths:
         - "Pictures"
       summary: Download logo
       description: |
-        Download the user uploaded logo as a PNG
+        Download the original user uploaded logo (PNG or JPG)
 
       responses:
         '200':
-            description: Logo as a PNG file
+            description: Logo as an image file PNG/JPG
             content:
               image/png:
+                schema:
+                  type: object
+              image/jpeg:
                 schema:
                   type: object
 
