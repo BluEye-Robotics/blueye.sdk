@@ -33,7 +33,7 @@ class TestFunctionsWhenConnectedToDrone:
         reason="a camera stream must have been run before camera recording is possible"
     )
     def test_camera_recording(self, real_drone):
-        test_read_property = real_drone.camera.is_recording
+        _ = real_drone.camera.is_recording
         real_drone.camera.is_recording = True
         polling_assert_with_timeout(real_drone.camera, "is_recording", True, 1)
         real_drone.camera.is_recording = False
@@ -43,47 +43,47 @@ class TestFunctionsWhenConnectedToDrone:
         reason="a camera stream must have been run before camera recording is possible"
     )
     def test_camera_record_time(self, real_drone):
-        test_read_property = real_drone.camera.record_time
+        _ = real_drone.camera.record_time
         real_drone.camera.is_recording = True
         polling_assert_with_timeout(real_drone.camera, "record_time", 1, 3)
 
     def test_camera_bitrate(self, real_drone):
-        test_read_parameter = real_drone.camera.bitrate
+        _ = real_drone.camera.bitrate
         real_drone.camera.bitrate = 2000000
         polling_assert_with_timeout(real_drone.camera, "bitrate", 2000000, 1)
         real_drone.camera.bitrate = 3000000
         polling_assert_with_timeout(real_drone.camera, "bitrate", 3000000, 1)
 
     def test_camera_exposure(self, real_drone):
-        test_read_parameter = real_drone.camera.exposure
+        _ = real_drone.camera.exposure
         real_drone.camera.exposure = 1200
         polling_assert_with_timeout(real_drone.camera, "exposure", 1200, 1)
         real_drone.camera.exposure = 1400
         polling_assert_with_timeout(real_drone.camera, "exposure", 1400, 1)
 
     def test_camera_whitebalance(self, real_drone):
-        test_read_parameter = real_drone.camera.whitebalance
+        _ = real_drone.camera.whitebalance
         real_drone.camera.whitebalance = 3200
         polling_assert_with_timeout(real_drone.camera, "whitebalance", 3200, 1)
         real_drone.camera.whitebalance = 3400
         polling_assert_with_timeout(real_drone.camera, "whitebalance", 3400, 1)
 
     def test_camera_hue(self, real_drone):
-        test_read_parameter = real_drone.camera.hue
+        _ = real_drone.camera.hue
         real_drone.camera.hue = 20
         polling_assert_with_timeout(real_drone.camera, "hue", 20, 1)
         real_drone.camera.hue = 30
         polling_assert_with_timeout(real_drone.camera, "hue", 30, 1)
 
     def test_camera_resolution(self, real_drone):
-        test_read_parameter = real_drone.camera.resolution
+        _ = real_drone.camera.resolution
         real_drone.camera.resolution = 480
         polling_assert_with_timeout(real_drone.camera, "resolution", 480, 1)
         real_drone.camera.resolution = 720
         polling_assert_with_timeout(real_drone.camera, "resolution", 720, 1)
 
     def test_camera_framerate(self, real_drone):
-        test_read_parameter = real_drone.camera.framerate
+        _ = real_drone.camera.framerate
         real_drone.camera.framerate = 25
         polling_assert_with_timeout(real_drone.camera, "framerate", 25, 1)
         real_drone.camera.framerate = 30
