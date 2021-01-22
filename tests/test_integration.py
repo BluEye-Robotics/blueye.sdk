@@ -77,10 +77,10 @@ class TestFunctionsWhenConnectedToDrone:
 
     def test_camera_resolution(self, real_drone):
         _ = real_drone.camera.resolution
-        real_drone.camera.resolution = 480
-        polling_assert_with_timeout(real_drone.camera, "resolution", 480, 1)
         real_drone.camera.resolution = 720
         polling_assert_with_timeout(real_drone.camera, "resolution", 720, 1)
+        real_drone.camera.resolution = 1080
+        polling_assert_with_timeout(real_drone.camera, "resolution", 1080, 1)
 
     def test_camera_framerate(self, real_drone):
         _ = real_drone.camera.framerate
