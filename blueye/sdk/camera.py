@@ -1,5 +1,13 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 import numpy as np
 from packaging import version
+
+# Necessary to avoid cyclic imports
+if TYPE_CHECKING:
+    from .drone import Drone
 
 
 class Tilt:
@@ -17,7 +25,7 @@ class Tilt:
         ).astype([("tilt_angle", np.float)])
         return tilt_angle_array["tilt_angle"] / 2
 
-    def __init__(self, parent_drone):
+    def __init__(self, parent_drone: Drone):
         self._parent_drone = parent_drone
 
     def set_speed(self, speed: int):
@@ -60,7 +68,7 @@ class Tilt:
 
 
 class Camera:
-    def __init__(self, parent_drone):
+    def __init__(self, parent_drone: Drone):
         self._state_watcher = parent_drone._state_watcher
         self._parent_drone = parent_drone
         self.tilt = Tilt(parent_drone)
