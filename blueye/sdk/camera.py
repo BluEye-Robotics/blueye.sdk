@@ -67,11 +67,34 @@ class Tilt:
         return self._tilt_angle_from_debug_flags(debug_flags)
 
 
+class Overlay:
+    """Control the overlay on videos and pictures"""
+
+    def __init__(self, parent_drone: Drone):
+        self._parent_drone = parent_drone
+
+    @property
+    def temperature_enabled(self) -> bool:
+        params = self._parent_drone._tcp_client.get_overlay_parameters()
+        if params[1] == 1:
+            return True
+        else:
+            return False
+
+    @temperature_enabled.setter
+    def temperature_enabled(self, enable_temperature: bool):
+        if enable_temperature is True:
+            self._parent_drone._tcp_client.set_overlay_temperature_enabled(1)
+        else:
+            self._parent_drone._tcp_client.set_overlay_temperature_enabled(0)
+
+
 class Camera:
     def __init__(self, parent_drone: Drone):
         self._state_watcher = parent_drone._state_watcher
         self._parent_drone = parent_drone
         self.tilt = Tilt(parent_drone)
+        self.overlay = Overlay(parent_drone)
 
     @property
     def is_recording(self) -> bool:
