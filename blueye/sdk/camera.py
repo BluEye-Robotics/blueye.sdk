@@ -88,6 +88,21 @@ class Overlay:
         else:
             self._parent_drone._tcp_client.set_overlay_temperature_enabled(0)
 
+    @property
+    def depth_enabled(self) -> bool:
+        params = self._parent_drone._tcp_client.get_overlay_parameters()
+        if params[2] == 1:
+            return True
+        else:
+            return False
+
+    @depth_enabled.setter
+    def depth_enabled(self, enable_depth: bool):
+        if enable_depth is True:
+            self._parent_drone._tcp_client.set_overlay_depth_enabled(1)
+        else:
+            self._parent_drone._tcp_client.set_overlay_depth_enabled(0)
+
 
 class Camera:
     def __init__(self, parent_drone: Drone):
