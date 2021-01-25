@@ -80,6 +80,11 @@ class DepthUnitOverlay(Enum):
     FEET = 1
 
 
+class TemperatureUnitOverlay(Enum):
+    CELSIUS = 0
+    FAHRENHEIT = 1
+
+
 class Overlay:
     """Control the overlay on videos and pictures"""
 
@@ -188,6 +193,20 @@ class Overlay:
             warnings.warn("Depth unit index out of range, ignoring", RuntimeWarning)
         else:
             self._parent_drone._tcp_client.set_overlay_depth_unit(unit_index.value)
+
+    @property
+    def temperature_unit(self) -> DepthUnitOverlay:
+        params = self._parent_drone._tcp_client.get_overlay_parameters()
+        return TemperatureUnitOverlay(params[8])
+
+    @temperature_unit.setter
+    def temperature_unit(self, unit_index):
+        if not isinstance(unit_index, TemperatureUnitOverlay):
+            warnings.warn("Invalid temperature unit index, ignoring", RuntimeWarning)
+        elif unit_index.value not in range(2):
+            warnings.warn("Temperature unit index out of range, ignoring", RuntimeWarning)
+        else:
+            self._parent_drone._tcp_client.set_overlay_temperature_unit(unit_index.value)
 
 
 class Camera:
