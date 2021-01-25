@@ -217,6 +217,18 @@ class Overlay:
     def timezone_offset(self, offset: int):
         self._parent_drone._tcp_client.set_overlay_tz_offset(offset)
 
+    @property
+    def margin_width(self) -> int:
+        params = self._parent_drone._tcp_client.get_overlay_parameters()
+        return params[10]
+
+    @margin_width.setter
+    def margin_width(self, width: int):
+        if width < 0:
+            warnings.warn("Invalid margin width, ignoring", RuntimeWarning)
+        else:
+            self._parent_drone._tcp_client.set_overlay_margin_width(width)
+
 
 class Camera:
     def __init__(self, parent_drone: Drone):
