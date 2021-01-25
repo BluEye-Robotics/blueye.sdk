@@ -204,3 +204,23 @@ class TestOverlay:
         with pytest.warns(RuntimeWarning):
             mocked_drone.camera.overlay.margin_width = -10
         mocked_drone._tcp_client.set_overlay_margin_width.called is False
+
+    def test_set_margin_height(self, mocked_drone: Drone):
+        mocked_drone.camera.overlay.margin_height = 10
+        mocked_drone._tcp_client.set_overlay_margin_height.assert_called_with(10)
+        mocked_drone.camera.overlay.margin_height = 20
+        mocked_drone._tcp_client.set_overlay_margin_height.assert_called_with(20)
+
+    def test_get_margin_height(self, mocked_drone: Drone):
+        params = list(self.default_overlay_parameters)
+        mocked_drone._tcp_client.get_overlay_parameters.return_value = params
+        assert mocked_drone.camera.overlay.margin_height == 15
+
+        params[11] = 60
+        mocked_drone._tcp_client.get_overlay_parameters.return_value = params
+        assert mocked_drone.camera.overlay.margin_height == 60
+
+    def test_sub_zero_margin_height_is_warned_and_ignored(self, mocked_drone: Drone):
+        with pytest.warns(RuntimeWarning):
+            mocked_drone.camera.overlay.margin_height = -10
+        mocked_drone._tcp_client.set_overlay_margin_height.called is False
