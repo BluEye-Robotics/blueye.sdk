@@ -133,6 +133,21 @@ class Overlay:
         else:
             self._parent_drone._tcp_client.set_overlay_tilt_enabled(0)
 
+    @property
+    def date_enabled(self) -> bool:
+        params = self._parent_drone._tcp_client.get_overlay_parameters()
+        if params[5] == 1:
+            return True
+        else:
+            return False
+
+    @date_enabled.setter
+    def date_enabled(self, enable_date: bool):
+        if enable_date is True:
+            self._parent_drone._tcp_client.set_overlay_date_enabled(1)
+        else:
+            self._parent_drone._tcp_client.set_overlay_date_enabled(0)
+
 
 class Camera:
     def __init__(self, parent_drone: Drone):
