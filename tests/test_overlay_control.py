@@ -1,3 +1,4 @@
+from blueye.sdk.camera import DepthUnitOverlay
 import pytest
 from blueye.sdk import Drone, LogoOverlay
 
@@ -127,3 +128,24 @@ class TestOverlay:
         params[6] = 2
         mocked_drone._tcp_client.get_overlay_parameters.return_value = params
         assert mocked_drone.camera.overlay.logo == LogoOverlay["CUSTOM"]
+
+    def test_select_depth_unit(self, mocked_drone: Drone):
+        mocked_drone.camera.overlay.depth_unit = DepthUnitOverlay.METERS
+        mocked_drone._tcp_client.set_overlay_depth_unit.assert_called_with(0)
+
+        mocked_drone.camera.overlay.depth_unit = DepthUnitOverlay.FEET
+        mocked_drone._tcp_client.set_overlay_depth_unit.assert_called_with(1)
+
+    def test_select_depth_unit_warns_and_ignores_for_out_of_range_value(self, mocked_drone: Drone):
+        with pytest.warns(RuntimeWarning):
+            mocked_drone.camera.overlay.depth_unit = 2
+        assert mocked_drone._tcp_client.set_overlay_depth_unit.called is False
+
+    def test_get_depth_unit(self, mocked_drone: Drone):
+        params = list(self.default_overlay_parameters)
+        mocked_drone._tcp_client.get_overlay_parameters.return_value = params
+        assert mocked_drone.camera.overlay.depth_unit == DepthUnitOverlay["METERS"]
+
+        params[7] = 1
+        mocked_drone._tcp_client.get_overlay_parameters.return_value = params
+        assert mocked_drone.camera.overlay.depth_unit == DepthUnitOverlay["FEET"]
