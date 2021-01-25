@@ -1,6 +1,5 @@
-from blueye.sdk.camera import DepthUnitOverlay
 import pytest
-from blueye.sdk import Drone, LogoOverlay
+from blueye.sdk import DepthUnitOverlay, Drone, LogoOverlay, TemperatureUnitOverlay
 
 
 class TestOverlay:
@@ -149,3 +148,24 @@ class TestOverlay:
         params[7] = 1
         mocked_drone._tcp_client.get_overlay_parameters.return_value = params
         assert mocked_drone.camera.overlay.depth_unit == DepthUnitOverlay["FEET"]
+
+    def test_select_temp_unit(self, mocked_drone: Drone):
+        mocked_drone.camera.overlay.temperature_unit = TemperatureUnitOverlay.CELSIUS
+        mocked_drone._tcp_client.set_overlay_temperature_unit.assert_called_with(0)
+
+        mocked_drone.camera.overlay.temperature_unit = TemperatureUnitOverlay.FAHRENHEIT
+        mocked_drone._tcp_client.set_overlay_temperature_unit.assert_called_with(1)
+
+    def test_select_temp_unit_warns_and_ignores_for_out_of_range_value(self, mocked_drone: Drone):
+        with pytest.warns(RuntimeWarning):
+            mocked_drone.camera.overlay.temperature_unit = 2
+        assert mocked_drone._tcp_client.set_overlay_temperature_unit.called is False
+
+    def test_get_temp_unit(self, mocked_drone: Drone):
+        params = list(self.default_overlay_parameters)
+        mocked_drone._tcp_client.get_overlay_parameters.return_value = params
+        assert mocked_drone.camera.overlay.temperature_unit == TemperatureUnitOverlay["CELSIUS"]
+
+        params[8] = 1
+        mocked_drone._tcp_client.get_overlay_parameters.return_value = params
+        assert mocked_drone.camera.overlay.temperature_unit == TemperatureUnitOverlay["FAHRENHEIT"]
