@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import warnings
+from enum import Enum
 from typing import TYPE_CHECKING
 
 import numpy as np
@@ -65,6 +67,12 @@ class Tilt:
 
         debug_flags = self._parent_drone._state_watcher.general_state["debug_flags"]
         return self._tilt_angle_from_debug_flags(debug_flags)
+
+
+class LogoOverlay(Enum):
+    DISABLED = 0
+    BLUEYE = 1
+    CUSTOM = 2
 
 
 class Overlay:
@@ -147,6 +155,20 @@ class Overlay:
             self._parent_drone._tcp_client.set_overlay_date_enabled(1)
         else:
             self._parent_drone._tcp_client.set_overlay_date_enabled(0)
+
+    @property
+    def logo(self) -> LogoOverlay:
+        params = self._parent_drone._tcp_client.get_overlay_parameters()
+        return LogoOverlay(params[6])
+
+    @logo.setter
+    def logo(self, logo_index: LogoOverlay):
+        if not isinstance(logo_index, LogoOverlay):
+            warnings.warn("Invalid logo index, ignoring", RuntimeWarning)
+        elif logo_index.value not in range(3):
+            warnings.warn("Logo index out of range, ignoring", RuntimeWarning)
+        else:
+            self._parent_drone._tcp_client.set_overlay_logo_index(logo_index.value)
 
 
 class Camera:
