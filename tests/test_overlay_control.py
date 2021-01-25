@@ -68,3 +68,18 @@ class TestOverlay:
         params[3] = 1
         mocked_drone._tcp_client.get_overlay_parameters.return_value = params
         assert mocked_drone.camera.overlay.heading_enabled is True
+
+    def test_enable_tilt(self, mocked_drone: Drone):
+        mocked_drone.camera.overlay.tilt_enabled = True
+        mocked_drone._tcp_client.set_overlay_tilt_enabled.assert_called_with(1)
+        mocked_drone.camera.overlay.tilt_enabled = False
+        mocked_drone._tcp_client.set_overlay_tilt_enabled.assert_called_with(0)
+
+    def test_get_tilt_state(self, mocked_drone: Drone):
+        params = list(self.default_overlay_parameters)
+        mocked_drone._tcp_client.get_overlay_parameters.return_value = params
+        assert mocked_drone.camera.overlay.tilt_enabled is False
+
+        params[4] = 1
+        mocked_drone._tcp_client.get_overlay_parameters.return_value = params
+        assert mocked_drone.camera.overlay.tilt_enabled is True
