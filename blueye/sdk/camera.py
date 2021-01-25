@@ -75,6 +75,11 @@ class LogoOverlay(Enum):
     CUSTOM = 2
 
 
+class DepthUnitOverlay(Enum):
+    METERS = 0
+    FEET = 1
+
+
 class Overlay:
     """Control the overlay on videos and pictures"""
 
@@ -169,6 +174,20 @@ class Overlay:
             warnings.warn("Logo index out of range, ignoring", RuntimeWarning)
         else:
             self._parent_drone._tcp_client.set_overlay_logo_index(logo_index.value)
+
+    @property
+    def depth_unit(self) -> DepthUnitOverlay:
+        params = self._parent_drone._tcp_client.get_overlay_parameters()
+        return DepthUnitOverlay(params[7])
+
+    @depth_unit.setter
+    def depth_unit(self, unit_index):
+        if not isinstance(unit_index, DepthUnitOverlay):
+            warnings.warn("Invalid depth unit index, ignoring", RuntimeWarning)
+        elif unit_index.value not in range(2):
+            warnings.warn("Depth unit index out of range, ignoring", RuntimeWarning)
+        else:
+            self._parent_drone._tcp_client.set_overlay_depth_unit(unit_index.value)
 
 
 class Camera:
