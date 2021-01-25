@@ -118,6 +118,21 @@ class Overlay:
         else:
             self._parent_drone._tcp_client.set_overlay_heading_enabled(0)
 
+    @property
+    def tilt_enabled(self) -> bool:
+        params = self._parent_drone._tcp_client.get_overlay_parameters()
+        if params[4] == 1:
+            return True
+        else:
+            return False
+
+    @tilt_enabled.setter
+    def tilt_enabled(self, enable_tilt: bool):
+        if enable_tilt is True:
+            self._parent_drone._tcp_client.set_overlay_tilt_enabled(1)
+        else:
+            self._parent_drone._tcp_client.set_overlay_tilt_enabled(0)
+
 
 class Camera:
     def __init__(self, parent_drone: Drone):
