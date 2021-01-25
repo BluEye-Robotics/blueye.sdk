@@ -186,7 +186,7 @@ class Overlay:
         return DepthUnitOverlay(params[7])
 
     @depth_unit.setter
-    def depth_unit(self, unit_index):
+    def depth_unit(self, unit_index: DepthUnitOverlay):
         if not isinstance(unit_index, DepthUnitOverlay):
             warnings.warn("Invalid depth unit index, ignoring", RuntimeWarning)
         elif unit_index.value not in range(2):
@@ -200,7 +200,7 @@ class Overlay:
         return TemperatureUnitOverlay(params[8])
 
     @temperature_unit.setter
-    def temperature_unit(self, unit_index):
+    def temperature_unit(self, unit_index: TemperatureUnitOverlay):
         if not isinstance(unit_index, TemperatureUnitOverlay):
             warnings.warn("Invalid temperature unit index, ignoring", RuntimeWarning)
         elif unit_index.value not in range(2):
