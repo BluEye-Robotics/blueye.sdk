@@ -83,3 +83,18 @@ class TestOverlay:
         params[4] = 1
         mocked_drone._tcp_client.get_overlay_parameters.return_value = params
         assert mocked_drone.camera.overlay.tilt_enabled is True
+
+    def test_enable_date(self, mocked_drone: Drone):
+        mocked_drone.camera.overlay.date_enabled = True
+        mocked_drone._tcp_client.set_overlay_date_enabled.assert_called_with(1)
+        mocked_drone.camera.overlay.date_enabled = False
+        mocked_drone._tcp_client.set_overlay_date_enabled.assert_called_with(0)
+
+    def test_get_date_state(self, mocked_drone: Drone):
+        params = list(self.default_overlay_parameters)
+        mocked_drone._tcp_client.get_overlay_parameters.return_value = params
+        assert mocked_drone.camera.overlay.date_enabled is False
+
+        params[5] = 1
+        mocked_drone._tcp_client.get_overlay_parameters.return_value = params
+        assert mocked_drone.camera.overlay.date_enabled is True
