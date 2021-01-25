@@ -1,4 +1,5 @@
-from blueye.sdk import Drone
+import pytest
+from blueye.sdk import Drone, LogoOverlay
 
 
 class TestOverlay:
@@ -98,3 +99,31 @@ class TestOverlay:
         params[5] = 1
         mocked_drone._tcp_client.get_overlay_parameters.return_value = params
         assert mocked_drone.camera.overlay.date_enabled is True
+
+    def test_select_logo(self, mocked_drone: Drone):
+        mocked_drone.camera.overlay.logo = LogoOverlay.DISABLED
+        mocked_drone._tcp_client.set_overlay_logo_index.assert_called_with(0)
+
+        mocked_drone.camera.overlay.logo = LogoOverlay.BLUEYE
+        mocked_drone._tcp_client.set_overlay_logo_index.assert_called_with(1)
+
+        mocked_drone.camera.overlay.logo = LogoOverlay.CUSTOM
+        mocked_drone._tcp_client.set_overlay_logo_index.assert_called_with(2)
+
+    def test_select_logo_warns_and_ignores_for_out_of_range_value(self, mocked_drone: Drone):
+        with pytest.warns(RuntimeWarning):
+            mocked_drone.camera.overlay.logo = 3
+        assert mocked_drone._tcp_client.set_overlay_logo_index.called is False
+
+    def test_get_logo_state(self, mocked_drone: Drone):
+        params = list(self.default_overlay_parameters)
+        mocked_drone._tcp_client.get_overlay_parameters.return_value = params
+        assert mocked_drone.camera.overlay.logo == LogoOverlay["DISABLED"]
+
+        params[6] = 1
+        mocked_drone._tcp_client.get_overlay_parameters.return_value = params
+        assert mocked_drone.camera.overlay.logo == LogoOverlay["BLUEYE"]
+
+        params[6] = 2
+        mocked_drone._tcp_client.get_overlay_parameters.return_value = params
+        assert mocked_drone.camera.overlay.logo == LogoOverlay["CUSTOM"]
