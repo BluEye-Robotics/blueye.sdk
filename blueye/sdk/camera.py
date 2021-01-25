@@ -85,6 +85,15 @@ class TemperatureUnitOverlay(Enum):
     FAHRENHEIT = 1
 
 
+class FontSizeOverlay(Enum):
+    PX15 = 15
+    PX20 = 20
+    PX25 = 25
+    PX30 = 30
+    PX35 = 35
+    PX40 = 40
+
+
 class Overlay:
     """Control the overlay on videos and pictures"""
 
@@ -240,6 +249,20 @@ class Overlay:
             warnings.warn("Invalid margin height, ignoring", RuntimeWarning)
         else:
             self._parent_drone._tcp_client.set_overlay_margin_height(height)
+
+    @property
+    def font_size(self) -> FontSizeOverlay:
+        params = self._parent_drone._tcp_client.get_overlay_parameters()
+        return FontSizeOverlay(params[12])
+
+    @font_size.setter
+    def font_size(self, size: FontSizeOverlay):
+        if not isinstance(size, FontSizeOverlay):
+            warnings.warn("Invalid font size, ignoring", RuntimeWarning)
+        elif size.value not in range(15, 41):
+            warnings.warn("Font size out of range, ignoring", RuntimeWarning)
+        else:
+            self._parent_drone._tcp_client.set_overlay_font_size(size.value)
 
 
 class Camera:

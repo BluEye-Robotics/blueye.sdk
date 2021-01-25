@@ -1,5 +1,5 @@
 import pytest
-from blueye.sdk import DepthUnitOverlay, Drone, LogoOverlay, TemperatureUnitOverlay
+from blueye.sdk import DepthUnitOverlay, Drone, FontSizeOverlay, LogoOverlay, TemperatureUnitOverlay
 
 
 class TestOverlay:
@@ -224,3 +224,36 @@ class TestOverlay:
         with pytest.warns(RuntimeWarning):
             mocked_drone.camera.overlay.margin_height = -10
         mocked_drone._tcp_client.set_overlay_margin_height.called is False
+
+    def test_select_font_size(self, mocked_drone: Drone):
+        mocked_drone.camera.overlay.font_size = FontSizeOverlay.PX15
+        mocked_drone._tcp_client.set_overlay_font_size.assert_called_with(15)
+
+        mocked_drone.camera.overlay.font_size = FontSizeOverlay.PX20
+        mocked_drone._tcp_client.set_overlay_font_size.assert_called_with(20)
+
+        mocked_drone.camera.overlay.font_size = FontSizeOverlay.PX25
+        mocked_drone._tcp_client.set_overlay_font_size.assert_called_with(25)
+
+        mocked_drone.camera.overlay.font_size = FontSizeOverlay.PX30
+        mocked_drone._tcp_client.set_overlay_font_size.assert_called_with(30)
+
+        mocked_drone.camera.overlay.font_size = FontSizeOverlay.PX35
+        mocked_drone._tcp_client.set_overlay_font_size.assert_called_with(35)
+
+        mocked_drone.camera.overlay.font_size = FontSizeOverlay.PX40
+        mocked_drone._tcp_client.set_overlay_font_size.assert_called_with(40)
+
+    def test_select_font_size_warns_and_ignores_for_out_of_range_value(self, mocked_drone: Drone):
+        with pytest.warns(RuntimeWarning):
+            mocked_drone.camera.overlay.font_size = 100
+        assert mocked_drone._tcp_client.set_overlay_font_size.called is False
+
+    def test_get_font_size(self, mocked_drone: Drone):
+        params = list(self.default_overlay_parameters)
+        mocked_drone._tcp_client.get_overlay_parameters.return_value = params
+        assert mocked_drone.camera.overlay.font_size == FontSizeOverlay(25)
+
+        params[12] = 40
+        mocked_drone._tcp_client.get_overlay_parameters.return_value = params
+        assert mocked_drone.camera.overlay.font_size == FontSizeOverlay(40)
