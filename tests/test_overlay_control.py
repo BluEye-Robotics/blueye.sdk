@@ -53,3 +53,18 @@ class TestOverlay:
         params[2] = 1
         mocked_drone._tcp_client.get_overlay_parameters.return_value = params
         assert mocked_drone.camera.overlay.depth_enabled is True
+
+    def test_enable_heading(self, mocked_drone: Drone):
+        mocked_drone.camera.overlay.heading_enabled = True
+        mocked_drone._tcp_client.set_overlay_heading_enabled.assert_called_with(1)
+        mocked_drone.camera.overlay.heading_enabled = False
+        mocked_drone._tcp_client.set_overlay_heading_enabled.assert_called_with(0)
+
+    def test_get_heading_state(self, mocked_drone: Drone):
+        params = list(self.default_overlay_parameters)
+        mocked_drone._tcp_client.get_overlay_parameters.return_value = params
+        assert mocked_drone.camera.overlay.heading_enabled is False
+
+        params[3] = 1
+        mocked_drone._tcp_client.get_overlay_parameters.return_value = params
+        assert mocked_drone.camera.overlay.heading_enabled is True

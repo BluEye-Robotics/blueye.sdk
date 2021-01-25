@@ -103,6 +103,21 @@ class Overlay:
         else:
             self._parent_drone._tcp_client.set_overlay_depth_enabled(0)
 
+    @property
+    def heading_enabled(self) -> bool:
+        params = self._parent_drone._tcp_client.get_overlay_parameters()
+        if params[3] == 1:
+            return True
+        else:
+            return False
+
+    @heading_enabled.setter
+    def heading_enabled(self, enable_heading: bool):
+        if enable_heading is True:
+            self._parent_drone._tcp_client.set_overlay_heading_enabled(1)
+        else:
+            self._parent_drone._tcp_client.set_overlay_heading_enabled(0)
+
 
 class Camera:
     def __init__(self, parent_drone: Drone):
