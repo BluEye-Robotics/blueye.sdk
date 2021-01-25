@@ -208,6 +208,15 @@ class Overlay:
         else:
             self._parent_drone._tcp_client.set_overlay_temperature_unit(unit_index.value)
 
+    @property
+    def timezone_offset(self) -> int:
+        params = self._parent_drone._tcp_client.get_overlay_parameters()
+        return params[9]
+
+    @timezone_offset.setter
+    def timezone_offset(self, offset: int):
+        self._parent_drone._tcp_client.set_overlay_tz_offset(offset)
+
 
 class Camera:
     def __init__(self, parent_drone: Drone):

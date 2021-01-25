@@ -169,3 +169,18 @@ class TestOverlay:
         params[8] = 1
         mocked_drone._tcp_client.get_overlay_parameters.return_value = params
         assert mocked_drone.camera.overlay.temperature_unit == TemperatureUnitOverlay["FAHRENHEIT"]
+
+    def test_set_timezone_offset(self, mocked_drone: Drone):
+        mocked_drone.camera.overlay.timezone_offset = 120
+        mocked_drone._tcp_client.set_overlay_tz_offset.assert_called_with(120)
+        mocked_drone.camera.overlay.timezone_offset = -60
+        mocked_drone._tcp_client.set_overlay_tz_offset.assert_called_with(-60)
+
+    def test_get_timezone_offset(self, mocked_drone: Drone):
+        params = list(self.default_overlay_parameters)
+        mocked_drone._tcp_client.get_overlay_parameters.return_value = params
+        assert mocked_drone.camera.overlay.timezone_offset == 60
+
+        params[9] = -60
+        mocked_drone._tcp_client.get_overlay_parameters.return_value = params
+        assert mocked_drone.camera.overlay.timezone_offset == -60
