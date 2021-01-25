@@ -229,6 +229,18 @@ class Overlay:
         else:
             self._parent_drone._tcp_client.set_overlay_margin_width(width)
 
+    @property
+    def margin_height(self) -> int:
+        params = self._parent_drone._tcp_client.get_overlay_parameters()
+        return params[11]
+
+    @margin_height.setter
+    def margin_height(self, height: int):
+        if height < 0:
+            warnings.warn("Invalid margin height, ignoring", RuntimeWarning)
+        else:
+            self._parent_drone._tcp_client.set_overlay_margin_height(height)
+
 
 class Camera:
     def __init__(self, parent_drone: Drone):
