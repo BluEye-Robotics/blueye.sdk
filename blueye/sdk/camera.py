@@ -300,6 +300,37 @@ class Overlay:
             return
         self._parent_drone._tcp_client.set_overlay_subtitle(encoded_subtitle + b"\x00")
 
+    @property
+    def date_format(self) -> str:
+        """Get or set the format string for the time displayed in the overlay
+
+        Must be a string containing only ASCII characters, with a max length of 63 characters.
+
+        The format codes are defined by the C89 standard, see
+        https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes
+        for an overview of the available codes.
+        """
+
+        params = self._parent_drone._tcp_client.get_overlay_parameters()
+        return params[15].decode("utf-8").rstrip("\x00")
+
+    @date_format.setter
+    def date_format(self, input_format_str: str):
+        format_str = input_format_str
+        if len(format_str) > 63:
+            warnings.warn(
+                "Too long date format string, truncating to 63 characters", RuntimeWarning
+            )
+            format_str = format_str[:63]
+        try:
+            encoded_format_str = bytes(format_str, "ascii")
+        except UnicodeEncodeError:
+            warnings.warn(
+                "Date format string can only contain ASCII characters, ignoring", RuntimeWarning
+            )
+            return
+        self._parent_drone._tcp_client.set_overlay_date_format(encoded_format_str + b"\x00")
+
 
 class Camera:
     def __init__(self, parent_drone: Drone):
