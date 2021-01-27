@@ -257,3 +257,26 @@ class TestOverlay:
         params[12] = 40
         mocked_drone._tcp_client.get_overlay_parameters.return_value = params
         assert mocked_drone.camera.overlay.font_size == FontSizeOverlay(40)
+
+    def test_set_title(self, mocked_drone: Drone):
+        mocked_drone.camera.overlay.title = "a" * 63
+        mocked_drone._tcp_client.set_overlay_title.assert_called_with(b"a" * 63 + b"\x00")
+
+    def test_set_title_warns_and_ignores_non_ascii(self, mocked_drone: Drone):
+        with pytest.warns(RuntimeWarning):
+            mocked_drone.camera.overlay.title = "æøå"
+        assert mocked_drone._tcp_client.set_overlay_title.called is False
+
+    def test_set_title_warns_and_truncates_too_long_title(self, mocked_drone: Drone):
+        with pytest.warns(RuntimeWarning):
+            mocked_drone.camera.overlay.title = "a" * 64
+        mocked_drone._tcp_client.set_overlay_title.assert_called_with(b"a" * 63 + b"\x00")
+
+    def test_get_title(self, mocked_drone: Drone):
+        params = list(self.default_overlay_parameters)
+        mocked_drone._tcp_client.get_overlay_parameters.return_value = params
+        assert mocked_drone.camera.overlay.title == ""
+
+        params[13] = b"abc" * 21 + b"\x00"
+        mocked_drone._tcp_client.get_overlay_parameters.return_value = params
+        assert mocked_drone.camera.overlay.title == "abc" * 21
