@@ -264,6 +264,24 @@ class Overlay:
         else:
             self._parent_drone._tcp_client.set_overlay_font_size(size.value)
 
+    @property
+    def title(self) -> str:
+        params = self._parent_drone._tcp_client.get_overlay_parameters()
+        return params[13].decode("utf-8").rstrip("\x00")
+
+    @title.setter
+    def title(self, input_title: str):
+        new_title = input_title
+        if len(input_title) > 63:
+            warnings.warn("Too long title, truncating to 63 characters", RuntimeWarning)
+            new_title = new_title[:63]
+        try:
+            encoded_title = bytes(new_title, "ascii")
+        except UnicodeEncodeError:
+            warnings.warn("Title can only contain ASCII characters, ignoring", RuntimeWarning)
+            return
+        self._parent_drone._tcp_client.set_overlay_title(encoded_title + b"\x00")
+
 
 class Camera:
     def __init__(self, parent_drone: Drone):
