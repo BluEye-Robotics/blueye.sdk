@@ -282,6 +282,24 @@ class Overlay:
             return
         self._parent_drone._tcp_client.set_overlay_title(encoded_title + b"\x00")
 
+    @property
+    def subtitle(self) -> str:
+        params = self._parent_drone._tcp_client.get_overlay_parameters()
+        return params[14].decode("utf-8").rstrip("\x00")
+
+    @subtitle.setter
+    def subtitle(self, input_subtitle: str):
+        new_subtitle = input_subtitle
+        if len(input_subtitle) > 63:
+            warnings.warn("Too long subtitle, truncating to 63 characters", RuntimeWarning)
+            new_subtitle = new_subtitle[:63]
+        try:
+            encoded_subtitle = bytes(new_subtitle, "ascii")
+        except UnicodeEncodeError:
+            warnings.warn("Subtitle can only contain ASCII characters, ignoring", RuntimeWarning)
+            return
+        self._parent_drone._tcp_client.set_overlay_subtitle(encoded_subtitle + b"\x00")
+
 
 class Camera:
     def __init__(self, parent_drone: Drone):
