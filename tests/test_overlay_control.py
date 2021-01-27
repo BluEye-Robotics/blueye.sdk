@@ -303,3 +303,26 @@ class TestOverlay:
         params[14] = b"abc" * 21 + b"\x00"
         mocked_drone._tcp_client.get_overlay_parameters.return_value = params
         assert mocked_drone.camera.overlay.subtitle == "abc" * 21
+
+    def test_set_date_format(self, mocked_drone: Drone):
+        mocked_drone.camera.overlay.date_format = "a" * 63
+        mocked_drone._tcp_client.set_overlay_date_format.assert_called_with(b"a" * 63 + b"\x00")
+
+    def test_set_date_format_warns_and_ignores_non_ascii(self, mocked_drone: Drone):
+        with pytest.warns(RuntimeWarning):
+            mocked_drone.camera.overlay.date_format = "æøå"
+        assert mocked_drone._tcp_client.set_overlay_date_format.called is False
+
+    def test_set_date_format_warns_and_truncates_too_long_date_format(self, mocked_drone: Drone):
+        with pytest.warns(RuntimeWarning):
+            mocked_drone.camera.overlay.date_format = "a" * 64
+        mocked_drone._tcp_client.set_overlay_date_format.assert_called_with(b"a" * 63 + b"\x00")
+
+    def test_get_date_format(self, mocked_drone: Drone):
+        params = list(self.default_overlay_parameters)
+        mocked_drone._tcp_client.get_overlay_parameters.return_value = params
+        assert mocked_drone.camera.overlay.date_format == "%m/%d/%Y %I:%M:%S %p"
+
+        params[15] = b"abc" * 21 + b"\x00"
+        mocked_drone._tcp_client.get_overlay_parameters.return_value = params
+        assert mocked_drone.camera.overlay.date_format == "abc" * 21
