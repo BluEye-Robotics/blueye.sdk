@@ -343,3 +343,21 @@ class TestOverlay:
         mocker.patch("builtins.open", mocker.mock_open())
         with pytest.raises(HTTPError):
             mocked_drone.camera.overlay.upload_logo("whatever.png")
+
+    def test_download_logo_default_path(self, mocked_drone: Drone, requests_mock, mocker):
+        png_content = b"Don't look too close, I'm a png I swear"
+        filename = "logo.png"
+        headers = {"Content-Disposition": f'inline; filename="{filename}"'}
+        requests_mock.get("http://192.168.1.101/asset/logo", content=png_content, headers=headers)
+        mocked_open = mocker.patch("builtins.open", mocker.mock_open())
+        mocked_drone.camera.overlay.download_logo()
+        mocked_open.assert_called_once_with(f"./{filename}", "wb")
+        mocked_filehandle = mocked_open()
+        mocked_filehandle.write.assert_called_once_with(png_content)
+
+    def test_download_logo_raises_exception_for_404(self, mocked_drone: Drone, requests_mock):
+        from requests.exceptions import HTTPError
+
+        requests_mock.get("http://192.168.1.101/asset/logo", status_code=404)
+        with pytest.raises(HTTPError):
+            mocked_drone.camera.overlay.download_logo()

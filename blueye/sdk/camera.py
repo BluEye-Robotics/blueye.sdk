@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 import warnings
 from enum import Enum
 from typing import TYPE_CHECKING
@@ -352,6 +353,23 @@ class Overlay:
             files = {"image": f}
             response = requests.post(url, files=files, timeout=1)
         response.raise_for_status()
+
+    def download_logo(self, output_directory="."):
+        """Download the original user uploaded logo (PNG or JPG)
+
+        Select the download directory with the output_directory parameter.
+
+        *Exceptions*:
+
+        * `requests.exceptions.HTTPError` : If no custom logo is uploaded.
+
+        * `requests.exceptions.ConnectTimeout` : If unable to create a connection within 1s
+        """
+        response = requests.get(f"http://{self._parent_drone._ip}/asset/logo", timeout=1)
+        response.raise_for_status()
+        filename = re.findall('filename="(.+)"', response.headers["Content-Disposition"])[0]
+        with open(f"{output_directory}/{filename}", "wb") as f:
+            f.write(response.content)
 
 
 class Camera:
