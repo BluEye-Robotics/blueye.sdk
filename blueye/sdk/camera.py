@@ -371,6 +371,18 @@ class Overlay:
         with open(f"{output_directory}/{filename}", "wb") as f:
             f.write(response.content)
 
+    def delete_logo(self):
+        """Delete the user uploaded logo from the drone
+
+        *Exceptions*:
+
+        * `requests.exceptions.HTTPError` : If an error occurs during deletion
+
+        * `requests.exceptions.ConnectTimeout` : If unable to create a connection within 1s
+        """
+        response = requests.delete(f"http://{self._parent_drone._ip}/asset/logo", timeout=1)
+        response.raise_for_status()
+
 
 class Camera:
     def __init__(self, parent_drone: Drone):
