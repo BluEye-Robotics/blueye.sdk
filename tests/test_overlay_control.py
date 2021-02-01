@@ -361,3 +361,14 @@ class TestOverlay:
         requests_mock.get("http://192.168.1.101/asset/logo", status_code=404)
         with pytest.raises(HTTPError):
             mocked_drone.camera.overlay.download_logo()
+
+    def test_delete_logo(self, mocked_drone: Drone, requests_mock):
+        requests_mock.delete("http://192.168.1.101/asset/logo", text="Custom logo deleted!")
+        mocked_drone.camera.overlay.delete_logo()
+
+    def test_delete_logo_raises_exception_on_non_200(self, mocked_drone: Drone, requests_mock):
+        requests_mock.delete("http://192.168.1.101/asset/logo", status_code=500)
+        from requests.exceptions import HTTPError
+
+        with pytest.raises(HTTPError):
+            mocked_drone.camera.overlay.delete_logo()
