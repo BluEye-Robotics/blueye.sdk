@@ -1,0 +1,724 @@
+openapi: '3.0.2'
+info:
+  title: Blueye HTTP API
+  version: '1.0.1'
+servers:
+  - url: http://192.168.1.101/
+
+tags:
+  - name: "Diagnostics"
+  - name: "Subtitles"
+  - name: "Dive data"
+  - name: "Pictures"
+
+paths:
+  /diagnostics/drone_info:
+    get:
+      tags:
+        - "Diagnostics"
+      summary: Drone information
+      description: |
+        Returns a JSON string of drone information. Using this endpoint is the easiest way to check
+        if there is a drone connected to your network.
+      responses:
+        '200':
+          description: A JSON string of drone information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DroneInfo'
+      x-code-samples:
+        - lang: "curl"
+          source: |
+            curl -X GET "http://192.168.1.101/diagnostics/drone_info"
+
+        - lang: "Python"
+          source: |
+            import requests
+            response = requests.get("http://192.168.1.101/diagnostics/drone_info")
+            print(response.json())
+
+  /diagnostics/iperf:
+    post:
+      tags:
+        - "Diagnostics"
+      summary: Tether bandwidth test
+      description: |
+        Performs a bandwidth test on the connection between the surface unit and the drone. Set the
+        test duration with the "duration"-parameter. A longer duration should yield a more accurate
+        result.
+      parameters:
+        - in: query
+          name: "duration"
+          description: Duration of the test to perform. Unit is seconds.
+          required: false
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: A JSON string with the performance test results.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IperfResult"
+      x-code-samples:
+        - lang: "curl"
+          source: |
+            curl -X POST "http://192.168.1.101/diagnostics/iperf" -d duration=5
+
+        - lang: "Python"
+          source: |
+            import requests
+            response = requests.post("http://192.168.1.101/diagnostics/iperf",
+                                      data={"duration": 5})
+            print(response.json())
+
+  /logcsv:
+    get:
+      tags:
+        - "Dive data"
+      summary: Array of logs
+      description: |
+        Returns an array of logs from the drone. Each array item represents an available log file on
+        the drone. Use the /logcsv/{filename} endpoint to get the full log.
+
+      responses:
+        '200':
+          description: Array of logs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Log'
+      x-code-samples:
+        - lang: "curl"
+          source: |
+            curl -X GET "http://192.168.1.101/logcsv"
+
+        - lang: "Python"
+          source: |
+            import requests
+            response = requests.get("http://192.168.1.101/logcsv")
+            print(response.json())
+
+  /logcsv/{filename}:
+    get:
+      tags:
+        - "Dive data"
+      summary: CSV log-file
+      description: Downloads a comma-separated-value (CSV) log-file with the requested name.
+      parameters:
+        - name: filename
+          in: path
+          description: Filename of log to download
+          required: true
+          schema:
+            type: string
+        - name: format
+          in: query
+          description: Add format=dashware to get a CSV file customized for use in Dashware to create video overlays
+          required: false
+          schema:
+            type: string
+            example: "dashware"
+            default: ""
+
+      responses:
+        '200':
+          description: Comma-separated-value file with log data
+          content:
+            text/csv:
+              schema:
+                type: string
+      x-code-samples:
+        - lang: "curl"
+          source: |
+            # To get log with filename ea9ac92e1817a1d4-00090.csv
+            curl -X GET "http://192.168.1.101/logcsv/ea9ac92e1817a1d4-00090.csv"
+
+        - lang: "Python"
+          source: |
+            import requests
+            logname = "ea9ac92e1817a1d4-00090.csv"
+            response = requests.get(f"http://192.168.1.101/logcsv/{logname}")
+            with open(logname, "wb") as f:
+              f.write(response.content)
+
+  /pix4d:
+    get:
+      tags:
+        - "Dive data"
+      summary: Download CSV file with data for creating scaled 3D models
+      description: |
+        Download CSV file with data for creating scaled 3D models in Pix4d
+      parameters:
+        - name: file
+          in: query
+          description: "Name of the video file to download data for"
+          required: true
+          schema:
+            type: string
+            example: "video_BYEDP123456_2019-01-01_000001.mp4"
+        - name: frame-step
+          in: query
+          description: "Amout of steps between each frame grab"
+          required: false
+          schema:
+            type: integer
+            example: "20"
+      responses:
+        '200':
+          description: Comma-separated-value file with log data
+          content:
+            text/csv:
+              schema:
+                type: string
+      x-code-samples:
+        - lang: "curl"
+          source: |
+            # To get CSV logfile for filename video_BYEDP123456_2019-01-01_000001.mp4
+            curl -X GET "http://192.168.1.101/pix4d/" \
+              -d "file=video_BYEDP123456_2019-01-01_000001.mp4"
+
+        - lang: "Python"
+          source: |
+            import requests
+            fileName = "video_BYEDP123456_2019-01-01_000001"
+            parameters =  {
+                            "file": f"{fileName}.mp4",
+                            "frame-step": 20
+                          }
+            response = requests.get(f"http://192.168.1.101/pix4d" params=parameters)
+            with open(f"{fileName".csv}, "wb") as f:
+              f.write(response.content)
+
+  /agisoft:
+    get:
+      tags:
+        - "Dive data"
+      summary: Download CSV file with data for creating scaled 3D models
+      description: |
+        Download CSV file with data for creating scaled 3D models in Agisoft
+      parameters:
+        - name: file
+          in: query
+          description: "Name of the video file to download data for"
+          required: true
+          schema:
+            type: string
+            example: "video_BYEDP123456_2019-01-01_000001.mp4"
+        - name: frame-step
+          in: query
+          description: "Amout of steps between each frame grab"
+          required: false
+          schema:
+            type: integer
+            example: "20"
+        - name: mag-dist
+          in: query
+          description: |
+            Expected compass variance induced from magnetic disturbance in degrees.
+
+            The most important data for an accurate 3D model are roll and pitch, which are not
+            affected by magnetic disturbance, so the default is set quite high (180). If you trust
+            that the data has not been skewed by magnetic interference you can set this to a
+            medium (60) or even low (10) value.
+          required: false
+          schema:
+            type: integer
+            default: "180"
+            minimum: 1
+            maximum: 360
+            example: 180
+      responses:
+        '200':
+          description: Comma-separated-value file with log data
+          content:
+            text/csv:
+              schema:
+                type: string
+      x-code-samples:
+        - lang: "curl"
+          source: |
+            # To get log CSV for videofile video_BYEDP123456_2019-01-01_000001.mp4
+            curl -X GET "http://192.168.1.101/agisoft \
+              -d "file=video_BYEDP123456_2019-01-01_000001.mp4"
+
+        - lang: "Python"
+          source: |
+            import requests
+            fileName = "video_BYEDP123456_2019-01-01_000001"
+            parameters = {
+                          "file": f"{fileName}.mp4"
+                         }
+            response = requests.get(f"http://192.168.1.101/agisoft" params=parameters)
+            with open(f"{fileName}.csv", "wb") as f:
+              f.write(response.content)
+  /srt:
+    get:
+      tags:
+        - "Subtitles"
+      summary: Download subtitle file
+      description: |
+        Downloads a subtitle file (srt) for a video file containing log data from the dive. The data
+        is gathered from the videos accompanying logfile. By passing in varius queries it is
+        possible to select which data one wants displayed, and where to display it.
+      parameters:
+        - name: file
+          in: query
+          description: "Name of the videofile to download subtitle file for."
+          required: true
+          schema:
+            type: string
+            example: "video_BYEDP123456_2019-01-01_000001.mp4"
+        - name: title
+          in: query
+          description: "Title of the video."
+          required: false
+          schema:
+            type: string
+            default: ""
+        - name: length-units
+          in: query
+          description: Unit to use for depth. Use "meter" for metric units, and "feet" for imperial.
+          required: false
+          schema:
+            type: string
+            default: "meter"
+            enum:
+              - "meter"
+              - "feet"
+        - name: temp-units
+          in: query
+          description: |
+            Unit to use for temperature. Use "celsius" for metric units, and "fahrenheit" for
+            imperial.
+          required: false
+          schema:
+            type: string
+            default: "celsius"
+        - name: placement
+          in: query
+          description: |
+            Where to place the subtitle. Use "top" for placing on the top, "bottom" for placing on
+            the bottom, and "" for using the player default.
+          required: false
+          schema:
+            type: string
+            default: "top"
+            enum:
+              - "top"
+              - "bottom"
+              - ""
+        - name: field-date
+          in: query
+          description: Enable or disable the date field. "1" to enable, "0" to disable.
+          required: false
+          schema:
+            type: integer
+            default: 0
+            enum:
+              - 0
+              - 1
+        - name: field-depth
+          in: query
+          description: Enable or disable the depth field. "1" to enable, "0" to disable.
+          required: false
+          schema:
+            type: integer
+            default: 1
+            enum:
+              - 0
+              - 1
+        - name: field-heading
+          in: query
+          description: Enable or disable the heading field. "1" to enable, "0" to disable.
+          required: false
+          schema:
+            type: integer
+            default: 1
+            enum:
+              - 0
+              - 1
+        - name: field-temp
+          in: query
+          description: Enable or disable the temperature field. "1" to enable, "0" to disable.
+          required: false
+          schema:
+            type: integer
+            default: 1
+            enum:
+              - 0
+              - 1
+        - name: date-format
+          in: query
+          description: "Format of the date/time."
+          required: false
+          schema:
+            type: string
+            default: "%Y-%m-%d %H:%M:%S"
+            externalDocs:
+              description: Python3 documentation for datetime formatting
+              url: https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior
+        - name: tz-offset
+          in: query
+          description: |
+            The drone stores all time in UTC+0, so if you were diving in another timezone and want
+            to correct for that in the displayed time you can add a timezone offset here. The unit
+            is minutes and both positive and negative values are supported.
+          required: false
+          schema:
+            type: integer
+            default: 0
+            format: int32
+        - name: format
+          in: query
+          description: |
+            Subtitles can also be retrived in the WEBVTT format. Use format=vtt to get a .vtt file instead of a .srt file.
+          required: false
+          schema:
+            type: string
+            default: "srt"
+            enum:
+              - "srt"
+              - "vtt"
+
+      responses:
+        '200':
+          description: Subtitle file for the requested video file
+          content:
+            text/srt:
+              schema:
+                type: object
+      x-code-samples:
+        - lang: "curl"
+          source: |
+            curl -X GET -G "http://192.168.1.101/srt" \
+              -d "file=video_BYEDP123456_2019-01-01_000001.mp4" \
+              -d "title=My title"
+
+        - lang: "Python"
+          source: |
+            import requests
+            videoName = "video_BYEDP123456_2019-01-01_000001"
+            parameters = {
+                          "file": f"{videoName}.mp4",
+                          "title": "My title"
+                         }
+            response = requests.get("http://192.168.1.101/srt", params=parameters)
+            with open(f"{videoName}.srt", "wb") as f:
+              f.write(response.content)
+
+  /picture:
+    get:
+      tags:
+        - "Pictures"
+      summary: Download pictures
+      description: |
+        Downloads a picture (jpg) if get param filename is specified. If no parameter is set you'll get a list of all images.
+      parameters:
+        - name: file
+          in: query
+          description: "Name of the image file to download"
+          required: false
+          schema:
+            type: string
+            example: "picture_BYEDP123456_2019-01-01_000001.001.jpg"
+      responses:
+        '200':
+            description: Picture
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Picture'
+              image/jpeg:
+                schema:
+                  type: object
+      x-code-samples:
+        - lang: "curl"
+          source: |
+            curl -X GET -G "http://192.168.1.101/picture" \
+              -d "file=picture_BYEDP123456_2019-01-01_000001.001.jpg"
+
+        - lang: "Python"
+          source: |
+            import requests
+            videoName = "picture_BYEDP123456_2019-01-01_000001.001"
+            parameters = {
+                          "file": f"{pictureName}.jpg"
+                         }
+            response = requests.get("http://192.168.1.101/picture", params=parameters)
+            with open(f"{pictureName}.jpg", "wb") as f:
+              f.write(response.content)
+
+  /picture/thumbnail:
+    get:
+      tags:
+        - "Pictures"
+      summary: Download a thumbnail of a picture with metadata overlay
+      description: |
+        Downloads a picture (jpg) with metadata from when the photo was captured.
+      parameters:
+        - name: file
+          in: query
+          description: "Name of the image file to download"
+          required: true
+          schema:
+            type: string
+            example: "picture_BYEDP123456_2019-01-01_000001.001.jpg"
+      responses:
+        '200':
+            description: Picture thumbnail
+            content:
+              image/jpeg:
+                schema:
+                  type: object
+      x-code-samples:
+        - lang: "curl"
+          source: |
+            curl -X GET -G "http://192.168.1.101/picture/thumbnail" \
+              -d "file=picture_BYEDP123456_2019-01-01_000001.001.jpg"
+
+        - lang: "Python"
+          source: |
+            import requests
+            pictureName = "picture_BYEDP123456_2019-01-01_000001.001"
+            parameters = {
+                          "file": f"{pictureName}.jpg",
+                         }
+            response = requests.get("http://192.168.1.101/picture/thumbnail", params=parameters)
+            with open(f"{pictureName}.jpg", "wb") as f:
+              f.write(response.content)
+
+  /picture/overlay:
+    get:
+      tags:
+        - "Pictures"
+      summary: Download pictures with metadata overlay
+      description: |
+        Downloads a picture (jpg) with metadata from when the photo was captured.
+      parameters:
+        - name: file
+          in: query
+          description: "Name of the image file to download"
+          required: true
+          schema:
+            type: string
+            example: "picture_BYEDP123456_2019-01-01_000001.001.jpg"
+        - name: title
+          in: query
+          description: "Title of the image."
+          required: false
+          schema:
+            type: string
+            default: ""
+        - name: subtitle
+          in: query
+          description: "Subtitle of the image"
+          required: false
+          schema:
+            type: string
+            default: ""
+        - name: length-units
+          in: query
+          description: Unit to use for depth. Use "meter" for metric units, and "feet" for imperial.
+          required: false
+          schema:
+            type: string
+            default: "meter"
+            enum:
+              - "meter"
+              - "feet"
+        - name: temp-units
+          in: query
+          description: |
+            Unit to use for temperature. Use "celsius" for metric units, and "fahrenheit" for
+            imperial.
+          required: false
+          schema:
+            type: string
+            default: "celsius"
+        - name: field-date
+          in: query
+          description: Enable or disable the date field. "1" to enable, "0" to disable.
+          required: false
+          schema:
+            type: integer
+            default: 1
+            enum:
+              - 0
+              - 1
+        - name: field-depth
+          in: query
+          description: Enable or disable the depth field. "1" to enable, "0" to disable.
+          required: false
+          schema:
+            type: integer
+            default: 1
+            enum:
+              - 0
+              - 1
+        - name: field-heading
+          in: query
+          description: Enable or disable the heading field. "1" to enable, "0" to disable.
+          required: false
+          schema:
+            type: integer
+            default: 1
+            enum:
+              - 0
+              - 1
+        - name: field-temp
+          in: query
+          description: Enable or disable the temperature field. "1" to enable, "0" to disable.
+          required: false
+          schema:
+            type: integer
+            default: 1
+            enum:
+              - 0
+              - 1
+        - name: date-format
+          in: query
+          description: "Format of the date/time."
+          required: false
+          schema:
+            type: string
+            default: "%Y-%m-%d %H:%M:%S"
+            externalDocs:
+              description: Python3 documentation for datetime formatting
+              url: https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior
+        - name: tz-offset
+          in: query
+          description: |
+            The drone stores all time in UTC+0, so if you were diving in another timezone and want
+            to correct for that in the displayed time you can add a timezone offset here. The unit
+            is minutes and both positive and negative values are supported.
+          required: false
+          schema:
+            type: integer
+            default: 0
+            format: int32
+
+      responses:
+        '200':
+          description: Picture with overlay metadata
+          content:
+            image/jpeg:
+              schema:
+                type: object
+      x-code-samples:
+        - lang: "curl"
+          source: |
+            curl -X GET -G "http://192.168.1.101/picture/overlay" \
+              -d "file=picture_BYEDP123456_2019-01-01_000001.001.jpg" \
+
+        - lang: "Python"
+          source: |
+            import requests
+            pictureName = "picture_BYEDP123456_2019-01-01_000001.001"
+            parameters = {
+                          "file": f"{pictureName}.jpg",
+                         }
+            response = requests.get("http://192.168.1.101/picture/overlay", params=parameters)
+            with open(f"{pictureName}_overlay.jpg", "wb") as f:
+              f.write(response.content)
+
+components:
+  schemas:
+    DroneInfo:
+      type: object
+      properties:
+        commit_id_csys:
+          type: string
+          description: Commit-id of the software currently running on the drone.
+          example: "299238949a"
+        features:
+          type: string
+          description: Comma-separated list of available features on the drone.
+          example: "lasers,jetpack"
+        hardware_id:
+          type: string
+          description: Unique hardware id of the built-in single board computer.
+          example: ea9ac92e1817a1d4
+        manufacturer:
+          type: string
+          example: "Blueye Robotics"
+        model_description:
+          type: string
+          example: "Blueye Pioneer Underwater Drone"
+        model_name:
+          type: string
+          example: "Blueye Pioneer"
+        model_url:
+          type: string
+          example: "https://www.blueyerobotics.com"
+        operating_system:
+          type: string
+          example: "blunux"
+        serial_number:
+          type: string
+          description: Serial number for the whole drone package as it left the factory.
+          example: "BYEDP123456"
+        sw_version:
+          type: string
+          description: |
+            Human-friendly name of software running on the drone.
+            Format is $(Major).$(Minor).$(Build)-$(Yocto version)-$(Branch)
+          example: "1.4.7-warrior-master"
+
+    IperfResult:
+      type: object
+      properties:
+        received_Mbps:
+          type: number
+          format: float
+          description: Bandwidth from surface unit to drone. Unit is Mbps.
+          example: 79.55458795899487
+        sent_Mbps:
+          type: number
+          format: float
+          description: Bandwidth from drone to surface unit. Unit is Mbps.
+          example: 80.37122746322603
+        success:
+          type: boolean
+          description: If the test was succesful or not.
+          enum:
+            - true
+            - false
+          example: true
+
+    Log:
+      type: object
+      properties:
+        name:
+          type: string
+          description: |
+            Name of the logfile. First part is the drones unique id, second part is the dive count.
+          example: ea9ac92e1817a1d4-00073.csv
+        binsize:
+          type: integer
+          description: Size of the log file. Unit is bytes.
+          example: 1099448
+        timestamp:
+          type: string
+          description: Start time of the dive. Unit is ISO8601 datetime without timezone data.
+          example: "2019-01-01T00:00:00.000001"
+        maxdepth:
+          type: number
+          format: float
+          description: Maximum depth reached during the dive. Unit is millimeters.
+          example: 21050
+
+    Picture:
+      type: object
+      properties:
+        name:
+          type: string
+          description: |
+            Filename of the picture. Stored in the format "picture_DRONEID_TIMESTAMP.jpg"
+          example: picture_BYEDP123456_2019-01-01_000001.001.jpg

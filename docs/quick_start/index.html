@@ -1,0 +1,1003 @@
+
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+      
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="../media/blueye_b.svg">
+      <meta name="generator" content="mkdocs-1.1, mkdocs-material-4.6.3">
+    
+    
+      
+        <title>Quick Start - Blueye SDK</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/application.adb8469c.css">
+      
+        <link rel="stylesheet" href="../../assets/stylesheets/application-palette.a8b3c06d.css">
+      
+      
+        
+        
+        <meta name="theme-color" content="">
+      
+    
+    
+      <script src="../../assets/javascripts/modernizr.86422ebf.js"></script>
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../../assets/fonts/material-icons.css">
+    
+    
+    
+      
+    
+    
+  </head>
+  
+    
+    
+    <body dir="ltr" data-md-color-primary="white" data-md-color-accent="blue">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+          <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="#installation" tabindex="0" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="../.." title="Blueye SDK" aria-label="Blueye SDK" class="md-header-nav__button md-logo">
+          
+            <img alt="logo" src="../media/blueye_b.svg" width="24" height="24">
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            <span class="md-header-nav__topic">
+              Blueye SDK
+            </span>
+            <span class="md-header-nav__topic">
+              
+                Quick Start
+              
+            </span>
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+          
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" aria-label="search" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+        
+      </div>
+      
+        <div class="md-flex__cell md-flex__cell--shrink">
+          <div class="md-header-nav__source">
+            
+
+
+  
+
+<a href="https://github.com/BluEye-Robotics/blueye.sdk/" title="Go to repository" class="md-source" data-md-source="github">
+  
+    <div class="md-source__icon">
+      <svg viewBox="0 0 24 24" width="24" height="24">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    
+  </div>
+</a>
+          </div>
+        </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+      <main class="md-main" role="main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="../.." title="Blueye SDK" class="md-nav__button md-logo">
+      
+        <img alt="logo" src="../media/blueye_b.svg" width="48" height="48">
+      
+    </a>
+    Blueye SDK
+  </label>
+  
+    <div class="md-nav__source">
+      
+
+
+  
+
+<a href="https://github.com/BluEye-Robotics/blueye.sdk/" title="Go to repository" class="md-source" data-md-source="github">
+  
+    <div class="md-source__icon">
+      <svg viewBox="0 0 24 24" width="24" height="24">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../.." title="About the Blueye Drones" class="md-nav__link">
+      About the Blueye Drones
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Quick Start
+      </label>
+    
+    <a href="./" title="Quick Start" class="md-nav__link md-nav__link--active">
+      Quick Start
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    Installation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#connect-to-the-drone" class="md-nav__link">
+    Connect to the drone
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#control-the-drone" class="md-nav__link">
+    Control the drone
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#watching-the-video-stream" class="md-nav__link">
+    Watching the video stream
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#explore-the-examples" class="md-nav__link">
+    Explore the examples
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#local-documentation" class="md-nav__link">
+    Local documentation
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
+    
+    <label class="md-nav__link" for="nav-3">
+      Movement
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        Movement
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../movement/from-the-CLI/" title="Control from the CLI" class="md-nav__link">
+      Control from the CLI
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../movement/with-a-gamepad/" title="Control with a gamepad" class="md-nav__link">
+      Control with a gamepad
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
+    
+    <label class="md-nav__link" for="nav-4">
+      Video
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        Video
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../video/gstreamer-for-video-streaming/" title="GStreamer for video streaming" class="md-nav__link">
+      GStreamer for video streaming
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../video/downloading/" title="Downloading videos and images" class="md-nav__link">
+      Downloading videos and images
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
+    
+    <label class="md-nav__link" for="nav-5">
+      Logs
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        Logs
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../logs/listing-and-downloading/" title="Listing and downloading log files" class="md-nav__link">
+      Listing and downloading log files
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../logs/log-file-format/" title="Log file format" class="md-nav__link">
+      Log file format
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../logs/plotting/" title="Plotting log files" class="md-nav__link">
+      Plotting log files
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../configuration/" title="Configure drone parameters" class="md-nav__link">
+      Configure drone parameters
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../http-api.html" title="HTTP API" class="md-nav__link">
+      HTTP API
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-8" type="checkbox" id="nav-8">
+    
+    <label class="md-nav__link" for="nav-8">
+      Reference
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-8">
+        Reference
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-8-1" type="checkbox" id="nav-8-1">
+    
+    <label class="md-nav__link" for="nav-8-1">
+      Blueye
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-8-1">
+        Blueye
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-8-1-1" type="checkbox" id="nav-8-1-1">
+    
+    <label class="md-nav__link" for="nav-8-1-1">
+      Sdk
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="3">
+      <label class="md-nav__title" for="nav-8-1-1">
+        Sdk
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../reference/blueye/sdk/camera/" title="Camera" class="md-nav__link">
+      Camera
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../reference/blueye/sdk/constants/" title="Constants" class="md-nav__link">
+      Constants
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../reference/blueye/sdk/drone/" title="Drone" class="md-nav__link">
+      Drone
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../reference/blueye/sdk/" title="Index" class="md-nav__link">
+      Index
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../reference/blueye/sdk/logs/" title="Logs" class="md-nav__link">
+      Logs
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../reference/blueye/sdk/motion/" title="Motion" class="md-nav__link">
+      Motion
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../reference/blueye/sdk/utils/" title="Utils" class="md-nav__link">
+      Utils
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    Installation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#connect-to-the-drone" class="md-nav__link">
+    Connect to the drone
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#control-the-drone" class="md-nav__link">
+    Control the drone
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#watching-the-video-stream" class="md-nav__link">
+    Watching the video stream
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#explore-the-examples" class="md-nav__link">
+    Explore the examples
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#local-documentation" class="md-nav__link">
+    Local documentation
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/BluEye-Robotics/blueye.sdk/edit/master/docs/quick_start.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
+                
+                
+                  <h1>Quick Start</h1>
+                
+                <h2 id="installation">Installation</h2>
+<p>The SDK requires Python 3.7 or higher. Since many operating systems do not package the newest
+version of Python we recommend using <a href="https://github.com/pyenv/pyenv"><code>pyenv</code></a> or something similar
+for configuring multiple python versions on the same system. Pyenv also has the added benefit of
+managing your virtual environments for you, though you are of course free to use other tools for
+that as well.</p>
+<p>The instructions below show the necessary steps to get started with the SDK on a fresh install:</p>
+<details class="abstract"><summary>Windows</summary><p><strong>Install Python</strong></p>
+<p>Install Python 3.7 or higher, you can find the latest python versions <a href="https://www.python.org/downloads/">here</a>.
+Remember to check the option "Add Python to path" when installing.</p>
+<p><strong>Install virtualenv for managing Python versions (optional)</strong></p>
+<p>Using a virtual environment is not strictly necessary, but it greatly simplifies the
+development of Python packages.
+<div class="highlight"><pre><span></span><code><span class="c1"># Upgrade pip version</span>
+python -m pip install --upgrade pip
+pip install virtualenv
+</code></pre></div></p>
+<p>Next, we create a virtual environment</p>
+<p><div class="highlight"><pre><span></span><code><span class="nb">cd</span> .<span class="se">\D</span>esktop
+mkdir drone_project
+<span class="nb">cd</span> .<span class="se">\d</span>rone_project
+<span class="c1"># Replace &quot;C:\Program Files\Python37\python.exe&quot; with the path</span>
+<span class="c1"># to the python version you want to use in the line below</span>
+virtualenv blueye_sdk_env -p <span class="s2">&quot;C:\Program Files\Python37\python.exe&quot;</span>
+</code></pre></div>
+activate the virtual environment
+<div class="highlight"><pre><span></span><code>.<span class="se">\b</span>lueye_sdk_env<span class="se">\S</span>cripts<span class="se">\a</span>ctivate.bat
+</code></pre></div>
+if you are not allowed to activate the virtual environment, you might have to allow running unsigned scripts,
+see <a href="http://tritoneco.com/2014/02/21/fix-for-powershell-script-not-digitally-signed/">this link</a> for instructions.</p>
+<p><strong>Install the SDK</strong></p>
+<p>Now we're ready to install the SDK, which should be as simple as</p>
+<div class="highlight"><pre><span></span><code>pip install blueye.sdk
+</code></pre></div>
+
+<p>or, if you want to include the dependencies required for running the examples shown in this
+documentation you should run</p>
+<div class="highlight"><pre><span></span><code>pip install &quot;blueye.sdk[examples]&quot;
+</code></pre></div>
+
+</details>
+<details class="abstract"><summary>Mac OS</summary><p><strong> Install the necessary Python version</strong></p>
+<p>Install pyenv, for more instructions see the <a href="https://github.com/pyenv/pyenv-installer">pyenv-installer</a></p>
+<div class="highlight"><pre><span></span><code>curl https://pyenv.run | bash
+pyenv update
+</code></pre></div>
+
+<p>If you want pyenv to be loaded each time you open a new terminal you can add this to your .zshrc or the equivalent for your terminal
+<div class="highlight"><pre><span></span><code>export PATH=&quot;$HOME/.pyenv/bin:$PATH&quot;
+eval &quot;$(pyenv init -)&quot;
+eval &quot;$(pyenv virtualenv-init -)&quot;
+</code></pre></div></p>
+<p>The <a href="https://github.com/pyenv/pyenv/wiki#suggested-build-environment">Pyenv wiki</a> recommends installing some
+additional dependencies before building Python.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># optional, but recommended:</span>
+brew install openssl readline sqlite3 xz zlib
+</code></pre></div>
+
+<p>When running Mojave or higher (10.14+) you will also need to install the additional SDK headers:
+<div class="highlight"><pre><span></span><code>sudo installer -pkg /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg -target /
+</code></pre></div>
+Then build Python with pyenv</p>
+<div class="highlight"><pre><span></span><code>pyenv install 3.8.0
+</code></pre></div>
+
+<p><strong>Create a virtual environment</strong></p>
+<p>Using a virtual environment is not strictly necessary, but it greatly simplifies the
+development of Python packages.</p>
+<p>Since we already have pyenv installed we'll use it to create a virtual environment,</p>
+<div class="highlight"><pre><span></span><code>pyenv virtualenv 3.8.0 blueye.sdk
+pyenv activate blueye.sdk
+</code></pre></div>
+
+<p><strong>Install the SDK</strong></p>
+<p>Now we're ready to install the SDK, which should be as simple as.</p>
+<div class="highlight"><pre><span></span><code>pip install blueye.sdk
+</code></pre></div>
+
+<p>or, if you want to include the dependencies required for running the examples shown in this
+documentation you should run</p>
+<div class="highlight"><pre><span></span><code>pip install &quot;blueye.sdk[examples]&quot;
+</code></pre></div>
+
+</details>
+<details class="abstract"><summary>Linux</summary><p>These instructions are directed at Ubuntu, but the process should be similar for other
+distributions.</p>
+<p><strong>Install the necessary Python version</strong></p>
+<p>Install pyenv, for more instructions see the <a href="https://github.com/pyenv/pyenv-installer">pyenv-installer</a></p>
+<div class="highlight"><pre><span></span><code>curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
+pyenv update
+</code></pre></div>
+
+<p>Install the needed dependencies for building python 3.8.0</p>
+<p><div class="highlight"><pre><span></span><code>apt install -y make build-essential libssl-dev zlib1g-dev libbz2-dev \
+libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
+xz-utils tk-dev libffi-dev liblzma-dev python-openssl
+</code></pre></div>
+Then build python with pyenv
+<div class="highlight"><pre><span></span><code>pyenv install 3.8.0
+</code></pre></div></p>
+<p><strong>Create a virtual environment</strong></p>
+<p>Using a virtual environment is not strictly necessary, but it greatly simplifies the
+development of Python packages.</p>
+<p>Since we already have pyenv installed we'll use it to create a virtual environment,</p>
+<div class="highlight"><pre><span></span><code>pyenv virtualenv 3.8.0 blueye.sdk
+pyenv activate blueye.sdk
+</code></pre></div>
+
+<p><strong>Install the SDK</strong></p>
+<p>Now we're ready to install the SDK, which should be as simple as</p>
+<div class="highlight"><pre><span></span><code>pip install blueye.sdk
+</code></pre></div>
+
+<p>or, if you want to include the dependencies required for running the examples shown in this
+documentation you should run</p>
+<div class="highlight"><pre><span></span><code>pip install &quot;blueye.sdk[examples]&quot;
+</code></pre></div>
+
+</details>
+<h2 id="connect-to-the-drone">Connect to the drone</h2>
+<p>To use the SDK your computer must be connected to the drone via the surface unit WiFi. For a how-to
+on turning on the drone and surface unit you can watch the
+<a href="https://support.blueye.no/hc/en-us/articles/360006901473-Quick-Start-Guide">quick start video</a>.</p>
+<h2 id="control-the-drone">Control the drone</h2>
+<p>Most of the functionality is controlled using Python properties and we will illustrate the use of
+properties by showing how to control the lights:</p>
+<p><div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">blueye.sdk</span> <span class="kn">import</span> <span class="n">Drone</span>
+
+<span class="c1"># When the Drone object is instantiatied a connection to the drone is established</span>
+<span class="n">myDrone</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">()</span>
+
+<span class="c1"># Setting the lights property to 10</span>
+<span class="n">myDrone</span><span class="o">.</span><span class="n">lights</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># We can also get the current brightness of the lights through the lights property</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Current light intensity: </span><span class="si">{myDrone.lights}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">myDrone</span><span class="o">.</span><span class="n">lights</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="c1"># Properties can also be used for reading telemetry data from the drone</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Current depth in millimeters: </span><span class="si">{myDrone.depth}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+For an overview of the properties that are available for controlling and reading data from the drone, go to the
+<a href="../../reference/blueye/sdk/drone"><code>Reference section</code></a> of the documentation.
+The valid input ranges and descriptions of the different properties can also be found there.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>You can explore the properties of the drone interactively using an interactive python interpreter like
+<a href="https://ipython.readthedocs.io/en/stable/interactive/tutorial.html"><code>iPython</code></a>, install it with:
+<div class="highlight"><pre><span></span><code>pip install ipython
+</code></pre></div>
+By instantiating a Drone object and using the completion key (normally the <code>tab-key ↹</code>) you can get a interactive list of
+the available properties on the drone, it is then easy to try setting and getting the different properties.
+<img alt="iPython" src="https://blueyenostorage.blob.core.windows.net/sdkimages/ipython-exploration.gif" /></p>
+</div>
+<h3 id="watching-the-video-stream">Watching the video stream</h3>
+<p>The easiest way to open the  RTSP video stream is using <a href="https://www.videolan.org/vlc/index.html"><code>VLC media player</code></a>.
+Once VLC is downloaded you can start the stream like this, the RTSP URL is: <code>rtsp://192.168.1.101:8554/test</code>
+<img alt="text" src="https://blueyenostorage.blob.core.windows.net/sdkimages/rtsp-in-vlc.gif" /></p>
+<p>For lower latency streaming (on a PC) you can see the instructions on using
+<a href="../video/gstreamer-for-video-streaming/"><code>Gstreamer</code></a>, or if you just want to watch a low
+latency stream you can download the Blueye Dive Buddy
+(<a href="https://apps.apple.com/us/app/blueye-dive-buddy/id1453884806?ls=1">iOS</a> /
+<a href="https://play.google.com/store/apps/details?id=no.blueye.divebuddy">Android</a>)</p>
+<p>The normal Blueye app can not be used to spectate when controlling the drone from the SDK because
+it will interfere with the commands sent from the SDK. The dive buddy app, however, is only a
+spectator and can be used together with the SDK.</p>
+<h3 id="explore-the-examples">Explore the examples</h3>
+<p>For further examples on how to use the SDK to control the drone have a look at the
+<a href="../movement/from-the-CLI/">motion examples</a>.</p>
+<p>Remember to install the example dependencies before running the examples.</p>
+<div class="highlight"><pre><span></span><code>pip install <span class="s2">&quot;blueye.sdk[examples]&quot;</span>
+</code></pre></div>
+
+<h3 id="local-documentation">Local documentation</h3>
+<p>Since the drone surface unit (usually) does not have internet access it can be a bit tricky to
+reference this documentation while developing on the drone. Luckily when you install the SDK from
+PyPI it includes a pre-built, local copy of this documentation. This documentation can be viewed by
+executing the following Python snippet:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">blueye.sdk</span>
+
+<span class="n">blueye</span><span class="o">.</span><span class="n">sdk</span><span class="o">.</span><span class="n">open_local_documentation</span><span class="p">()</span>
+</code></pre></div>
+                
+                  
+                
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../.." title="About the Blueye Drones" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                About the Blueye Drones
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../movement/from-the-CLI/" title="Control from the CLI" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Control from the CLI
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Powered by
+        <a href="http://timothycrosley.github.io/portray">portray.</a>
+        You too can
+        <a href="http://timothycrosley.github.io/portray">
+          portray</a>
+        your Python project well using automatic documentation.
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/application.c33a9706.js"></script>
+      
+      <script>app.initialize({version:"1.1",url:{base:"../.."}})</script>
+      
+    
+  </body>
+</html>
