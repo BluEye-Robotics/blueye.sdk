@@ -5,6 +5,7 @@ from enum import Enum
 from typing import TYPE_CHECKING
 
 import numpy as np
+import requests
 from packaging import version
 
 # Necessary to avoid cyclic imports
@@ -330,6 +331,27 @@ class Overlay:
             )
             return
         self._parent_drone._tcp_client.set_overlay_date_format(encoded_format_str + b"\x00")
+
+    def upload_logo(self, path_to_logo: str):
+        """Upload user selectable logo for watermarking videos and pictures
+
+        Set the logo-property to `LogoOverlay.CUSTOM` to enable this logo.
+
+        Allowed filetype: JPG or PNG.
+        Max resolution: 2000 px.
+        Max file size: 5 MB.
+
+        *Exceptions*:
+
+        * `requests.exceptions.HTTPError` : Status code 400 for invalid files
+
+        * `requests.exceptions.ConnectTimeout` : If unable to create a connection within 1s
+        """
+        with open(path_to_logo, "rb") as f:
+            url = f"http://{self._parent_drone._ip}/asset/logo"
+            files = {"image": f}
+            response = requests.post(url, files=files, timeout=1)
+        response.raise_for_status()
 
 
 class Camera:

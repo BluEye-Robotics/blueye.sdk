@@ -326,3 +326,20 @@ class TestOverlay:
         params[15] = b"abc" * 21 + b"\x00"
         mocked_drone._tcp_client.get_overlay_parameters.return_value = params
         assert mocked_drone.camera.overlay.date_format == "abc" * 21
+
+    def test_upload_logo(self, mocked_drone: Drone, requests_mock, mocker):
+        requests_mock.post("http://192.168.1.101/asset/logo")
+        mocked_open = mocker.patch("builtins.open", mocker.mock_open())
+        logo_path = "/tmp/logo.png"
+
+        mocked_drone.camera.overlay.upload_logo(logo_path)
+
+        mocked_open.assert_called_once_with(logo_path, "rb")
+
+    def test_upload_raises_exception_for_400s(self, mocked_drone: Drone, requests_mock, mocker):
+        from requests.exceptions import HTTPError
+
+        requests_mock.post("http://192.168.1.101/asset/logo", status_code=400)
+        mocker.patch("builtins.open", mocker.mock_open())
+        with pytest.raises(HTTPError):
+            mocked_drone.camera.overlay.upload_logo("whatever.png")
