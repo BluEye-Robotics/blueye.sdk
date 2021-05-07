@@ -24,7 +24,7 @@ jobs:
         run: poetry run portray as_html --overwrite
 
       - name: Deploy documentation
-        uses: JamesIves/github-pages-deploy-action@master
+        uses: JamesIves/github-pages-deploy-action@4.1.1
         env:
           ACCESS_TOKEN: ${{ secrets.GIT_TOKEN }}
           BASE_BRANCH: master
