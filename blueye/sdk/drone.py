@@ -20,11 +20,12 @@ class _DroneStateWatcher(threading.Thread):
     """Subscribes to UDP messages from the drone and stores the latest data
     """
 
-    def __init__(self):
+    def __init__(self, ip="192.168.1.101"):
         threading.Thread.__init__(self)
+        self._ip = ip
         self._general_state = None
         self._calibration_state = None
-        self._udpclient = UdpClient()
+        self._udpclient = UdpClient(drone_ip=self._ip)
         self._exit_flag = threading.Event()
         self.daemon = True
 
@@ -141,7 +142,7 @@ class Drone:
             self._tcp_client = _SlaveTcpClient()
         else:
             self._tcp_client = _NoConnectionTcpClient()
-        self._state_watcher = _DroneStateWatcher()
+        self._state_watcher = _DroneStateWatcher(ip=self._ip)
         self.camera = Camera(self)
         self.motion = Motion(self)
         self.logs = Logs(self)
@@ -179,12 +180,12 @@ class Drone:
         self.uuid = response["hardware_id"]
 
     @staticmethod
-    def _wait_for_udp_communication(timeout: int):
+    def _wait_for_udp_communication(timeout: int, ip="192.168.1.101"):
         """Simple helper for waiting for drone to come online
 
         Raises ConnectionError if no connection is established in the specified timeout.
         """
-        temp_udp_client = UdpClient()
+        temp_udp_client = UdpClient(drone_ip=ip)
         temp_udp_client._sock.settimeout(timeout)
         try:
             temp_udp_client.get_data_dict()
@@ -226,7 +227,7 @@ class Drone:
         When watchdog message are published the thrusters are armed, to stop the drone from moving
         unexpectedly when connecting all thruster set points are set to zero when connecting.
         """
-        self._wait_for_udp_communication(timeout)
+        self._wait_for_udp_communication(timeout, self._ip)
         self._update_drone_info()
         self._start_state_watcher_thread()
         if self._slaveModeEnabled:
