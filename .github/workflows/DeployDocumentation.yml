@@ -25,9 +25,9 @@ jobs:
 
       - name: Deploy documentation
         uses: JamesIves/github-pages-deploy-action@4.1.1
+        with:
+          branch: gh-pages
+          folder: site
         env:
           ACCESS_TOKEN: ${{ secrets.GIT_TOKEN }}
-          BASE_BRANCH: master
-          BRANCH: gh-pages
-          FOLDER: site
         if: github.ref == 'refs/heads/master'
