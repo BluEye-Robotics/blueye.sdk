@@ -1131,15 +1131,17 @@ class _DroneStateWatcher(threading.Thread):
 
     """
 
-    def __init__(self):
+    def __init__(self, ip="192.168.1.101"):
 
         threading.Thread.__init__(self)
+
+        self._ip = ip
 
         self._general_state = None
 
         self._calibration_state = None
 
-        self._udpclient = UdpClient()
+        self._udpclient = UdpClient(drone_ip=self._ip)
 
         self._exit_flag = threading.Event()
 
@@ -1319,7 +1321,7 @@ class Drone:
 
             self._tcp_client = _NoConnectionTcpClient()
 
-        self._state_watcher = _DroneStateWatcher()
+        self._state_watcher = _DroneStateWatcher(ip=self._ip)
 
         self.camera = Camera(self)
 
@@ -1387,7 +1389,7 @@ class Drone:
 
     @staticmethod
 
-    def _wait_for_udp_communication(timeout: int):
+    def _wait_for_udp_communication(timeout: int, ip="192.168.1.101"):
 
         """Simple helper for waiting for drone to come online
 
@@ -1395,7 +1397,7 @@ class Drone:
 
         """
 
-        temp_udp_client = UdpClient()
+        temp_udp_client = UdpClient(drone_ip=ip)
 
         temp_udp_client._sock.settimeout(timeout)
 
@@ -1465,7 +1467,7 @@ class Drone:
 
         """
 
-        self._wait_for_udp_communication(timeout)
+        self._wait_for_udp_communication(timeout, self._ip)
 
         self._update_drone_info()
 
@@ -1784,7 +1786,7 @@ behaviour can be disabled by setting <code>autoConnect=False</code>.</p>
 
             self._tcp_client = _NoConnectionTcpClient()
 
-        self._state_watcher = _DroneStateWatcher()
+        self._state_watcher = _DroneStateWatcher(ip=self._ip)
 
         self.camera = Camera(self)
 
@@ -1852,7 +1854,7 @@ behaviour can be disabled by setting <code>autoConnect=False</code>.</p>
 
     @staticmethod
 
-    def _wait_for_udp_communication(timeout: int):
+    def _wait_for_udp_communication(timeout: int, ip="192.168.1.101"):
 
         """Simple helper for waiting for drone to come online
 
@@ -1860,7 +1862,7 @@ behaviour can be disabled by setting <code>autoConnect=False</code>.</p>
 
         """
 
-        temp_udp_client = UdpClient()
+        temp_udp_client = UdpClient(drone_ip=ip)
 
         temp_udp_client._sock.settimeout(timeout)
 
@@ -1930,7 +1932,7 @@ behaviour can be disabled by setting <code>autoConnect=False</code>.</p>
 
         """
 
-        self._wait_for_udp_communication(timeout)
+        self._wait_for_udp_communication(timeout, self._ip)
 
         self._update_drone_info()
 
@@ -2152,7 +2154,7 @@ unexpectedly when connecting all thruster set points are set to zero when connec
 
         """
 
-        self._wait_for_udp_communication(timeout)
+        self._wait_for_udp_communication(timeout, self._ip)
 
         self._update_drone_info()
 
@@ -2335,7 +2337,7 @@ unexpectedly when connecting all thruster set points are set to zero when connec
 
         """
 
-        self._wait_for_udp_communication(timeout)
+        self._wait_for_udp_communication(timeout, self._ip)
 
         self._update_drone_info()
 
