@@ -298,7 +298,6 @@ class Drone:
 
         * depth (int): The depth in millimeters of water column.
         """
-
         return self._state_watcher.general_state["depth"]
 
     @property
@@ -325,6 +324,16 @@ class Drone:
         * state_of_charge (int): Current state of charge of the drone battery in percent, from 0 to 100
         """
         return self._state_watcher.general_state["battery_state_of_charge_rel"]
+
+    @property
+    def error_flags(self) -> int:
+        """Get the error flags
+
+        *Returns*:
+
+        * error_flags (int): The error flags as int
+        """
+        return self._state_watcher.general_state["error_flags"]
 
     def ping(self):
         """Ping drone, an exception is thrown by TcpClient if drone does not answer"""
