@@ -267,6 +267,13 @@ def test_depth_reading(mocked_drone):
     assert mocked_drone.depth == depth
 
 
+def test_error_flags(mocked_drone):
+    error_flags = 64
+    mocked_drone._state_watcher._general_state = {"error_flags": error_flags}
+    mocked_drone._state_watcher._general_state_received.set()
+    assert mocked_drone.error_flags == error_flags
+
+
 def test_battery_state_of_charge_reading(mocked_drone):
     SoC = 77
     mocked_drone._state_watcher._general_state = {"battery_state_of_charge_rel": SoC}
