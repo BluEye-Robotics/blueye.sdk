@@ -24,25 +24,23 @@ class _DroneStateWatcher(threading.Thread):
         threading.Thread.__init__(self)
         self._ip = ip
         self._general_state = None
+        self._general_state_received = threading.Event()
         self._calibration_state = None
+        self._calibration_state_received = threading.Event()
         self._udpclient = UdpClient(drone_ip=self._ip)
         self._exit_flag = threading.Event()
         self.daemon = True
 
     @property
     def general_state(self) -> dict:
-        start = time.time()
-        while self._general_state is None:
-            if time.time() - start > 3:
-                raise TimeoutError("No state message received from drone")
+        if not self._general_state_received.wait(timeout=3):
+            raise TimeoutError("No state message received from drone")
         return self._general_state
 
     @property
     def calibration_state(self) -> dict:
-        start = time.time()
-        while self._calibration_state is None:
-            if time.time() - start > 3:
-                raise TimeoutError("No state message received from drone")
+        if not self._calibration_state_received.wait(timeout=3):
+            raise TimeoutError("No state message received from drone")
         return self._calibration_state
 
     def run(self):
@@ -50,8 +48,10 @@ class _DroneStateWatcher(threading.Thread):
             data_packet = self._udpclient.get_data_dict()
             if data_packet["command_type"] == 1:
                 self._general_state = data_packet
+                self._general_state_received.set()
             elif data_packet["command_type"] == 2:
                 self._calibration_state = data_packet
+                self._calibration_state_received.set()
 
     def stop(self):
         self._exit_flag.set()
