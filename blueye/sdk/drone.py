@@ -20,38 +20,39 @@ class _DroneStateWatcher(threading.Thread):
     """Subscribes to UDP messages from the drone and stores the latest data
     """
 
-    def __init__(self, ip="192.168.1.101"):
+    def __init__(self, ip="192.168.1.101", udp_timeout=3):
         threading.Thread.__init__(self)
         self._ip = ip
+        self._udp_timeout = udp_timeout
         self._general_state = None
+        self._general_state_received = threading.Event()
         self._calibration_state = None
-        self._udpclient = UdpClient(drone_ip=self._ip)
+        self._calibration_state_received = threading.Event()
+        self._udp_client = UdpClient(drone_ip=self._ip)
         self._exit_flag = threading.Event()
         self.daemon = True
 
     @property
     def general_state(self) -> dict:
-        start = time.time()
-        while self._general_state is None:
-            if time.time() - start > 3:
-                raise TimeoutError("No state message received from drone")
+        if not self._general_state_received.wait(timeout=self._udp_timeout):
+            raise TimeoutError("No state message received from drone")
         return self._general_state
 
     @property
     def calibration_state(self) -> dict:
-        start = time.time()
-        while self._calibration_state is None:
-            if time.time() - start > 3:
-                raise TimeoutError("No state message received from drone")
+        if not self._calibration_state_received.wait(timeout=self._udp_timeout):
+            raise TimeoutError("No state message received from drone")
         return self._calibration_state
 
     def run(self):
         while not self._exit_flag.is_set():
-            data_packet = self._udpclient.get_data_dict()
+            data_packet = self._udp_client.get_data_dict()
             if data_packet["command_type"] == 1:
                 self._general_state = data_packet
+                self._general_state_received.set()
             elif data_packet["command_type"] == 2:
                 self._calibration_state = data_packet
+                self._calibration_state_received.set()
 
     def stop(self):
         self._exit_flag.set()
@@ -134,15 +135,22 @@ class Drone:
     `slaveModeEnabled=True` you will still be able to receive data from the drone.
     """
 
-    def __init__(self, ip="192.168.1.101", tcpPort=2011, autoConnect=True, slaveModeEnabled=False):
+    def __init__(
+        self,
+        ip="192.168.1.101",
+        tcpPort=2011,
+        autoConnect=True,
+        slaveModeEnabled=False,
+        udpTimeout=3,
+    ):
         self._ip = ip
         self._port = tcpPort
-        self._slaveModeEnabled = slaveModeEnabled
+        self._slave_mode_enabled = slaveModeEnabled
         if slaveModeEnabled:
             self._tcp_client = _SlaveTcpClient()
         else:
             self._tcp_client = _NoConnectionTcpClient()
-        self._state_watcher = _DroneStateWatcher(ip=self._ip)
+        self._state_watcher = _DroneStateWatcher(ip=self._ip, udp_timeout=udpTimeout)
         self.camera = Camera(self)
         self.motion = Motion(self)
         self.logs = Logs(self)
@@ -230,7 +238,7 @@ class Drone:
         self._wait_for_udp_communication(timeout, self._ip)
         self._update_drone_info()
         self._start_state_watcher_thread()
-        if self._slaveModeEnabled:
+        if self._slave_mode_enabled:
             # No need to touch the TCP stuff if we're in slave mode so we return early
             return
 
@@ -265,7 +273,7 @@ class Drone:
 
     def disconnect(self):
         """Disconnects the TCP connection, allowing another client to take control of the drone"""
-        if self.connection_established and not self._slaveModeEnabled:
+        if self.connection_established and not self._slave_mode_enabled:
             self._clean_up_tcp_client()
 
     @property
@@ -298,7 +306,6 @@ class Drone:
 
         * depth (int): The depth in millimeters of water column.
         """
-
         return self._state_watcher.general_state["depth"]
 
     @property
@@ -325,6 +332,16 @@ class Drone:
         * state_of_charge (int): Current state of charge of the drone battery in percent, from 0 to 100
         """
         return self._state_watcher.general_state["battery_state_of_charge_rel"]
+
+    @property
+    def error_flags(self) -> int:
+        """Get the error flags
+
+        *Returns*:
+
+        * error_flags (int): The error flags as int
+        """
+        return self._state_watcher.general_state["error_flags"]
 
     def ping(self):
         """Ping drone, an exception is thrown by TcpClient if drone does not answer"""

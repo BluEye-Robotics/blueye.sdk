@@ -77,7 +77,7 @@ def mocked_UdpClient(mocker):
 
 @pytest.fixture
 def mocked_drone(mocker, mocked_TcpClient, mocked_UdpClient, mocked_requests):
-    drone = blueye.sdk.Drone(autoConnect=False)
+    drone = blueye.sdk.Drone(autoConnect=False, udpTimeout=0.2)
     drone._wait_for_udp_communication = Mock()
     # Mocking out the run function to avoid blowing up the stack when the thread continuously calls
     # the get_data_dict function (which won't block since it's mocked).
@@ -187,6 +187,7 @@ class TestFunctionsWhenConnectedToDrone:
 class TestLights:
     def test_lights_returns_value(self, mocked_drone):
         mocked_drone._state_watcher._general_state = {"lights_upper": 0}
+        mocked_drone._state_watcher._general_state_received.set()
         assert mocked_drone.lights == 0
 
 
@@ -198,6 +199,7 @@ class TestPose:
             "pitch": old_angle,
             "yaw": old_angle,
         }
+        mocked_drone._state_watcher._general_state_received.set()
         pose = mocked_drone.pose
         assert pose["roll"] == new_angle
         assert pose["pitch"] == new_angle
@@ -261,12 +263,31 @@ def test_software_version(mocked_drone):
 def test_depth_reading(mocked_drone):
     depth = 10000
     mocked_drone._state_watcher._general_state = {"depth": depth}
+    mocked_drone._state_watcher._general_state_received.set()
     assert mocked_drone.depth == depth
+
+
+def test_error_flags(mocked_drone):
+    error_flags = 64
+    mocked_drone._state_watcher._general_state = {"error_flags": error_flags}
+    mocked_drone._state_watcher._general_state_received.set()
+    assert mocked_drone.error_flags == error_flags
+
+
+def test_timeout_general_state(mocked_drone):
+    with pytest.raises(TimeoutError):
+        mocked_drone._state_watcher.general_state
+
+
+def test_timeout_calibration_state(mocked_drone):
+    with pytest.raises(TimeoutError):
+        mocked_drone._state_watcher.calibration_state
 
 
 def test_battery_state_of_charge_reading(mocked_drone):
     SoC = 77
     mocked_drone._state_watcher._general_state = {"battery_state_of_charge_rel": SoC}
+    mocked_drone._state_watcher._general_state_received.set()
     assert mocked_drone.battery_state_of_charge == SoC
 
 
@@ -380,6 +401,7 @@ class TestTilt:
         mocked_drone.features = ["tilt"]
         mocked_drone.software_version_short = "1.5.33"
         mocked_drone._state_watcher._general_state = {"debug_flags": debug_flags}
+        mocked_drone._state_watcher._general_state_received.set()
         assert mocked_drone.camera.tilt.angle == expected_angle
 
 
