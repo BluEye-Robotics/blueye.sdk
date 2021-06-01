@@ -135,7 +135,14 @@ class Drone:
     `slaveModeEnabled=True` you will still be able to receive data from the drone.
     """
 
-    def __init__(self, ip="192.168.1.101", tcpPort=2011, autoConnect=True, slaveModeEnabled=False, udpTimeout=3):
+    def __init__(
+        self,
+        ip="192.168.1.101",
+        tcpPort=2011,
+        autoConnect=True,
+        slaveModeEnabled=False,
+        udpTimeout=3,
+    ):
         self._ip = ip
         self._port = tcpPort
         self._slave_mode_enabled = slaveModeEnabled
