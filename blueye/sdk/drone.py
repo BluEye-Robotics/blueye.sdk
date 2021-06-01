@@ -20,9 +20,10 @@ class _DroneStateWatcher(threading.Thread):
     """Subscribes to UDP messages from the drone and stores the latest data
     """
 
-    def __init__(self, ip="192.168.1.101"):
+    def __init__(self, ip="192.168.1.101", udpTimeout=3):
         threading.Thread.__init__(self)
         self._ip = ip
+        self._udp_timeout = udpTimeout
         self._general_state = None
         self._general_state_received = threading.Event()
         self._calibration_state = None
@@ -33,13 +34,13 @@ class _DroneStateWatcher(threading.Thread):
 
     @property
     def general_state(self) -> dict:
-        if not self._general_state_received.wait(timeout=3):
+        if not self._general_state_received.wait(timeout=self._udp_timeout):
             raise TimeoutError("No state message received from drone")
         return self._general_state
 
     @property
     def calibration_state(self) -> dict:
-        if not self._calibration_state_received.wait(timeout=3):
+        if not self._calibration_state_received.wait(timeout=self._udp_timeout):
             raise TimeoutError("No state message received from drone")
         return self._calibration_state
 
@@ -134,7 +135,7 @@ class Drone:
     `slaveModeEnabled=True` you will still be able to receive data from the drone.
     """
 
-    def __init__(self, ip="192.168.1.101", tcpPort=2011, autoConnect=True, slaveModeEnabled=False):
+    def __init__(self, ip="192.168.1.101", tcpPort=2011, autoConnect=True, slaveModeEnabled=False, udpTimeout=3):
         self._ip = ip
         self._port = tcpPort
         self._slaveModeEnabled = slaveModeEnabled
@@ -142,7 +143,7 @@ class Drone:
             self._tcp_client = _SlaveTcpClient()
         else:
             self._tcp_client = _NoConnectionTcpClient()
-        self._state_watcher = _DroneStateWatcher(ip=self._ip)
+        self._state_watcher = _DroneStateWatcher(ip=self._ip, udpTimeout=udpTimeout)
         self.camera = Camera(self)
         self.motion = Motion(self)
         self.logs = Logs(self)
