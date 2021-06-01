@@ -20,15 +20,15 @@ class _DroneStateWatcher(threading.Thread):
     """Subscribes to UDP messages from the drone and stores the latest data
     """
 
-    def __init__(self, ip="192.168.1.101", udpTimeout=3):
+    def __init__(self, ip="192.168.1.101", udp_timeout=3):
         threading.Thread.__init__(self)
         self._ip = ip
-        self._udp_timeout = udpTimeout
+        self._udp_timeout = udp_timeout
         self._general_state = None
         self._general_state_received = threading.Event()
         self._calibration_state = None
         self._calibration_state_received = threading.Event()
-        self._udpclient = UdpClient(drone_ip=self._ip)
+        self._udp_client = UdpClient(drone_ip=self._ip)
         self._exit_flag = threading.Event()
         self.daemon = True
 
@@ -46,7 +46,7 @@ class _DroneStateWatcher(threading.Thread):
 
     def run(self):
         while not self._exit_flag.is_set():
-            data_packet = self._udpclient.get_data_dict()
+            data_packet = self._udp_client.get_data_dict()
             if data_packet["command_type"] == 1:
                 self._general_state = data_packet
                 self._general_state_received.set()
@@ -138,12 +138,12 @@ class Drone:
     def __init__(self, ip="192.168.1.101", tcpPort=2011, autoConnect=True, slaveModeEnabled=False, udpTimeout=3):
         self._ip = ip
         self._port = tcpPort
-        self._slaveModeEnabled = slaveModeEnabled
+        self._slave_mode_enabled = slaveModeEnabled
         if slaveModeEnabled:
             self._tcp_client = _SlaveTcpClient()
         else:
             self._tcp_client = _NoConnectionTcpClient()
-        self._state_watcher = _DroneStateWatcher(ip=self._ip, udpTimeout=udpTimeout)
+        self._state_watcher = _DroneStateWatcher(ip=self._ip, udp_timeout=udpTimeout)
         self.camera = Camera(self)
         self.motion = Motion(self)
         self.logs = Logs(self)
@@ -231,7 +231,7 @@ class Drone:
         self._wait_for_udp_communication(timeout, self._ip)
         self._update_drone_info()
         self._start_state_watcher_thread()
-        if self._slaveModeEnabled:
+        if self._slave_mode_enabled:
             # No need to touch the TCP stuff if we're in slave mode so we return early
             return
 
@@ -266,7 +266,7 @@ class Drone:
 
     def disconnect(self):
         """Disconnects the TCP connection, allowing another client to take control of the drone"""
-        if self.connection_established and not self._slaveModeEnabled:
+        if self.connection_established and not self._slave_mode_enabled:
             self._clean_up_tcp_client()
 
     @property
