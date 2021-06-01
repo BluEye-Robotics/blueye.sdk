@@ -274,6 +274,16 @@ def test_error_flags(mocked_drone):
     assert mocked_drone.error_flags == error_flags
 
 
+def test_timeout_general_state(mocked_drone):
+    with pytest.raises(TimeoutError):
+        mocked_drone._state_watcher.general_state
+
+
+def test_timeout_calibration_state(mocked_drone):
+    with pytest.raises(TimeoutError):
+        mocked_drone._state_watcher.calibration_state
+
+
 def test_battery_state_of_charge_reading(mocked_drone):
     SoC = 77
     mocked_drone._state_watcher._general_state = {"battery_state_of_charge_rel": SoC}
