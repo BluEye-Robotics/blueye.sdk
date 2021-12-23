@@ -17,8 +17,7 @@ from .motion import Motion
 
 
 class _DroneStateWatcher(threading.Thread):
-    """Subscribes to UDP messages from the drone and stores the latest data
-    """
+    """Subscribes to UDP messages from the drone and stores the latest data"""
 
     def __init__(self, ip="192.168.1.101", udp_timeout=3):
         threading.Thread.__init__(self)
