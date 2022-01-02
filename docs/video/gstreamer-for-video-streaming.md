@@ -47,7 +47,7 @@ After installing you can run this pipeline in your terminal:
     gst-launch-1.0 rtspsrc location=rtsp://192.168.1.101:8554/test latency=0 ! rtph264depay ! avdec_h264 ! videoconvert ! fpsdisplaysink sync=false
     ```
 
-??? abstract "Linux and Mac OS"
+??? abstract "Linux and macOS"
     ``` shell
     gst-launch-1.0 rtspsrc location=rtsp://192.168.1.101:8554/test latency=0 \
         ! rtph264depay \
