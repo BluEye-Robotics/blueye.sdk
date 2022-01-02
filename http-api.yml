@@ -124,6 +124,14 @@ paths:
             type: string
             example: "dashware"
             default: ""
+        - name: divisor
+          in: query
+          description: Divisor to use when downsampling CSV before downloading. Set to 1 to get max resolution.
+          required: false
+          schema:
+            type: integer
+            example: 1
+            default: 10
 
       responses:
         '200':
