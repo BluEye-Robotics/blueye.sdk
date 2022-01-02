@@ -32,7 +32,7 @@
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
       <link rel="shortcut icon" href="../../media/blueye_b.svg">
-      <meta name="generator" content="mkdocs-1.1, mkdocs-material-4.6.3">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-4.6.3">
     
     
       
@@ -351,6 +351,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#external-camera-streaming-pipeline" class="md-nav__link">
+    External camera streaming pipeline
+  </a>
+  
+</li>
+      
       
       
       
@@ -651,6 +658,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#external-camera-streaming-pipeline" class="md-nav__link">
+    External camera streaming pipeline
+  </a>
+  
+</li>
+      
       
       
       
@@ -677,7 +691,9 @@
 <p>To run the streaming pipeline in the next section you will need a runtime installation of GStreamer.
 The instructions below show the basic steps for installing GStreamer on the most common operating systems.
 You can find more in depth instruction for your specific operating system in the <a href="https://gstreamer.freedesktop.org/documentation/installing/?gi-language=c"><code>GStreamer docs</code></a>.</p>
-<details class="abstract"><summary>Windows</summary><p>On Windows the basic installation steps are:</p>
+<details class="abstract">
+<summary>Windows</summary>
+<p>On Windows the basic installation steps are:</p>
 <ol>
 <li>Download the relevant installer for your computer from <a href="https://gstreamer.freedesktop.org/download">https://gstreamer.freedesktop.org/download</a> .
 Using the latest stable relase should be fine, at the time of writing that is <code>1.16.1 runtime installer</code></li>
@@ -685,11 +701,15 @@ Using the latest stable relase should be fine, at the time of writing that is <c
 <li>To run GStreamer commands form the terminal, GStreamer must be added to the PATH environment variable. This can be done from the advanced system settings. Add <code>%GSTREAMER_1_0_ROOT_X86_64%\bin</code> to path. Alternatively you can choose to run gst-launch-1.0.exe from the folder it is installed in, typically <code>C:\gstreamer\1.0\x86_64\bin</code></li>
 </ol>
 </details>
-<details class="abstract"><summary>Mac OS</summary><p>On Mac OS GStreamer and its plugins can be installed using <a href="https://brew.sh/">brew</a>
+<details class="abstract">
+<summary>Mac OS</summary>
+<p>On Mac OS GStreamer and its plugins can be installed using <a href="https://brew.sh/">brew</a>
 <div class="highlight"><pre><span></span><code>brew install gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav
 </code></pre></div></p>
 </details>
-<details class="abstract"><summary>Linux</summary><p>On Ubuntu and Debian GStreamer and its plugins can be installed using apt.
+<details class="abstract">
+<summary>Linux</summary>
+<p>On Ubuntu and Debian GStreamer and its plugins can be installed using apt.
 <div class="highlight"><pre><span></span><code>apt-get install libgstreamer1.0-0 gstreamer1.0-plugins-base gstreamer1.0-plugins-good <span class="se">\</span>
 gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc <span class="se">\</span>
 gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa
@@ -698,22 +718,40 @@ gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa
 <p>You can test the installation by trying the basic pipeline from the next section when connected to a drone. Or with</p>
 <div class="highlight"><pre><span></span><code>gst-launch-1.0 videotestsrc ! autovideosink
 </code></pre></div>
-
 <h2 id="basic-streaming-pipeline">Basic streaming pipeline</h2>
 <p>After installing you can run this pipeline in your terminal:</p>
-<details class="abstract"><summary>Windows</summary><div class="highlight"><pre><span></span><code>gst-launch-1.0 rtspsrc <span class="nv">location</span><span class="o">=</span>rtsp://192.168.1.101:8554/test <span class="nv">latency</span><span class="o">=</span><span class="m">0</span> ! rtph264depay ! avdec_h264 ! videoconvert ! fpsdisplaysink <span class="nv">sync</span><span class="o">=</span><span class="nb">false</span>
+<details class="abstract">
+<summary>Windows</summary>
+<div class="highlight"><pre><span></span><code>gst-launch-1.0 rtspsrc <span class="nv">location</span><span class="o">=</span>rtsp://192.168.1.101:8554/test <span class="nv">latency</span><span class="o">=</span><span class="m">0</span> ! rtph264depay ! avdec_h264 ! videoconvert ! fpsdisplaysink <span class="nv">sync</span><span class="o">=</span><span class="nb">false</span>
 </code></pre></div>
-
 </details>
-<details class="abstract"><summary>Linux and Mac OS</summary><div class="highlight"><pre><span></span><code>gst-launch-1.0 rtspsrc <span class="nv">location</span><span class="o">=</span>rtsp://192.168.1.101:8554/test <span class="nv">latency</span><span class="o">=</span><span class="m">0</span> <span class="se">\</span>
+<details class="abstract">
+<summary>Linux and macOS</summary>
+<div class="highlight"><pre><span></span><code>gst-launch-1.0 rtspsrc <span class="nv">location</span><span class="o">=</span>rtsp://192.168.1.101:8554/test <span class="nv">latency</span><span class="o">=</span><span class="m">0</span> <span class="se">\</span>
     ! rtph264depay <span class="se">\</span>
     ! avdec_h264 <span class="se">\</span>
     ! videoconvert <span class="se">\</span>
     ! fpsdisplaysink <span class="nv">sync</span><span class="o">=</span><span class="nb">false</span>
 </code></pre></div>
-
 </details>
 <p>Running the pipeline will open a window with the camera stream and information about packet loss and camera frame rate.</p>
+<h2 id="external-camera-streaming-pipeline">External camera streaming pipeline</h2>
+<p>If you have a X3 drone with an external camera connected you can use the following pipeline:</p>
+<details class="abstract">
+<summary>Windows</summary>
+<div class="highlight"><pre><span></span><code>gst-launch-1.0 rtspsrc <span class="nv">location</span><span class="o">=</span>rtsp://192.168.1.101:8555/guestport_cam <span class="nv">latency</span><span class="o">=</span><span class="m">0</span> ! rtph264depay ! avdec_h264 ! videoconvert ! autovideosink <span class="nv">sync</span><span class="o">=</span><span class="nb">false</span>
+</code></pre></div>
+</details>
+<details class="abstract">
+<summary>Linux and macOS</summary>
+<div class="highlight"><pre><span></span><code>gst-launch-1.0 rtspsrc <span class="nv">location</span><span class="o">=</span>rtsp://192.168.1.101:8555/guestport_cam <span class="nv">latency</span><span class="o">=</span><span class="m">0</span> <span class="se">\</span>
+    ! rtph264depay <span class="se">\</span>
+    ! avdec_h264 <span class="se">\</span>
+    ! videoconvert <span class="se">\</span>
+    ! autovideosink <span class="nv">sync</span><span class="o">=</span><span class="nb">false</span>
+</code></pre></div>
+</details>
+<p>Running the pipeline will open a window with the external camera stream.</p>
                 
                   
                 
@@ -787,7 +825,7 @@ gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa
     
       <script src="../../../assets/javascripts/application.c33a9706.js"></script>
       
-      <script>app.initialize({version:"1.1",url:{base:"../../.."}})</script>
+      <script>app.initialize({version:"1.1.2",url:{base:"../../.."}})</script>
       
     
   </body>

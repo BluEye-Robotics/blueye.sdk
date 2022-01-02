@@ -32,7 +32,7 @@
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
       <link rel="shortcut icon" href="../../../../docs/media/blueye_b.svg">
-      <meta name="generator" content="mkdocs-1.1, mkdocs-material-4.6.3">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-4.6.3">
     
     
       
@@ -1097,7 +1097,9 @@
                 
                 
                 <h1 id="module-blueyesdkdrone">Module blueye.sdk.drone</h1>
-<details class="example"><summary>View Source</summary><pre><code>#!/usr/bin/env python3
+<details class="example">
+<summary>View Source</summary>
+<pre><code>#!/usr/bin/env python3
 
 import socket
 
@@ -1127,9 +1129,7 @@ from .motion import Motion
 
 class _DroneStateWatcher(threading.Thread):
 
-    """Subscribes to UDP messages from the drone and stores the latest data
-
-    """
+    """Subscribes to UDP messages from the drone and stores the latest data"""
 
     def __init__(self, ip="192.168.1.101", udp_timeout=3):
 
@@ -1682,8 +1682,9 @@ class Pioneer(Drone):
     <span class="n">parent_drone</span><span class="p">:</span> <span class="s1">&#39;Drone&#39;</span>
 <span class="p">)</span>
 </code></pre></div>
-
-<details class="example"><summary>View Source</summary><pre><code>class Config:
+<details class="example">
+<summary>View Source</summary>
+<pre><code>class Config:
 
     def __init__(self, parent_drone: "Drone"):
 
@@ -1759,7 +1760,9 @@ Older software versions will assume a water density of 1025 grams per liter.</p>
 Set the system for the drone</p>
 <p>This method is used to set the system time for the drone. The argument <code>time</code> is expected to
 be a Unix timestamp (ie. the number of seconds since the epoch).</p>
-<details class="example"><summary>View Source</summary><pre><code>    def set_drone_time(self, time: int):
+<details class="example">
+<summary>View Source</summary>
+<pre><code>    def set_drone_time(self, time: int):
 
         """Set the system for the drone
 
@@ -1781,13 +1784,14 @@ be a Unix timestamp (ie. the number of seconds since the epoch).</p>
     <span class="n">udpTimeout</span><span class="o">=</span><span class="mi">3</span>
 <span class="p">)</span>
 </code></pre></div>
-
 <p>A class providing an interface to a Blueye drone's functions</p>
 <p>Automatically connects to the drone using the default ip and port when instantiated, this
 behaviour can be disabled by setting <code>autoConnect=False</code>.</p>
 <p>The drone only supports one client controlling it at a time, but if you pass
 <code>slaveModeEnabled=True</code> you will still be able to receive data from the drone.</p>
-<details class="example"><summary>View Source</summary><pre><code>class Drone:
+<details class="example">
+<summary>View Source</summary>
+<pre><code>class Drone:
 
     """A class providing an interface to a Blueye drone's functions
 
@@ -2167,7 +2171,6 @@ Get the battery state of charge</p>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="n">connection_established</span>
 </code></pre></div>
-
 <p><div class="highlight"><pre><span></span><code><span class="n">depth</span>
 </code></pre></div>
 Get the current depth in millimeters</p>
@@ -2210,7 +2213,9 @@ Get the current orientation of the drone</p>
 Start receiving telemetry info from the drone, and publishing watchdog messages</p>
 <p>When watchdog message are published the thrusters are armed, to stop the drone from moving
 unexpectedly when connecting all thruster set points are set to zero when connecting.</p>
-<details class="example"><summary>View Source</summary><pre><code>    def connect(self, timeout=None):
+<details class="example">
+<summary>View Source</summary>
+<pre><code>    def connect(self, timeout=None):
 
         """Start receiving telemetry info from the drone, and publishing watchdog messages
 
@@ -2289,7 +2294,9 @@ unexpectedly when connecting all thruster set points are set to zero when connec
 <span class="p">)</span>
 </code></pre></div>
 Disconnects the TCP connection, allowing another client to take control of the drone</p>
-<details class="example"><summary>View Source</summary><pre><code>    def disconnect(self):
+<details class="example">
+<summary>View Source</summary>
+<pre><code>    def disconnect(self):
 
         """Disconnects the TCP connection, allowing another client to take control of the drone"""
 
@@ -2304,7 +2311,9 @@ Disconnects the TCP connection, allowing another client to take control of the d
 <span class="p">)</span>
 </code></pre></div>
 Ping drone, an exception is thrown by TcpClient if drone does not answer</p>
-<details class="example"><summary>View Source</summary><pre><code>    def ping(self):
+<details class="example">
+<summary>View Source</summary>
+<pre><code>    def ping(self):
 
         """Ping drone, an exception is thrown by TcpClient if drone does not answer"""
 
@@ -2317,13 +2326,14 @@ Ping drone, an exception is thrown by TcpClient if drone does not answer</p>
     <span class="o">**</span><span class="n">kwargs</span>
 <span class="p">)</span>
 </code></pre></div>
-
 <p>A class providing an interface to a Blueye drone's functions</p>
 <p>Automatically connects to the drone using the default ip and port when instantiated, this
 behaviour can be disabled by setting <code>autoConnect=False</code>.</p>
 <p>The drone only supports one client controlling it at a time, but if you pass
 <code>slaveModeEnabled=True</code> you will still be able to receive data from the drone.</p>
-<details class="example"><summary>View Source</summary><pre><code>class Pioneer(Drone):
+<details class="example">
+<summary>View Source</summary>
+<pre><code>class Pioneer(Drone):
 
     def __init__(self, *args, **kwargs):
 
@@ -2357,7 +2367,6 @@ Get the battery state of charge</p>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="n">connection_established</span>
 </code></pre></div>
-
 <p><div class="highlight"><pre><span></span><code><span class="n">depth</span>
 </code></pre></div>
 Get the current depth in millimeters</p>
@@ -2400,7 +2409,9 @@ Get the current orientation of the drone</p>
 Start receiving telemetry info from the drone, and publishing watchdog messages</p>
 <p>When watchdog message are published the thrusters are armed, to stop the drone from moving
 unexpectedly when connecting all thruster set points are set to zero when connecting.</p>
-<details class="example"><summary>View Source</summary><pre><code>    def connect(self, timeout=None):
+<details class="example">
+<summary>View Source</summary>
+<pre><code>    def connect(self, timeout=None):
 
         """Start receiving telemetry info from the drone, and publishing watchdog messages
 
@@ -2479,7 +2490,9 @@ unexpectedly when connecting all thruster set points are set to zero when connec
 <span class="p">)</span>
 </code></pre></div>
 Disconnects the TCP connection, allowing another client to take control of the drone</p>
-<details class="example"><summary>View Source</summary><pre><code>    def disconnect(self):
+<details class="example">
+<summary>View Source</summary>
+<pre><code>    def disconnect(self):
 
         """Disconnects the TCP connection, allowing another client to take control of the drone"""
 
@@ -2494,7 +2507,9 @@ Disconnects the TCP connection, allowing another client to take control of the d
 <span class="p">)</span>
 </code></pre></div>
 Ping drone, an exception is thrown by TcpClient if drone does not answer</p>
-<details class="example"><summary>View Source</summary><pre><code>    def ping(self):
+<details class="example">
+<summary>View Source</summary>
+<pre><code>    def ping(self):
 
         """Ping drone, an exception is thrown by TcpClient if drone does not answer"""
 
@@ -2508,9 +2523,10 @@ Ping drone, an exception is thrown by TcpClient if drone does not answer</p>
     <span class="o">**</span><span class="n">kwargs</span>
 <span class="p">)</span>
 </code></pre></div>
-
 <p>Raised when trying to perform action not possible in slave mode</p>
-<details class="example"><summary>View Source</summary><pre><code>class SlaveModeWarning(UserWarning):
+<details class="example">
+<summary>View Source</summary>
+<pre><code>class SlaveModeWarning(UserWarning):
 
     """Raised when trying to perform action not possible in slave mode"""
 </code></pre>
@@ -2526,7 +2542,6 @@ Ping drone, an exception is thrown by TcpClient if drone does not answer</p>
 <h4 id="class-variables">Class variables</h4>
 <div class="highlight"><pre><span></span><code><span class="n">args</span>
 </code></pre></div>
-
 <h4 id="methods_3">Methods</h4>
 <h5 id="with_traceback">with_traceback</h5>
 <p><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">with_traceback</span><span class="p">(</span>
@@ -2608,7 +2623,7 @@ set self.<strong>traceback</strong> to tb and return self.</p>
     
       <script src="../../../../assets/javascripts/application.c33a9706.js"></script>
       
-      <script>app.initialize({version:"1.1",url:{base:"../../../.."}})</script>
+      <script>app.initialize({version:"1.1.2",url:{base:"../../../.."}})</script>
       
     
   </body>

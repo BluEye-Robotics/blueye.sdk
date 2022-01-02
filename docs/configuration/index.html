@@ -32,7 +32,7 @@
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
       <link rel="shortcut icon" href="../media/blueye_b.svg">
-      <meta name="generator" content="mkdocs-1.1, mkdocs-material-4.6.3">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-4.6.3">
     
     
       
@@ -695,7 +695,6 @@
 <span class="n">time_to_set_on_drone</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span> <span class="c1"># Unix Timestamp</span>
 <span class="n">myDrone</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">set_drone_time</span><span class="p">(</span><span class="n">time_to_set_on_drone</span><span class="p">)</span>
 </code></pre></div>
-
 <p>or if we for example want to offset the drone time 5 hours relative to our current system time we can do something like this:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">blueye.sdk</span> <span class="kn">import</span> <span class="n">Drone</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">timezone</span><span class="p">,</span> <span class="n">timedelta</span><span class="p">,</span> <span class="n">datetime</span>
@@ -708,7 +707,6 @@
 
 <span class="n">myDrone</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">set_drone_time</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">unix_timestamp</span><span class="p">))</span>
 </code></pre></div>
-
 <h3 id="calibrate-pressure-sensor-for-water-density">Calibrate pressure sensor for water density</h3>
 <p>The water density on the drone default to a reasonable density for salt water: 1025 grams per liter. For more accurate depth readings, the water density can be configured manually to suit your local conditions</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">blueye.sdk</span> <span class="kn">import</span> <span class="n">Drone</span><span class="p">,</span> <span class="n">WaterDensities</span>
@@ -727,7 +725,6 @@
 <span class="c1"># Can also be set to arbitrary values</span>
 <span class="n">myDrone</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">water_density</span> <span class="o">=</span> <span class="mi">1234</span>
 </code></pre></div>
-
 <h3 id="configure-camera-parameters">Configure camera parameters</h3>
 <p>There are 6 different camera parameters that can be set. For a full list of camera parameters and their possible values see the <a href="../../reference/blueye/sdk/camera"><code>camera reference</code></a> section. For example you could set the bit rate like this</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">blueye.sdk</span> <span class="kn">import</span> <span class="n">Drone</span>
@@ -736,7 +733,6 @@
 
 <span class="n">myDrone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">bitrate</span> <span class="o">=</span> <span class="mi">8_000_000</span> <span class="c1"># 8 Mbit bitrate</span>
 </code></pre></div>
-
 <p>Due to a bug in the camera streaming on the drone a camera stream has to have been opened at least once before camera parameters can be set on the drone, see issue <a href="https://github.com/BluEye-Robotics/blueye.sdk/issues/67">#67</a>. For instructions on how to start a video stream see, the <a href="../quick_start/#watching-the-video-stream"><code>Quick Start Guide</code></a>.</p>
                 
                   
@@ -811,7 +807,7 @@
     
       <script src="../../assets/javascripts/application.c33a9706.js"></script>
       
-      <script>app.initialize({version:"1.1",url:{base:"../.."}})</script>
+      <script>app.initialize({version:"1.1.2",url:{base:"../.."}})</script>
       
     
   </body>

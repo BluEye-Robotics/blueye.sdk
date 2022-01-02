@@ -32,7 +32,7 @@
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
       <link rel="shortcut icon" href="../../media/blueye_b.svg">
-      <meta name="generator" content="mkdocs-1.1, mkdocs-material-4.6.3">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-4.6.3">
     
     
       
@@ -717,7 +717,6 @@ them or use them however you see fit.</p>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">myDrone</span><span class="o">.</span><span class="n">logs</span><span class="p">)</span>
 </code></pre></div>
-
 <p>you should see something like the following lines be printed</p>
 <div class="highlight"><pre><span></span><code>Name                        Time                Max depth  Size
 ea9add4d40f69d4-00000.csv   24. Oct 2018 09:40  21.05 m    6.3 MiB
@@ -726,7 +725,6 @@ ea9add4d40f69d4-00002.csv   31. Oct 2018 10:05  60.69 m    8.5 MiB
 ea9add4d40f69d4-00003.csv   31. Oct 2018 12:13  41.68 m    8.4 MiB
 ea9add4d40f69d4-00004.csv   02. Nov 2018 08:59  52.52 m    7.8 MiB
 </code></pre></div>
-
 <p>The first part of the filename (the part before the -) is the unique ID of your drone
 and second part is the dive number. In addition we see the start time of the dive, the
 maximum depth reached, as well as the size of the log file.</p>
@@ -752,7 +750,6 @@ shows how one can download the last 3 logs to the current folder:</p>
 <span class="k">for</span> <span class="n">log</span> <span class="ow">in</span> <span class="n">myDrone</span><span class="o">.</span><span class="n">logs</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]:</span>
     <span class="n">log</span><span class="o">.</span><span class="n">download</span><span class="p">()</span>
 </code></pre></div>
-
 <h2 id="example-adding-a-prefix-to-log-names">Example: Adding a prefix to log names</h2>
 <p>The example code below shows how one can add a simple prefix to all log files when
 downloading:</p>
@@ -838,7 +835,7 @@ downloading:</p>
     
       <script src="../../../assets/javascripts/application.c33a9706.js"></script>
       
-      <script>app.initialize({version:"1.1",url:{base:"../../.."}})</script>
+      <script>app.initialize({version:"1.1.2",url:{base:"../../.."}})</script>
       
     
   </body>

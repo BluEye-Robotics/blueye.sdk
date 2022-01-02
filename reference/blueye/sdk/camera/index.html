@@ -32,7 +32,7 @@
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
       <link rel="shortcut icon" href="../../../../docs/media/blueye_b.svg">
-      <meta name="generator" content="mkdocs-1.1, mkdocs-material-4.6.3">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-4.6.3">
     
     
       
@@ -839,7 +839,9 @@
                 
                 
                 <h1 id="module-blueyesdkcamera">Module blueye.sdk.camera</h1>
-<details class="example"><summary>View Source</summary><pre><code>import numpy as np
+<details class="example">
+<summary>View Source</summary>
+<pre><code>import numpy as np
 
 from packaging import version
 
@@ -1190,8 +1192,9 @@ class Camera:
     <span class="n">parent_drone</span>
 <span class="p">)</span>
 </code></pre></div>
-
-<details class="example"><summary>View Source</summary><pre><code>class Camera:
+<details class="example">
+<summary>View Source</summary>
+<pre><code>class Camera:
 
     def __init__(self, parent_drone):
 
@@ -1542,7 +1545,9 @@ Takes a still picture and stores it locally on the drone</p>
 <p>These pictures can be downloaded with the Blueye App, or by any WebDAV compatible client.
 This feature was added with drone version 1.4.7, so if you try to use it with an older
 version this method will raise a RunTimeError.</p>
-<details class="example"><summary>View Source</summary><pre><code>    def take_picture(self):
+<details class="example">
+<summary>View Source</summary>
+<pre><code>    def take_picture(self):
 
         """Takes a still picture and stores it locally on the drone
 
@@ -1572,8 +1577,9 @@ version this method will raise a RunTimeError.</p>
     <span class="n">parent_drone</span>
 <span class="p">)</span>
 </code></pre></div>
-
-<details class="example"><summary>View Source</summary><pre><code>class Tilt:
+<details class="example">
+<summary>View Source</summary>
+<pre><code>class Tilt:
 
     @staticmethod
 
@@ -1681,7 +1687,9 @@ Set the speed and direction of the camera tilt</p>
 </ul>
 <p>Requires a drone with the tilt feature, and software version 1.5 or newer.
 A RuntimeError is raised if either of those requirements are not met.</p>
-<details class="example"><summary>View Source</summary><pre><code>    def set_speed(self, speed: int):
+<details class="example">
+<summary>View Source</summary>
+<pre><code>    def set_speed(self, speed: int):
 
         """Set the speed and direction of the camera tilt
 
@@ -1789,7 +1797,7 @@ A RuntimeError is raised if either of those requirements are not met.</p>
     
       <script src="../../../../assets/javascripts/application.c33a9706.js"></script>
       
-      <script>app.initialize({version:"1.1",url:{base:"../../../.."}})</script>
+      <script>app.initialize({version:"1.1.2",url:{base:"../../../.."}})</script>
       
     
   </body>

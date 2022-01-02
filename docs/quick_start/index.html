@@ -32,7 +32,7 @@
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
       <link rel="shortcut icon" href="../media/blueye_b.svg">
-      <meta name="generator" content="mkdocs-1.1, mkdocs-material-4.6.3">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-4.6.3">
     
     
       
@@ -745,7 +745,9 @@ for configuring multiple python versions on the same system. Pyenv also has the 
 managing your virtual environments for you, though you are of course free to use other tools for
 that as well.</p>
 <p>The instructions below show the necessary steps to get started with the SDK on a fresh install:</p>
-<details class="abstract"><summary>Windows</summary><p><strong>Install Python</strong></p>
+<details class="abstract">
+<summary>Windows</summary>
+<p><strong>Install Python</strong></p>
 <p>Install Python 3.7 or higher, you can find the latest python versions <a href="https://www.python.org/downloads/">here</a>.
 Remember to check the option "Add Python to path" when installing.</p>
 <p><strong>Install virtualenv for managing Python versions (optional)</strong></p>
@@ -772,19 +774,18 @@ see <a href="http://tritoneco.com/2014/02/21/fix-for-powershell-script-not-digit
 <p>Now we're ready to install the SDK, which should be as simple as</p>
 <div class="highlight"><pre><span></span><code>pip install blueye.sdk
 </code></pre></div>
-
 <p>or, if you want to include the dependencies required for running the examples shown in this
 documentation you should run</p>
 <div class="highlight"><pre><span></span><code>pip install &quot;blueye.sdk[examples]&quot;
 </code></pre></div>
-
 </details>
-<details class="abstract"><summary>Mac OS</summary><p><strong> Install the necessary Python version</strong></p>
+<details class="abstract">
+<summary>Mac OS</summary>
+<p><strong> Install the necessary Python version</strong></p>
 <p>Install pyenv, for more instructions see the <a href="https://github.com/pyenv/pyenv-installer">pyenv-installer</a></p>
 <div class="highlight"><pre><span></span><code>curl https://pyenv.run | bash
 pyenv update
 </code></pre></div>
-
 <p>If you want pyenv to be loaded each time you open a new terminal you can add this to your .zshrc or the equivalent for your terminal
 <div class="highlight"><pre><span></span><code>export PATH=&quot;$HOME/.pyenv/bin:$PATH&quot;
 eval &quot;$(pyenv init -)&quot;
@@ -795,14 +796,12 @@ additional dependencies before building Python.</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># optional, but recommended:</span>
 brew install openssl readline sqlite3 xz zlib
 </code></pre></div>
-
 <p>When running Mojave or higher (10.14+) you will also need to install the additional SDK headers:
 <div class="highlight"><pre><span></span><code>sudo installer -pkg /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg -target /
 </code></pre></div>
 Then build Python with pyenv</p>
 <div class="highlight"><pre><span></span><code>pyenv install 3.8.0
 </code></pre></div>
-
 <p><strong>Create a virtual environment</strong></p>
 <p>Using a virtual environment is not strictly necessary, but it greatly simplifies the
 development of Python packages.</p>
@@ -810,26 +809,24 @@ development of Python packages.</p>
 <div class="highlight"><pre><span></span><code>pyenv virtualenv 3.8.0 blueye.sdk
 pyenv activate blueye.sdk
 </code></pre></div>
-
 <p><strong>Install the SDK</strong></p>
 <p>Now we're ready to install the SDK, which should be as simple as.</p>
 <div class="highlight"><pre><span></span><code>pip install blueye.sdk
 </code></pre></div>
-
 <p>or, if you want to include the dependencies required for running the examples shown in this
 documentation you should run</p>
 <div class="highlight"><pre><span></span><code>pip install &quot;blueye.sdk[examples]&quot;
 </code></pre></div>
-
 </details>
-<details class="abstract"><summary>Linux</summary><p>These instructions are directed at Ubuntu, but the process should be similar for other
+<details class="abstract">
+<summary>Linux</summary>
+<p>These instructions are directed at Ubuntu, but the process should be similar for other
 distributions.</p>
 <p><strong>Install the necessary Python version</strong></p>
 <p>Install pyenv, for more instructions see the <a href="https://github.com/pyenv/pyenv-installer">pyenv-installer</a></p>
 <div class="highlight"><pre><span></span><code>curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
 pyenv update
 </code></pre></div>
-
 <p>Install the needed dependencies for building python 3.8.0</p>
 <p><div class="highlight"><pre><span></span><code>apt install -y make build-essential libssl-dev zlib1g-dev libbz2-dev \
 libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
@@ -845,17 +842,14 @@ development of Python packages.</p>
 <div class="highlight"><pre><span></span><code>pyenv virtualenv 3.8.0 blueye.sdk
 pyenv activate blueye.sdk
 </code></pre></div>
-
 <p><strong>Install the SDK</strong></p>
 <p>Now we're ready to install the SDK, which should be as simple as</p>
 <div class="highlight"><pre><span></span><code>pip install blueye.sdk
 </code></pre></div>
-
 <p>or, if you want to include the dependencies required for running the examples shown in this
 documentation you should run</p>
 <div class="highlight"><pre><span></span><code>pip install &quot;blueye.sdk[examples]&quot;
 </code></pre></div>
-
 </details>
 <h2 id="connect-to-the-drone">Connect to the drone</h2>
 <p>To use the SDK your computer must be connected to the drone via the surface unit WiFi. For a how-to
@@ -876,11 +870,11 @@ properties by showing how to control the lights:</p>
 <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 
 <span class="c1"># We can also get the current brightness of the lights through the lights property</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Current light intensity: </span><span class="si">{myDrone.lights}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Current light intensity: </span><span class="si">{</span><span class="n">myDrone</span><span class="o">.</span><span class="n">lights</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="n">myDrone</span><span class="o">.</span><span class="n">lights</span> <span class="o">=</span> <span class="mi">0</span>
 
 <span class="c1"># Properties can also be used for reading telemetry data from the drone</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Current depth in millimeters: </span><span class="si">{myDrone.depth}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Current depth in millimeters: </span><span class="si">{</span><span class="n">myDrone</span><span class="o">.</span><span class="n">depth</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </code></pre></div>
 For an overview of the properties that are available for controlling and reading data from the drone, go to the
 <a href="../../reference/blueye/sdk/drone"><code>Reference section</code></a> of the documentation.
@@ -913,7 +907,6 @@ spectator and can be used together with the SDK.</p>
 <p>Remember to install the example dependencies before running the examples.</p>
 <div class="highlight"><pre><span></span><code>pip install <span class="s2">&quot;blueye.sdk[examples]&quot;</span>
 </code></pre></div>
-
 <h3 id="local-documentation">Local documentation</h3>
 <p>Since the drone surface unit (usually) does not have internet access it can be a bit tricky to
 reference this documentation while developing on the drone. Luckily when you install the SDK from
@@ -996,7 +989,7 @@ executing the following Python snippet:</p>
     
       <script src="../../assets/javascripts/application.c33a9706.js"></script>
       
-      <script>app.initialize({version:"1.1",url:{base:"../.."}})</script>
+      <script>app.initialize({version:"1.1.2",url:{base:"../.."}})</script>
       
     
   </body>

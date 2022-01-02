@@ -32,7 +32,7 @@
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
       <link rel="shortcut icon" href="../../../../docs/media/blueye_b.svg">
-      <meta name="generator" content="mkdocs-1.1, mkdocs-material-4.6.3">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-4.6.3">
     
     
       
@@ -759,7 +759,9 @@
                 
                 
                 <h1 id="module-blueyesdkmotion">Module blueye.sdk.motion</h1>
-<details class="example"><summary>View Source</summary><pre><code>import threading
+<details class="example">
+<summary>View Source</summary>
+<pre><code>import threading
 
 class Motion:
 
@@ -789,7 +791,7 @@ class Motion:
 
     def current_thruster_setpoints(self):
 
-        """ Returns the current setpoints for the thrusters
+        """Returns the current setpoints for the thrusters
 
         We maintain this state in the SDK since the drone does not report back it's current
 
@@ -829,7 +831,7 @@ class Motion:
 
     def surge(self) -&gt; float:
 
-        """ Set force reference for the surge direction
+        """Set force reference for the surge direction
 
         Arguments:
 
@@ -855,7 +857,7 @@ class Motion:
 
     def sway(self) -&gt; float:
 
-        """ Set force reference for the sway direction
+        """Set force reference for the sway direction
 
         Arguments:
 
@@ -881,7 +883,7 @@ class Motion:
 
     def heave(self) -&gt; float:
 
-        """ Set force reference for the heave direction
+        """Set force reference for the heave direction
 
         Arguments:
 
@@ -907,7 +909,7 @@ class Motion:
 
     def yaw(self) -&gt; float:
 
-        """ Set force reference for the yaw direction
+        """Set force reference for the yaw direction
 
         Arguments:
 
@@ -979,7 +981,7 @@ class Motion:
 
     def boost(self) -&gt; float:
 
-        """ Get or set the boost gain
+        """Get or set the boost gain
 
         Arguments:
 
@@ -1003,7 +1005,7 @@ class Motion:
 
     def slow(self) -&gt; float:
 
-        """ Get or set the "slow gain" (inverse of boost)
+        """Get or set the "slow gain" (inverse of boost)
 
         Arguments:
 
@@ -1142,12 +1144,13 @@ class Motion:
     <span class="n">parent_drone</span>
 <span class="p">)</span>
 </code></pre></div>
-
 <p>Control the motion of the drone, and set automatic control modes</p>
 <p>Motion can be set one degree of freedom at a time by using the 4 motion properties
 (surge, sway, heave and yaw) or for all 4 degrees of freedom in one go through the
 <code>send_thruster_setpoint</code> method.</p>
-<details class="example"><summary>View Source</summary><pre><code>class Motion:
+<details class="example">
+<summary>View Source</summary>
+<pre><code>class Motion:
 
     """Control the motion of the drone, and set automatic control modes
 
@@ -1175,7 +1178,7 @@ class Motion:
 
     def current_thruster_setpoints(self):
 
-        """ Returns the current setpoints for the thrusters
+        """Returns the current setpoints for the thrusters
 
         We maintain this state in the SDK since the drone does not report back it's current
 
@@ -1215,7 +1218,7 @@ class Motion:
 
     def surge(self) -&gt; float:
 
-        """ Set force reference for the surge direction
+        """Set force reference for the surge direction
 
         Arguments:
 
@@ -1241,7 +1244,7 @@ class Motion:
 
     def sway(self) -&gt; float:
 
-        """ Set force reference for the sway direction
+        """Set force reference for the sway direction
 
         Arguments:
 
@@ -1267,7 +1270,7 @@ class Motion:
 
     def heave(self) -&gt; float:
 
-        """ Set force reference for the heave direction
+        """Set force reference for the heave direction
 
         Arguments:
 
@@ -1293,7 +1296,7 @@ class Motion:
 
     def yaw(self) -&gt; float:
 
-        """ Set force reference for the yaw direction
+        """Set force reference for the yaw direction
 
         Arguments:
 
@@ -1365,7 +1368,7 @@ class Motion:
 
     def boost(self) -&gt; float:
 
-        """ Get or set the boost gain
+        """Get or set the boost gain
 
         Arguments:
 
@@ -1389,7 +1392,7 @@ class Motion:
 
     def slow(self) -&gt; float:
 
-        """ Get or set the "slow gain" (inverse of boost)
+        """Get or set the "slow gain" (inverse of boost)
 
         Arguments:
 
@@ -1634,7 +1637,9 @@ not translational.</p>
 <li><strong>yaw</strong> (float): Moment set point in the yaw direction in range &lt;-1, 1&gt;,
                      a positive set point makes the drone rotate clockwise.</li>
 </ul>
-<details class="example"><summary>View Source</summary><pre><code>    def send_thruster_setpoint(self, surge, sway, heave, yaw):
+<details class="example">
+<summary>View Source</summary>
+<pre><code>    def send_thruster_setpoint(self, surge, sway, heave, yaw):
 
         """Control the thrusters of the drone
 
@@ -1754,7 +1759,7 @@ not translational.</p>
     
       <script src="../../../../assets/javascripts/application.c33a9706.js"></script>
       
-      <script>app.initialize({version:"1.1",url:{base:"../../../.."}})</script>
+      <script>app.initialize({version:"1.1.2",url:{base:"../../../.."}})</script>
       
     
   </body>

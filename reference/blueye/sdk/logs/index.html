@@ -32,7 +32,7 @@
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
       <link rel="shortcut icon" href="../../../../docs/media/blueye_b.svg">
-      <meta name="generator" content="mkdocs-1.1, mkdocs-material-4.6.3">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-4.6.3">
     
     
       
@@ -811,7 +811,9 @@
                 
                 
                 <h1 id="module-blueyesdklogs">Module blueye.sdk.logs</h1>
-<details class="example"><summary>View Source</summary><pre><code>from datetime import datetime
+<details class="example">
+<summary>View Source</summary>
+<pre><code>from datetime import datetime
 
 import requests
 
@@ -1072,21 +1074,20 @@ class Logs:
     <span class="n">ip</span>
 <span class="p">)</span>
 </code></pre></div>
-
 <p>This class is a container for a log file stored on the drone</p>
 <p>The drone lists the file name, max depth, start time, and file size for each log,
 and you can show this information by printing the log object, eg. on a Drone
 object called <code>myDrone</code>:</p>
 <div class="highlight"><pre><span></span><code>print(myDrone.logs[0])
 </code></pre></div>
-
 <p>or, if you want to display the header you can format the object with <code>with_header</code>:</p>
 <div class="highlight"><pre><span></span><code>print(f&quot;{myDrone.logs[0]:with_header}&quot;)
 </code></pre></div>
-
 <p>Calling the download() method on a log object will pull the CSV (Comma Separated
 Value) file from the drone to your local filesystem.</p>
-<details class="example"><summary>View Source</summary><pre><code>class LogFile:
+<details class="example">
+<summary>View Source</summary>
+<pre><code>class LogFile:
 
     """
 
@@ -1225,7 +1226,9 @@ Download the specified log to your local file system</p>
 instead of the current one.</p>
 <p>Specifying output_name will overwrite the default file name with whatever you
 have specified (be sure to include the .csv extension).</p>
-<details class="example"><summary>View Source</summary><pre><code>    def download(self, output_path=None, output_name=None):
+<details class="example">
+<summary>View Source</summary>
+<pre><code>    def download(self, output_path=None, output_name=None):
 
         """
 
@@ -1262,20 +1265,20 @@ have specified (be sure to include the .csv extension).</p>
     <span class="n">auto_download_index</span><span class="o">=</span><span class="kc">False</span>
 <span class="p">)</span>
 </code></pre></div>
-
 <p>This class is an index of the log files stored on the drone</p>
 <p>To show the available logs you simply print this object, ie. if your Drone object
 is called <code>myDrone</code>, you can do:</p>
 <div class="highlight"><pre><span></span><code>print(myDrone.logs)
 </code></pre></div>
-
 <p>This will print a list of all available logs, with some of their metadata, such as
 name and maxdepth.</p>
 <p>You can access logfile objects either by index or by name. Eg. if you want the first
 logfile in the list you can do <code>myDrone.logs[0]</code>, or if you want some particular log you
 can do <code>myDrone.logs["exampleName0001.csv"]</code>. You can even give it a slice, so if you want
 the last 10 logs you can do <code>myDrone.logs[:-10]</code>.</p>
-<details class="example"><summary>View Source</summary><pre><code>class Logs:
+<details class="example">
+<summary>View Source</summary>
+<pre><code>class Logs:
 
     """This class is an index of the log files stored on the drone
 
@@ -1406,7 +1409,9 @@ the last 10 logs you can do <code>myDrone.logs[:-10]</code>.</p>
 Refresh the log index from the drone</p>
 <p>This is method is run on the first log access by default, but if you would like to check
 for new log files it can be called at any time.</p>
-<details class="example"><summary>View Source</summary><pre><code>    def refresh_log_index(self):
+<details class="example">
+<summary>View Source</summary>
+<pre><code>    def refresh_log_index(self):
 
         """Refresh the log index from the drone
 
@@ -1496,7 +1501,7 @@ for new log files it can be called at any time.</p>
     
       <script src="../../../../assets/javascripts/application.c33a9706.js"></script>
       
-      <script>app.initialize({version:"1.1",url:{base:"../../../.."}})</script>
+      <script>app.initialize({version:"1.1.2",url:{base:"../../../.."}})</script>
       
     
   </body>
