@@ -18,7 +18,7 @@ class Motion:
 
     @property
     def current_thruster_setpoints(self):
-        """ Returns the current setpoints for the thrusters
+        """Returns the current setpoints for the thrusters
 
         We maintain this state in the SDK since the drone does not report back it's current
         setpoint.
@@ -44,7 +44,7 @@ class Motion:
 
     @property
     def surge(self) -> float:
-        """ Set force reference for the surge direction
+        """Set force reference for the surge direction
 
         Arguments:
 
@@ -61,7 +61,7 @@ class Motion:
 
     @property
     def sway(self) -> float:
-        """ Set force reference for the sway direction
+        """Set force reference for the sway direction
 
         Arguments:
 
@@ -78,7 +78,7 @@ class Motion:
 
     @property
     def heave(self) -> float:
-        """ Set force reference for the heave direction
+        """Set force reference for the heave direction
 
         Arguments:
 
@@ -95,7 +95,7 @@ class Motion:
 
     @property
     def yaw(self) -> float:
-        """ Set force reference for the yaw direction
+        """Set force reference for the yaw direction
 
         Arguments:
 
@@ -140,7 +140,7 @@ class Motion:
 
     @property
     def boost(self) -> float:
-        """ Get or set the boost gain
+        """Get or set the boost gain
 
         Arguments:
 
@@ -156,7 +156,7 @@ class Motion:
 
     @property
     def slow(self) -> float:
-        """ Get or set the "slow gain" (inverse of boost)
+        """Get or set the "slow gain" (inverse of boost)
 
         Arguments:
 

@@ -47,7 +47,7 @@ After installing you can run this pipeline in your terminal:
     gst-launch-1.0 rtspsrc location=rtsp://192.168.1.101:8554/test latency=0 ! rtph264depay ! avdec_h264 ! videoconvert ! fpsdisplaysink sync=false
     ```
 
-??? abstract "Linux and Mac OS"
+??? abstract "Linux and macOS"
     ``` shell
     gst-launch-1.0 rtspsrc location=rtsp://192.168.1.101:8554/test latency=0 \
         ! rtph264depay \
@@ -57,3 +57,22 @@ After installing you can run this pipeline in your terminal:
     ```
 
 Running the pipeline will open a window with the camera stream and information about packet loss and camera frame rate.
+
+## External camera streaming pipeline
+If you have a X3 drone with an external camera connected you can use the following pipeline:
+
+??? abstract "Windows"
+    ``` shell
+    gst-launch-1.0 rtspsrc location=rtsp://192.168.1.101:8555/guestport_cam latency=0 ! rtph264depay ! avdec_h264 ! videoconvert ! autovideosink sync=false
+    ```
+
+??? abstract "Linux and macOS"
+    ``` shell
+    gst-launch-1.0 rtspsrc location=rtsp://192.168.1.101:8555/guestport_cam latency=0 \
+        ! rtph264depay \
+        ! avdec_h264 \
+        ! videoconvert \
+        ! autovideosink sync=false
+    ```
+
+Running the pipeline will open a window with the external camera stream.
