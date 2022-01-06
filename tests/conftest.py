@@ -72,13 +72,15 @@ def mocked_UdpClient(mocker):
 
 
 @pytest.fixture
-def mocked_drone(mocker, mocked_TcpClient, mocked_UdpClient, mocked_requests):
+def mocked_drone(request, mocker, mocked_TcpClient, mocked_UdpClient, mocked_requests):
     drone = blueye.sdk.Drone(autoConnect=False)
     drone._wait_for_udp_communication = Mock()
     # Mocking out the run function to avoid blowing up the stack when the thread continuously calls
     # the get_data_dict function (which won't block since it's mocked).
     drone._state_watcher.run = Mock()
     drone.connect()
+    if hasattr(request, "param"):
+        drone.software_version_short = request.param
     return drone
 
 
