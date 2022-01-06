@@ -107,11 +107,7 @@ class Config:
 
     @water_density.setter
     def water_density(self, density: int):
-        if version.parse(self._parent_drone.software_version_short) < version.parse("1.5"):
-            raise RuntimeError(
-                "Drone software version is too old. Setting water density requires version 1.5"
-                " or higher."
-            )
+        self._parent_drone._verify_required_blunux_version("1.5")
         self._water_density = density
         self._parent_drone._tcp_client.set_water_density(density)
 
@@ -157,6 +153,21 @@ class Drone:
 
         if autoConnect is True:
             self.connect(timeout=3)
+
+    def _verify_required_blunux_version(self, requirement: str):
+        """Verify that Blunux version is higher than requirement
+
+        requirement needs to be a string that's able to be parsed by version.parse()
+
+        Raises a RuntimeError if the Blunux version of the connected drone does not match or exceed
+        the requirement.
+        """
+
+        if version.parse(self.software_version_short) < version.parse(requirement):
+            raise RuntimeError(
+                f"Blunux version of connected drone is {self.software_version_short}. Version "
+                f"{requirement} or higher is required."
+            )
 
     @property
     def connection_established(self):

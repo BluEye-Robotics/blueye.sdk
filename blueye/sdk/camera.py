@@ -7,7 +7,6 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 import requests
-from packaging import version
 
 # Necessary to avoid cyclic imports
 if TYPE_CHECKING:
@@ -44,8 +43,7 @@ class Tilt:
         """
         if "tilt" not in self._parent_drone.features:
             raise RuntimeError("The connected drone does not support tilting the camera.")
-        if version.parse(self._parent_drone.software_version_short) < version.parse("1.5"):
-            raise RuntimeError("Drone software version is too old. Requires version 1.5 or higher.")
+        self._parent_drone._verify_required_blunux_version("1.5")
 
         # The tilt command is grouped together with the thruster commands, so to avoid messing with
         # the thruster setpoint while tilting we need to get the current setpoint and send it with
@@ -64,8 +62,7 @@ class Tilt:
 
         if "tilt" not in self._parent_drone.features:
             raise RuntimeError("The connected drone does not support tilting the camera.")
-        if version.parse(self._parent_drone.software_version_short) < version.parse("1.5"):
-            raise RuntimeError("Drone software version is too old. Requires version 1.5 or higher.")
+        self._parent_drone._verify_required_blunux_version("1.5")
 
         debug_flags = self._parent_drone._state_watcher.general_state["debug_flags"]
         return self._tilt_angle_from_debug_flags(debug_flags)
@@ -553,9 +550,5 @@ class Camera:
         This feature was added with drone version 1.4.7, so if you try to use it with an older
         version this method will raise a RunTimeError.
         """
-        if version.parse(self._parent_drone.software_version_short) >= version.parse("1.4.7"):
-            self._parent_drone._tcp_client.take_still_picture()
-        else:
-            raise RuntimeError(
-                "Drone software version is too old. Requires version 1.4.7 or higher."
-            )
+        self._parent_drone._verify_required_blunux_version("1.4.7")
+        self._parent_drone._tcp_client.take_still_picture()
