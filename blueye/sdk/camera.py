@@ -25,7 +25,7 @@ class Tilt:
         tilt_angle_array = np.array(
             np.right_shift(np.bitwise_and(flags, 0x0000FF0000000000), 40),
             dtype=[("tilt_angle", np.int8)],
-        ).astype([("tilt_angle", np.float)])
+        ).astype([("tilt_angle", float)])
         return tilt_angle_array["tilt_angle"] / 2
 
     def __init__(self, parent_drone: Drone):
