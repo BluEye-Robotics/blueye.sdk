@@ -176,11 +176,13 @@ class Overlay:
 
     @property
     def logo(self) -> LogoOverlay:
+        self._parent_drone._verify_required_blunux_version("1.8.72")
         params = self._parent_drone._tcp_client.get_overlay_parameters()
         return LogoOverlay(params[6])
 
     @logo.setter
     def logo(self, logo_index: LogoOverlay):
+        self._parent_drone._verify_required_blunux_version("1.8.72")
         if not isinstance(logo_index, LogoOverlay):
             warnings.warn("Invalid logo index, ignoring", RuntimeWarning)
         elif logo_index.value not in range(3):
@@ -339,12 +341,15 @@ class Overlay:
         Max resolution: 2000 px.
         Max file size: 5 MB.
 
+        Requires Blunux version 1.8.72 or newer.
+
         *Exceptions*:
 
         * `requests.exceptions.HTTPError` : Status code 400 for invalid files
 
         * `requests.exceptions.ConnectTimeout` : If unable to create a connection within 1s
         """
+        self._parent_drone._verify_required_blunux_version("1.8.72")
         with open(path_to_logo, "rb") as f:
             url = f"http://{self._parent_drone._ip}/asset/logo"
             files = {"image": f}
@@ -362,6 +367,7 @@ class Overlay:
 
         * `requests.exceptions.ConnectTimeout` : If unable to create a connection within 1s
         """
+        self._parent_drone._verify_required_blunux_version("1.8.72")
         response = requests.get(f"http://{self._parent_drone._ip}/asset/logo", timeout=1)
         response.raise_for_status()
         filename = re.findall('filename="(.+)"', response.headers["Content-Disposition"])[0]
@@ -377,6 +383,7 @@ class Overlay:
 
         * `requests.exceptions.ConnectTimeout` : If unable to create a connection within 1s
         """
+        self._parent_drone._verify_required_blunux_version("1.8.72")
         response = requests.delete(f"http://{self._parent_drone._ip}/asset/logo", timeout=1)
         response.raise_for_status()
 

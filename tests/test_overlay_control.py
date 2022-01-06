@@ -101,6 +101,7 @@ class TestOverlay:
         assert mocked_drone.camera.overlay.date_enabled is True
 
     def test_select_logo(self, mocked_drone: Drone):
+        mocked_drone.software_version_short = "1.8.72"
         mocked_drone.camera.overlay.logo = LogoOverlay.DISABLED
         mocked_drone._tcp_client.set_overlay_logo_index.assert_called_with(0)
 
@@ -111,11 +112,13 @@ class TestOverlay:
         mocked_drone._tcp_client.set_overlay_logo_index.assert_called_with(2)
 
     def test_select_logo_warns_and_ignores_for_out_of_range_value(self, mocked_drone: Drone):
+        mocked_drone.software_version_short = "1.8.72"
         with pytest.warns(RuntimeWarning):
             mocked_drone.camera.overlay.logo = 3
         assert mocked_drone._tcp_client.set_overlay_logo_index.called is False
 
     def test_get_logo_state(self, mocked_drone: Drone):
+        mocked_drone.software_version_short = "1.8.72"
         params = list(self.default_overlay_parameters)
         mocked_drone._tcp_client.get_overlay_parameters.return_value = params
         assert mocked_drone.camera.overlay.logo == LogoOverlay["DISABLED"]
@@ -328,6 +331,7 @@ class TestOverlay:
         assert mocked_drone.camera.overlay.date_format == "abc" * 21
 
     def test_upload_logo(self, mocked_drone: Drone, requests_mock, mocker):
+        mocked_drone.software_version_short = "1.8.72"
         requests_mock.post("http://192.168.1.101/asset/logo")
         mocked_open = mocker.patch("builtins.open", mocker.mock_open())
         logo_path = "/tmp/logo.png"
@@ -337,6 +341,7 @@ class TestOverlay:
         mocked_open.assert_called_once_with(logo_path, "rb")
 
     def test_upload_raises_exception_for_400s(self, mocked_drone: Drone, requests_mock, mocker):
+        mocked_drone.software_version_short = "1.8.72"
         from requests.exceptions import HTTPError
 
         requests_mock.post("http://192.168.1.101/asset/logo", status_code=400)
@@ -345,6 +350,7 @@ class TestOverlay:
             mocked_drone.camera.overlay.upload_logo("whatever.png")
 
     def test_download_logo_default_path(self, mocked_drone: Drone, requests_mock, mocker):
+        mocked_drone.software_version_short = "1.8.72"
         png_content = b"Don't look too close, I'm a png I swear"
         filename = "logo.png"
         headers = {"Content-Disposition": f'inline; filename="{filename}"'}
@@ -356,6 +362,7 @@ class TestOverlay:
         mocked_filehandle.write.assert_called_once_with(png_content)
 
     def test_download_logo_raises_exception_for_404(self, mocked_drone: Drone, requests_mock):
+        mocked_drone.software_version_short = "1.8.72"
         from requests.exceptions import HTTPError
 
         requests_mock.get("http://192.168.1.101/asset/logo", status_code=404)
@@ -363,10 +370,12 @@ class TestOverlay:
             mocked_drone.camera.overlay.download_logo()
 
     def test_delete_logo(self, mocked_drone: Drone, requests_mock):
+        mocked_drone.software_version_short = "1.8.72"
         requests_mock.delete("http://192.168.1.101/asset/logo", text="Custom logo deleted!")
         mocked_drone.camera.overlay.delete_logo()
 
     def test_delete_logo_raises_exception_on_non_200(self, mocked_drone: Drone, requests_mock):
+        mocked_drone.software_version_short = "1.8.72"
         requests_mock.delete("http://192.168.1.101/asset/logo", status_code=500)
         from requests.exceptions import HTTPError
 
