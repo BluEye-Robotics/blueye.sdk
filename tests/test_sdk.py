@@ -98,12 +98,14 @@ def test_error_flags(mocked_drone):
     assert mocked_drone.error_flags == error_flags
 
 
-def test_timeout_general_state(mocked_drone):
+def test_timeout_general_state(mocked_drone: Drone):
+    mocked_drone._state_watcher._udp_timeout = 0.001
     with pytest.raises(TimeoutError):
         mocked_drone._state_watcher.general_state
 
 
-def test_timeout_calibration_state(mocked_drone):
+def test_timeout_calibration_state(mocked_drone: Drone):
+    mocked_drone._state_watcher._udp_timeout = 0.001
     with pytest.raises(TimeoutError):
         mocked_drone._state_watcher.calibration_state
 
@@ -148,7 +150,7 @@ def test_wait_for_udp_com_raises_ConnectionError_on_timeout(mocker):
     mocked_udp.attach_mock(mocker.patch("blueye.sdk.drone.socket.socket", autospec=True), "_sock")
     mocked_udp.get_data_dict.side_effect = socket.timeout
     with pytest.raises(ConnectionError):
-        blueye.sdk.Drone._wait_for_udp_communication(1)
+        blueye.sdk.Drone._wait_for_udp_communication(0.001)
 
 
 def test_connect_ignores_repeated_starts_on_watchdog_thread(mocked_drone):

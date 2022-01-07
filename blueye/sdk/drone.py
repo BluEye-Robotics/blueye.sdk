@@ -19,7 +19,7 @@ from .motion import Motion
 class _DroneStateWatcher(threading.Thread):
     """Subscribes to UDP messages from the drone and stores the latest data"""
 
-    def __init__(self, ip="192.168.1.101", udp_timeout=3):
+    def __init__(self, ip: str = "192.168.1.101", udp_timeout: float = 3):
         threading.Thread.__init__(self)
         self._ip = ip
         self._udp_timeout = udp_timeout
@@ -198,7 +198,7 @@ class Drone:
         self.uuid = response["hardware_id"]
 
     @staticmethod
-    def _wait_for_udp_communication(timeout: int, ip="192.168.1.101"):
+    def _wait_for_udp_communication(timeout: float, ip: str = "192.168.1.101"):
         """Simple helper for waiting for drone to come online
 
         Raises ConnectionError if no connection is established in the specified timeout.
