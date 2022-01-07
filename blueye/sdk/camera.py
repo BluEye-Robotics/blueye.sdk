@@ -101,6 +101,7 @@ class Overlay:
 
     @property
     def temperature_enabled(self) -> bool:
+        self._parent_drone._verify_required_blunux_version("1.7.60")
         params = self._parent_drone._tcp_client.get_overlay_parameters()
         if params[1] == 1:
             return True
@@ -109,6 +110,7 @@ class Overlay:
 
     @temperature_enabled.setter
     def temperature_enabled(self, enable_temperature: bool):
+        self._parent_drone._verify_required_blunux_version("1.7.60")
         if enable_temperature is True:
             self._parent_drone._tcp_client.set_overlay_temperature_enabled(1)
         else:
@@ -116,6 +118,7 @@ class Overlay:
 
     @property
     def depth_enabled(self) -> bool:
+        self._parent_drone._verify_required_blunux_version("1.7.60")
         params = self._parent_drone._tcp_client.get_overlay_parameters()
         if params[2] == 1:
             return True
@@ -124,6 +127,7 @@ class Overlay:
 
     @depth_enabled.setter
     def depth_enabled(self, enable_depth: bool):
+        self._parent_drone._verify_required_blunux_version("1.7.60")
         if enable_depth is True:
             self._parent_drone._tcp_client.set_overlay_depth_enabled(1)
         else:
@@ -131,6 +135,7 @@ class Overlay:
 
     @property
     def heading_enabled(self) -> bool:
+        self._parent_drone._verify_required_blunux_version("1.7.60")
         params = self._parent_drone._tcp_client.get_overlay_parameters()
         if params[3] == 1:
             return True
@@ -139,6 +144,7 @@ class Overlay:
 
     @heading_enabled.setter
     def heading_enabled(self, enable_heading: bool):
+        self._parent_drone._verify_required_blunux_version("1.7.60")
         if enable_heading is True:
             self._parent_drone._tcp_client.set_overlay_heading_enabled(1)
         else:
@@ -146,6 +152,7 @@ class Overlay:
 
     @property
     def tilt_enabled(self) -> bool:
+        self._parent_drone._verify_required_blunux_version("1.7.60")
         params = self._parent_drone._tcp_client.get_overlay_parameters()
         if params[4] == 1:
             return True
@@ -154,6 +161,7 @@ class Overlay:
 
     @tilt_enabled.setter
     def tilt_enabled(self, enable_tilt: bool):
+        self._parent_drone._verify_required_blunux_version("1.7.60")
         if enable_tilt is True:
             self._parent_drone._tcp_client.set_overlay_tilt_enabled(1)
         else:
@@ -161,6 +169,7 @@ class Overlay:
 
     @property
     def date_enabled(self) -> bool:
+        self._parent_drone._verify_required_blunux_version("1.7.60")
         params = self._parent_drone._tcp_client.get_overlay_parameters()
         if params[5] == 1:
             return True
@@ -169,6 +178,7 @@ class Overlay:
 
     @date_enabled.setter
     def date_enabled(self, enable_date: bool):
+        self._parent_drone._verify_required_blunux_version("1.7.60")
         if enable_date is True:
             self._parent_drone._tcp_client.set_overlay_date_enabled(1)
         else:
@@ -192,11 +202,13 @@ class Overlay:
 
     @property
     def depth_unit(self) -> DepthUnitOverlay:
+        self._parent_drone._verify_required_blunux_version("1.7.60")
         params = self._parent_drone._tcp_client.get_overlay_parameters()
         return DepthUnitOverlay(params[7])
 
     @depth_unit.setter
     def depth_unit(self, unit_index: DepthUnitOverlay):
+        self._parent_drone._verify_required_blunux_version("1.7.60")
         if not isinstance(unit_index, DepthUnitOverlay):
             warnings.warn("Invalid depth unit index, ignoring", RuntimeWarning)
         elif unit_index.value not in range(2):
@@ -206,11 +218,13 @@ class Overlay:
 
     @property
     def temperature_unit(self) -> DepthUnitOverlay:
+        self._parent_drone._verify_required_blunux_version("1.7.60")
         params = self._parent_drone._tcp_client.get_overlay_parameters()
         return TemperatureUnitOverlay(params[8])
 
     @temperature_unit.setter
     def temperature_unit(self, unit_index: TemperatureUnitOverlay):
+        self._parent_drone._verify_required_blunux_version("1.7.60")
         if not isinstance(unit_index, TemperatureUnitOverlay):
             warnings.warn("Invalid temperature unit index, ignoring", RuntimeWarning)
         elif unit_index.value not in range(2):
@@ -220,20 +234,24 @@ class Overlay:
 
     @property
     def timezone_offset(self) -> int:
+        self._parent_drone._verify_required_blunux_version("1.7.60")
         params = self._parent_drone._tcp_client.get_overlay_parameters()
         return params[9]
 
     @timezone_offset.setter
     def timezone_offset(self, offset: int):
+        self._parent_drone._verify_required_blunux_version("1.7.60")
         self._parent_drone._tcp_client.set_overlay_tz_offset(offset)
 
     @property
     def margin_width(self) -> int:
+        self._parent_drone._verify_required_blunux_version("1.7.60")
         params = self._parent_drone._tcp_client.get_overlay_parameters()
         return params[10]
 
     @margin_width.setter
     def margin_width(self, width: int):
+        self._parent_drone._verify_required_blunux_version("1.7.60")
         if width < 0:
             warnings.warn("Invalid margin width, ignoring", RuntimeWarning)
         else:
@@ -241,11 +259,13 @@ class Overlay:
 
     @property
     def margin_height(self) -> int:
+        self._parent_drone._verify_required_blunux_version("1.7.60")
         params = self._parent_drone._tcp_client.get_overlay_parameters()
         return params[11]
 
     @margin_height.setter
     def margin_height(self, height: int):
+        self._parent_drone._verify_required_blunux_version("1.7.60")
         if height < 0:
             warnings.warn("Invalid margin height, ignoring", RuntimeWarning)
         else:
@@ -253,11 +273,13 @@ class Overlay:
 
     @property
     def font_size(self) -> FontSizeOverlay:
+        self._parent_drone._verify_required_blunux_version("1.7.60")
         params = self._parent_drone._tcp_client.get_overlay_parameters()
         return FontSizeOverlay(params[12])
 
     @font_size.setter
     def font_size(self, size: FontSizeOverlay):
+        self._parent_drone._verify_required_blunux_version("1.7.60")
         if not isinstance(size, FontSizeOverlay):
             warnings.warn("Invalid font size, ignoring", RuntimeWarning)
         elif size.value not in range(15, 41):
@@ -267,11 +289,13 @@ class Overlay:
 
     @property
     def title(self) -> str:
+        self._parent_drone._verify_required_blunux_version("1.7.60")
         params = self._parent_drone._tcp_client.get_overlay_parameters()
         return params[13].decode("utf-8").rstrip("\x00")
 
     @title.setter
     def title(self, input_title: str):
+        self._parent_drone._verify_required_blunux_version("1.7.60")
         new_title = input_title
         if len(input_title) > 63:
             warnings.warn("Too long title, truncating to 63 characters", RuntimeWarning)
@@ -285,11 +309,13 @@ class Overlay:
 
     @property
     def subtitle(self) -> str:
+        self._parent_drone._verify_required_blunux_version("1.7.60")
         params = self._parent_drone._tcp_client.get_overlay_parameters()
         return params[14].decode("utf-8").rstrip("\x00")
 
     @subtitle.setter
     def subtitle(self, input_subtitle: str):
+        self._parent_drone._verify_required_blunux_version("1.7.60")
         new_subtitle = input_subtitle
         if len(input_subtitle) > 63:
             warnings.warn("Too long subtitle, truncating to 63 characters", RuntimeWarning)
@@ -312,11 +338,13 @@ class Overlay:
         for an overview of the available codes.
         """
 
+        self._parent_drone._verify_required_blunux_version("1.7.60")
         params = self._parent_drone._tcp_client.get_overlay_parameters()
         return params[15].decode("utf-8").rstrip("\x00")
 
     @date_format.setter
     def date_format(self, input_format_str: str):
+        self._parent_drone._verify_required_blunux_version("1.7.60")
         format_str = input_format_str
         if len(format_str) > 63:
             warnings.warn(
@@ -349,6 +377,7 @@ class Overlay:
 
         * `requests.exceptions.ConnectTimeout` : If unable to create a connection within 1s
         """
+
         self._parent_drone._verify_required_blunux_version("1.8.72")
         with open(path_to_logo, "rb") as f:
             url = f"http://{self._parent_drone._ip}/asset/logo"
@@ -367,6 +396,7 @@ class Overlay:
 
         * `requests.exceptions.ConnectTimeout` : If unable to create a connection within 1s
         """
+
         self._parent_drone._verify_required_blunux_version("1.8.72")
         response = requests.get(f"http://{self._parent_drone._ip}/asset/logo", timeout=1)
         response.raise_for_status()
@@ -383,6 +413,7 @@ class Overlay:
 
         * `requests.exceptions.ConnectTimeout` : If unable to create a connection within 1s
         """
+
         self._parent_drone._verify_required_blunux_version("1.8.72")
         response = requests.delete(f"http://{self._parent_drone._ip}/asset/logo", timeout=1)
         response.raise_for_status()
