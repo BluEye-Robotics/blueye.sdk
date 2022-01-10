@@ -239,12 +239,15 @@ class Drone:
             # Ignore multiple starts
             pass
 
-    def connect(self, timeout=None):
+    def connect(self, timeout: float = None):
         """Start receiving telemetry info from the drone, and publishing watchdog messages
 
         When watchdog message are published the thrusters are armed, to stop the drone from moving
         unexpectedly when connecting all thruster set points are set to zero when connecting.
+
+        - *timeout* (float): Seconds to wait for connection
         """
+
         self._wait_for_udp_communication(timeout, self._ip)
         self._update_drone_info()
         self._start_state_watcher_thread()
