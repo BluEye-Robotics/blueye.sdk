@@ -315,6 +315,11 @@ class TestOverlayLogoControl(OverlayTestBase):
         mocked_drone.camera.overlay.logo = LogoOverlay.CUSTOM
         mocked_drone._tcp_client.set_overlay_logo_index.assert_called_with(2)
 
+    def test_select_logo_warns_and_ignores_on_invalid_type(self, mocked_drone: Drone):
+        with pytest.warns(RuntimeWarning):
+            mocked_drone.camera.overlay.logo = 1
+        assert mocked_drone._tcp_client.set_overlay_logo_index.call_count == 0
+
     def test_select_logo_warns_and_ignores_for_out_of_range_value(self, mocked_drone: Drone):
         with pytest.warns(RuntimeWarning):
             mocked_drone.camera.overlay.logo = 3
