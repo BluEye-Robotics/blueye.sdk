@@ -1,4 +1,5 @@
 from time import time
+from unittest.mock import PropertyMock
 
 import pytest
 import requests
@@ -82,6 +83,14 @@ def test_software_version(mocked_drone):
     mocked_drone._update_drone_info()
     assert mocked_drone.software_version == "1.4.7-warrior-master"
     assert mocked_drone.software_version_short == "1.4.7"
+
+
+def test_verify_sw_version_raises_connection_error_when_not_connected(mocked_drone: Drone, mocker):
+    mocker.patch(
+        "blueye.sdk.Drone.connection_established", new_callable=PropertyMock, return_value=False
+    )
+    with pytest.raises(ConnectionError):
+        mocked_drone._verify_required_blunux_version("1.4.7")
 
 
 def test_depth_reading(mocked_drone):
