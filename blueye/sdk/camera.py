@@ -101,6 +101,11 @@ class Overlay:
 
     @property
     def temperature_enabled(self) -> bool:
+        """Get or set the state of the temperature overlay
+
+        Requires Blunux version 1.7.60 or newer.
+        """
+
         self._parent_drone._verify_required_blunux_version("1.7.60")
         params = self._parent_drone._tcp_client.get_overlay_parameters()
         if params[1] == 1:
@@ -118,6 +123,11 @@ class Overlay:
 
     @property
     def depth_enabled(self) -> bool:
+        """Get or set the state of the depth overlay
+
+        Requires Blunux version 1.7.60 or newer.
+        """
+
         self._parent_drone._verify_required_blunux_version("1.7.60")
         params = self._parent_drone._tcp_client.get_overlay_parameters()
         if params[2] == 1:
@@ -135,6 +145,11 @@ class Overlay:
 
     @property
     def heading_enabled(self) -> bool:
+        """Get or set the state of the heading overlay
+
+        Requires Blunux version 1.7.60 or newer.
+        """
+
         self._parent_drone._verify_required_blunux_version("1.7.60")
         params = self._parent_drone._tcp_client.get_overlay_parameters()
         if params[3] == 1:
@@ -152,6 +167,11 @@ class Overlay:
 
     @property
     def tilt_enabled(self) -> bool:
+        """Get or set the state of the tilt overlay
+
+        Requires Blunux version 1.7.60 or newer.
+        """
+
         self._parent_drone._verify_required_blunux_version("1.7.60")
         params = self._parent_drone._tcp_client.get_overlay_parameters()
         if params[4] == 1:
@@ -169,6 +189,11 @@ class Overlay:
 
     @property
     def date_enabled(self) -> bool:
+        """Get or set the state of the date overlay
+
+        Requires Blunux version 1.7.60 or newer.
+        """
+
         self._parent_drone._verify_required_blunux_version("1.7.60")
         params = self._parent_drone._tcp_client.get_overlay_parameters()
         if params[5] == 1:
@@ -186,6 +211,14 @@ class Overlay:
 
     @property
     def logo(self) -> LogoOverlay:
+        """Get or set logo overlay selection
+
+        Needs to be set to an instance of the `LogoOverlay` class, if not a RuntimeWarning is
+        raised.
+
+        Requires Blunux version 1.8.72 or newer.
+        """
+
         self._parent_drone._verify_required_blunux_version("1.8.72")
         params = self._parent_drone._tcp_client.get_overlay_parameters()
         return LogoOverlay(params[6])
@@ -202,6 +235,14 @@ class Overlay:
 
     @property
     def depth_unit(self) -> DepthUnitOverlay:
+        """Get or set the depth unit for the overlay
+
+        Needs to be set to an instance of the `DepthUnitOverlay` class, if not a RuntimeWarning is
+        raised.
+
+        Requires Blunux version 1.7.60 or newer.
+        """
+
         self._parent_drone._verify_required_blunux_version("1.7.60")
         params = self._parent_drone._tcp_client.get_overlay_parameters()
         return DepthUnitOverlay(params[7])
@@ -217,7 +258,15 @@ class Overlay:
             self._parent_drone._tcp_client.set_overlay_depth_unit(unit_index.value)
 
     @property
-    def temperature_unit(self) -> DepthUnitOverlay:
+    def temperature_unit(self) -> TemperatureUnitOverlay:
+        """Get or set the temperature unit for the overlay
+
+        Needs to be set to an instance of the `TemperatureUnitOverlay` class, if not a
+        RuntimeWarning is raised.
+
+        Requires Blunux version 1.7.60 or newer.
+        """
+
         self._parent_drone._verify_required_blunux_version("1.7.60")
         params = self._parent_drone._tcp_client.get_overlay_parameters()
         return TemperatureUnitOverlay(params[8])
@@ -234,6 +283,13 @@ class Overlay:
 
     @property
     def timezone_offset(self) -> int:
+        """Get or set the timezone offset for the overlay
+
+        Set to the number of minutes (either positive or negative) the timestamp should be offset.
+
+        Requires Blunux version 1.7.60 or newer.
+        """
+
         self._parent_drone._verify_required_blunux_version("1.7.60")
         params = self._parent_drone._tcp_client.get_overlay_parameters()
         return params[9]
@@ -245,6 +301,14 @@ class Overlay:
 
     @property
     def margin_width(self) -> int:
+        """Get or set the margin width for the overlay
+
+        The amount of pixels to use as margin on the right and left side of the overlay. Needs to
+        be a positive integer.
+
+        Requires Blunux version 1.7.60 or newer.
+        """
+
         self._parent_drone._verify_required_blunux_version("1.7.60")
         params = self._parent_drone._tcp_client.get_overlay_parameters()
         return params[10]
@@ -259,6 +323,14 @@ class Overlay:
 
     @property
     def margin_height(self) -> int:
+        """Get or set the margin height for the overlay
+
+        The amount of pixels to use as margin on the top and bottom side of the overlay. Needs to be
+        a positive integer.
+
+        Requires Blunux version 1.7.60 or newer.
+        """
+
         self._parent_drone._verify_required_blunux_version("1.7.60")
         params = self._parent_drone._tcp_client.get_overlay_parameters()
         return params[11]
@@ -273,6 +345,13 @@ class Overlay:
 
     @property
     def font_size(self) -> FontSizeOverlay:
+        """Get or set the font size for the overlay
+
+        Needs to be an instance of the `FontSizeOverlay` class, if not a RuntimeWarning is raised.
+
+        Requires Blunux version 1.7.60 or newer.
+        """
+
         self._parent_drone._verify_required_blunux_version("1.7.60")
         params = self._parent_drone._tcp_client.get_overlay_parameters()
         return FontSizeOverlay(params[12])
@@ -289,6 +368,16 @@ class Overlay:
 
     @property
     def title(self) -> str:
+        """Get or set the title for the overlay
+
+        The title needs to be a string of only ASCII characters with a maximum length of 63
+        characters. If a longer title is passed it will be truncated, and a RuntimeWarning is
+        raised.
+
+        Set to an empty string to disable title.
+
+        Requires Blunux version 1.7.60 or newer.
+        """
         self._parent_drone._verify_required_blunux_version("1.7.60")
         params = self._parent_drone._tcp_client.get_overlay_parameters()
         return params[13].decode("utf-8").rstrip("\x00")
@@ -309,6 +398,16 @@ class Overlay:
 
     @property
     def subtitle(self) -> str:
+        """Get or set the subtitle for the overlay
+
+        The subtitle needs to be a string of only ASCII characters with a maximum length of 63
+        characters. If a longer subtitle is passed it will be truncated, and a RuntimeWarning is
+        raised.
+
+        Set to an empty string to disable the subtitle.
+
+        Requires Blunux version 1.7.60 or newer.
+        """
         self._parent_drone._verify_required_blunux_version("1.7.60")
         params = self._parent_drone._tcp_client.get_overlay_parameters()
         return params[14].decode("utf-8").rstrip("\x00")
@@ -537,7 +636,7 @@ class Camera:
 
         *Arguments*:
 
-        * resolution (int): Set the camera in vertical pixels. Valid values are 480, 720 or 1080
+        * resolution (int): Set the camera in vertical pixels. Valid values are 720 or 1080
 
         *Returns*:
 
