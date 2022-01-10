@@ -1,12 +1,11 @@
 from time import time
 from unittest.mock import PropertyMock
 
+import blueye.sdk
 import pytest
 import requests
-from freezegun import freeze_time
-
-import blueye.sdk
 from blueye.sdk import Drone
+from freezegun import freeze_time
 
 
 class TestLights:
