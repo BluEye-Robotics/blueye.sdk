@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 class Tilt:
     @staticmethod
-    def _tilt_angle_from_debug_flags(flags: int) -> int:
+    def _tilt_angle_from_debug_flags(flags: int) -> float:
         """Helper function for decoding tilt angle from debug flags
 
         The tilt angle is encoded as an int8, with 0 at 0 degrees, and each increment representing
@@ -40,12 +40,12 @@ class Tilt:
         if "tilt" not in self._parent_drone.features:
             raise RuntimeError("The connected drone does not support tilting the camera.")
 
-    def set_speed(self, speed: int):
+    def set_speed(self, speed: float):
         """Set the speed and direction of the camera tilt
 
         *Arguments*:
 
-        * speed (int): Speed and direction of the tilt. 1 is max speed up, -1 is max speed down.
+        * speed (float): Speed and direction of the tilt. 1 is max speed up, -1 is max speed down.
 
         Requires a drone with the tilt feature, and software version 1.5 or newer.
         A RuntimeError is raised if either of those requirements are not met.
@@ -62,7 +62,7 @@ class Tilt:
             self._parent_drone._tcp_client.motion_input_tilt(*thruster_setpoints, 0, 0, speed)
 
     @property
-    def angle(self) -> int:
+    def angle(self) -> float:
         """Return the current angle of the camera tilt
 
         Requires a drone with the tilt feature, and software version 1.5 or newer.
