@@ -29,6 +29,11 @@ class Tilt:
         ).astype([("tilt_angle", float)])
         return tilt_angle_array["tilt_angle"] / 2
 
+    @staticmethod
+    def _tilt_stabilization_status_from_debug_flags(flags: int) -> bool:
+        """Helper function for decoding tilt stabilization status from debug flags"""
+        return bool(np.right_shift(np.bitwise_and(flags, 0x0000000000000100), 8))
+
     def __init__(self, parent_drone: Drone):
         self._parent_drone = parent_drone
 
@@ -74,6 +79,22 @@ class Tilt:
 
         debug_flags = self._parent_drone._state_watcher.general_state["debug_flags"]
         return self._tilt_angle_from_debug_flags(debug_flags)
+
+    @property
+    def stabilization_enabled(self) -> bool:
+        """Get the state of active camera stabilization
+
+        Use the `toggle_stabilization` method to turn stabilization on or off
+
+        *Returns*:
+
+        * Current state of active camera stabilization (bool)
+        """
+        self._parent_drone._verify_required_blunux_version("1.6.42")
+        self._verify_tilt_in_features()
+
+        debug_flags = self._parent_drone._state_watcher.general_state["debug_flags"]
+        return self._tilt_stabilization_status_from_debug_flags(debug_flags)
 
 
 class LogoOverlay(Enum):
