@@ -32,6 +32,14 @@ class Tilt:
     def __init__(self, parent_drone: Drone):
         self._parent_drone = parent_drone
 
+    def _verify_tilt_in_features(self):
+        """Checks that the connected drone has the tilt feature
+
+        Raises a RuntimeError if it does not.
+        """
+        if "tilt" not in self._parent_drone.features:
+            raise RuntimeError("The connected drone does not support tilting the camera.")
+
     def set_speed(self, speed: int):
         """Set the speed and direction of the camera tilt
 
@@ -42,9 +50,9 @@ class Tilt:
         Requires a drone with the tilt feature, and software version 1.5 or newer.
         A RuntimeError is raised if either of those requirements are not met.
         """
-        if "tilt" not in self._parent_drone.features:
-            raise RuntimeError("The connected drone does not support tilting the camera.")
+
         self._parent_drone._verify_required_blunux_version("1.5")
+        self._verify_tilt_in_features()
 
         # The tilt command is grouped together with the thruster commands, so to avoid messing with
         # the thruster setpoint while tilting we need to get the current setpoint and send it with
@@ -61,9 +69,8 @@ class Tilt:
         A RuntimeError is raised if either of those requirements are not met.
         """
 
-        if "tilt" not in self._parent_drone.features:
-            raise RuntimeError("The connected drone does not support tilting the camera.")
         self._parent_drone._verify_required_blunux_version("1.5")
+        self._verify_tilt_in_features()
 
         debug_flags = self._parent_drone._state_watcher.general_state["debug_flags"]
         return self._tilt_angle_from_debug_flags(debug_flags)
