@@ -194,6 +194,8 @@ class TestTilt:
             _ = mocked_drone.camera.tilt.angle
         with pytest.raises(RuntimeError):
             _ = mocked_drone.camera.tilt.stabilization_enabled
+        with pytest.raises(RuntimeError):
+            mocked_drone.camera.tilt.toggle_stabilization()
 
     @pytest.mark.parametrize(
         "thruster_setpoints, tilt_speed",
@@ -254,6 +256,12 @@ class TestTilt:
         mocked_drone._state_watcher._general_state = {"debug_flags": debug_flags}
         mocked_drone._state_watcher._general_state_received.set()
         assert mocked_drone.camera.tilt.stabilization_enabled == expected_state
+
+    def test_toggle_tilt_stabilization(self, mocked_drone: Drone):
+        mocked_drone.features = ["tilt"]
+        mocked_drone.software_version_short = "1.6.42"
+        mocked_drone.camera.tilt.toggle_stabilization()
+        assert mocked_drone._tcp_client.toggle_tilt_stabilization.call_count == 1
 
 
 class TestConfig:

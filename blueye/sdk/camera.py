@@ -96,6 +96,17 @@ class Tilt:
         debug_flags = self._parent_drone._state_watcher.general_state["debug_flags"]
         return self._tilt_stabilization_status_from_debug_flags(debug_flags)
 
+    def toggle_stabilization(self):
+        """Toggle active camera stabilization on or off
+
+        Requires a drone with the tilt feature, and Blunux version 1.6.42 or newer.
+        A RuntimeError is raised if either of those requirements are not met.
+        """
+
+        self._parent_drone._verify_required_blunux_version("1.6.42")
+        self._verify_tilt_in_features()
+        self._parent_drone._tcp_client.toggle_tilt_stabilization()
+
 
 class LogoOverlay(Enum):
     DISABLED = 0
