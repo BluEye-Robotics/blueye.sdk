@@ -762,6 +762,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#toggle_stabilization" class="md-nav__link">
+    toggle_stabilization
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1142,6 +1149,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#toggle_stabilization" class="md-nav__link">
+    toggle_stabilization
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1205,7 +1219,7 @@ class Tilt:
 
     @staticmethod
 
-    def _tilt_angle_from_debug_flags(flags: int) -&gt; int:
+    def _tilt_angle_from_debug_flags(flags: int) -&gt; float:
 
         """Helper function for decoding tilt angle from debug flags
 
@@ -1215,9 +1229,13 @@ class Tilt:
 
         """
 
+        TILT_ANGLE_MASK = 0x0000FF0000000000
+
+        TILT_ANGLE_OFFSET = 40
+
         tilt_angle_array = np.array(
 
-            np.right_shift(np.bitwise_and(flags, 0x0000FF0000000000), 40),
+            np.right_shift(np.bitwise_and(flags, TILT_ANGLE_MASK), TILT_ANGLE_OFFSET),
 
             dtype=[("tilt_angle", np.int8)],
 
@@ -1225,21 +1243,25 @@ class Tilt:
 
         return tilt_angle_array["tilt_angle"] / 2
 
+    @staticmethod
+
+    def _tilt_stabilization_status_from_debug_flags(flags: int) -&gt; bool:
+
+        """Helper function for decoding tilt stabilization status from debug flags"""
+
+        TILT_STABILIZATION_MASK = 0x100
+
+        return bool(flags &amp; TILT_STABILIZATION_MASK)
+
     def __init__(self, parent_drone: Drone):
 
         self._parent_drone = parent_drone
 
-    def set_speed(self, speed: int):
+    def _verify_tilt_in_features(self):
 
-        """Set the speed and direction of the camera tilt
+        """Checks that the connected drone has the tilt feature
 
-        *Arguments*:
-
-        * speed (int): Speed and direction of the tilt. 1 is max speed up, -1 is max speed down.
-
-        Requires a drone with the tilt feature, and software version 1.5 or newer.
-
-        A RuntimeError is raised if either of those requirements are not met.
+        Raises a RuntimeError if it does not.
 
         """
 
@@ -1247,7 +1269,23 @@ class Tilt:
 
             raise RuntimeError("The connected drone does not support tilting the camera.")
 
+    def set_speed(self, speed: float):
+
+        """Set the speed and direction of the camera tilt
+
+        *Arguments*:
+
+        * speed (float): Speed and direction of the tilt. 1 is max speed up, -1 is max speed down.
+
+        Requires a drone with the tilt feature, and software version 1.5 or newer.
+
+        A RuntimeError is raised if either of those requirements are not met.
+
+        """
+
         self._parent_drone._verify_required_blunux_version("1.5")
+
+        self._verify_tilt_in_features()
 
         # The tilt command is grouped together with the thruster commands, so to avoid messing with
 
@@ -1263,7 +1301,7 @@ class Tilt:
 
     @property
 
-    def angle(self) -&gt; int:
+    def angle(self) -&gt; float:
 
         """Return the current angle of the camera tilt
 
@@ -1273,15 +1311,51 @@ class Tilt:
 
         """
 
-        if "tilt" not in self._parent_drone.features:
-
-            raise RuntimeError("The connected drone does not support tilting the camera.")
-
         self._parent_drone._verify_required_blunux_version("1.5")
+
+        self._verify_tilt_in_features()
 
         debug_flags = self._parent_drone._state_watcher.general_state["debug_flags"]
 
         return self._tilt_angle_from_debug_flags(debug_flags)
+
+    @property
+
+    def stabilization_enabled(self) -&gt; bool:
+
+        """Get the state of active camera stabilization
+
+        Use the `toggle_stabilization` method to turn stabilization on or off
+
+        *Returns*:
+
+        * Current state of active camera stabilization (bool)
+
+        """
+
+        self._parent_drone._verify_required_blunux_version("1.6.42")
+
+        self._verify_tilt_in_features()
+
+        debug_flags = self._parent_drone._state_watcher.general_state["debug_flags"]
+
+        return self._tilt_stabilization_status_from_debug_flags(debug_flags)
+
+    def toggle_stabilization(self):
+
+        """Toggle active camera stabilization on or off
+
+        Requires a drone with the tilt feature, and Blunux version 1.6.42 or newer.
+
+        A RuntimeError is raised if either of those requirements are not met.
+
+        """
+
+        self._parent_drone._verify_required_blunux_version("1.6.42")
+
+        self._verify_tilt_in_features()
+
+        self._parent_drone._tcp_client.toggle_tilt_stabilization()
 
 class LogoOverlay(Enum):
 
@@ -3591,7 +3665,7 @@ Max file size: 5 MB.</p>
 
     @staticmethod
 
-    def _tilt_angle_from_debug_flags(flags: int) -&gt; int:
+    def _tilt_angle_from_debug_flags(flags: int) -&gt; float:
 
         """Helper function for decoding tilt angle from debug flags
 
@@ -3601,9 +3675,13 @@ Max file size: 5 MB.</p>
 
         """
 
+        TILT_ANGLE_MASK = 0x0000FF0000000000
+
+        TILT_ANGLE_OFFSET = 40
+
         tilt_angle_array = np.array(
 
-            np.right_shift(np.bitwise_and(flags, 0x0000FF0000000000), 40),
+            np.right_shift(np.bitwise_and(flags, TILT_ANGLE_MASK), TILT_ANGLE_OFFSET),
 
             dtype=[("tilt_angle", np.int8)],
 
@@ -3611,21 +3689,25 @@ Max file size: 5 MB.</p>
 
         return tilt_angle_array["tilt_angle"] / 2
 
+    @staticmethod
+
+    def _tilt_stabilization_status_from_debug_flags(flags: int) -&gt; bool:
+
+        """Helper function for decoding tilt stabilization status from debug flags"""
+
+        TILT_STABILIZATION_MASK = 0x100
+
+        return bool(flags &amp; TILT_STABILIZATION_MASK)
+
     def __init__(self, parent_drone: Drone):
 
         self._parent_drone = parent_drone
 
-    def set_speed(self, speed: int):
+    def _verify_tilt_in_features(self):
 
-        """Set the speed and direction of the camera tilt
+        """Checks that the connected drone has the tilt feature
 
-        *Arguments*:
-
-        * speed (int): Speed and direction of the tilt. 1 is max speed up, -1 is max speed down.
-
-        Requires a drone with the tilt feature, and software version 1.5 or newer.
-
-        A RuntimeError is raised if either of those requirements are not met.
+        Raises a RuntimeError if it does not.
 
         """
 
@@ -3633,7 +3715,23 @@ Max file size: 5 MB.</p>
 
             raise RuntimeError("The connected drone does not support tilting the camera.")
 
+    def set_speed(self, speed: float):
+
+        """Set the speed and direction of the camera tilt
+
+        *Arguments*:
+
+        * speed (float): Speed and direction of the tilt. 1 is max speed up, -1 is max speed down.
+
+        Requires a drone with the tilt feature, and software version 1.5 or newer.
+
+        A RuntimeError is raised if either of those requirements are not met.
+
+        """
+
         self._parent_drone._verify_required_blunux_version("1.5")
+
+        self._verify_tilt_in_features()
 
         # The tilt command is grouped together with the thruster commands, so to avoid messing with
 
@@ -3649,7 +3747,7 @@ Max file size: 5 MB.</p>
 
     @property
 
-    def angle(self) -&gt; int:
+    def angle(self) -&gt; float:
 
         """Return the current angle of the camera tilt
 
@@ -3659,15 +3757,51 @@ Max file size: 5 MB.</p>
 
         """
 
-        if "tilt" not in self._parent_drone.features:
-
-            raise RuntimeError("The connected drone does not support tilting the camera.")
-
         self._parent_drone._verify_required_blunux_version("1.5")
+
+        self._verify_tilt_in_features()
 
         debug_flags = self._parent_drone._state_watcher.general_state["debug_flags"]
 
         return self._tilt_angle_from_debug_flags(debug_flags)
+
+    @property
+
+    def stabilization_enabled(self) -&gt; bool:
+
+        """Get the state of active camera stabilization
+
+        Use the `toggle_stabilization` method to turn stabilization on or off
+
+        *Returns*:
+
+        * Current state of active camera stabilization (bool)
+
+        """
+
+        self._parent_drone._verify_required_blunux_version("1.6.42")
+
+        self._verify_tilt_in_features()
+
+        debug_flags = self._parent_drone._state_watcher.general_state["debug_flags"]
+
+        return self._tilt_stabilization_status_from_debug_flags(debug_flags)
+
+    def toggle_stabilization(self):
+
+        """Toggle active camera stabilization on or off
+
+        Requires a drone with the tilt feature, and Blunux version 1.6.42 or newer.
+
+        A RuntimeError is raised if either of those requirements are not met.
+
+        """
+
+        self._parent_drone._verify_required_blunux_version("1.6.42")
+
+        self._verify_tilt_in_features()
+
+        self._parent_drone._tcp_client.toggle_tilt_stabilization()
 </code></pre>
 </details>
 <hr />
@@ -3677,29 +3811,37 @@ Max file size: 5 MB.</p>
 Return the current angle of the camera tilt</p>
 <p>Requires a drone with the tilt feature, and software version 1.5 or newer.
 A RuntimeError is raised if either of those requirements are not met.</p>
+<p><div class="highlight"><pre><span></span><code><span class="n">stabilization_enabled</span>
+</code></pre></div>
+Get the state of active camera stabilization</p>
+<p>Use the <code>toggle_stabilization</code> method to turn stabilization on or off</p>
+<p><em>Returns</em>:</p>
+<ul>
+<li>Current state of active camera stabilization (bool)</li>
+</ul>
 <h4 id="methods_2">Methods</h4>
 <h5 id="set_speed">set_speed</h5>
 <p><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">set_speed</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
-    <span class="n">speed</span><span class="p">:</span> <span class="s1">&#39;int&#39;</span>
+    <span class="n">speed</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span>
 <span class="p">)</span>
 </code></pre></div>
 Set the speed and direction of the camera tilt</p>
 <p><em>Arguments</em>:</p>
 <ul>
-<li>speed (int): Speed and direction of the tilt. 1 is max speed up, -1 is max speed down.</li>
+<li>speed (float): Speed and direction of the tilt. 1 is max speed up, -1 is max speed down.</li>
 </ul>
 <p>Requires a drone with the tilt feature, and software version 1.5 or newer.
 A RuntimeError is raised if either of those requirements are not met.</p>
 <details class="example">
 <summary>View Source</summary>
-<pre><code>    def set_speed(self, speed: int):
+<pre><code>    def set_speed(self, speed: float):
 
         """Set the speed and direction of the camera tilt
 
         *Arguments*:
 
-        * speed (int): Speed and direction of the tilt. 1 is max speed up, -1 is max speed down.
+        * speed (float): Speed and direction of the tilt. 1 is max speed up, -1 is max speed down.
 
         Requires a drone with the tilt feature, and software version 1.5 or newer.
 
@@ -3707,11 +3849,9 @@ A RuntimeError is raised if either of those requirements are not met.</p>
 
         """
 
-        if "tilt" not in self._parent_drone.features:
-
-            raise RuntimeError("The connected drone does not support tilting the camera.")
-
         self._parent_drone._verify_required_blunux_version("1.5")
+
+        self._verify_tilt_in_features()
 
         # The tilt command is grouped together with the thruster commands, so to avoid messing with
 
@@ -3724,6 +3864,33 @@ A RuntimeError is raised if either of those requirements are not met.</p>
             thruster_setpoints = self._parent_drone.motion.current_thruster_setpoints.values()
 
             self._parent_drone._tcp_client.motion_input_tilt(*thruster_setpoints, 0, 0, speed)
+</code></pre>
+</details>
+<h5 id="toggle_stabilization">toggle_stabilization</h5>
+<p><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">toggle_stabilization</span><span class="p">(</span>
+    <span class="bp">self</span>
+<span class="p">)</span>
+</code></pre></div>
+Toggle active camera stabilization on or off</p>
+<p>Requires a drone with the tilt feature, and Blunux version 1.6.42 or newer.
+A RuntimeError is raised if either of those requirements are not met.</p>
+<details class="example">
+<summary>View Source</summary>
+<pre><code>    def toggle_stabilization(self):
+
+        """Toggle active camera stabilization on or off
+
+        Requires a drone with the tilt feature, and Blunux version 1.6.42 or newer.
+
+        A RuntimeError is raised if either of those requirements are not met.
+
+        """
+
+        self._parent_drone._verify_required_blunux_version("1.6.42")
+
+        self._verify_tilt_in_features()
+
+        self._parent_drone._tcp_client.toggle_tilt_stabilization()
 </code></pre>
 </details>
                 
