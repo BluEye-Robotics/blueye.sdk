@@ -2,8 +2,9 @@ from __future__ import annotations
 
 import re
 import warnings
+from collections import namedtuple
 from enum import Enum
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, NamedTuple
 
 import numpy as np
 import requests
@@ -99,6 +100,33 @@ class Overlay:
     def __init__(self, parent_drone: Drone):
         self._parent_drone = parent_drone
 
+    def _get_named_overlay_parameters(self) -> NamedTuple:
+        """Get overlay parameters from drone and convert them to a named tuple"""
+
+        NamedParameters = namedtuple(
+            "Parameters",
+            [
+                "returned_parameter",
+                "temperature_enabled",
+                "depth_enabled",
+                "heading_enabled",
+                "tilt_enabled",
+                "date_enabled",
+                "logo_index",
+                "depth_unit",
+                "temperature_unit",
+                "tz_offset",
+                "margin_width",
+                "margin_height",
+                "font_size",
+                "title",
+                "subtitle",
+                "date_format",
+            ],
+        )
+        parameters = self._parent_drone._tcp_client.get_overlay_parameters()
+        return NamedParameters(*parameters)
+
     @property
     def temperature_enabled(self) -> bool:
         """Get or set the state of the temperature overlay
@@ -107,11 +135,7 @@ class Overlay:
         """
 
         self._parent_drone._verify_required_blunux_version("1.7.60")
-        params = self._parent_drone._tcp_client.get_overlay_parameters()
-        if params[1] == 1:
-            return True
-        else:
-            return False
+        return bool(self._get_named_overlay_parameters().temperature_enabled)
 
     @temperature_enabled.setter
     def temperature_enabled(self, enable_temperature: bool):
@@ -129,11 +153,7 @@ class Overlay:
         """
 
         self._parent_drone._verify_required_blunux_version("1.7.60")
-        params = self._parent_drone._tcp_client.get_overlay_parameters()
-        if params[2] == 1:
-            return True
-        else:
-            return False
+        return bool(self._get_named_overlay_parameters().depth_enabled)
 
     @depth_enabled.setter
     def depth_enabled(self, enable_depth: bool):
@@ -151,11 +171,7 @@ class Overlay:
         """
 
         self._parent_drone._verify_required_blunux_version("1.7.60")
-        params = self._parent_drone._tcp_client.get_overlay_parameters()
-        if params[3] == 1:
-            return True
-        else:
-            return False
+        return bool(self._get_named_overlay_parameters().heading_enabled)
 
     @heading_enabled.setter
     def heading_enabled(self, enable_heading: bool):
@@ -173,11 +189,7 @@ class Overlay:
         """
 
         self._parent_drone._verify_required_blunux_version("1.7.60")
-        params = self._parent_drone._tcp_client.get_overlay_parameters()
-        if params[4] == 1:
-            return True
-        else:
-            return False
+        return bool(self._get_named_overlay_parameters().tilt_enabled)
 
     @tilt_enabled.setter
     def tilt_enabled(self, enable_tilt: bool):
@@ -195,11 +207,7 @@ class Overlay:
         """
 
         self._parent_drone._verify_required_blunux_version("1.7.60")
-        params = self._parent_drone._tcp_client.get_overlay_parameters()
-        if params[5] == 1:
-            return True
-        else:
-            return False
+        return bool(self._get_named_overlay_parameters().date_enabled)
 
     @date_enabled.setter
     def date_enabled(self, enable_date: bool):
@@ -220,8 +228,7 @@ class Overlay:
         """
 
         self._parent_drone._verify_required_blunux_version("1.8.72")
-        params = self._parent_drone._tcp_client.get_overlay_parameters()
-        return LogoOverlay(params[6])
+        return LogoOverlay(self._get_named_overlay_parameters().logo_index)
 
     @logo.setter
     def logo(self, logo_index: LogoOverlay):
@@ -244,8 +251,7 @@ class Overlay:
         """
 
         self._parent_drone._verify_required_blunux_version("1.7.60")
-        params = self._parent_drone._tcp_client.get_overlay_parameters()
-        return DepthUnitOverlay(params[7])
+        return DepthUnitOverlay(self._get_named_overlay_parameters().depth_unit)
 
     @depth_unit.setter
     def depth_unit(self, unit_index: DepthUnitOverlay):
@@ -268,8 +274,7 @@ class Overlay:
         """
 
         self._parent_drone._verify_required_blunux_version("1.7.60")
-        params = self._parent_drone._tcp_client.get_overlay_parameters()
-        return TemperatureUnitOverlay(params[8])
+        return TemperatureUnitOverlay(self._get_named_overlay_parameters().temperature_unit)
 
     @temperature_unit.setter
     def temperature_unit(self, unit_index: TemperatureUnitOverlay):
@@ -291,8 +296,7 @@ class Overlay:
         """
 
         self._parent_drone._verify_required_blunux_version("1.7.60")
-        params = self._parent_drone._tcp_client.get_overlay_parameters()
-        return params[9]
+        return self._get_named_overlay_parameters().tz_offset
 
     @timezone_offset.setter
     def timezone_offset(self, offset: int):
@@ -310,8 +314,7 @@ class Overlay:
         """
 
         self._parent_drone._verify_required_blunux_version("1.7.60")
-        params = self._parent_drone._tcp_client.get_overlay_parameters()
-        return params[10]
+        return self._get_named_overlay_parameters().margin_width
 
     @margin_width.setter
     def margin_width(self, width: int):
@@ -332,8 +335,7 @@ class Overlay:
         """
 
         self._parent_drone._verify_required_blunux_version("1.7.60")
-        params = self._parent_drone._tcp_client.get_overlay_parameters()
-        return params[11]
+        return self._get_named_overlay_parameters().margin_height
 
     @margin_height.setter
     def margin_height(self, height: int):
@@ -353,8 +355,7 @@ class Overlay:
         """
 
         self._parent_drone._verify_required_blunux_version("1.7.60")
-        params = self._parent_drone._tcp_client.get_overlay_parameters()
-        return FontSizeOverlay(params[12])
+        return FontSizeOverlay(self._get_named_overlay_parameters().font_size)
 
     @font_size.setter
     def font_size(self, size: FontSizeOverlay):
@@ -379,8 +380,7 @@ class Overlay:
         Requires Blunux version 1.7.60 or newer.
         """
         self._parent_drone._verify_required_blunux_version("1.7.60")
-        params = self._parent_drone._tcp_client.get_overlay_parameters()
-        return params[13].decode("utf-8").rstrip("\x00")
+        return self._get_named_overlay_parameters().title.decode("utf-8").rstrip("\x00")
 
     @title.setter
     def title(self, input_title: str):
@@ -409,8 +409,7 @@ class Overlay:
         Requires Blunux version 1.7.60 or newer.
         """
         self._parent_drone._verify_required_blunux_version("1.7.60")
-        params = self._parent_drone._tcp_client.get_overlay_parameters()
-        return params[14].decode("utf-8").rstrip("\x00")
+        return self._get_named_overlay_parameters().subtitle.decode("utf-8").rstrip("\x00")
 
     @subtitle.setter
     def subtitle(self, input_subtitle: str):
@@ -438,8 +437,7 @@ class Overlay:
         """
 
         self._parent_drone._verify_required_blunux_version("1.7.60")
-        params = self._parent_drone._tcp_client.get_overlay_parameters()
-        return params[15].decode("utf-8").rstrip("\x00")
+        return self._get_named_overlay_parameters().date_format.decode("utf-8").rstrip("\x00")
 
     @date_format.setter
     def date_format(self, input_format_str: str):
