@@ -10,7 +10,7 @@ from blueye.sdk import Drone
 
 myDrone = Drone()
 
-myDrone.logs[0].download(outputName="log0.csv")
+myDrone.logs[0].download(output_name="log0.csv")
 ```
 
 We can now read the csv-file into a pandas object for easy manipulation
