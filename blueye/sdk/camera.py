@@ -140,10 +140,9 @@ class Overlay:
     @temperature_enabled.setter
     def temperature_enabled(self, enable_temperature: bool):
         self._parent_drone._verify_required_blunux_version("1.7.60")
-        if enable_temperature is True:
-            self._parent_drone._tcp_client.set_overlay_temperature_enabled(1)
-        else:
-            self._parent_drone._tcp_client.set_overlay_temperature_enabled(0)
+        self._parent_drone._tcp_client.set_overlay_temperature_enabled(
+            1 if enable_temperature else 0
+        )
 
     @property
     def depth_enabled(self) -> bool:
@@ -158,10 +157,7 @@ class Overlay:
     @depth_enabled.setter
     def depth_enabled(self, enable_depth: bool):
         self._parent_drone._verify_required_blunux_version("1.7.60")
-        if enable_depth is True:
-            self._parent_drone._tcp_client.set_overlay_depth_enabled(1)
-        else:
-            self._parent_drone._tcp_client.set_overlay_depth_enabled(0)
+        self._parent_drone._tcp_client.set_overlay_depth_enabled(1 if enable_depth else 0)
 
     @property
     def heading_enabled(self) -> bool:
@@ -176,10 +172,7 @@ class Overlay:
     @heading_enabled.setter
     def heading_enabled(self, enable_heading: bool):
         self._parent_drone._verify_required_blunux_version("1.7.60")
-        if enable_heading is True:
-            self._parent_drone._tcp_client.set_overlay_heading_enabled(1)
-        else:
-            self._parent_drone._tcp_client.set_overlay_heading_enabled(0)
+        self._parent_drone._tcp_client.set_overlay_heading_enabled(1 if enable_heading else 0)
 
     @property
     def tilt_enabled(self) -> bool:
@@ -194,10 +187,7 @@ class Overlay:
     @tilt_enabled.setter
     def tilt_enabled(self, enable_tilt: bool):
         self._parent_drone._verify_required_blunux_version("1.7.60")
-        if enable_tilt is True:
-            self._parent_drone._tcp_client.set_overlay_tilt_enabled(1)
-        else:
-            self._parent_drone._tcp_client.set_overlay_tilt_enabled(0)
+        self._parent_drone._tcp_client.set_overlay_tilt_enabled(1 if enable_tilt else 0)
 
     @property
     def date_enabled(self) -> bool:
@@ -212,10 +202,7 @@ class Overlay:
     @date_enabled.setter
     def date_enabled(self, enable_date: bool):
         self._parent_drone._verify_required_blunux_version("1.7.60")
-        if enable_date is True:
-            self._parent_drone._tcp_client.set_overlay_date_enabled(1)
-        else:
-            self._parent_drone._tcp_client.set_overlay_date_enabled(0)
+        self._parent_drone._tcp_client.set_overlay_date_enabled(1 if enable_date else 0)
 
     @property
     def logo(self) -> LogoOverlay:
