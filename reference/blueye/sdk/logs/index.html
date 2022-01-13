@@ -891,7 +891,7 @@ class LogFile:
 
         return f"{num:.1f} Gi{suffix}"
 
-    def download(self, output_path=None, output_name=None):
+    def download(self, output_path=None, output_name=None, downsample_divisor=10):
 
         """
 
@@ -905,9 +905,13 @@ class LogFile:
 
         have specified (be sure to include the .csv extension).
 
+        The drone samples the log content at 10 Hz, and by default this function downsamples this
+
+        rate to 1 Hz.
+
         """
 
-        log = requests.get(self.download_path).content
+        log = requests.get(self.download_path, params={"divisor": downsample_divisor}).content
 
         if output_path is None:
 
@@ -1159,7 +1163,7 @@ Value) file from the drone to your local filesystem.</p>
 
         return f"{num:.1f} Gi{suffix}"
 
-    def download(self, output_path=None, output_name=None):
+    def download(self, output_path=None, output_name=None, downsample_divisor=10):
 
         """
 
@@ -1173,9 +1177,13 @@ Value) file from the drone to your local filesystem.</p>
 
         have specified (be sure to include the .csv extension).
 
+        The drone samples the log content at 10 Hz, and by default this function downsamples this
+
+        rate to 1 Hz.
+
         """
 
-        log = requests.get(self.download_path).content
+        log = requests.get(self.download_path, params={"divisor": downsample_divisor}).content
 
         if output_path is None:
 
@@ -1218,7 +1226,8 @@ Value) file from the drone to your local filesystem.</p>
 <p><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">download</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">output_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">output_name</span><span class="o">=</span><span class="kc">None</span>
+    <span class="n">output_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">downsample_divisor</span><span class="o">=</span><span class="mi">10</span>
 <span class="p">)</span>
 </code></pre></div>
 Download the specified log to your local file system</p>
@@ -1226,9 +1235,11 @@ Download the specified log to your local file system</p>
 instead of the current one.</p>
 <p>Specifying output_name will overwrite the default file name with whatever you
 have specified (be sure to include the .csv extension).</p>
+<p>The drone samples the log content at 10 Hz, and by default this function downsamples this
+rate to 1 Hz.</p>
 <details class="example">
 <summary>View Source</summary>
-<pre><code>    def download(self, output_path=None, output_name=None):
+<pre><code>    def download(self, output_path=None, output_name=None, downsample_divisor=10):
 
         """
 
@@ -1242,9 +1253,13 @@ have specified (be sure to include the .csv extension).</p>
 
         have specified (be sure to include the .csv extension).
 
+        The drone samples the log content at 10 Hz, and by default this function downsamples this
+
+        rate to 1 Hz.
+
         """
 
-        log = requests.get(self.download_path).content
+        log = requests.get(self.download_path, params={"divisor": downsample_divisor}).content
 
         if output_path is None:
 
