@@ -1131,7 +1131,7 @@ class _DroneStateWatcher(threading.Thread):
 
     """Subscribes to UDP messages from the drone and stores the latest data"""
 
-    def __init__(self, ip="192.168.1.101", udp_timeout=3):
+    def __init__(self, ip: str = "192.168.1.101", udp_timeout: float = 3):
 
         threading.Thread.__init__(self)
 
@@ -1267,15 +1267,7 @@ class Config:
 
     def water_density(self, density: int):
 
-        if version.parse(self._parent_drone.software_version_short) &lt; version.parse("1.5"):
-
-            raise RuntimeError(
-
-                "Drone software version is too old. Setting water density requires version 1.5"
-
-                " or higher."
-
-            )
+        self._parent_drone._verify_required_blunux_version("1.5")
 
         self._water_density = density
 
@@ -1351,6 +1343,38 @@ class Drone:
 
             self.connect(timeout=3)
 
+    def _verify_required_blunux_version(self, requirement: str):
+
+        """Verify that Blunux version is higher than requirement
+
+        requirement needs to be a string that's able to be parsed by version.parse()
+
+        Raises a RuntimeError if the Blunux version of the connected drone does not match or exceed
+
+        the requirement.
+
+        """
+
+        if not self.connection_established:
+
+            raise ConnectionError(
+
+                "The connection to the drone is not established, try calling the connect method "
+
+                "before retrying"
+
+            )
+
+        if version.parse(self.software_version_short) &lt; version.parse(requirement):
+
+            raise RuntimeError(
+
+                f"Blunux version of connected drone is {self.software_version_short}. Version "
+
+                f"{requirement} or higher is required."
+
+            )
+
     @property
 
     def connection_established(self):
@@ -1405,7 +1429,7 @@ class Drone:
 
     @staticmethod
 
-    def _wait_for_udp_communication(timeout: int, ip="192.168.1.101"):
+    def _wait_for_udp_communication(timeout: float, ip: str = "192.168.1.101"):
 
         """Simple helper for waiting for drone to come online
 
@@ -1473,13 +1497,15 @@ class Drone:
 
             pass
 
-    def connect(self, timeout=None):
+    def connect(self, timeout: float = None):
 
         """Start receiving telemetry info from the drone, and publishing watchdog messages
 
         When watchdog message are published the thrusters are armed, to stop the drone from moving
 
         unexpectedly when connecting all thruster set points are set to zero when connecting.
+
+        - *timeout* (float): Seconds to wait for connection
 
         """
 
@@ -1714,15 +1740,7 @@ class Pioneer(Drone):
 
     def water_density(self, density: int):
 
-        if version.parse(self._parent_drone.software_version_short) &lt; version.parse("1.5"):
-
-            raise RuntimeError(
-
-                "Drone software version is too old. Setting water density requires version 1.5"
-
-                " or higher."
-
-            )
+        self._parent_drone._verify_required_blunux_version("1.5")
 
         self._water_density = density
 
@@ -1849,6 +1867,38 @@ behaviour can be disabled by setting <code>autoConnect=False</code>.</p>
 
             self.connect(timeout=3)
 
+    def _verify_required_blunux_version(self, requirement: str):
+
+        """Verify that Blunux version is higher than requirement
+
+        requirement needs to be a string that's able to be parsed by version.parse()
+
+        Raises a RuntimeError if the Blunux version of the connected drone does not match or exceed
+
+        the requirement.
+
+        """
+
+        if not self.connection_established:
+
+            raise ConnectionError(
+
+                "The connection to the drone is not established, try calling the connect method "
+
+                "before retrying"
+
+            )
+
+        if version.parse(self.software_version_short) &lt; version.parse(requirement):
+
+            raise RuntimeError(
+
+                f"Blunux version of connected drone is {self.software_version_short}. Version "
+
+                f"{requirement} or higher is required."
+
+            )
+
     @property
 
     def connection_established(self):
@@ -1903,7 +1953,7 @@ behaviour can be disabled by setting <code>autoConnect=False</code>.</p>
 
     @staticmethod
 
-    def _wait_for_udp_communication(timeout: int, ip="192.168.1.101"):
+    def _wait_for_udp_communication(timeout: float, ip: str = "192.168.1.101"):
 
         """Simple helper for waiting for drone to come online
 
@@ -1971,13 +2021,15 @@ behaviour can be disabled by setting <code>autoConnect=False</code>.</p>
 
             pass
 
-    def connect(self, timeout=None):
+    def connect(self, timeout: float = None):
 
         """Start receiving telemetry info from the drone, and publishing watchdog messages
 
         When watchdog message are published the thrusters are armed, to stop the drone from moving
 
         unexpectedly when connecting all thruster set points are set to zero when connecting.
+
+        - *timeout* (float): Seconds to wait for connection
 
         """
 
@@ -2207,21 +2259,26 @@ Get the current orientation of the drone</p>
 <h5 id="connect">connect</h5>
 <p><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">connect</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
-    <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span>
+    <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span>
 </code></pre></div>
 Start receiving telemetry info from the drone, and publishing watchdog messages</p>
 <p>When watchdog message are published the thrusters are armed, to stop the drone from moving
 unexpectedly when connecting all thruster set points are set to zero when connecting.</p>
+<ul>
+<li><em>timeout</em> (float): Seconds to wait for connection</li>
+</ul>
 <details class="example">
 <summary>View Source</summary>
-<pre><code>    def connect(self, timeout=None):
+<pre><code>    def connect(self, timeout: float = None):
 
         """Start receiving telemetry info from the drone, and publishing watchdog messages
 
         When watchdog message are published the thrusters are armed, to stop the drone from moving
 
         unexpectedly when connecting all thruster set points are set to zero when connecting.
+
+        - *timeout* (float): Seconds to wait for connection
 
         """
 
@@ -2403,21 +2460,26 @@ Get the current orientation of the drone</p>
 <h5 id="connect_1">connect</h5>
 <p><div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">connect</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
-    <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span>
+    <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span>
 </code></pre></div>
 Start receiving telemetry info from the drone, and publishing watchdog messages</p>
 <p>When watchdog message are published the thrusters are armed, to stop the drone from moving
 unexpectedly when connecting all thruster set points are set to zero when connecting.</p>
+<ul>
+<li><em>timeout</em> (float): Seconds to wait for connection</li>
+</ul>
 <details class="example">
 <summary>View Source</summary>
-<pre><code>    def connect(self, timeout=None):
+<pre><code>    def connect(self, timeout: float = None):
 
         """Start receiving telemetry info from the drone, and publishing watchdog messages
 
         When watchdog message are published the thrusters are armed, to stop the drone from moving
 
         unexpectedly when connecting all thruster set points are set to zero when connecting.
+
+        - *timeout* (float): Seconds to wait for connection
 
         """
 
