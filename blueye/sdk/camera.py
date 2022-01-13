@@ -16,35 +16,51 @@ if TYPE_CHECKING:
 
 class Tilt:
     @staticmethod
-    def _tilt_angle_from_debug_flags(flags: int) -> int:
+    def _tilt_angle_from_debug_flags(flags: int) -> float:
         """Helper function for decoding tilt angle from debug flags
 
         The tilt angle is encoded as an int8, with 0 at 0 degrees, and each increment representing
         0.5 degrees in either direction. A positive angle is upwards, and negative is downwards.
         """
 
+        TILT_ANGLE_MASK = 0x0000FF0000000000
+        TILT_ANGLE_OFFSET = 40
         tilt_angle_array = np.array(
-            np.right_shift(np.bitwise_and(flags, 0x0000FF0000000000), 40),
+            np.right_shift(np.bitwise_and(flags, TILT_ANGLE_MASK), TILT_ANGLE_OFFSET),
             dtype=[("tilt_angle", np.int8)],
         ).astype([("tilt_angle", float)])
         return tilt_angle_array["tilt_angle"] / 2
 
+    @staticmethod
+    def _tilt_stabilization_status_from_debug_flags(flags: int) -> bool:
+        """Helper function for decoding tilt stabilization status from debug flags"""
+        TILT_STABILIZATION_MASK = 0x100
+        return bool(flags & TILT_STABILIZATION_MASK)
+
     def __init__(self, parent_drone: Drone):
         self._parent_drone = parent_drone
 
-    def set_speed(self, speed: int):
+    def _verify_tilt_in_features(self):
+        """Checks that the connected drone has the tilt feature
+
+        Raises a RuntimeError if it does not.
+        """
+        if "tilt" not in self._parent_drone.features:
+            raise RuntimeError("The connected drone does not support tilting the camera.")
+
+    def set_speed(self, speed: float):
         """Set the speed and direction of the camera tilt
 
         *Arguments*:
 
-        * speed (int): Speed and direction of the tilt. 1 is max speed up, -1 is max speed down.
+        * speed (float): Speed and direction of the tilt. 1 is max speed up, -1 is max speed down.
 
         Requires a drone with the tilt feature, and software version 1.5 or newer.
         A RuntimeError is raised if either of those requirements are not met.
         """
-        if "tilt" not in self._parent_drone.features:
-            raise RuntimeError("The connected drone does not support tilting the camera.")
+
         self._parent_drone._verify_required_blunux_version("1.5")
+        self._verify_tilt_in_features()
 
         # The tilt command is grouped together with the thruster commands, so to avoid messing with
         # the thruster setpoint while tilting we need to get the current setpoint and send it with
@@ -54,19 +70,45 @@ class Tilt:
             self._parent_drone._tcp_client.motion_input_tilt(*thruster_setpoints, 0, 0, speed)
 
     @property
-    def angle(self) -> int:
+    def angle(self) -> float:
         """Return the current angle of the camera tilt
 
         Requires a drone with the tilt feature, and software version 1.5 or newer.
         A RuntimeError is raised if either of those requirements are not met.
         """
 
-        if "tilt" not in self._parent_drone.features:
-            raise RuntimeError("The connected drone does not support tilting the camera.")
         self._parent_drone._verify_required_blunux_version("1.5")
+        self._verify_tilt_in_features()
 
         debug_flags = self._parent_drone._state_watcher.general_state["debug_flags"]
         return self._tilt_angle_from_debug_flags(debug_flags)
+
+    @property
+    def stabilization_enabled(self) -> bool:
+        """Get the state of active camera stabilization
+
+        Use the `toggle_stabilization` method to turn stabilization on or off
+
+        *Returns*:
+
+        * Current state of active camera stabilization (bool)
+        """
+        self._parent_drone._verify_required_blunux_version("1.6.42")
+        self._verify_tilt_in_features()
+
+        debug_flags = self._parent_drone._state_watcher.general_state["debug_flags"]
+        return self._tilt_stabilization_status_from_debug_flags(debug_flags)
+
+    def toggle_stabilization(self):
+        """Toggle active camera stabilization on or off
+
+        Requires a drone with the tilt feature, and Blunux version 1.6.42 or newer.
+        A RuntimeError is raised if either of those requirements are not met.
+        """
+
+        self._parent_drone._verify_required_blunux_version("1.6.42")
+        self._verify_tilt_in_features()
+        self._parent_drone._tcp_client.toggle_tilt_stabilization()
 
 
 class LogoOverlay(Enum):

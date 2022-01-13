@@ -186,12 +186,16 @@ class TestTilt:
         with pytest.raises(RuntimeError):
             _ = mocked_drone.camera.tilt.angle
 
-    def test_tilt_fails_on_drone_without_tilt(self, mocked_drone):
+    def test_tilt_fails_on_drone_without_tilt(self, mocked_drone: Drone):
         mocked_drone.features = []
         with pytest.raises(RuntimeError):
             mocked_drone.camera.tilt.set_speed(0)
         with pytest.raises(RuntimeError):
             _ = mocked_drone.camera.tilt.angle
+        with pytest.raises(RuntimeError):
+            _ = mocked_drone.camera.tilt.stabilization_enabled
+        with pytest.raises(RuntimeError):
+            mocked_drone.camera.tilt.toggle_stabilization()
 
     @pytest.mark.parametrize(
         "thruster_setpoints, tilt_speed",
@@ -235,6 +239,29 @@ class TestTilt:
         mocked_drone._state_watcher._general_state = {"debug_flags": debug_flags}
         mocked_drone._state_watcher._general_state_received.set()
         assert mocked_drone.camera.tilt.angle == expected_angle
+
+    @pytest.mark.parametrize(
+        "debug_flags, expected_state",
+        [
+            (0x0000000000000100, True),
+            (0x12344456789AFFDE, True),
+            (0x0000000000000000, False),
+            (0x12344456789A00DE, False),
+            (0x12344456789AF0DE, False),
+        ],
+    )
+    def test_tilt_stabilization_state(self, mocked_drone: Drone, debug_flags, expected_state):
+        mocked_drone.features = ["tilt"]
+        mocked_drone.software_version_short = "1.6.42"
+        mocked_drone._state_watcher._general_state = {"debug_flags": debug_flags}
+        mocked_drone._state_watcher._general_state_received.set()
+        assert mocked_drone.camera.tilt.stabilization_enabled == expected_state
+
+    def test_toggle_tilt_stabilization(self, mocked_drone: Drone):
+        mocked_drone.features = ["tilt"]
+        mocked_drone.software_version_short = "1.6.42"
+        mocked_drone.camera.tilt.toggle_stabilization()
+        assert mocked_drone._tcp_client.toggle_tilt_stabilization.call_count == 1
 
 
 class TestConfig:
