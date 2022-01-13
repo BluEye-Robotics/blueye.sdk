@@ -23,8 +23,10 @@ class Tilt:
         0.5 degrees in either direction. A positive angle is upwards, and negative is downwards.
         """
 
+        TILT_ANGLE_MASK = 0x0000FF0000000000
+        TILT_ANGLE_OFFSET = 40
         tilt_angle_array = np.array(
-            np.right_shift(np.bitwise_and(flags, 0x0000FF0000000000), 40),
+            np.right_shift(np.bitwise_and(flags, TILT_ANGLE_MASK), TILT_ANGLE_OFFSET),
             dtype=[("tilt_angle", np.int8)],
         ).astype([("tilt_angle", float)])
         return tilt_angle_array["tilt_angle"] / 2
@@ -32,7 +34,8 @@ class Tilt:
     @staticmethod
     def _tilt_stabilization_status_from_debug_flags(flags: int) -> bool:
         """Helper function for decoding tilt stabilization status from debug flags"""
-        return bool(np.right_shift(np.bitwise_and(flags, 0x0000000000000100), 8))
+        TILT_STABILIZATION_MASK = 0x100
+        return bool(flags & TILT_STABILIZATION_MASK)
 
     def __init__(self, parent_drone: Drone):
         self._parent_drone = parent_drone
