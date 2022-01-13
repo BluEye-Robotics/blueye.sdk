@@ -48,7 +48,7 @@ class LogFile:
             num /= 1024.0
         return f"{num:.1f} Gi{suffix}"
 
-    def download(self, output_path=None, output_name=None):
+    def download(self, output_path=None, output_name=None, downsample_divisor=10):
         """
         Download the specified log to your local file system
 
@@ -57,8 +57,11 @@ class LogFile:
 
         Specifying output_name will overwrite the default file name with whatever you
         have specified (be sure to include the .csv extension).
+
+        The drone samples the log content at 10 Hz, and by default this function downsamples this
+        rate to 1 Hz.
         """
-        log = requests.get(self.download_path).content
+        log = requests.get(self.download_path, params={"divisor": downsample_divisor}).content
         if output_path is None:
             output_path = "./"
         if output_name is None:

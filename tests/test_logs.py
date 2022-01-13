@@ -128,3 +128,18 @@ def test_index_is_downloaded_on_first_access(log_list_with_two_logs):
     assert log_list_with_two_logs._logs == {}
     _ = log_list_with_two_logs[0]
     assert len(log_list_with_two_logs[::]) == 2
+
+
+@pytest.mark.parametrize("divisor", [1, 10])
+def test_divisor_parameter_is_passed_to_request(requests_mock, mocker, divisor):
+    logname = "log.csv"
+    dummylog = LogFile(0, logname, "2019-01-01T00:00:00.000000", 0, "192.168.1.101")
+
+    dummy_csv_content = b"1,2,3"
+    requests_mock.get(
+        f"http://192.168.1.101/logcsv/{logname}?divisor={divisor}", content=dummy_csv_content
+    )
+
+    mocker.patch("builtins.open", mocker.mock_open())
+
+    dummylog.download(downsample_divisor=divisor)
