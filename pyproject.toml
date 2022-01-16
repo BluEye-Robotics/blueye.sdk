@@ -103,7 +103,7 @@ palette = {primary = "white", accent = "blue"}
 
 [tool.black]
 line-length = 100
-target-version = ['py37', 'py38', 'py39']
+target-version = ['py37', 'py38', 'py39', 'py310']
 
 [build-system]
 requires = ["poetry>=1.0.0"]
