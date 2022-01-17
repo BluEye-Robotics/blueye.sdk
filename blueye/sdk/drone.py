@@ -361,6 +361,22 @@ class Drone:
         """
         return self._state_watcher.general_state["error_flags"]
 
+    @property
+    def active_video_streams(self) -> int:
+        """Get the number of currently active connections to the video stream
+
+        Every client connected to the RTSP stream (does not matter if it's directly from GStreamer,
+        or from the Blueye app) counts as one connection.
+
+        Requires Blunux version 1.5.33 or newer.
+        """
+
+        self._verify_required_blunux_version("1.5.33")
+        SPECTATORS_MASK = 0x000000FF00000000
+        SPECTATORS_OFFSET = 32
+        debug_flags = self._state_watcher._general_state["debug_flags"]
+        return (debug_flags & SPECTATORS_MASK) >> SPECTATORS_OFFSET
+
     def ping(self):
         """Ping drone, an exception is thrown by TcpClient if drone does not answer"""
         self._tcp_client.ping()
