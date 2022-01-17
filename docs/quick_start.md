@@ -29,9 +29,9 @@ The instructions below show the necessary steps to get started with the SDK on a
     cd .\Desktop
     mkdir drone_project
     cd .\drone_project
-    # Replace "C:\Program Files\Python37\python.exe" with the path
+    # Replace "C:\Program Files\Python310\python.exe" with the path
     # to the python version you want to use in the line below
-    virtualenv blueye_sdk_env -p "C:\Program Files\Python37\python.exe"
+    virtualenv blueye_sdk_env -p "C:\Program Files\Python310\python.exe"
     ```
     activate the virtual environment
     ```shell
@@ -89,7 +89,7 @@ The instructions below show the necessary steps to get started with the SDK on a
     Then build Python with pyenv
 
     ```
-    pyenv install 3.8.0
+    pyenv install 3.10.1
     ```
 
     **Create a virtual environment**
@@ -100,7 +100,7 @@ The instructions below show the necessary steps to get started with the SDK on a
     Since we already have pyenv installed we'll use it to create a virtual environment,
 
     ```
-    pyenv virtualenv 3.8.0 blueye.sdk
+    pyenv virtualenv 3.10.1 blueye.sdk
     pyenv activate blueye.sdk
     ```
 
@@ -134,7 +134,7 @@ The instructions below show the necessary steps to get started with the SDK on a
     pyenv update
     ```
 
-    Install the needed dependencies for building python 3.8.0
+    Install the needed dependencies for building python 3.10.1
 
     ```
     apt install -y make build-essential libssl-dev zlib1g-dev libbz2-dev \
@@ -143,7 +143,7 @@ The instructions below show the necessary steps to get started with the SDK on a
     ```
     Then build python with pyenv
     ```
-    pyenv install 3.8.0
+    pyenv install 3.10.1
     ```
 
     **Create a virtual environment**
@@ -154,7 +154,7 @@ The instructions below show the necessary steps to get started with the SDK on a
     Since we already have pyenv installed we'll use it to create a virtual environment,
 
     ```
-    pyenv virtualenv 3.8.0 blueye.sdk
+    pyenv virtualenv 3.10.1 blueye.sdk
     pyenv activate blueye.sdk
     ```
 
