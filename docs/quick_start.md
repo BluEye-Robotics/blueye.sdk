@@ -1,5 +1,5 @@
 ## Installation
-The SDK requires Python 3.7 or higher. Since many operating systems do not package the newest
+The SDK requires Python 3.7.1 or higher. Since many operating systems do not package the newest
 version of Python we recommend using [`pyenv`](https://github.com/pyenv/pyenv) or something similar
 for configuring multiple python versions on the same system. Pyenv also has the added benefit of
 managing your virtual environments for you, though you are of course free to use other tools for
@@ -10,7 +10,7 @@ The instructions below show the necessary steps to get started with the SDK on a
 ??? abstract "Windows"
     **Install Python**
 
-    Install Python 3.7 or higher, you can find the latest python versions [here](https://www.python.org/downloads/).
+    Install Python 3.7.1 or higher, you can find the latest python versions [here](https://www.python.org/downloads/).
     Remember to check the option "Add Python to path" when installing.
 
     **Install virtualenv for managing Python versions (optional)**
