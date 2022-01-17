@@ -29,7 +29,7 @@ packaging = "^20.1"
 numpy = "~1.21.5"
 
 [tool.poetry.dev-dependencies]
-pytest = "^5.2"
+pytest = "^6.2.5"
 pytest-mock = "^1.10.4"
 portray = "^1.7.0"
 pre-commit = "^1.18.3"
@@ -103,6 +103,12 @@ palette = {primary = "white", accent = "blue"}
 [tool.black]
 line-length = 100
 target-version = ['py37', 'py38', 'py39', 'py310']
+
+[tool.pytest.ini_options]
+markers = "connected_to_drone: a mark for test that can only be run when connected to a drone, useful when developing"
+
+addopts = "--cov=blueye --cov-report=xml:coverage.xml --cov-report=html --cov-append"
+
 
 [build-system]
 requires = ["poetry>=1.0.0"]
