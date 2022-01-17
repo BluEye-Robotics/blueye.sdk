@@ -67,6 +67,7 @@ favicon = "docs/media/blueye_b.svg"
 logo = "docs/media/blueye_b.svg"
 name = "material"
 palette = {primary = "white", accent = "blue"}
+custom_dir = "docs/mkdocs_templates"
 
 [[tool.portray.mkdocs.nav]]
 "About the Blueye Drones" = "README.md"
