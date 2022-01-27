@@ -663,13 +663,6 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#descendants" class="md-nav__link">
-    Descendants
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#instance-variables_1" class="md-nav__link">
     Instance variables
   </a>
@@ -710,61 +703,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#pioneer" class="md-nav__link">
-    Pioneer
-  </a>
-  
-    <nav class="md-nav" aria-label="Pioneer">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#ancestors-in-mro" class="md-nav__link">
-    Ancestors (in MRO)
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#instance-variables_2" class="md-nav__link">
-    Instance variables
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#methods_2" class="md-nav__link">
-    Methods
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#connect_1" class="md-nav__link">
-    connect
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#disconnect_1" class="md-nav__link">
-    disconnect
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ping_1" class="md-nav__link">
-    ping
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#slavemodewarning" class="md-nav__link">
     SlaveModeWarning
   </a>
@@ -773,7 +711,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#ancestors-in-mro_1" class="md-nav__link">
+  <a href="#ancestors-in-mro" class="md-nav__link">
     Ancestors (in MRO)
   </a>
   
@@ -787,7 +725,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#methods_3" class="md-nav__link">
+  <a href="#methods_2" class="md-nav__link">
     Methods
   </a>
   
@@ -971,13 +909,6 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#descendants" class="md-nav__link">
-    Descendants
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#instance-variables_1" class="md-nav__link">
     Instance variables
   </a>
@@ -1018,61 +949,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#pioneer" class="md-nav__link">
-    Pioneer
-  </a>
-  
-    <nav class="md-nav" aria-label="Pioneer">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#ancestors-in-mro" class="md-nav__link">
-    Ancestors (in MRO)
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#instance-variables_2" class="md-nav__link">
-    Instance variables
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#methods_2" class="md-nav__link">
-    Methods
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#connect_1" class="md-nav__link">
-    connect
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#disconnect_1" class="md-nav__link">
-    disconnect
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ping_1" class="md-nav__link">
-    ping
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#slavemodewarning" class="md-nav__link">
     SlaveModeWarning
   </a>
@@ -1081,7 +957,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#ancestors-in-mro_1" class="md-nav__link">
+  <a href="#ancestors-in-mro" class="md-nav__link">
     Ancestors (in MRO)
   </a>
   
@@ -1095,7 +971,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#methods_3" class="md-nav__link">
+  <a href="#methods_2" class="md-nav__link">
     Methods
   </a>
   
@@ -1747,24 +1623,6 @@ class Drone:
         """Ping drone, an exception is thrown by TcpClient if drone does not answer"""
 
         self._tcp_client.ping()
-
-class Pioneer(Drone):
-
-    def __init__(self, *args, **kwargs):
-
-        warnings.warn(
-
-            "This class has been deprecated and will be removed in the next major version, "
-
-            "please use the Drone class instead.",
-
-            DeprecationWarning,
-
-            stacklevel=2,
-
-        )
-
-        super().__init__(*args, **kwargs)
 </code></pre>
 </details>
 <h2 id="classes">Classes</h2>
@@ -2293,10 +2151,6 @@ be a Unix timestamp (ie. the number of seconds since the epoch).</p>
 </code></pre>
 </details>
 <hr />
-<h4 id="descendants">Descendants</h4>
-<ul>
-<li>blueye.sdk.drone.Pioneer</li>
-</ul>
 <h4 id="instance-variables_1">Instance variables</h4>
 <div class="highlight"><pre><span></span><code><span class="n">active_video_streams</span>
 </code></pre></div>
@@ -2467,208 +2321,6 @@ unexpectedly when connecting all thruster set points are set to zero when connec
         self._tcp_client.ping()
 </code></pre>
 </details>
-<h3 id="pioneer">Pioneer</h3>
-<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Pioneer</span><span class="p">(</span>
-    <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-    <span class="o">**</span><span class="n">kwargs</span>
-<span class="p">)</span>
-</code></pre></div>
-<details class="example">
-<summary>View Source</summary>
-<pre><code>class Pioneer(Drone):
-
-    def __init__(self, *args, **kwargs):
-
-        warnings.warn(
-
-            "This class has been deprecated and will be removed in the next major version, "
-
-            "please use the Drone class instead.",
-
-            DeprecationWarning,
-
-            stacklevel=2,
-
-        )
-
-        super().__init__(*args, **kwargs)
-</code></pre>
-</details>
-<hr />
-<h4 id="ancestors-in-mro">Ancestors (in MRO)</h4>
-<ul>
-<li>blueye.sdk.drone.Drone</li>
-</ul>
-<h4 id="instance-variables_2">Instance variables</h4>
-<div class="highlight"><pre><span></span><code><span class="n">active_video_streams</span>
-</code></pre></div>
-<p>Get the number of currently active connections to the video stream</p>
-<p>Every client connected to the RTSP stream (does not matter if it's directly from GStreamer,
-or from the Blueye app) counts as one connection.</p>
-<p>Requires Blunux version 1.5.33 or newer.</p>
-<div class="highlight"><pre><span></span><code><span class="n">battery_state_of_charge</span>
-</code></pre></div>
-<p>Get the battery state of charge</p>
-<p><em>Returns</em>:</p>
-<ul>
-<li>state_of_charge (int): Current state of charge of the drone battery in percent, from 0 to 100</li>
-</ul>
-<div class="highlight"><pre><span></span><code><span class="n">connection_established</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="n">depth</span>
-</code></pre></div>
-<p>Get the current depth in millimeters</p>
-<p><em>Returns</em>:</p>
-<ul>
-<li>depth (int): The depth in millimeters of water column.</li>
-</ul>
-<div class="highlight"><pre><span></span><code><span class="n">error_flags</span>
-</code></pre></div>
-<p>Get the error flags</p>
-<p><em>Returns</em>:</p>
-<ul>
-<li>error_flags (int): The error flags as int</li>
-</ul>
-<div class="highlight"><pre><span></span><code><span class="n">lights</span>
-</code></pre></div>
-<p>Get or set the brightness of the bottom canister lights</p>
-<p><em>Arguments</em>:</p>
-<ul>
-<li>brightness (int): Set the brightness of the bottom canister LED's in the range &lt;0, 255&gt;</li>
-</ul>
-<p><em>Returns</em>:</p>
-<ul>
-<li>brightness (int): The brightness of the bottom canister LED's in the range &lt;0, 255&gt;</li>
-</ul>
-<div class="highlight"><pre><span></span><code><span class="n">pose</span>
-</code></pre></div>
-<p>Get the current orientation of the drone</p>
-<p><em>Returns</em>:</p>
-<ul>
-<li>pose (dict): Dictionary with roll, pitch, and yaw in degrees, from 0 to 359.</li>
-</ul>
-<h4 id="methods_2">Methods</h4>
-<h4 id="connect_1">connect</h4>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">connect</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span>
-    <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="p">)</span>
-</code></pre></div>
-<p>Start receiving telemetry info from the drone, and publishing watchdog messages</p>
-<p>When watchdog message are published the thrusters are armed, to stop the drone from moving
-unexpectedly when connecting all thruster set points are set to zero when connecting.</p>
-<ul>
-<li><em>timeout</em> (float): Seconds to wait for connection</li>
-</ul>
-<details class="example">
-<summary>View Source</summary>
-<pre><code>    def connect(self, timeout: float = None):
-
-        """Start receiving telemetry info from the drone, and publishing watchdog messages
-
-        When watchdog message are published the thrusters are armed, to stop the drone from moving
-
-        unexpectedly when connecting all thruster set points are set to zero when connecting.
-
-        - *timeout* (float): Seconds to wait for connection
-
-        """
-
-        self._wait_for_udp_communication(timeout, self._ip)
-
-        self._update_drone_info()
-
-        self._start_state_watcher_thread()
-
-        if self._slave_mode_enabled:
-
-            # No need to touch the TCP stuff if we're in slave mode so we return early
-
-            return
-
-        if not self.connection_established:
-
-            self._tcp_client = TcpClient(ip=self._ip, port=self._port, autoConnect=False)
-
-            self._connect_to_tcp_socket()
-
-        try:
-
-            self.ping()
-
-            self.motion.send_thruster_setpoint(0, 0, 0, 0)
-
-            # The drone runs from a read-only filesystem, and as such does not keep any state,
-
-            # therefore when we connect to it we should send the current time
-
-            self.config.set_drone_time(int(time.time()))
-
-            self._start_watchdog()
-
-        except ResponseTimeout as e:
-
-            self._clean_up_tcp_client()
-
-            raise ConnectionError(
-
-                f"Found drone at {self._ip} but was unable to take control of it. "
-
-                "Is there another client connected?"
-
-            ) from e
-
-        except MismatchedReply:
-
-            # The connection is out of sync, likely due to a previous connection being
-
-            # disconnected mid-transfer. Re-instantiating the connection should solve the issue
-
-            self._clean_up_tcp_client()
-
-            self.connect(timeout)
-
-        except BrokenPipeError:
-
-            # Have lost connection to drone, need to reestablish TCP client
-
-            self._clean_up_tcp_client()
-
-            self.connect(timeout)
-</code></pre>
-</details>
-<h4 id="disconnect_1">disconnect</h4>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span>
-    <span class="bp">self</span>
-<span class="p">)</span>
-</code></pre></div>
-<p>Disconnects the TCP connection, allowing another client to take control of the drone</p>
-<details class="example">
-<summary>View Source</summary>
-<pre><code>    def disconnect(self):
-
-        """Disconnects the TCP connection, allowing another client to take control of the drone"""
-
-        if self.connection_established and not self._slave_mode_enabled:
-
-            self._clean_up_tcp_client()
-</code></pre>
-</details>
-<h4 id="ping_1">ping</h4>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">ping</span><span class="p">(</span>
-    <span class="bp">self</span>
-<span class="p">)</span>
-</code></pre></div>
-<p>Ping drone, an exception is thrown by TcpClient if drone does not answer</p>
-<details class="example">
-<summary>View Source</summary>
-<pre><code>    def ping(self):
-
-        """Ping drone, an exception is thrown by TcpClient if drone does not answer"""
-
-        self._tcp_client.ping()
-</code></pre>
-</details>
 <h3 id="slavemodewarning">SlaveModeWarning</h3>
 <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">SlaveModeWarning</span><span class="p">(</span>
     <span class="o">/</span><span class="p">,</span>
@@ -2684,7 +2336,7 @@ unexpectedly when connecting all thruster set points are set to zero when connec
 </code></pre>
 </details>
 <hr />
-<h4 id="ancestors-in-mro_1">Ancestors (in MRO)</h4>
+<h4 id="ancestors-in-mro">Ancestors (in MRO)</h4>
 <ul>
 <li>builtins.UserWarning</li>
 <li>builtins.Warning</li>
@@ -2694,7 +2346,7 @@ unexpectedly when connecting all thruster set points are set to zero when connec
 <h4 id="class-variables">Class variables</h4>
 <div class="highlight"><pre><span></span><code><span class="n">args</span>
 </code></pre></div>
-<h4 id="methods_3">Methods</h4>
+<h4 id="methods_2">Methods</h4>
 <h4 id="with_traceback">with_traceback</h4>
 <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">with_traceback</span><span class="p">(</span>
     <span class="o">...</span>
