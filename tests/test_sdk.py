@@ -169,13 +169,6 @@ def test_connect_ignores_repeated_starts_on_watchdog_thread(mocked_drone):
     assert mocked_drone.connection_established is True
 
 
-def test_creating_Pioneer_object_raises_DeprecationWarning():
-    from blueye.sdk import Pioneer
-
-    with pytest.warns(DeprecationWarning):
-        _ = Pioneer(autoConnect=False)
-
-
 def test_active_video_streams_fails_on_old_versions(mocked_drone):
     with pytest.raises(RuntimeError):
         _ = mocked_drone.active_video_streams

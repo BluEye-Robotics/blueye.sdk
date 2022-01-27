@@ -41,4 +41,4 @@ pre-commit install
 adds a pre-commit hook for black formatting.
 
 ## Can't find what you are looking for?
-This SDK is still very much a work in progress, if you feel features are missing or something feels clunky, please open an [issue](https://github.com/BluEye-Robotics/blueye.sdk/issues) and suggest a change. Bug reports and fixes are of course always welcome!
+We're continuously improving this project and if you feel features are missing or something feels clunky, please open an [issue](https://github.com/BluEye-Robotics/blueye.sdk/issues) and suggest a change. Bug reports and fixes are of course always welcome!
