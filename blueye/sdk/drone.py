@@ -265,12 +265,12 @@ class Drone:
             self._connect_to_tcp_socket()
 
         try:
-            self.ping()
-            self.motion.send_thruster_setpoint(0, 0, 0, 0)
-
             # The drone runs from a read-only filesystem, and as such does not keep any state,
             # therefore when we connect to it we should send the current time
             self.config.set_drone_time(int(time.time()))
+
+            self.ping()
+            self.motion.send_thruster_setpoint(0, 0, 0, 0)
 
             self._start_watchdog()
         except ResponseTimeout as e:
