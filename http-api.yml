@@ -635,6 +635,24 @@ paths:
             type: integer
             default: 0
             example: "2"
+        - name: ignore-exif-titles
+          in: query
+          description: Ignore title and subtitle set by the app during the dive. If `title` and `subtitle`
+            is not specified, the title and/or subtitle selected for the video overlay will be written 
+            unless this parameter is enabled.
+          required: false
+          schema:
+            type: integer
+            default: 0
+            example: "1"
+        - name: field-guestport
+          in: query
+          description: Display data from connected guestport sensors in the image overlay.
+          required: false
+          schema:
+            type: integer
+            default: 1
+            example: "0"
 
       responses:
         '200':
