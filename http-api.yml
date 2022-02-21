@@ -629,12 +629,40 @@ paths:
             format: int32
         - name: logo
           in: query
-          description: "Add logo to picture. 0 = No logo, 1 = Drone default logo, 2 = User uploaded logo"
+          description: |
+            Which logo to overlay.
+            * `0` - No logo
+            * `1` - Drone default logo
+            * `2` - User uploaded logo
           required: false
           schema:
             type: integer
             default: 0
-            example: "2"
+            enum: [0, 1, 2]
+        - name: ignore-exif-titles
+          in: query
+          description: |
+            Ignore title and subtitle set by the app during the dive. If `title` and `subtitle` is
+            not specified, the title and/or subtitle selected for the video overlay will be written
+            unless this parameter is enabled.
+            * `1` - Ignore exif titles
+            * `0` - Use title from exif
+          required: false
+          schema:
+            type: integer
+            default: 0
+            enum: [0, 1]
+        - name: field-guestport
+          in: query
+          description: |
+            Display data from connected guestport sensors in the image overlay.
+            * `1` - Enable
+            * `0` - Disable
+          required: false
+          schema:
+            type: integer
+            default: 1
+            enum: [0, 1]
 
       responses:
         '200':
