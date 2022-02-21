@@ -819,6 +819,12 @@ components:
           type: string
           description: Commit-id of the software currently running on the drone.
           example: "299238949a"
+        depth_sensor:
+          type: string
+          description: |
+            Name of the depth sensor, f. ex. MS5837_30BA26, Keller_PA7LD.
+            Available from Blunux 2.3
+          example: "MS5837_30BA26"
         features:
           type: string
           description: Comma-separated list of available features on the drone.
