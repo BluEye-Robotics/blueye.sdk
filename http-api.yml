@@ -605,6 +605,16 @@ paths:
             enum:
               - 0
               - 1
+        - name: field-tilt
+          in: query
+          description: Enable or disable the camera tilt field. "1" to enable, "0" to disable.
+          required: false
+          schema:
+            type: integer
+            default: 0
+            enum:
+              - 0
+              - 1
         - name: date-format
           in: query
           description: "Format of the date/time."
