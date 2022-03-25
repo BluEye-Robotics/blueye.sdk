@@ -548,26 +548,31 @@ paths:
             default: ""
         - name: length-units
           in: query
-          description: Unit to use for depth. Use "meter" for metric units, and "feet" for imperial.
+          description: | 
+            Unit to use for all distance/length measurements such as depth, altitude, distance etc.
+            For shorter lengths `mm` or `inches` will be used accordingly.
+            * `meter` - Metric unit
+            * `feet` - Imperial unit
           required: false
           schema:
             type: string
             default: "meter"
-            enum:
-              - "meter"
-              - "feet"
         - name: temp-units
           in: query
           description: |
-            Unit to use for temperature. Use "celsius" for metric units, and "fahrenheit" for
-            imperial.
+            Unit to use for the temperature field and any temperature related measurements.
+            * `celsius` - Metric unit
+            * `fahrenheit` - Imperial unit
           required: false
           schema:
             type: string
             default: "celsius"
         - name: field-date
           in: query
-          description: Enable or disable the date field. "1" to enable, "0" to disable.
+          description: |
+            Enable or disable the date field.
+            * `1` - Enable
+            * `0` - Disable
           required: false
           schema:
             type: integer
@@ -577,7 +582,10 @@ paths:
               - 1
         - name: field-depth
           in: query
-          description: Enable or disable the depth field. "1" to enable, "0" to disable.
+          description: |
+            Display water depth in the image overlay.
+            * `1` - Enable
+            * `0` - Disable
           required: false
           schema:
             type: integer
@@ -587,7 +595,10 @@ paths:
               - 1
         - name: field-heading
           in: query
-          description: Enable or disable the heading field. "1" to enable, "0" to disable.
+          description: |
+            Display compass heading in the image overlay.
+            * `1` - Enable
+            * `0` - Disable
           required: false
           schema:
             type: integer
@@ -597,7 +608,10 @@ paths:
               - 1
         - name: field-temp
           in: query
-          description: Enable or disable the temperature field. "1" to enable, "0" to disable.
+          description: |
+            Display water temperature in the image overlay.
+            * `1` - Enable
+            * `0` - Disable
           required: false
           schema:
             type: integer
@@ -607,7 +621,10 @@ paths:
               - 1
         - name: field-tilt
           in: query
-          description: Enable or disable the camera tilt field. "1" to enable, "0" to disable.
+          description: |
+            Display camera tilt angle in the image overlay.
+            * `1` - Enable
+            * `0` - Disable
           required: false
           schema:
             type: integer
