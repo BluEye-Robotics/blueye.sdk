@@ -258,7 +258,7 @@ class Drone:
         """
 
         self._update_drone_info()
-        if version.parse(self.software_version_short) > version.parse("3.0"):
+        if version.parse(self.software_version_short) >= version.parse("3.0"):
             # Blunux 3.0 requires a TCP message before enabling UDP communication
             temp_tcp_client = TcpClient()
             temp_tcp_client.connect()
