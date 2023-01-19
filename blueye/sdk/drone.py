@@ -7,7 +7,11 @@ from json import JSONDecodeError
 
 import requests
 from blueye.protocol import TcpClient, UdpClient
-from blueye.protocol.exceptions import MismatchedReply, NoConnectionToDrone, ResponseTimeout
+from blueye.protocol.exceptions import (
+    MismatchedReply,
+    NoConnectionToDrone,
+    ResponseTimeout,
+)
 from packaging import version
 
 from .camera import Camera
@@ -244,6 +248,12 @@ class Drone:
             # Ignore multiple starts
             pass
 
+    def _create_temporary_tcp_client(self):
+        temp_tcp_client = TcpClient()
+        temp_tcp_client.connect()
+        temp_tcp_client.stop()
+        temp_tcp_client._sock.close()
+
     def connect(self, timeout: float = None):
         """Start receiving telemetry info from the drone, and publishing watchdog messages
 
@@ -253,8 +263,12 @@ class Drone:
         - *timeout* (float): Seconds to wait for connection
         """
 
-        self._wait_for_udp_communication(timeout, self._ip)
         self._update_drone_info()
+        if version.parse(self.software_version_short) >= version.parse("3.0"):
+            # Blunux 3.0 requires a TCP message before enabling UDP communication
+            self._create_temporary_tcp_client()
+
+        self._wait_for_udp_communication(timeout, self._ip)
         self._start_state_watcher_thread()
         if self._slave_mode_enabled:
             # No need to touch the TCP stuff if we're in slave mode so we return early

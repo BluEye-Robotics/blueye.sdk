@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "blueye.sdk"
-version = "1.0.1"
+version = "1.0.2"
 description = "SDK for controlling a Blueye underwater drone"
 authors = ["Sindre Hansen <sindre.hansen@blueye.no>",
            "Johannes Schrimpf <johannes.schrimpf@blueye.no>",
