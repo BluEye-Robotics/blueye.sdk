@@ -1,5 +1,5 @@
 from time import time
-from unittest.mock import PropertyMock
+from unittest.mock import Mock, PropertyMock
 
 import pytest
 import requests
@@ -91,6 +91,15 @@ def test_verify_sw_version_raises_connection_error_when_not_connected(mocked_dro
     )
     with pytest.raises(ConnectionError):
         mocked_drone._verify_required_blunux_version("1.4.7")
+
+
+def test_if_blunux_newer_than_3_create_tcp_first(mocked_drone: Drone):
+    mocked_drone.software_version_short = "3.0"
+    mocked_drone._create_temporary_tcp_client = Mock()
+    mocked_drone._update_drone_info = Mock()  # To avoid overwriting the version number
+    mocked_drone.connect()
+
+    mocked_drone._create_temporary_tcp_client.assert_called_once()
 
 
 def test_depth_reading(mocked_drone):
