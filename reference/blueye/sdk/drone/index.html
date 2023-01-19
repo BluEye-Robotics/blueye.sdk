@@ -1032,7 +1032,15 @@ import requests
 
 from blueye.protocol import TcpClient, UdpClient
 
-from blueye.protocol.exceptions import MismatchedReply, NoConnectionToDrone, ResponseTimeout
+from blueye.protocol.exceptions import (
+
+    MismatchedReply,
+
+    NoConnectionToDrone,
+
+    ResponseTimeout,
+
+)
 
 from packaging import version
 
@@ -1414,6 +1422,16 @@ class Drone:
 
             pass
 
+    def _create_temporary_tcp_client(self):
+
+        temp_tcp_client = TcpClient()
+
+        temp_tcp_client.connect()
+
+        temp_tcp_client.stop()
+
+        temp_tcp_client._sock.close()
+
     def connect(self, timeout: float = None):
 
         """Start receiving telemetry info from the drone, and publishing watchdog messages
@@ -1426,9 +1444,15 @@ class Drone:
 
         """
 
-        self._wait_for_udp_communication(timeout, self._ip)
-
         self._update_drone_info()
+
+        if version.parse(self.software_version_short) &gt;= version.parse("3.0"):
+
+            # Blunux 3.0 requires a TCP message before enabling UDP communication
+
+            self._create_temporary_tcp_client()
+
+        self._wait_for_udp_communication(timeout, self._ip)
 
         self._start_state_watcher_thread()
 
@@ -1939,6 +1963,16 @@ be a Unix timestamp (ie. the number of seconds since the epoch).</p>
 
             pass
 
+    def _create_temporary_tcp_client(self):
+
+        temp_tcp_client = TcpClient()
+
+        temp_tcp_client.connect()
+
+        temp_tcp_client.stop()
+
+        temp_tcp_client._sock.close()
+
     def connect(self, timeout: float = None):
 
         """Start receiving telemetry info from the drone, and publishing watchdog messages
@@ -1951,9 +1985,15 @@ be a Unix timestamp (ie. the number of seconds since the epoch).</p>
 
         """
 
-        self._wait_for_udp_communication(timeout, self._ip)
-
         self._update_drone_info()
+
+        if version.parse(self.software_version_short) &gt;= version.parse("3.0"):
+
+            # Blunux 3.0 requires a TCP message before enabling UDP communication
+
+            self._create_temporary_tcp_client()
+
+        self._wait_for_udp_communication(timeout, self._ip)
 
         self._start_state_watcher_thread()
 
@@ -2226,9 +2266,15 @@ unexpectedly when connecting all thruster set points are set to zero when connec
 
         """
 
-        self._wait_for_udp_communication(timeout, self._ip)
-
         self._update_drone_info()
+
+        if version.parse(self.software_version_short) &gt;= version.parse("3.0"):
+
+            # Blunux 3.0 requires a TCP message before enabling UDP communication
+
+            self._create_temporary_tcp_client()
+
+        self._wait_for_udp_communication(timeout, self._ip)
 
         self._start_state_watcher_thread()
 
