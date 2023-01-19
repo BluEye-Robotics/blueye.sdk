@@ -7,7 +7,11 @@ from json import JSONDecodeError
 
 import requests
 from blueye.protocol import TcpClient, UdpClient
-from blueye.protocol.exceptions import MismatchedReply, NoConnectionToDrone, ResponseTimeout
+from blueye.protocol.exceptions import (
+    MismatchedReply,
+    NoConnectionToDrone,
+    ResponseTimeout,
+)
 from packaging import version
 
 from .camera import Camera
