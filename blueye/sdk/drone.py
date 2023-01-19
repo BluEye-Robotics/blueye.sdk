@@ -253,8 +253,14 @@ class Drone:
         - *timeout* (float): Seconds to wait for connection
         """
 
-        self._wait_for_udp_communication(timeout, self._ip)
         self._update_drone_info()
+        if version.parse(self.software_version_short) > version.parse("3.0"):
+            # Blunux 3.0 requires a TCP message before enabling UDP communication
+            temp_tcp_client = TcpClient()
+            temp_tcp_client.connect()
+            temp_tcp_client.stop()
+            temp_tcp_client._sock.close()
+        self._wait_for_udp_communication(timeout, self._ip)
         self._start_state_watcher_thread()
         if self._slave_mode_enabled:
             # No need to touch the TCP stuff if we're in slave mode so we return early
