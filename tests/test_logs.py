@@ -36,8 +36,8 @@ def log_list_with_two_logs(requests_mock, mocker):
         (0, "0.0 B"),
         (512, "512.0 B"),
         (1024, "1.0 KiB"),
-        (1024 ** 2, "1.0 MiB"),
-        (1024 ** 3, "1.0 GiB"),
+        (1024**2, "1.0 MiB"),
+        (1024**3, "1.0 GiB"),
     ],
 )
 def test_human_readable_filesizes(binsize, expected_output):

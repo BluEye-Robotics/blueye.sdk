@@ -154,7 +154,6 @@ def test_still_picture_works_with_new_drone_version(mocked_drone, version):
 def test_update_drone_info_raises_ConnectionError_when_not_connected(
     requests_mock, mocked_drone, exception
 ):
-
     requests_mock.get("http://192.168.1.101/diagnostics/drone_info", exc=exception)
     with pytest.raises(ConnectionError):
         mocked_drone._update_drone_info()
