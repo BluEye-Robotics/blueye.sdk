@@ -112,5 +112,5 @@ addopts = "--cov=blueye --cov-report=xml:coverage.xml --cov-report=html --cov-ap
 
 
 [build-system]
-requires = ["poetry>=1.0.0"]
+requires = ["poetry>=1.3.0"]
 build-backend = "poetry.masonry.api"
