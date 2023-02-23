@@ -340,14 +340,16 @@ class Drone:
         self._ctrl_client.set_lights(brightness / 255)
 
     @property
-    def depth(self) -> int:
-        """Get the current depth in millimeters
+    def depth(self) -> float:
+        """Get the current depth in meters
 
         *Returns*:
 
-        * depth (int): The depth in millimeters of water column.
+        * depth (float): The depth in meters of water column.
         """
-        return self._state_watcher.general_state["depth"]
+        depthTel = self._telemetry_watcher.state["blueye.protocol.DepthTel"]
+        depthTel_msg = blueye.protocol.DepthTel.deserialize(depthTel)
+        return depthTel_msg.depth.value
 
     @property
     def pose(self) -> dict:

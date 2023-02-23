@@ -106,9 +106,10 @@ def test_if_blunux_newer_than_3_create_tcp_first(mocked_drone: Drone):
 
 
 def test_depth_reading(mocked_drone):
-    depth = 10000
-    mocked_drone._state_watcher._general_state = {"depth": depth}
-    mocked_drone._state_watcher._general_state_received.set()
+    depth = 10
+    depthTel = bp.DepthTel(depth={"value": depth})
+    depthTel_serialized = depthTel.__class__.serialize(depthTel)
+    mocked_drone._telemetry_watcher.state["blueye.protocol.DepthTel"] = depthTel_serialized
     assert mocked_drone.depth == depth
 
 
