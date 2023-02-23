@@ -5,6 +5,7 @@ import time
 import warnings
 from json import JSONDecodeError
 
+import blueye.protocol
 import requests
 from blueye.protocol import TcpClient, UdpClient
 from blueye.protocol.exceptions import (
@@ -15,7 +16,7 @@ from blueye.protocol.exceptions import (
 from packaging import version
 
 from .camera import Camera
-from .connection import WatchdogPublisher
+from .connection import TelemetryClient, WatchdogPublisher
 from .constants import WaterDensities
 from .logs import Logs
 from .motion import Motion
@@ -151,6 +152,7 @@ class Drone:
         else:
             self._tcp_client = _NoConnectionTcpClient()
         self._state_watcher = _DroneStateWatcher(ip=self._ip, udp_timeout=udpTimeout)
+        self._telemetry_watcher = TelemetryClient(self)
         self.camera = Camera(self)
         self.motion = Motion(self)
         self.logs = Logs(self)
@@ -248,6 +250,7 @@ class Drone:
     def _start_state_watcher_thread(self):
         try:
             self._state_watcher.start()
+            self._telemetry_watcher.start()
         except RuntimeError:
             # Ignore multiple starts
             pass
