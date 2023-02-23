@@ -358,10 +358,12 @@ class Drone:
 
         * pose (dict): Dictionary with roll, pitch, and yaw in degrees, from 0 to 359.
         """
+        attitude_msg = self._telemetry_watcher.state["blueye.protocol.AttitudeTel"]
+        attitude = blueye.protocol.AttitudeTel.deserialize(attitude_msg).attitude
         pose = {
-            "roll": (self._state_watcher.general_state["roll"] + 360) % 360,
-            "pitch": (self._state_watcher.general_state["pitch"] + 360) % 360,
-            "yaw": (self._state_watcher.general_state["yaw"] + 360) % 360,
+            "roll": (attitude.roll + 360) % 360,
+            "pitch": (attitude.pitch + 360) % 360,
+            "yaw": (attitude.yaw + 360) % 360,
         }
         return pose
 
