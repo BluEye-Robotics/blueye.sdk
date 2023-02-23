@@ -141,3 +141,11 @@ class CtrlClient(threading.Thread):
     def set_water_density(self, value: float):
         msg = blueye.protocol.WaterDensityCtrl(density={"value": value})
         self.messages_to_send.put(msg)
+
+    def set_tilt_velocity(self, value: float):
+        msg = blueye.protocol.TiltVelocityCtrl(velocity={"value": value})
+        self.messages_to_send.put(msg)
+
+    def set_tilt_stabilization(self, enabled: bool):
+        msg = blueye.protocol.TiltStabilizationCtrl(state={"enabled": enabled})
+        self.messages_to_send.put(msg)
