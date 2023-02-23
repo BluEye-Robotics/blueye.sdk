@@ -1,6 +1,7 @@
 from time import time
 from unittest.mock import Mock, PropertyMock
 
+import blueye.protocol as bp
 import pytest
 import requests
 from freezegun import freeze_time
@@ -20,12 +21,13 @@ class TestLights:
 class TestPose:
     @pytest.mark.parametrize("old_angle, new_angle", [(0, 0), (180, 180), (-180, 180), (-1, 359)])
     def test_angle_conversion(self, mocked_drone, old_angle, new_angle):
-        mocked_drone._state_watcher._general_state = {
-            "roll": old_angle,
-            "pitch": old_angle,
-            "yaw": old_angle,
-        }
-        mocked_drone._state_watcher._general_state_received.set()
+        attitude_tel = bp.AttitudeTel(
+            attitude={"roll": old_angle, "pitch": old_angle, "yaw": old_angle}
+        )
+        attitude_tel_serialized = attitude_tel.__class__.serialize(attitude_tel)
+        mocked_drone._telemetry_watcher.state[
+            "blueye.protocol.AttitudeTel"
+        ] = attitude_tel_serialized
         pose = mocked_drone.pose
         assert pose["roll"] == new_angle
         assert pose["pitch"] == new_angle
