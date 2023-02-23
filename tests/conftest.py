@@ -1,7 +1,8 @@
 from unittest.mock import Mock
 
-import blueye.sdk
 import pytest
+
+import blueye.sdk
 from blueye.sdk import Drone
 
 
@@ -72,7 +73,14 @@ def mocked_UdpClient(mocker):
 
 
 @pytest.fixture
-def mocked_drone(request, mocker, mocked_TcpClient, mocked_UdpClient, mocked_requests):
+def mocked_ctrl_client(mocker):
+    return mocker.patch("blueye.sdk.drone.CtrlClient", autospec=True)
+
+
+@pytest.fixture
+def mocked_drone(
+    request, mocker, mocked_TcpClient, mocked_UdpClient, mocked_requests, mocked_ctrl_client
+):
     drone = blueye.sdk.Drone(autoConnect=False)
     drone._wait_for_udp_communication = Mock()
     # Mocking out the run function to avoid blowing up the stack when the thread continuously calls

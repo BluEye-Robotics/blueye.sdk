@@ -104,8 +104,7 @@ class Config:
     def water_density(self):
         """Get or set the current water density for increased pressure sensor accuracy
 
-        Setting the water density is only supported on drones with software version 1.5 or higher.
-        Older software versions will assume a water density of 1025 grams per liter.
+        Older software versions will assume a water density of 1.025 kilograms per liter.
 
         The WaterDensities class contains typical densities for salty-, brackish-, and fresh water
         (these are the same values that the Blueye app uses).
@@ -113,10 +112,9 @@ class Config:
         return self._water_density
 
     @water_density.setter
-    def water_density(self, density: int):
-        self._parent_drone._verify_required_blunux_version("1.5")
+    def water_density(self, density: float):
         self._water_density = density
-        self._parent_drone._tcp_client.set_water_density(density)
+        self._parent_drone._ctrl_client.set_water_density(density)
 
     def set_drone_time(self, time: int):
         """Set the system for the drone
