@@ -199,7 +199,7 @@ print(f"Current light intensity: {myDrone.lights}")
 myDrone.lights = 0
 
 # Properties can also be used for reading telemetry data from the drone
-print(f"Current depth in millimeters: {myDrone.depth}")
+print(f"Current depth in meters: {myDrone.depth}")
 ```
 For an overview of the properties that are available for controlling and reading data from the drone, go to the
 [`Reference section`](../../reference/blueye/sdk/drone) of the documentation.
