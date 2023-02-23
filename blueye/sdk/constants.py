@@ -5,9 +5,9 @@ This file contains constants used by the SDK.
 
 class WaterDensities:
     """
-    Various typical densities for salt water (in grams/liter)
+    Various typical densities for salt water (in kilograms/liter)
     """
 
-    fresh = 997
-    brackish = 1011
-    salty = 1025
+    fresh = 0.997
+    brackish = 1.011
+    salty = 1.025

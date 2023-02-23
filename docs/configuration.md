@@ -37,16 +37,16 @@ from blueye.sdk import Drone, WaterDensities
 myDrone = Drone()
 
 # Salt water
-myDrone.config.water_density = WaterDensities.salty  # 1025 g/L
+myDrone.config.water_density = WaterDensities.salty  # 1.025 kg/L
 
 # Brackish water
-myDrone.config.water_density = WaterDensities.brackish  # 1011 g/L
+myDrone.config.water_density = WaterDensities.brackish  # 1.011 kg/L
 
 # Fresh water
-myDrone.config.water_density = WaterDensities.fresh  # 997 g/L
+myDrone.config.water_density = WaterDensities.fresh  # 0.997 kg/L
 
 # Can also be set to arbitrary values
-myDrone.config.water_density = 1234
+myDrone.config.water_density = 1.234
 ```
 
 ### Configure camera parameters

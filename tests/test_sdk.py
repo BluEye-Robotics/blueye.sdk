@@ -282,24 +282,15 @@ class TestTilt:
 
 class TestConfig:
     def test_water_density_property_returns_correct_value(self, mocked_drone: Drone):
-        mocked_drone.software_version_short = "1.5.33"
-        mocked_drone.config._water_density = 1000
-        assert mocked_drone.config.water_density == 1000
+        mocked_drone.config._water_density = 1.0
+        assert mocked_drone.config.water_density == 1.0
 
-    @pytest.mark.parametrize("version", ["0.1.2", "1.2.3", "1.4.7"])
-    def test_setting_density_fails_on_old_versions(self, mocked_drone: Drone, version):
-        mocked_drone.software_version_short = version
-        with pytest.raises(RuntimeError):
-            mocked_drone.config.water_density = 1000
-
-    @pytest.mark.parametrize("version", ["1.5.0", "1.6.2", "2.1.3"])
-    def test_setting_density_works_on_new_versions(self, mocked_drone: Drone, version):
-        mocked_drone.software_version_short = version
+    def test_setting_density(self, mocked_drone: Drone):
         old_value = mocked_drone.config.water_density
-        new_value = old_value + 10
+        new_value = old_value + 0.010
         mocked_drone.config.water_density = new_value
         assert mocked_drone.config.water_density == new_value
-        mocked_drone._tcp_client.set_water_density.assert_called_once()
+        mocked_drone._ctrl_client.set_water_density.assert_called_once()
 
     def test_set_drone_time_is_called_on_connetion(self, mocked_drone: Drone):
         with freeze_time("2019-01-01"):
