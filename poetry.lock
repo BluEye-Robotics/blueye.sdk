@@ -2303,4 +2303,4 @@ examples = ["asciimatics", "inputs", "matplotlib", "pandas", "webdavclient3"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "ad0b3fb2c626320862c0aa6bbcd8a7daad91dcabd3ea3341ad6f442433d886cd"
+content-hash = "3d2953cb68c6b5269a07a99b98f710746a5f670d7d313e07232517fc9f115cf0"

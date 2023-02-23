@@ -194,91 +194,68 @@ def test_active_video_streams_return_correct_number(mocked_drone: Drone):
 
 
 class TestTilt:
-    @pytest.mark.parametrize("version", ["0.1.2", "1.2.3"])
-    def test_tilt_fails_on_old_version(self, mocked_drone, version):
-        mocked_drone.software_version_short = version
-        mocked_drone.features = ["tilt"]
-        with pytest.raises(RuntimeError):
-            mocked_drone.camera.tilt.set_speed(0)
-        with pytest.raises(RuntimeError):
-            _ = mocked_drone.camera.tilt.angle
-
     def test_tilt_fails_on_drone_without_tilt(self, mocked_drone: Drone):
         mocked_drone.features = []
         with pytest.raises(RuntimeError):
-            mocked_drone.camera.tilt.set_speed(0)
+            mocked_drone.camera.tilt.set_velocity(0)
         with pytest.raises(RuntimeError):
             _ = mocked_drone.camera.tilt.angle
         with pytest.raises(RuntimeError):
             _ = mocked_drone.camera.tilt.stabilization_enabled
         with pytest.raises(RuntimeError):
-            mocked_drone.camera.tilt.toggle_stabilization()
+            mocked_drone.camera.tilt.stabilization_enabled = True
 
     @pytest.mark.parametrize(
-        "thruster_setpoints, tilt_speed",
+        "tilt_velocity",
         [
-            ((0, 0, 0, 0), 0),
-            ((1, 1, 1, 1), 1),
-            ((-1, -1, -1, -1), -1),
-            ((0.1, 0.2, 0.3, 0.4), 0.5),
+            0,
+            1,
+            -1,
+            0.5,
         ],
     )
-    def test_tilt_calls_motion_input_with_correct_arguments(
-        self, mocked_drone, thruster_setpoints, tilt_speed
-    ):
+    def test_setting_tilt_velocity_works(self, mocked_drone, tilt_velocity):
         mocked_drone.features = ["tilt"]
-        mocked_drone.software_version_short = "1.5.33"
-        mocked_drone.motion._current_thruster_setpoints = {
-            "surge": thruster_setpoints[0],
-            "sway": thruster_setpoints[1],
-            "heave": thruster_setpoints[2],
-            "yaw": thruster_setpoints[3],
-        }
-        mocked_drone.camera.tilt.set_speed(tilt_speed)
-        mocked_drone._tcp_client.motion_input_tilt.assert_called_with(
-            *thruster_setpoints, 0, 0, tilt_speed
-        )
+        mocked_drone.camera.tilt.set_velocity(tilt_velocity)
+        mocked_drone._ctrl_client.set_tilt_velocity.assert_called_with(tilt_velocity)
 
     @pytest.mark.parametrize(
-        "debug_flags, expected_angle",
+        "expected_angle",
         [
-            (0x0000440000000000, 34.0),
-            (0x12344456789ABCDE, 34.0),
-            (0x0000000000000000, 0.0),
-            (0x12340056789ABCDE, 0.0),
-            (0x0000BE0000000000, -33.0),
-            (0x1234BE56789ABCDE, -33.0),
+            34.0,
+            0.0,
+            -33.0,
         ],
     )
-    def test_tilt_returns_expected_angle(self, mocked_drone, debug_flags, expected_angle):
+    def test_tilt_returns_expected_angle(self, mocked_drone, expected_angle):
         mocked_drone.features = ["tilt"]
-        mocked_drone.software_version_short = "1.5.33"
-        mocked_drone._state_watcher._general_state = {"debug_flags": debug_flags}
-        mocked_drone._state_watcher._general_state_received.set()
+        TiltAngleTel = bp.TiltAngleTel(angle={"value": expected_angle})
+        TiltAngleTel_serialized = bp.TiltAngleTel.serialize(TiltAngleTel)
+        mocked_drone._telemetry_watcher.state[
+            "blueye.protocol.TiltAngleTel"
+        ] = TiltAngleTel_serialized
         assert mocked_drone.camera.tilt.angle == expected_angle
 
     @pytest.mark.parametrize(
-        "debug_flags, expected_state",
+        "expected_state",
         [
-            (0x0000000000000100, True),
-            (0x12344456789AFFDE, True),
-            (0x0000000000000000, False),
-            (0x12344456789A00DE, False),
-            (0x12344456789AF0DE, False),
+            True,
+            False,
         ],
     )
-    def test_tilt_stabilization_state(self, mocked_drone: Drone, debug_flags, expected_state):
+    def test_tilt_stabilization_state(self, mocked_drone: Drone, expected_state):
         mocked_drone.features = ["tilt"]
-        mocked_drone.software_version_short = "1.6.42"
-        mocked_drone._state_watcher._general_state = {"debug_flags": debug_flags}
-        mocked_drone._state_watcher._general_state_received.set()
+        TiltStabilizationTel = bp.TiltStabilizationTel(state={"enabled": expected_state})
+        TiltStabilizationTel_serialized = bp.TiltStabilizationTel.serialize(TiltStabilizationTel)
+        mocked_drone._telemetry_watcher.state[
+            "blueye.protocol.TiltStabilizationTel"
+        ] = TiltStabilizationTel_serialized
         assert mocked_drone.camera.tilt.stabilization_enabled == expected_state
 
-    def test_toggle_tilt_stabilization(self, mocked_drone: Drone):
+    def test_set_tilt_stabilization(self, mocked_drone: Drone):
         mocked_drone.features = ["tilt"]
-        mocked_drone.software_version_short = "1.6.42"
-        mocked_drone.camera.tilt.toggle_stabilization()
-        assert mocked_drone._tcp_client.toggle_tilt_stabilization.call_count == 1
+        mocked_drone.camera.tilt.stabilization_enabled = True
+        assert mocked_drone._ctrl_client.set_tilt_stabilization.call_count == 1
 
 
 class TestConfig:
