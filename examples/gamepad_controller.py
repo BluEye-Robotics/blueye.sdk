@@ -31,7 +31,7 @@ class JoystickHandler:
             if self.drone.lights > 0:
                 self.drone.lights = 0
             else:
-                self.drone.lights = 10
+                self.drone.lights = 0.1
 
     def handle_b_button(self, value):
         """Toggles autoheading"""
