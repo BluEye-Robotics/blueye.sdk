@@ -181,27 +181,15 @@ def test_connect_ignores_repeated_starts_on_watchdog_thread(mocked_drone):
     assert mocked_drone.connection_established is True
 
 
-def test_active_video_streams_fails_on_old_versions(mocked_drone):
-    with pytest.raises(RuntimeError):
-        _ = mocked_drone.active_video_streams
+def test_active_video_streams_return_correct_number(mocked_drone: Drone):
+    NStreamersTel = bp.NStreamersTel(n_streamers={"main": 1, "guestport": 2})
+    NStreamersTel_serialized = NStreamersTel.__class__.serialize(NStreamersTel)
+    mocked_drone._telemetry_watcher.state[
+        "blueye.protocol.NStreamersTel"
+    ] = NStreamersTel_serialized
 
-
-@pytest.mark.parametrize("mocked_drone", ["1.5.33"], indirect=True)
-@pytest.mark.parametrize(
-    "debug_flag, expected_connections",
-    [
-        (0x0000000000000000, 0),
-        (0x0000000100000000, 1),
-        (0x000000AB00000000, 171),
-        (0x12345645789ABCDE, 69),
-    ],
-)
-def test_active_video_streams_return_correct_number(
-    mocked_drone: Drone, debug_flag, expected_connections
-):
-    mocked_drone._state_watcher._general_state = {"debug_flags": debug_flag}
-    mocked_drone._state_watcher._general_state_received.set()
-    assert mocked_drone.active_video_streams == expected_connections
+    assert mocked_drone.active_video_streams["main"] == 1
+    assert mocked_drone.active_video_streams["guestport"] == 2
 
 
 class TestTilt:
