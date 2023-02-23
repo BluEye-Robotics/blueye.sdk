@@ -11,8 +11,9 @@ from blueye.sdk import Drone
 
 class TestLights:
     def test_lights_returns_value(self, mocked_drone):
-        mocked_drone._state_watcher._general_state = {"lights_upper": 0}
-        mocked_drone._state_watcher._general_state_received.set()
+        lights_tel = bp.LightsTel(lights={"value": 0})
+        lights_tel_serialized = lights_tel.__class__.serialize(lights_tel)
+        mocked_drone._telemetry_watcher.state["blueye.protocol.LightsTel"] = lights_tel_serialized
         assert mocked_drone.lights == 0
 
 
