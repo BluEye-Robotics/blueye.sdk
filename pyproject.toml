@@ -28,6 +28,8 @@ packaging = "^22.0"
 "blueye.protocol" = "^2.1.0"
 numpy = "^1.23"
 python-dateutil = "^2.8.2"
+pyzmq = "^25.0.0"
+proto-plus = "^1.22.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
