@@ -134,3 +134,6 @@ class CtrlClient(threading.Thread):
     def stop(self):
         self._exit_flag.set()
 
+    def set_lights(self, value: float):
+        msg = blueye.protocol.LightsCtrl(lights={"value": value})
+        self.messages_to_send.put(msg)

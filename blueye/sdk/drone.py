@@ -330,15 +330,15 @@ class Drone:
 
         * brightness (int): The brightness of the bottom canister LED's in the range <0, 255>
         """
-        state = self._state_watcher.general_state
-        return state["lights_upper"]
+        lights_msg = self._telemetry_watcher.state["blueye.protocol.LightsTel"]
+        value = blueye.protocol.LightsTel.deserialize(lights_msg).lights.value
+        return int(value * 255)
 
     @lights.setter
     def lights(self, brightness: int):
-        try:
-            self._tcp_client.set_lights(brightness, 0)
-        except ValueError as e:
-            raise ValueError("Error occured while trying to set lights to: " f"{brightness}") from e
+        if not 0 <= brightness <= 255:
+            raise ValueError("Error occured while trying to set lights to: " f"{brightness}")
+        self._ctrl_client.set_lights(brightness / 255)
 
     @property
     def depth(self) -> int:
