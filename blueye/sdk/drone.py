@@ -318,26 +318,26 @@ class Drone:
             self._clean_up_tcp_client()
 
     @property
-    def lights(self) -> int:
-        """Get or set the brightness of the bottom canister lights
+    def lights(self) -> float:
+        """Get or set the intensity of the drone lights
 
         *Arguments*:
 
-        * brightness (int): Set the brightness of the bottom canister LED's in the range <0, 255>
+        * brightness (float): Set the intensity of the drone light (0..1)
 
         *Returns*:
 
-        * brightness (int): The brightness of the bottom canister LED's in the range <0, 255>
+        * brightness (float): The intensity of the drone light (0..1)
         """
         lights_msg = self._telemetry_watcher.state["blueye.protocol.LightsTel"]
         value = blueye.protocol.LightsTel.deserialize(lights_msg).lights.value
-        return int(value * 255)
+        return value
 
     @lights.setter
-    def lights(self, brightness: int):
-        if not 0 <= brightness <= 255:
+    def lights(self, brightness: float):
+        if not 0 <= brightness <= 1:
             raise ValueError("Error occured while trying to set lights to: " f"{brightness}")
-        self._ctrl_client.set_lights(brightness / 255)
+        self._ctrl_client.set_lights(brightness)
 
     @property
     def depth(self) -> float:

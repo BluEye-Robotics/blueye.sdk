@@ -189,8 +189,8 @@ from blueye.sdk import Drone
 # When the Drone object is instantiatied a connection to the drone is established
 myDrone = Drone()
 
-# Setting the lights property to 10
-myDrone.lights = 10
+# Setting the lights property to 0.1 (10 %)
+myDrone.lights = 0.1
 
 time.sleep(2)
 
