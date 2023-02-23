@@ -16,7 +16,7 @@ from blueye.protocol.exceptions import (
 from packaging import version
 
 from .camera import Camera
-from .connection import TelemetryClient, WatchdogPublisher
+from .connection import CtrlClient, TelemetryClient, WatchdogPublisher
 from .constants import WaterDensities
 from .logs import Logs
 from .motion import Motion
@@ -153,6 +153,7 @@ class Drone:
             self._tcp_client = _NoConnectionTcpClient()
         self._state_watcher = _DroneStateWatcher(ip=self._ip, udp_timeout=udpTimeout)
         self._telemetry_watcher = TelemetryClient(self)
+        self._ctrl_client = CtrlClient(self)
         self.camera = Camera(self)
         self.motion = Motion(self)
         self.logs = Logs(self)
@@ -234,6 +235,7 @@ class Drone:
         _connect_to_tcp_socket() must be called first"""
         try:
             self._tcp_client.start()
+            self._ctrl_client.start()
             self._watchdog_publisher.start()
         except RuntimeError:
             # Ignore multiple starts
