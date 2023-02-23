@@ -73,3 +73,29 @@ class WatchdogPublisher(threading.Thread):
         self._exit_flag.set()
 
 
+class TelemetryClient(threading.Thread):
+    def __init__(self, parent_drone: "blueye.sdk.Drone", context: zmq.Context = None):
+        super().__init__()
+        self._parent_drone = parent_drone
+        self.context = context or zmq.Context().instance()
+        self.host = self._parent_drone._ip
+        self.port = 5555
+        self.socket = self.context.socket(zmq.SUB)
+        self.socket.connect(f"tcp://{self.host}:{self.port}")
+        self.socket.setsockopt_string(zmq.SUBSCRIBE, "")
+        self._exit_flag = threading.Event()
+        self.state = {}
+
+    def run(self):
+        poller = zmq.Poller()
+        poller.register(self.socket, zmq.POLLIN)
+
+        while not self._exit_flag.is_set():
+            events_to_be_processed = poller.poll(10)
+            if len(events_to_be_processed) > 0:
+                msg = self.socket.recv_multipart()
+                self.state[msg[0].decode("utf-8")] = msg[1]
+
+    def stop(self):
+        self._exit_flag.set()
+
