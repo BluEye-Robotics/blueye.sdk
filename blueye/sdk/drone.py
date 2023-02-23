@@ -4,6 +4,7 @@ import threading
 import time
 import warnings
 from json import JSONDecodeError
+from typing import Dict
 
 import blueye.protocol
 import requests
@@ -378,14 +379,23 @@ class Drone:
         return self._state_watcher.general_state["battery_state_of_charge_rel"]
 
     @property
-    def error_flags(self) -> int:
+    def error_flags(self) -> Dict[str, bool]:
         """Get the error flags
 
         *Returns*:
 
-        * error_flags (int): The error flags as int
+        * error_flags (dict): The error flags as bools in a dictionary
         """
-        return self._state_watcher.general_state["error_flags"]
+        error_flags_tel = self._telemetry_watcher.state["blueye.protocol.ErrorFlagsTel"]
+        error_flags_msg: blueye.protocol.ErrorFlags = blueye.protocol.ErrorFlagsTel.deserialize(
+            error_flags_tel
+        ).error_flags
+
+        error_flags = {}
+        possible_flags = [attr for attr in dir(error_flags_msg) if not attr.startswith("__")]
+        for flag in possible_flags:
+            error_flags[flag] = getattr(error_flags_msg, flag)
+        return error_flags
 
     @property
     def active_video_streams(self) -> int:
