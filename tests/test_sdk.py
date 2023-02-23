@@ -113,10 +113,10 @@ def test_depth_reading(mocked_drone):
 
 
 def test_error_flags(mocked_drone):
-    error_flags = 64
-    mocked_drone._state_watcher._general_state = {"error_flags": error_flags}
-    mocked_drone._state_watcher._general_state_received.set()
-    assert mocked_drone.error_flags == error_flags
+    error_flags_tel = bp.ErrorFlagsTel(error_flags={"depth_read": True})
+    error_flags_serialized = error_flags_tel.__class__.serialize(error_flags_tel)
+    mocked_drone._telemetry_watcher.state["blueye.protocol.ErrorFlagsTel"] = error_flags_serialized
+    assert mocked_drone.error_flags["depth_read"] == True
 
 
 def test_timeout_general_state(mocked_drone: Drone):
