@@ -133,10 +133,11 @@ def test_timeout_calibration_state(mocked_drone: Drone):
 
 
 def test_battery_state_of_charge_reading(mocked_drone):
-    SoC = 77
-    mocked_drone._state_watcher._general_state = {"battery_state_of_charge_rel": SoC}
-    mocked_drone._state_watcher._general_state_received.set()
-    assert mocked_drone.battery_state_of_charge == SoC
+    SoC = 0.77
+    batteryTel = bp.BatteryTel(battery={"level": SoC})
+    batteryTel_msg = batteryTel.__class__.serialize(batteryTel)
+    mocked_drone._telemetry_watcher.state["blueye.protocol.BatteryTel"] = batteryTel_msg
+    assert mocked_drone.battery_state_of_charge == pytest.approx(SoC)
 
 
 @pytest.mark.parametrize("version", ["1.4.7", "1.4.8", "1.5.0", "2.0.0"])
