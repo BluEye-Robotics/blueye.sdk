@@ -369,14 +369,16 @@ class Drone:
         return pose
 
     @property
-    def battery_state_of_charge(self) -> int:
+    def battery_state_of_charge(self) -> float:
         """Get the battery state of charge
 
         *Returns*:
 
-        * state_of_charge (int): Current state of charge of the drone battery in percent, from 0 to 100
+        * State of charge (float): Current state of charge of the drone battery (0..1)
         """
-        return self._state_watcher.general_state["battery_state_of_charge_rel"]
+        batteryTel = self._telemetry_watcher.state["blueye.protocol.BatteryTel"]
+        batteryTel_msg = blueye.protocol.BatteryTel.deserialize(batteryTel)
+        return batteryTel_msg.battery.level
 
     @property
     def error_flags(self) -> Dict[str, bool]:
