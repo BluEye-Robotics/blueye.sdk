@@ -519,28 +519,29 @@ class Camera:
 
     @property
     def is_recording(self) -> bool:
-        """Start or stop a camera recording
+        """Get or set the camera recording state
+
+        If there's a guestport camera connected, this will start or stop a recording on the
+        guestport camera as well.
 
         *Arguments*:
 
-        * is_recording (bool): Set to True to start a recording, set to False to stop the current recording
+        * start_recording (bool): Set to True to start a recording, set to False to stop the current
+                                  recording.
 
         *Returns*:
 
-        * is_recording (bool): True if the camera is currently recording, False if not
+        * Recording state (bool): True if the camera is currently recording, False if not
         """
-        state = self._state_watcher.general_state
-        if state["camera_record_time"] != -1:
-            return True
-        else:
-            return False
+        record_state_tel = self._parent_drone._telemetry_watcher.state[
+            "blueye.protocol.RecordStateTel"
+        ]
+        record_state = blueye.protocol.RecordStateTel.deserialize(record_state_tel).record_state
+        return record_state.main_is_recording
 
     @is_recording.setter
     def is_recording(self, start_recording: bool):
-        if start_recording:
-            self._parent_drone._tcp_client.start_recording()
-        else:
-            self._parent_drone._tcp_client.stop_recording()
+        self._parent_drone._ctrl_client.set_recording_state(start_recording)
 
     @property
     def bitrate(self) -> int:
