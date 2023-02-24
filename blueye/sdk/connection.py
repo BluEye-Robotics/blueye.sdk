@@ -149,3 +149,18 @@ class CtrlClient(threading.Thread):
     def set_tilt_stabilization(self, enabled: bool):
         msg = blueye.protocol.TiltStabilizationCtrl(state={"enabled": enabled})
         self.messages_to_send.put(msg)
+
+    def set_motion_input(
+        self, surge: float, sway: float, heave: float, yaw: float, slow: float, boost: float
+    ):
+        msg = blueye.protocol.MotionInputCtrl(
+            motion_input={
+                "surge": surge,
+                "sway": sway,
+                "heave": heave,
+                "yaw": yaw,
+                "slow": slow,
+                "boost": boost,
+            }
+        )
+        self.messages_to_send.put(msg)
