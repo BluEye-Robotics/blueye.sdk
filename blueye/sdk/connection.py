@@ -164,3 +164,7 @@ class CtrlClient(threading.Thread):
             }
         )
         self.messages_to_send.put(msg)
+
+    def set_auto_depth_state(self, enabled: bool):
+        msg = blueye.protocol.AutoDepthCtrl(state={"enabled": enabled})
+        self.messages_to_send.put(msg)
