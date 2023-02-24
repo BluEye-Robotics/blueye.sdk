@@ -183,29 +183,22 @@ class Motion:
 
         *Arguments*:
 
-        * active (bool): Activate auto depth mode if active is true, de-activate if false
+        * Enable (bool): Activate auto depth mode if true, de-activate if false
 
         *Returns*:
 
-        * active (bool): Returns true if auto depth is active, false if it is not active
+        * Auto depth state (bool): True if auto depth is active, false if not
         """
-        AUTO_DEPTH_MODE = 3
-        AUTO_HEADING_AND_AUTO_DEPTH_MODE = 9
-        state = self._state_watcher.general_state
-        if (
-            state["control_mode"] is AUTO_DEPTH_MODE
-            or state["control_mode"] is AUTO_HEADING_AND_AUTO_DEPTH_MODE
-        ):
-            return True
-        else:
-            return False
+
+        control_mode_tel = self._parent_drone._telemetry_watcher.state[
+            "blueye.protocol.ControlModeTel"
+        ]
+        control_mode = blueye.protocol.ControlModeTel.deserialize(control_mode_tel).state
+        return control_mode.auto_depth
 
     @auto_depth_active.setter
-    def auto_depth_active(self, active: bool):
-        if active:
-            self._parent_drone._tcp_client.auto_depth_on()
-        else:
-            self._parent_drone._tcp_client.auto_depth_off()
+    def auto_depth_active(self, enable: bool):
+        self._parent_drone._ctrl_client.set_auto_depth_state(enable)
 
     @property
     def auto_heading_active(self) -> bool:
