@@ -211,26 +211,18 @@ class Motion:
 
         *Arguments*:
 
-        * active (bool): Activate auto heading mode if active is true, de-activate if false
+        * Enable (bool): Activate auto heading mode if true, de-activate if false
 
         *Returns*:
 
-        * active (bool): Returns true if auto heading mode is active, false if it is not active
+        * Auto heading state (bool): True if auto heading mode is active, false if not
         """
-        AUTO_HEADING_MODE = 7
-        AUTO_HEADING_AND_AUTO_DEPTH_MODE = 9
-        state = self._state_watcher.general_state
-        if (
-            state["control_mode"] is AUTO_HEADING_MODE
-            or state["control_mode"] is AUTO_HEADING_AND_AUTO_DEPTH_MODE
-        ):
-            return True
-        else:
-            return False
+        control_mode_tel = self._parent_drone._telemetry_watcher.state[
+            "blueye.protocol.ControlModeTel"
+        ]
+        control_mode = blueye.protocol.ControlModeTel.deserialize(control_mode_tel).state
+        return control_mode.auto_heading
 
     @auto_heading_active.setter
-    def auto_heading_active(self, active: bool):
-        if active:
-            self._parent_drone._tcp_client.auto_heading_on()
-        else:
-            self._parent_drone._tcp_client.auto_heading_off()
+    def auto_heading_active(self, enable: bool):
+        self._parent_drone._ctrl_client.set_auto_heading_state(enable)
