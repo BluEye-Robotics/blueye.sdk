@@ -13,7 +13,6 @@ class Motion:
 
     def __init__(self, parent_drone):
         self._parent_drone = parent_drone
-        self._state_watcher = parent_drone._state_watcher
         self.thruster_lock = threading.Lock()
         self._current_thruster_setpoints = {"surge": 0, "sway": 0, "heave": 0, "yaw": 0}
         self._current_boost_setpoints = {"slow": 0, "boost": 0}
