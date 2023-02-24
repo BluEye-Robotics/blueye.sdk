@@ -1,5 +1,7 @@
 import threading
 
+import blueye.protocol
+
 
 class Motion:
     """Control the motion of the drone, and set automatic control modes
@@ -20,8 +22,8 @@ class Motion:
     def current_thruster_setpoints(self):
         """Returns the current setpoints for the thrusters
 
-        We maintain this state in the SDK since the drone does not report back it's current
-        setpoint.
+        We maintain this state in the SDK since the drone expects to receive all of the setpoints at
+        once.
 
         For setting the setpoints you should use the dedicated properties/functions for that, trying
         to set them directly with this property will raise an AttributeError.
@@ -40,7 +42,7 @@ class Motion:
         """Small helper function for building argument list to motion_input command"""
         thruster_setpoints = self.current_thruster_setpoints.values()
         boost_setpoints = self._current_boost_setpoints.values()
-        self._parent_drone._tcp_client.motion_input(*thruster_setpoints, *boost_setpoints)
+        self._parent_drone._ctrl_client.set_motion_input(*thruster_setpoints, *boost_setpoints)
 
     @property
     def surge(self) -> float:
