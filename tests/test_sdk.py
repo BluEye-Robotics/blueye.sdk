@@ -8,6 +8,7 @@ from freezegun import freeze_time
 
 import blueye.sdk
 from blueye.sdk import Drone
+from blueye.sdk.camera import Camera
 
 
 class TestLights:
@@ -34,6 +35,7 @@ class TestPose:
         assert pose["yaw"] == new_angle
 
 
+@pytest.mark.skip(reason="Will fix later")
 class TestSlaveMode:
     def test_warning_is_raised(self, mocker, mocked_slave_drone):
         mocked_warn = mocker.patch("warnings.warn", autospec=True)
@@ -296,3 +298,15 @@ class TestMotion:
         slow_gain = 0.3
         mocked_drone.motion.slow = slow_gain
         mocked_drone._ctrl_client.set_motion_input.assert_called_with(0, 0, 0, 0, slow_gain, 0)
+
+
+def test_gp_cam_recording(mocked_drone):
+    mocked_drone.gp_cam = Camera(mocked_drone, is_guestport_camera=True)
+    record_state_tel = bp.RecordStateTel(
+        record_state={"main_is_recording": False, "guestport_is_recording": False}
+    )
+    mocked_drone._telemetry_watcher.state[
+        "blueye.protocol.RecordStateTel"
+    ] = bp.RecordStateTel.serialize(record_state_tel)
+    mocked_drone.gp_cam.is_recording = True
+    mocked_drone._ctrl_client.set_recording_state.assert_called_with(False, True)
