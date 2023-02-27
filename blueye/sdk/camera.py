@@ -511,11 +511,13 @@ class Overlay:
 
 
 class Camera:
-    def __init__(self, parent_drone: Drone):
+    def __init__(self, parent_drone: Drone, is_guestport_camera: bool = False):
         self._state_watcher = parent_drone._state_watcher
         self._parent_drone = parent_drone
-        self.tilt = Tilt(parent_drone)
-        self.overlay = Overlay(parent_drone)
+        self._is_guestport_camera = is_guestport_camera
+        if not self._is_guestport_camera:
+            self.tilt = Tilt(parent_drone)
+            self.overlay = Overlay(parent_drone)
 
     @property
     def is_recording(self) -> bool:
