@@ -173,6 +173,8 @@ class CtrlClient(threading.Thread):
         msg = blueye.protocol.AutoHeadingCtrl(state={"enabled": enabled})
         self.messages_to_send.put(msg)
 
-    def set_recording_state(self, enabled: bool):
-        msg = blueye.protocol.RecordCtrl(record_on={"main": enabled, "guestport": enabled})
+    def set_recording_state(self, main_enabled: bool, guestport_enabled: bool):
+        msg = blueye.protocol.RecordCtrl(
+            record_on={"main": main_enabled, "guestport": guestport_enabled}
+        )
         self.messages_to_send.put(msg)
