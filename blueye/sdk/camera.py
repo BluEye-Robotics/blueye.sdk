@@ -512,7 +512,6 @@ class Overlay:
 
 class Camera:
     def __init__(self, parent_drone: Drone, is_guestport_camera: bool = False):
-        self._state_watcher = parent_drone._state_watcher
         self._parent_drone = parent_drone
         self._is_guestport_camera = is_guestport_camera
         if not self._is_guestport_camera:
@@ -684,7 +683,11 @@ class Camera:
 
         * record_time (int): The length in seconds of the current recording, -1 if the camera is not currently recording
         """
-        return self._state_watcher.general_state["camera_record_time"]
+        record_state = self._get_record_state()
+        if self._is_guestport_camera:
+            return record_state.guestport_seconds
+        else:
+            return record_state.main_seconds
 
     def take_picture(self):
         """Takes a still picture and stores it locally on the drone
