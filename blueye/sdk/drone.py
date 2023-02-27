@@ -153,7 +153,7 @@ class Drone:
         self._state_watcher = _DroneStateWatcher(ip=self._ip, udp_timeout=udpTimeout)
         self._telemetry_watcher = TelemetryClient(self)
         self._ctrl_client = CtrlClient(self)
-        self.camera = Camera(self)
+        self.camera = Camera(self, is_guestport_camera=False)
         self.motion = Motion(self)
         self.logs = Logs(self)
         self.config = Config(self)
