@@ -8,7 +8,7 @@ from typing import Dict
 
 import blueye.protocol
 import requests
-from blueye.protocol import TcpClient, UdpClient
+from blueye.protocol import TcpClient
 from blueye.protocol.exceptions import (
     MismatchedReply,
     NoConnectionToDrone,
@@ -21,47 +21,6 @@ from .connection import CtrlClient, TelemetryClient, WatchdogPublisher
 from .constants import WaterDensities
 from .logs import Logs
 from .motion import Motion
-
-
-class _DroneStateWatcher(threading.Thread):
-    """Subscribes to UDP messages from the drone and stores the latest data"""
-
-    def __init__(self, ip: str = "192.168.1.101", udp_timeout: float = 3):
-        threading.Thread.__init__(self)
-        self._ip = ip
-        self._udp_timeout = udp_timeout
-        self._general_state = None
-        self._general_state_received = threading.Event()
-        self._calibration_state = None
-        self._calibration_state_received = threading.Event()
-        self._udp_client = UdpClient(drone_ip=self._ip)
-        self._exit_flag = threading.Event()
-        self.daemon = True
-
-    @property
-    def general_state(self) -> dict:
-        if not self._general_state_received.wait(timeout=self._udp_timeout):
-            raise TimeoutError("No state message received from drone")
-        return self._general_state
-
-    @property
-    def calibration_state(self) -> dict:
-        if not self._calibration_state_received.wait(timeout=self._udp_timeout):
-            raise TimeoutError("No state message received from drone")
-        return self._calibration_state
-
-    def run(self):
-        while not self._exit_flag.is_set():
-            data_packet = self._udp_client.get_data_dict()
-            if data_packet["command_type"] == 1:
-                self._general_state = data_packet
-                self._general_state_received.set()
-            elif data_packet["command_type"] == 2:
-                self._calibration_state = data_packet
-                self._calibration_state_received.set()
-
-    def stop(self):
-        self._exit_flag.set()
 
 
 class SlaveModeWarning(UserWarning):
@@ -150,7 +109,6 @@ class Drone:
             self._tcp_client = _SlaveTcpClient()
         else:
             self._tcp_client = _NoConnectionTcpClient()
-        self._state_watcher = _DroneStateWatcher(ip=self._ip, udp_timeout=udpTimeout)
         self._telemetry_watcher = TelemetryClient(self)
         self._ctrl_client = CtrlClient(self)
         self.camera = Camera(self, is_guestport_camera=False)
@@ -209,19 +167,6 @@ class Drone:
         self.serial_number = response["serial_number"]
         self.uuid = response["hardware_id"]
 
-    @staticmethod
-    def _wait_for_udp_communication(timeout: float, ip: str = "192.168.1.101"):
-        """Simple helper for waiting for drone to come online
-
-        Raises ConnectionError if no connection is established in the specified timeout.
-        """
-        temp_udp_client = UdpClient(drone_ip=ip)
-        temp_udp_client._sock.settimeout(timeout)
-        try:
-            temp_udp_client.get_data_dict()
-        except socket.timeout as e:
-            raise ConnectionError("Could not establish connection with drone") from e
-
     def _connect_to_tcp_socket(self):
         try:
             self._tcp_client.connect()
@@ -248,14 +193,6 @@ class Drone:
         self._watchdog_publisher.stop()
         self._ctrl_client.stop()
 
-    def _start_state_watcher_thread(self):
-        try:
-            self._state_watcher.start()
-            self._telemetry_watcher.start()
-        except RuntimeError:
-            # Ignore multiple starts
-            pass
-
     def _create_temporary_tcp_client(self):
         temp_tcp_client = TcpClient()
         temp_tcp_client.connect()
@@ -272,12 +209,7 @@ class Drone:
         """
 
         self._update_drone_info()
-        if version.parse(self.software_version_short) >= version.parse("3.0"):
-            # Blunux 3.0 requires a TCP message before enabling UDP communication
-            self._create_temporary_tcp_client()
-
-        self._wait_for_udp_communication(timeout, self._ip)
-        self._start_state_watcher_thread()
+        self._telemetry_watcher.start()
         if self._slave_mode_enabled:
             # No need to touch the TCP stuff if we're in slave mode so we return early
             return

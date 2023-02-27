@@ -98,15 +98,6 @@ def test_verify_sw_version_raises_connection_error_when_not_connected(mocked_dro
         mocked_drone._verify_required_blunux_version("1.4.7")
 
 
-def test_if_blunux_newer_than_3_create_tcp_first(mocked_drone: Drone):
-    mocked_drone.software_version_short = "3.0"
-    mocked_drone._create_temporary_tcp_client = Mock()
-    mocked_drone._update_drone_info = Mock()  # To avoid overwriting the version number
-    mocked_drone.connect()
-
-    mocked_drone._create_temporary_tcp_client.assert_called_once()
-
-
 def test_depth_reading(mocked_drone):
     depth = 10
     depthTel = bp.DepthTel(depth={"value": depth})
@@ -120,18 +111,6 @@ def test_error_flags(mocked_drone):
     error_flags_serialized = error_flags_tel.__class__.serialize(error_flags_tel)
     mocked_drone._telemetry_watcher.state["blueye.protocol.ErrorFlagsTel"] = error_flags_serialized
     assert mocked_drone.error_flags["depth_read"] == True
-
-
-def test_timeout_general_state(mocked_drone: Drone):
-    mocked_drone._state_watcher._udp_timeout = 0.001
-    with pytest.raises(TimeoutError):
-        mocked_drone._state_watcher.general_state
-
-
-def test_timeout_calibration_state(mocked_drone: Drone):
-    mocked_drone._state_watcher._udp_timeout = 0.001
-    with pytest.raises(TimeoutError):
-        mocked_drone._state_watcher.calibration_state
 
 
 def test_battery_state_of_charge_reading(mocked_drone):
@@ -164,17 +143,6 @@ def test_update_drone_info_raises_ConnectionError_when_not_connected(
     requests_mock.get("http://192.168.1.101/diagnostics/drone_info", exc=exception)
     with pytest.raises(ConnectionError):
         mocked_drone._update_drone_info()
-
-
-def test_wait_for_udp_com_raises_ConnectionError_on_timeout(mocker):
-    import socket
-
-    mocked_udp = mocker.patch("blueye.sdk.drone.UdpClient", autospec=True).return_value
-
-    mocked_udp.attach_mock(mocker.patch("blueye.sdk.drone.socket.socket", autospec=True), "_sock")
-    mocked_udp.get_data_dict.side_effect = socket.timeout
-    with pytest.raises(ConnectionError):
-        blueye.sdk.Drone._wait_for_udp_communication(0.001)
 
 
 def test_connect_ignores_repeated_starts_on_watchdog_thread(mocked_drone):
