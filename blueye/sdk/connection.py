@@ -10,7 +10,7 @@ import zmq
 
 class WatchdogPublisher(threading.Thread):
     def __init__(self, parent_drone: "blueye.sdk.Drone", context: zmq.Context = None):
-        super().__init__()
+        super().__init__(daemon=True)
         self._parent_drone = parent_drone
         self.drone_ip = self._parent_drone._ip
         self.port = 5557
@@ -76,7 +76,7 @@ class WatchdogPublisher(threading.Thread):
 
 class TelemetryClient(threading.Thread):
     def __init__(self, parent_drone: "blueye.sdk.Drone", context: zmq.Context = None):
-        super().__init__()
+        super().__init__(daemon=True)
         self._parent_drone = parent_drone
         self.context = context or zmq.Context().instance()
         self.host = self._parent_drone._ip
@@ -107,7 +107,7 @@ class CtrlClient(threading.Thread):
         parent_drone: "blueye.sdk.Drone",
         context: zmq.Context = None,
     ):
-        super().__init__()
+        super().__init__(daemon=True)
         self.context = context or zmq.Context().instance()
         self._parent_drone = parent_drone
 
