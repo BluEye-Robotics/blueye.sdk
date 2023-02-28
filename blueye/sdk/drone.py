@@ -345,6 +345,9 @@ class Drone:
         n_streamers_msg = blueye.protocol.NStreamersTel.deserialize(NStreamersTel).n_streamers
         return {"main": n_streamers_msg.main, "guestport": n_streamers_msg.guestport}
 
-    def ping(self):
-        """Ping drone, an exception is thrown by TcpClient if drone does not answer"""
-        self._tcp_client.ping()
+    def ping(self, timeout: float = 1.0):
+        """Ping drone
+
+        Raises a ResponseTimeout exception if the drone does not respond within the timeout period.
+        """
+        self._req_rep_client.ping(timeout)

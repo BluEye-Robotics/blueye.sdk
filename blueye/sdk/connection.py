@@ -210,3 +210,14 @@ class ReqRepClient(threading.Thread):
 
     def stop(self):
         self._exit_flag.set()
+
+    def ping(self, timeout: float) -> blueye.protocol.PingRep:
+        request = blueye.protocol.PingReq()
+        response_queue = queue.Queue(maxsize=1)
+        self.requests_to_send.put((request, blueye.protocol.PingRep, response_queue))
+        try:
+            return response_queue.get(timeout=timeout)
+        except queue.Empty:
+            raise blueye.protocol.exceptions.ResponseTimeout(
+                "No response received from drone before timeout"
+            )
