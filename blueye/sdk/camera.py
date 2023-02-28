@@ -568,23 +568,26 @@ class Camera:
 
     @property
     def bitrate(self) -> int:
-        """Set or get the camera bitrate
+        """Set or get the video stream bitrate
 
         *Arguments*:
 
-        * bitrate (int): Set the camera bitrate in bits, Valid values are in range <1 000 000, 16 000 000>
+        * bitrate (int): Set the video stream bitrate in bits, Valid values are in range
+                         (1000 000..16 000 000)
 
         *Returns*:
 
-        * bitrate (int): Get the camera bitrate
+        * bitrate (int): The H264 video stream bitrate
         """
-        camera_parameters = self._parent_drone._tcp_client.get_camera_parameters()
-        bitrate = camera_parameters[1]
-        return bitrate
+        self._update_camera_parameters()
+        return self._camera_parameters.h264_bitrate
 
     @bitrate.setter
     def bitrate(self, bitrate: int):
-        self._parent_drone._tcp_client.set_camera_bitrate(bitrate)
+        if self._camera_parameters is None:
+            self._update_camera_parameters()
+        self._camera_parameters.h264_bitrate = bitrate
+        self._parent_drone._req_rep_client.set_camera_parameters(self._camera_parameters)
 
     @property
     def exposure(self) -> int:
