@@ -178,3 +178,35 @@ class CtrlClient(threading.Thread):
             record_on={"main": main_enabled, "guestport": guestport_enabled}
         )
         self.messages_to_send.put(msg)
+
+
+class ReqRepClient(threading.Thread):
+    def __init__(self, parent_drone: "blueye.sdk.Drone", context: zmq.Context = None):
+        super().__init__(daemon=True)
+        self.context = context or zmq.Context().instance()
+        self._parent_drone = parent_drone
+        self.port = 5556
+        self.socket = self.context.socket(zmq.REQ)
+        self.socket.connect(f"tcp://{self._parent_drone._ip}:{self.port}")
+        self.requests_to_send = queue.Queue()
+        self._exit_flag = threading.Event()
+
+    def run(self):
+        while not self._exit_flag.is_set():
+            try:
+                msg, response_type, response_callback_queue = self.requests_to_send.get(timeout=0.1)
+                self.socket.send_multipart(
+                    [
+                        bytes(msg._pb.DESCRIPTOR.full_name, "utf-8"),
+                        msg.__class__.serialize(msg),
+                    ]
+                )
+            except queue.Empty:
+                continue
+            # TODO: Deal with timeout
+            resp = self.socket.recv_multipart()
+            resp_deserialized = response_type.deserialize(resp[1])
+            response_callback_queue.put(resp_deserialized)
+
+    def stop(self):
+        self._exit_flag.set()
