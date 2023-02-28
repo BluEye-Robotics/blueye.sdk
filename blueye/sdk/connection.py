@@ -221,3 +221,31 @@ class ReqRepClient(threading.Thread):
             raise blueye.protocol.exceptions.ResponseTimeout(
                 "No response received from drone before timeout"
             )
+
+    def get_camera_parameters(
+        self, camera: blueye.protocol.Camera, timeout: float = 0.05
+    ) -> blueye.protocol.CameraParameters:
+        request = blueye.protocol.GetCameraParametersReq(camera=camera)
+        response_queue = queue.Queue(maxsize=1)
+        self.requests_to_send.put((request, blueye.protocol.GetCameraParametersRep, response_queue))
+        try:
+            return response_queue.get(timeout=timeout).camera_parameters
+        except queue.Empty:
+            raise blueye.protocol.exceptions.ResponseTimeout(
+                "No response received from drone before timeout"
+            )
+
+    def set_camera_parameters(
+        self,
+        parameters: blueye.protocol.CameraParameters,
+        timeout: float = 0.05,
+    ):
+        request = blueye.protocol.SetCameraParametersReq(camera_parameters=parameters)
+        response_queue = queue.Queue(maxsize=1)
+        self.requests_to_send.put((request, blueye.protocol.SetCameraParametersRep, response_queue))
+        try:
+            response_queue.get(timeout=timeout)
+        except queue.Empty:
+            raise blueye.protocol.exceptions.ResponseTimeout(
+                "No response received from drone before timeout"
+            )

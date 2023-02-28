@@ -514,15 +514,26 @@ class Camera:
     def __init__(self, parent_drone: Drone, is_guestport_camera: bool = False):
         self._parent_drone = parent_drone
         self._is_guestport_camera = is_guestport_camera
+        self._camera_type = (
+            blueye.protocol.Camera.CAMERA_GUESTPORT
+            if is_guestport_camera
+            else blueye.protocol.Camera.CAMERA_MAIN
+        )
         if not self._is_guestport_camera:
             self.tilt = Tilt(parent_drone)
             self.overlay = Overlay(parent_drone)
+        self._camera_parameters = None
 
     def _get_record_state(self) -> blueye.protocol.RecordState:
         record_state_tel = self._parent_drone._telemetry_watcher.state[
             "blueye.protocol.RecordStateTel"
         ]
         return blueye.protocol.RecordStateTel.deserialize(record_state_tel).record_state
+
+    def _update_camera_parameters(self):
+        self._camera_parameters = self._parent_drone._req_rep_client.get_camera_parameters(
+            camera=self._camera_type
+        )
 
     @property
     def is_recording(self) -> bool:
