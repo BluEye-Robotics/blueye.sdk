@@ -17,7 +17,7 @@ from blueye.protocol.exceptions import (
 from packaging import version
 
 from .camera import Camera
-from .connection import CtrlClient, TelemetryClient, WatchdogPublisher
+from .connection import CtrlClient, ReqRepClient, TelemetryClient, WatchdogPublisher
 from .constants import WaterDensities
 from .logs import Logs
 from .motion import Motion
@@ -100,7 +100,6 @@ class Drone:
         tcpPort=2011,
         autoConnect=True,
         slaveModeEnabled=False,
-        udpTimeout=3,
     ):
         self._ip = ip
         self._port = tcpPort
@@ -109,8 +108,6 @@ class Drone:
             self._tcp_client = _SlaveTcpClient()
         else:
             self._tcp_client = _NoConnectionTcpClient()
-        self._telemetry_watcher = TelemetryClient(self)
-        self._ctrl_client = CtrlClient(self)
         self.camera = Camera(self, is_guestport_camera=False)
         self.motion = Motion(self)
         self.logs = Logs(self)
@@ -179,8 +176,6 @@ class Drone:
         _connect_to_tcp_socket() must be called first"""
         try:
             self._tcp_client.start()
-            self._ctrl_client.start()
-            self._watchdog_publisher.start()
         except RuntimeError:
             # Ignore multiple starts
             pass
@@ -190,14 +185,6 @@ class Drone:
         self._tcp_client.stop()
         self._tcp_client._sock.close()
         self._tcp_client = _NoConnectionTcpClient()
-        self._watchdog_publisher.stop()
-        self._ctrl_client.stop()
-
-    def _create_temporary_tcp_client(self):
-        temp_tcp_client = TcpClient()
-        temp_tcp_client.connect()
-        temp_tcp_client.stop()
-        temp_tcp_client._sock.close()
 
     def connect(self, timeout: float = None):
         """Start receiving telemetry info from the drone, and publishing watchdog messages
@@ -209,7 +196,13 @@ class Drone:
         """
 
         self._update_drone_info()
+        self._telemetry_watcher = TelemetryClient(self)
+        self._ctrl_client = CtrlClient(self)
+        self._watchdog_publisher = WatchdogPublisher(self)
+        self._req_rep_client = ReqRepClient(self)
         self._telemetry_watcher.start()
+        self._req_rep_client.start()
+        self._ctrl_client.start()
         if self._slave_mode_enabled:
             # No need to touch the TCP stuff if we're in slave mode so we return early
             return
@@ -217,7 +210,6 @@ class Drone:
         if not self.connection_established:
             self._tcp_client = TcpClient(ip=self._ip, port=self._port, autoConnect=False)
             self._connect_to_tcp_socket()
-            self._watchdog_publisher = WatchdogPublisher(self)
 
         try:
             # The drone runs from a read-only filesystem, and as such does not keep any state,
@@ -246,6 +238,16 @@ class Drone:
 
     def disconnect(self):
         """Disconnects the TCP connection, allowing another client to take control of the drone"""
+
+        self._watchdog_publisher.stop()
+        self._telemetry_watcher.stop()
+        self._req_rep_client.stop()
+        self._ctrl_client.stop()
+        self._watchdog_publisher = None
+        self._telemetry_watcher = None
+        self._req_rep_client = None
+        self._ctrl_client = None
+
         if self.connection_established and not self._slave_mode_enabled:
             self._clean_up_tcp_client()
 
