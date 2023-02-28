@@ -73,7 +73,30 @@ def mocked_ctrl_client(mocker):
 
 
 @pytest.fixture
-def mocked_drone(request, mocker, mocked_TcpClient, mocked_requests, mocked_ctrl_client):
+def mocked_telemetry_client(mocker):
+    return mocker.patch("blueye.sdk.drone.TelemetryClient", autospec=True)
+
+
+@pytest.fixture
+def mocked_watchdog_publisher(mocker):
+    return mocker.patch("blueye.sdk.drone.WatchdogPublisher", autospec=True)
+
+
+@pytest.fixture
+def mocked_req_rep_client(mocker):
+    return mocker.patch("blueye.sdk.drone.ReqRepClient", autospec=True)
+
+
+@pytest.fixture
+def mocked_drone(
+    request,
+    mocker,
+    mocked_TcpClient,
+    mocked_requests,
+    mocked_ctrl_client,
+    mocked_watchdog_publisher,
+    mocked_req_rep_client,
+):
     drone = blueye.sdk.Drone(autoConnect=False)
     drone._wait_for_udp_communication = Mock()
     drone.connect()
