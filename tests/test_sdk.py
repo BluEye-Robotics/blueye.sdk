@@ -121,12 +121,9 @@ def test_battery_state_of_charge_reading(mocked_drone):
     assert mocked_drone.battery_state_of_charge == pytest.approx(SoC)
 
 
-@pytest.mark.parametrize("version", ["1.4.7", "1.4.8", "1.5.0", "2.0.0"])
-def test_still_picture_works_with_new_drone_version(mocked_drone, version):
-    mocked_drone.software_version_short = version
+def test_still_picture_works(mocked_drone):
     mocked_drone.camera.take_picture()
-    mocked_drone._tcp_client.take_still_picture.assert_called_once()
-    mocked_drone._tcp_client.reset_mock()
+    mocked_drone._ctrl_client.take_still_picture.assert_called_once()
 
 
 @pytest.mark.parametrize(
