@@ -179,6 +179,10 @@ class CtrlClient(threading.Thread):
         )
         self.messages_to_send.put(msg)
 
+    def take_still_picture(self):
+        msg = blueye.protocol.TakePictureCtrl()
+        self.messages_to_send.put(msg)
+
 
 class ReqRepClient(threading.Thread):
     def __init__(self, parent_drone: "blueye.sdk.Drone", context: zmq.Context = None):

@@ -668,8 +668,5 @@ class Camera:
         """Takes a still picture and stores it locally on the drone
 
         These pictures can be downloaded with the Blueye App, or by any WebDAV compatible client.
-        This feature was added with drone version 1.4.7, so if you try to use it with an older
-        version this method will raise a RunTimeError.
         """
-        self._parent_drone._verify_required_blunux_version("1.4.7")
-        self._parent_drone._tcp_client.take_still_picture()
+        self._parent_drone._ctrl_client.take_still_picture()
