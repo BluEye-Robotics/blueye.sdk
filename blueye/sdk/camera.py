@@ -642,19 +642,21 @@ class Camera:
 
         *Arguments*:
 
-        * hue (int): Set the camera hue. Valid values are in the range <-40, 40>
+        * hue (int): Set the camera hue. Valid values are in the range (-40..40)
 
         *Returns*:
 
         * hue (int): Get the camera hue
         """
-        camera_parameters = self._parent_drone._tcp_client.get_camera_parameters()
-        hue = camera_parameters[4]
-        return hue
+        self._update_camera_parameters()
+        return self._camera_parameters.hue
 
     @hue.setter
     def hue(self, hue: int):
-        self._parent_drone._tcp_client.set_camera_hue(hue)
+        if self._camera_parameters is None:
+            self._update_camera_parameters()
+        self._camera_parameters.hue = hue
+        self._parent_drone._req_rep_client.set_camera_parameters(self._camera_parameters)
 
     @property
     def resolution(self) -> int:
