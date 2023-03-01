@@ -1,5 +1,4 @@
-from unittest.mock import Mock
-
+import blueye.protocol as bp
 import pytest
 
 import blueye.sdk
@@ -98,8 +97,30 @@ def mocked_drone(
     mocked_req_rep_client,
 ):
     drone = blueye.sdk.Drone(autoConnect=False)
-    drone._wait_for_udp_communication = Mock()
     drone.connect()
+    drone._req_rep_client.get_overlay_parameters.return_value = bp.OverlayParameters(
+        temperature_enabled=False,
+        depth_enabled=False,
+        heading_enabled=False,
+        tilt_enabled=False,
+        date_enabled=False,
+        distance_enabled=False,
+        altitude_enabled=False,
+        cp_probe_enabled=False,
+        drone_location_enabled=False,
+        logo_type=bp.LogoType.LOGO_TYPE_NONE,
+        depth_unit=bp.DepthUnit.DEPTH_UNIT_METERS,
+        temperature_unit=bp.TemperatureUnit.TEMPERATURE_UNIT_CELSIUS,
+        thickness_unit=bp.ThicknessUnit.THICKNESS_UNIT_MILLIMETERS,
+        timezone_offset=60,
+        margin_width=30,
+        margin_height=15,
+        font_size=bp.FontSize.FONT_SIZE_PX25,
+        title="",
+        subtitle="",
+        date_format="%m/%d/%Y %I:%M:%S %p",
+        shading=0,
+    )
     if hasattr(request, "param"):
         drone.software_version_short = request.param
     return drone
