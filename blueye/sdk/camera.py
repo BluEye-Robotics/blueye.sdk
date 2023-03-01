@@ -595,19 +595,23 @@ class Camera:
 
         *Arguments*:
 
-        * exposure (int): Set the camera exposure_value: 1 = 1/1000th of a second, 5 = 1/200th of a second. Valid values are in the range <1, 5000>
+        * exposure (int): Set the camera exposure time. Unit is thousandths of a second, ie.
+                          5 = 5s/1000. Valid values are in the range (1 .. 5000) or -1 for auto
+                          exposure
 
         *Returns*:
 
         * exposure (int): Get the camera exposure
         """
-        camera_parameters = self._parent_drone._tcp_client.get_camera_parameters()
-        exposure = camera_parameters[2]
-        return exposure
+        self._update_camera_parameters()
+        return self._camera_parameters.exposure
 
     @exposure.setter
     def exposure(self, exposure: int):
-        self._parent_drone._tcp_client.set_camera_exposure(exposure)
+        if self._camera_parameters is None:
+            self._update_camera_parameters()
+        self._camera_parameters.exposure = exposure
+        self._parent_drone._req_rep_client.set_camera_parameters(self._camera_parameters)
 
     @property
     def whitebalance(self) -> int:
