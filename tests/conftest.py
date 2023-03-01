@@ -55,18 +55,6 @@ def mocked_requests(requests_mock):
 
 
 @pytest.fixture
-def mocked_TcpClient(mocker):
-    """Fixture for mocking the TcpClient from blueye.protocol
-
-    Note: This mock is passed create=True, which has the potential to be dangerous since it would
-    allow you to test against methods that don't exist on the actual class. Due to the way methods
-    are added to TcpClient (they are instantiated on runtime, depending on which version of the
-    protocol is requested) mocking the class in the usual way would be quite cumbersome.
-    """
-    return mocker.patch("blueye.sdk.drone.TcpClient", create=True)
-
-
-@pytest.fixture
 def mocked_ctrl_client(mocker):
     return mocker.patch("blueye.sdk.drone.CtrlClient", autospec=True)
 
@@ -90,7 +78,6 @@ def mocked_req_rep_client(mocker):
 def mocked_drone(
     request,
     mocker,
-    mocked_TcpClient,
     mocked_requests,
     mocked_ctrl_client,
     mocked_watchdog_publisher,
@@ -123,11 +110,4 @@ def mocked_drone(
     )
     if hasattr(request, "param"):
         drone.software_version_short = request.param
-    return drone
-
-
-@pytest.fixture
-def mocked_slave_drone(mocker, mocked_TcpClient, mocked_requests):
-    drone = blueye.sdk.Drone(autoConnect=False, slaveModeEnabled=True)
-    drone.connect()
     return drone

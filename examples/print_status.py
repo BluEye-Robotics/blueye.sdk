@@ -35,5 +35,5 @@ def state_printer(drone: Drone):
 
 
 if __name__ == "__main__":
-    myDrone = Drone(slaveModeEnabled=True)
+    myDrone = Drone()
     state_printer(myDrone)

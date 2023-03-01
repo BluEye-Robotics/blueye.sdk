@@ -8,12 +8,6 @@ from typing import Dict
 
 import blueye.protocol
 import requests
-from blueye.protocol import TcpClient
-from blueye.protocol.exceptions import (
-    MismatchedReply,
-    NoConnectionToDrone,
-    ResponseTimeout,
-)
 from packaging import version
 
 from .camera import Camera
@@ -21,37 +15,6 @@ from .connection import CtrlClient, ReqRepClient, TelemetryClient, WatchdogPubli
 from .constants import WaterDensities
 from .logs import Logs
 from .motion import Motion
-
-
-class SlaveModeWarning(UserWarning):
-    """Raised when trying to perform action not possible in slave mode"""
-
-
-class _SlaveTcpClient:
-    """A dummy TCP client that warns you if you use any of its functions"""
-
-    def __getattr__(self, name):
-        def method(*args):
-            warnings.warn(
-                f"Unable to call {name}{args} with client in slave mode",
-                SlaveModeWarning,
-                stacklevel=2,
-            )
-
-        return method
-
-
-class _NoConnectionTcpClient:
-    """A TCP client that raises a ConnectionError if you use any of its functions"""
-
-    def __getattr__(self, name):
-        def method(*args, **kwargs):
-            raise ConnectionError(
-                "The connection to the drone is not established, "
-                "try calling the connect method before retrying"
-            )
-
-        return method
 
 
 class Config:
@@ -87,34 +50,24 @@ class Config:
 class Drone:
     """A class providing an interface to a Blueye drone's functions
 
-    Automatically connects to the drone using the default ip and port when instantiated, this
-    behaviour can be disabled by setting `autoConnect=False`.
-
-    The drone only supports one client controlling it at a time, but if you pass
-    `slaveModeEnabled=True` you will still be able to receive data from the drone.
+    Automatically connects to the drone using the default ip when instantiated, this behaviour can
+    be disabled by setting `autoConnect=False`.
     """
 
     def __init__(
         self,
         ip="192.168.1.101",
-        tcpPort=2011,
         autoConnect=True,
-        slaveModeEnabled=False,
+        timeout=3,
     ):
         self._ip = ip
-        self._port = tcpPort
-        self._slave_mode_enabled = slaveModeEnabled
-        if slaveModeEnabled:
-            self._tcp_client = _SlaveTcpClient()
-        else:
-            self._tcp_client = _NoConnectionTcpClient()
         self.camera = Camera(self, is_guestport_camera=False)
         self.motion = Motion(self)
         self.logs = Logs(self)
         self.config = Config(self)
-
+        self.connected = False
         if autoConnect is True:
-            self.connect(timeout=3)
+            self.connect(timeout=timeout)
 
     def _verify_required_blunux_version(self, requirement: str):
         """Verify that Blunux version is higher than requirement
@@ -125,7 +78,7 @@ class Drone:
         the requirement.
         """
 
-        if not self.connection_established:
+        if not self.connected:
             raise ConnectionError(
                 "The connection to the drone is not established, try calling the connect method "
                 "before retrying"
@@ -136,17 +89,12 @@ class Drone:
                 f"{requirement} or higher is required."
             )
 
-    @property
-    def connection_established(self):
-        if isinstance(self._tcp_client, _NoConnectionTcpClient):
-            return False
-        else:
-            return True
-
-    def _update_drone_info(self):
+    def _update_drone_info(self, timeout: float = 3):
         """Request and store information about the connected drone"""
         try:
-            response = requests.get(f"http://{self._ip}/diagnostics/drone_info", timeout=3).json()
+            response = requests.get(
+                f"http://{self._ip}/diagnostics/drone_info", timeout=timeout
+            ).json()
         except (
             requests.ConnectTimeout,
             requests.ReadTimeout,
@@ -164,28 +112,6 @@ class Drone:
         self.serial_number = response["serial_number"]
         self.uuid = response["hardware_id"]
 
-    def _connect_to_tcp_socket(self):
-        try:
-            self._tcp_client.connect()
-        except NoConnectionToDrone:
-            raise ConnectionError("Could not establish connection with drone")
-
-    def _start_watchdog(self):
-        """Starts the thread for petting the watchdog
-
-        _connect_to_tcp_socket() must be called first"""
-        try:
-            self._tcp_client.start()
-        except RuntimeError:
-            # Ignore multiple starts
-            pass
-
-    def _clean_up_tcp_client(self):
-        """Stops the watchdog thread and closes the TCP socket"""
-        self._tcp_client.stop()
-        self._tcp_client._sock.close()
-        self._tcp_client = _NoConnectionTcpClient()
-
     def connect(self, timeout: float = None):
         """Start receiving telemetry info from the drone, and publishing watchdog messages
 
@@ -194,8 +120,8 @@ class Drone:
 
         - *timeout* (float): Seconds to wait for connection
         """
-
-        self._update_drone_info()
+        # TODO: Deal with exceptions
+        self._update_drone_info(timeout=timeout)
         self._telemetry_watcher = TelemetryClient(self)
         self._ctrl_client = CtrlClient(self)
         self._watchdog_publisher = WatchdogPublisher(self)
@@ -203,42 +129,17 @@ class Drone:
         self._telemetry_watcher.start()
         self._req_rep_client.start()
         self._ctrl_client.start()
-        if self._slave_mode_enabled:
-            # No need to touch the TCP stuff if we're in slave mode so we return early
-            return
+        self._watchdog_publisher.start()
 
-        if not self.connection_established:
-            self._tcp_client = TcpClient(ip=self._ip, port=self._port, autoConnect=False)
-            self._connect_to_tcp_socket()
-
-        try:
-            # The drone runs from a read-only filesystem, and as such does not keep any state,
-            # therefore when we connect to it we should send the current time
-            self.config.set_drone_time(int(time.time()))
-
-            self.ping()
-            self.motion.send_thruster_setpoint(0, 0, 0, 0)
-
-            self._start_watchdog()
-        except ResponseTimeout as e:
-            self._clean_up_tcp_client()
-            raise ConnectionError(
-                f"Found drone at {self._ip} but was unable to take control of it. "
-                "Is there another client connected?"
-            ) from e
-        except MismatchedReply:
-            # The connection is out of sync, likely due to a previous connection being
-            # disconnected mid-transfer. Re-instantiating the connection should solve the issue
-            self._clean_up_tcp_client()
-            self.connect(timeout)
-        except BrokenPipeError:
-            # Have lost connection to drone, need to reestablish TCP client
-            self._clean_up_tcp_client()
-            self.connect(timeout)
+        # The drone runs from a read-only filesystem, and as such does not keep any state,
+        # therefore when we connect to it we should send the current time
+        self.config.set_drone_time(int(time.time()))
+        self.ping()
+        self.motion.send_thruster_setpoint(0, 0, 0, 0)
+        self.connected = True
 
     def disconnect(self):
-        """Disconnects the TCP connection, allowing another client to take control of the drone"""
-
+        """Disconnects the connection, allowing another client to take control of the drone"""
         self._watchdog_publisher.stop()
         self._telemetry_watcher.stop()
         self._req_rep_client.stop()
@@ -247,9 +148,7 @@ class Drone:
         self._telemetry_watcher = None
         self._req_rep_client = None
         self._ctrl_client = None
-
-        if self.connection_established and not self._slave_mode_enabled:
-            self._clean_up_tcp_client()
+        self.connected = False
 
     @property
     def lights(self) -> float:
