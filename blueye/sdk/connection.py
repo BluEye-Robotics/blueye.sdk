@@ -281,3 +281,14 @@ class ReqRepClient(threading.Thread):
             raise blueye.protocol.exceptions.ResponseTimeout(
                 "No response received from drone before timeout"
             )
+
+    def sync_time(self, time: int, timeout: float = 0.05):
+        request = blueye.protocol.SyncTimeReq(time={"unix_timestamp": time})
+        response_queue = queue.Queue(maxsize=1)
+        self.requests_to_send.put((request, blueye.protocol.SyncTimeRep, response_queue))
+        try:
+            response_queue.get(timeout=timeout)
+        except queue.Empty:
+            raise blueye.protocol.exceptions.ResponseTimeout(
+                "No response received from drone before timeout"
+            )
