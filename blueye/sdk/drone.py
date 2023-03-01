@@ -81,7 +81,7 @@ class Config:
         This method is used to set the system time for the drone. The argument `time` is expected to
         be a Unix timestamp (ie. the number of seconds since the epoch).
         """
-        self._parent_drone._tcp_client.set_system_time(time)
+        self._parent_drone._req_rep_client.sync_time(time)
 
 
 class Drone:

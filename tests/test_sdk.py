@@ -238,11 +238,11 @@ class TestConfig:
         assert mocked_drone.config.water_density == new_value
         mocked_drone._ctrl_client.set_water_density.assert_called_once()
 
-    def test_set_drone_time_is_called_on_connetion(self, mocked_drone: Drone):
+    def test_set_drone_time_is_called_on_connection(self, mocked_drone: Drone):
         with freeze_time("2019-01-01"):
             expected_time = int(time())
             mocked_drone.connect()
-            mocked_drone._tcp_client.set_system_time.assert_called_with(expected_time)
+            mocked_drone._req_rep_client.sync_time.assert_called_with(expected_time)
 
 
 class TestMotion:
