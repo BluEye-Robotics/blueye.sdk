@@ -670,13 +670,28 @@ class Camera:
 
         * resolution (int): Get the camera resolution
         """
-        camera_parameters = self._parent_drone._tcp_client.get_camera_parameters()
-        resolution = camera_parameters[5]
-        return resolution
+        self._update_camera_parameters()
+        if self._camera_parameters.resolution == blueye.protocol.Resolution.RESOLUTION_HD_720P:
+            return 720
+        elif (
+            self._camera_parameters.resolution == blueye.protocol.Resolution.RESOLUTION_FULLHD_1080P
+        ):
+            return 1080
 
     @resolution.setter
     def resolution(self, resolution: int):
-        self._parent_drone._tcp_client.set_camera_resolution(resolution)
+        if resolution not in (720, 1080):
+            raise ValueError(
+                f"{resolution} is not a valid resolution. Valid values are 720 or 1080"
+            )
+        if self._camera_parameters is None:
+            self._update_camera_parameters()
+        if resolution == 720:
+            self._camera_parameters.resolution = blueye.protocol.Resolution.RESOLUTION_HD_720P
+        elif resolution == 1080:
+            self._camera_parameters.resolution = blueye.protocol.Resolution.RESOLUTION_FULLHD_1080P
+
+        self._parent_drone._req_rep_client.set_camera_parameters(self._camera_parameters)
 
     @property
     def framerate(self) -> int:
