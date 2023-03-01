@@ -705,13 +705,23 @@ class Camera:
 
         * framerate (int): Get the camera frame rate
         """
-        camera_parameters = self._parent_drone._tcp_client.get_camera_parameters()
-        framerate = camera_parameters[6]
-        return framerate
+        self._update_camera_parameters()
+        if self._camera_parameters.framerate == blueye.protocol.Framerate.FRAMERATE_FPS_25:
+            return 25
+        elif self._camera_parameters.framerate == blueye.protocol.Framerate.FRAMERATE_FPS_30:
+            return 30
 
     @framerate.setter
     def framerate(self, framerate: int):
-        self._parent_drone._tcp_client.set_camera_framerate(framerate)
+        if framerate not in (25, 30):
+            raise ValueError(f"{framerate} is not a valid framerate. Valid values are 25 or 30")
+        if self._camera_parameters is None:
+            self._update_camera_parameters()
+        if framerate == 25:
+            self._camera_parameters.framerate = blueye.protocol.Framerate.FRAMERATE_FPS_25
+        elif framerate == 30:
+            self._camera_parameters.framerate = blueye.protocol.Framerate.FRAMERATE_FPS_30
+        self._parent_drone._req_rep_client.set_camera_parameters(self._camera_parameters)
 
     @property
     def record_time(self) -> int:
