@@ -283,7 +283,9 @@ class ReqRepClient(threading.Thread):
             )
 
     def sync_time(self, time: int, timeout: float = 0.05):
-        request = blueye.protocol.SyncTimeReq(time={"unix_timestamp": time})
+        request = blueye.protocol.SyncTimeReq(
+            time={"unix_timestamp": {"seconds": time, "nanos": 0}}
+        )
         response_queue = queue.Queue(maxsize=1)
         self.requests_to_send.put((request, blueye.protocol.SyncTimeRep, response_queue))
         try:
