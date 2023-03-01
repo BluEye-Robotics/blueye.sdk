@@ -35,17 +35,6 @@ class TestPose:
         assert pose["yaw"] == new_angle
 
 
-@pytest.mark.skip(reason="Will fix later")
-class TestSlaveMode:
-    def test_warning_is_raised(self, mocker, mocked_slave_drone):
-        mocked_warn = mocker.patch("warnings.warn", autospec=True)
-
-        # Call function that requires tcp connection
-        mocked_slave_drone.lights = 0
-
-        mocked_warn.assert_called_once()
-
-
 def test_documentation_opener(mocker):
     mocked_webbrowser_open = mocker.patch("webbrowser.open", autospec=True)
     import os
@@ -90,10 +79,8 @@ def test_software_version(mocked_drone):
     assert mocked_drone.software_version_short == "1.4.7"
 
 
-def test_verify_sw_version_raises_connection_error_when_not_connected(mocked_drone: Drone, mocker):
-    mocker.patch(
-        "blueye.sdk.Drone.connection_established", new_callable=PropertyMock, return_value=False
-    )
+def test_verify_sw_version_raises_connection_error_when_not_connected(mocked_drone: Drone):
+    mocked_drone.connected = False
     with pytest.raises(ConnectionError):
         mocked_drone._verify_required_blunux_version("1.4.7")
 
@@ -140,14 +127,6 @@ def test_update_drone_info_raises_ConnectionError_when_not_connected(
     requests_mock.get("http://192.168.1.101/diagnostics/drone_info", exc=exception)
     with pytest.raises(ConnectionError):
         mocked_drone._update_drone_info()
-
-
-def test_connect_ignores_repeated_starts_on_watchdog_thread(mocked_drone):
-    mocked_drone.disconnect()
-    assert mocked_drone.connection_established is False
-    mocked_drone._tcp_client.start.side_effect = RuntimeError
-    mocked_drone.connect(1)
-    assert mocked_drone.connection_established is True
 
 
 def test_active_video_streams_return_correct_number(mocked_drone: Drone):
