@@ -22,7 +22,7 @@ class WatchdogPublisher(threading.Thread):
     def run(self):
         duration = 0
         WATCHDOG_DELAY = 1
-        self.client_id = self._get_client_id()
+        self.client_id = self._parent_drone._req_rep_client.connect_client().client_id
         while not self._exit_flag.wait(WATCHDOG_DELAY):
             self.pet_watchdog(duration)
             duration += 1
@@ -37,37 +37,6 @@ class WatchdogPublisher(threading.Thread):
                 blueye.protocol.WatchdogCtrl.serialize(msg),
             ]
         )
-
-    def _get_client_info(self) -> blueye.protocol.ClientInfo:
-        client_info = blueye.protocol.ClientInfo(
-            type="SDK",
-            version=f"{importlib.metadata.version('blueye.sdk')}",
-            device_type="Computer",
-            platform=f"{platform.system()}",
-            platform_version=f"{platform.release()}",
-            name=f"{platform.node()}",
-        )
-        return client_info
-
-    def _get_full_msg_name(self, msg: proto.Message) -> str:
-        return msg._pb.DESCRIPTOR.full_name
-
-    def _get_client_id(self, context=None) -> int:
-        context = context or zmq.Context.instance()
-        socket = context.socket(zmq.REQ)
-        socket.connect(f"tcp://{self.drone_ip}:5556")
-        msg = blueye.protocol.ConnectClientReq(client_info=self._get_client_info())
-
-        socket.send_multipart(
-            [
-                bytes(self._get_full_msg_name(msg), "utf-8"),
-                blueye.protocol.ConnectClientReq.serialize(msg),
-            ]
-        )
-
-        resp = socket.recv_multipart()
-        resp_deserialized = blueye.protocol.ConnectClientRep.deserialize(resp[1])
-        return resp_deserialized.client_id
 
     def stop(self):
         """Stop the watchdog thread started by run()"""
@@ -195,6 +164,17 @@ class ReqRepClient(threading.Thread):
         self.requests_to_send = queue.Queue()
         self._exit_flag = threading.Event()
 
+    def _get_client_info(self) -> blueye.protocol.ClientInfo:
+        client_info = blueye.protocol.ClientInfo(
+            type="SDK",
+            version=f"{importlib.metadata.version('blueye.sdk')}",
+            device_type="Computer",
+            platform=f"{platform.system()}",
+            platform_version=f"{platform.release()}",
+            name=f"{platform.node()}",
+        )
+        return client_info
+
     def run(self):
         while not self._exit_flag.is_set():
             try:
@@ -290,6 +270,20 @@ class ReqRepClient(threading.Thread):
         self.requests_to_send.put((request, blueye.protocol.SyncTimeRep, response_queue))
         try:
             response_queue.get(timeout=timeout)
+        except queue.Empty:
+            raise blueye.protocol.exceptions.ResponseTimeout(
+                "No response received from drone before timeout"
+            )
+
+    def connect_client(
+        self, client_info: blueye.protocol.ClientInfo = None, timeout: float = 0.05
+    ) -> blueye.protocol.ConnectClientRep:
+        client = client_info or self._get_client_info()
+        request = blueye.protocol.ConnectClientReq(client_info=client)
+        response_queue = queue.Queue(maxsize=1)
+        self.requests_to_send.put((request, blueye.protocol.ConnectClientRep, response_queue))
+        try:
+            return response_queue.get(timeout=timeout)
         except queue.Empty:
             raise blueye.protocol.exceptions.ResponseTimeout(
                 "No response received from drone before timeout"
