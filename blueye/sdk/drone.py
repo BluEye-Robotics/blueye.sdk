@@ -112,7 +112,7 @@ class Drone:
         self.serial_number = response["serial_number"]
         self.uuid = response["hardware_id"]
 
-    def connect(self, timeout: float = None):
+    def connect(self, timeout: float = 3):
         """Start receiving telemetry info from the drone, and publishing watchdog messages
 
         When watchdog message are published the thrusters are armed, to stop the drone from moving
