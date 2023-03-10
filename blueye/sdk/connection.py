@@ -22,14 +22,14 @@ class WatchdogPublisher(threading.Thread):
     def run(self):
         duration = 0
         WATCHDOG_DELAY = 1
-        self.client_id = self._parent_drone._req_rep_client.connect_client().client_id
         while not self._exit_flag.wait(WATCHDOG_DELAY):
-            self.pet_watchdog(duration)
-            duration += 1
+            if self._parent_drone.in_control:
+                self.pet_watchdog(duration)
+                duration += 1
 
     def pet_watchdog(self, duration):
         msg = blueye.protocol.WatchdogCtrl(
-            connection_duration={"value": duration}, client_id=self.client_id
+            connection_duration={"value": duration}, client_id=self._parent_drone.client_id
         )
         self.socket.send_multipart(
             [

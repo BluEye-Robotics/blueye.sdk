@@ -66,6 +66,8 @@ class Drone:
         self.logs = Logs(self)
         self.config = Config(self)
         self.connected = False
+        self.client_id: int = None
+        self.in_control: bool = False
         if autoConnect is True:
             self.connect(timeout=timeout)
 
@@ -112,7 +114,7 @@ class Drone:
         self.serial_number = response["serial_number"]
         self.uuid = response["hardware_id"]
 
-    def connect(self, timeout: float = 3):
+    def connect(self, client_info: blueye.protocol.ClientInfo = None, timeout: float = 3):
         """Start receiving telemetry info from the drone, and publishing watchdog messages
 
         When watchdog message are published the thrusters are armed, to stop the drone from moving
@@ -130,6 +132,10 @@ class Drone:
         self._req_rep_client.start()
         self._ctrl_client.start()
         self._watchdog_publisher.start()
+
+        connect_resp = self._req_rep_client.connect_client(client_info=client_info)
+        self.client_id = connect_resp.client_id
+        self.in_control = connect_resp.client_id == connect_resp.client_id_in_control
 
         # The drone runs from a read-only filesystem, and as such does not keep any state,
         # therefore when we connect to it we should send the current time
