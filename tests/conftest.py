@@ -83,8 +83,7 @@ def mocked_drone(
     mocked_watchdog_publisher,
     mocked_req_rep_client,
 ):
-    drone = blueye.sdk.Drone(autoConnect=False)
-    drone.connect()
+    drone = blueye.sdk.Drone()
     drone._req_rep_client.get_overlay_parameters.return_value = bp.OverlayParameters(
         temperature_enabled=False,
         depth_enabled=False,
@@ -107,6 +106,9 @@ def mocked_drone(
         subtitle="",
         date_format="%m/%d/%Y %I:%M:%S %p",
         shading=0,
+    )
+    drone._req_rep_client.connect_client.return_value = bp.ConnectClientRep(
+        client_id=1, client_id_in_control=1
     )
     if hasattr(request, "param"):
         drone.software_version_short = request.param

@@ -124,25 +124,27 @@ class Drone:
         """
         # TODO: Deal with exceptions
         self._update_drone_info(timeout=timeout)
+
         self._telemetry_watcher = TelemetryClient(self)
         self._ctrl_client = CtrlClient(self)
         self._watchdog_publisher = WatchdogPublisher(self)
         self._req_rep_client = ReqRepClient(self)
+
         self._telemetry_watcher.start()
         self._req_rep_client.start()
         self._ctrl_client.start()
         self._watchdog_publisher.start()
 
+        self.ping()
         connect_resp = self._req_rep_client.connect_client(client_info=client_info)
         self.client_id = connect_resp.client_id
         self.in_control = connect_resp.client_id == connect_resp.client_id_in_control
-
-        # The drone runs from a read-only filesystem, and as such does not keep any state,
-        # therefore when we connect to it we should send the current time
-        self.config.set_drone_time(int(time.time()))
-        self.ping()
-        self.motion.send_thruster_setpoint(0, 0, 0, 0)
         self.connected = True
+        if self.in_control:
+            # The drone runs from a read-only filesystem, and as such does not keep any state,
+            # therefore when we connect to it we should send the current time
+            self.config.set_drone_time(int(time.time()))
+            self.motion.send_thruster_setpoint(0, 0, 0, 0)
 
     def disconnect(self):
         """Disconnects the connection, allowing another client to take control of the drone"""
