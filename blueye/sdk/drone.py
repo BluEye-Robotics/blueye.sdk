@@ -4,7 +4,7 @@ import threading
 import time
 import warnings
 from json import JSONDecodeError
-from typing import Dict
+from typing import Dict, List
 
 import blueye.protocol
 import requests
@@ -173,6 +173,14 @@ class Drone:
             self._telemetry_watcher.state["blueye.protocol.ConnectedClientsTel"]
         )
         return list(tel_msg.connected_clients)
+
+    @property
+    def client_in_control(self) -> int:
+        """Get the client id of the client in control of the drone"""
+        tel_msg = blueye.protocol.ConnectedClientsTel.deserialize(
+            self._telemetry_watcher.state["blueye.protocol.ConnectedClientsTel"]
+        )
+        return tel_msg.client_id_in_control
 
     @property
     def lights(self) -> float:
