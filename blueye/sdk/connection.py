@@ -288,3 +288,16 @@ class ReqRepClient(threading.Thread):
             raise blueye.protocol.exceptions.ResponseTimeout(
                 "No response received from drone before timeout"
             )
+
+    def disconnect_client(
+        self, client_id: int, timeout: float = 0.05
+    ) -> blueye.protocol.DisconnectClientRep:
+        request = blueye.protocol.DisconnectClientReq(client_id=client_id)
+        response_queue = queue.Queue(maxsize=1)
+        self.requests_to_send.put((request, blueye.protocol.DisconnectClientRep, response_queue))
+        try:
+            return response_queue.get(timeout=timeout)
+        except queue.Empty:
+            raise blueye.protocol.exceptions.ResponseTimeout(
+                "No response received from drone before timeout"
+            )

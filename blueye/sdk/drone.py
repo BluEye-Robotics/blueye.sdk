@@ -148,14 +148,22 @@ class Drone:
 
     def disconnect(self):
         """Disconnects the connection, allowing another client to take control of the drone"""
+        try:
+            self._req_rep_client.disconnect_client(self.client_id)
+        except blueye.protocol.exceptions.ResponseTimeout:
+            # If there's no response the connection is likely already closed, so we can just
+            # continue to stop threads and disconnect
+            pass
         self._watchdog_publisher.stop()
         self._telemetry_watcher.stop()
         self._req_rep_client.stop()
         self._ctrl_client.stop()
+
         self._watchdog_publisher = None
         self._telemetry_watcher = None
         self._req_rep_client = None
         self._ctrl_client = None
+
         self.connected = False
 
     @property
