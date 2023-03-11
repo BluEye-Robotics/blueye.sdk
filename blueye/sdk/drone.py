@@ -59,6 +59,7 @@ class Drone:
         ip="192.168.1.101",
         autoConnect=True,
         timeout=3,
+        disconnect_other_clients=False,
     ):
         self._ip = ip
         self.camera = Camera(self, is_guestport_camera=False)
@@ -69,7 +70,7 @@ class Drone:
         self.client_id: int = None
         self.in_control: bool = False
         if autoConnect is True:
-            self.connect(timeout=timeout)
+            self.connect(timeout=timeout, disconnect_other_clients=disconnect_other_clients)
 
     def _verify_required_blunux_version(self, requirement: str):
         """Verify that Blunux version is higher than requirement
@@ -114,7 +115,12 @@ class Drone:
         self.serial_number = response["serial_number"]
         self.uuid = response["hardware_id"]
 
-    def connect(self, client_info: blueye.protocol.ClientInfo = None, timeout: float = 3):
+    def connect(
+        self,
+        client_info: blueye.protocol.ClientInfo = None,
+        timeout: float = 3,
+        disconnect_other_clients: bool = False,
+    ):
         """Start receiving telemetry info from the drone, and publishing watchdog messages
 
         When watchdog message are published the thrusters are armed, to stop the drone from moving
@@ -140,6 +146,8 @@ class Drone:
         self.client_id = connect_resp.client_id
         self.in_control = connect_resp.client_id == connect_resp.client_id_in_control
         self.connected = True
+        if disconnect_other_clients and not self.in_control:
+            self.take_control()
         if self.in_control:
             # The drone runs from a read-only filesystem, and as such does not keep any state,
             # therefore when we connect to it we should send the current time
