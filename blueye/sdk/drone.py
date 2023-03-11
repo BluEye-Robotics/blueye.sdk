@@ -182,6 +182,17 @@ class Drone:
         )
         return tel_msg.client_id_in_control
 
+    def take_control(self):
+        """Take control of the drone, disconnecting other clients
+
+        Will disconnect other clients until the client is in control of the drone.
+        """
+        client_in_control = self.client_in_control
+        while self.client_id != client_in_control:
+            resp = self._req_rep_client.disconnect_client(client_in_control)
+            client_in_control = resp.client_id_in_control
+        self.in_control = True
+
     @property
     def lights(self) -> float:
         """Get or set the intensity of the drone lights
