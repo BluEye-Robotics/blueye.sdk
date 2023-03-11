@@ -167,6 +167,14 @@ class Drone:
         self.connected = False
 
     @property
+    def connected_clients(self) -> List[blueye.protocol.ConnectedClient]:
+        """Get a list of connected clients"""
+        tel_msg = blueye.protocol.ConnectedClientsTel.deserialize(
+            self._telemetry_watcher.state["blueye.protocol.ConnectedClientsTel"]
+        )
+        return list(tel_msg.connected_clients)
+
+    @property
     def lights(self) -> float:
         """Get or set the intensity of the drone lights
 
