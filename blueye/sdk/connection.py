@@ -23,9 +23,8 @@ class WatchdogPublisher(threading.Thread):
         duration = 0
         WATCHDOG_DELAY = 1
         while not self._exit_flag.wait(WATCHDOG_DELAY):
-            if self._parent_drone.in_control:
-                self.pet_watchdog(duration)
-                duration += 1
+            self.pet_watchdog(duration)
+            duration += 1
 
     def pet_watchdog(self, duration):
         msg = blueye.protocol.WatchdogCtrl(
