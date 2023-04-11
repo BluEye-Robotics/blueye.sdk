@@ -89,7 +89,7 @@ class CtrlClient(threading.Thread):
     def run(self):
         while not self._exit_flag.is_set():
             try:
-                msg = self.messages_to_send.get(timeout=0.5)
+                msg = self.messages_to_send.get(timeout=0.1)
                 self.drone_pub_socket.send_multipart(
                     [
                         bytes(msg._pb.DESCRIPTOR.full_name, "utf-8"),
