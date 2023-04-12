@@ -499,8 +499,8 @@ class Camera:
 
         *Arguments*:
 
-        * bitrate (int): Set the video stream bitrate in bits, Valid values are in range
-                         (1000 000..16 000 000)
+        * bitrate (int): Set the video stream bitrate in bits, valid values are in range
+                         (1 000 000..16 000 000)
 
         *Returns*:
 
@@ -514,6 +514,29 @@ class Camera:
         if self._camera_parameters is None:
             self._update_camera_parameters()
         self._camera_parameters.h264_bitrate = bitrate
+        self._parent_drone._req_rep_client.set_camera_parameters(self._camera_parameters)
+
+    @property
+    def bitrate_still_picture(self) -> int:
+        """Set or get the bitrate for the still picture stream
+
+        *Arguments*:
+
+        * bitrate (int): Set the still picture stream bitrate in bits, valid values are in range
+                         (1 000 000 .. 300 000 000). Default value is 100 000 000.
+
+        *Returns*:
+
+        * bitrate (int): The still picture stream bitrate
+        """
+        self._update_camera_parameters()
+        return self._camera_parameters.mjpg_bitrate
+
+    @bitrate_still_picture.setter
+    def bitrate_still_picture(self, bitrate: int):
+        if self._camera_parameters is None:
+            self._update_camera_parameters()
+        self._camera_parameters.mjpg_bitrate = bitrate
         self._parent_drone._req_rep_client.set_camera_parameters(self._camera_parameters)
 
     @property
