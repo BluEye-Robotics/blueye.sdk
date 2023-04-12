@@ -4,6 +4,7 @@ import queue
 import threading
 
 import blueye.protocol
+import proto
 import zmq
 
 
@@ -293,6 +294,22 @@ class ReqRepClient(threading.Thread):
         request = blueye.protocol.DisconnectClientReq(client_id=client_id)
         response_queue = queue.Queue(maxsize=1)
         self.requests_to_send.put((request, blueye.protocol.DisconnectClientRep, response_queue))
+        try:
+            return response_queue.get(timeout=timeout)
+        except queue.Empty:
+            raise blueye.protocol.exceptions.ResponseTimeout(
+                "No response received from drone before timeout"
+            )
+
+    def set_telemetry_msg_publish_frequency(
+        self, msg: proto.message.Message, frequency: float, timeout: float = 0.05
+    ) -> blueye.protocol.SetPubFrequencyRep:
+        request = blueye.protocol.SetPubFrequencyReq(
+            message_type=msg.meta.full_name.split(".")[-1],
+            frequency=frequency,
+        )
+        response_queue = queue.Queue(maxsize=1)
+        self.requests_to_send.put((request, blueye.protocol.SetPubFrequencyRep, response_queue))
         try:
             return response_queue.get(timeout=timeout)
         except queue.Empty:
