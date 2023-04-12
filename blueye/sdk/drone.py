@@ -118,7 +118,7 @@ class Drone:
     def connect(
         self,
         client_info: blueye.protocol.ClientInfo = None,
-        timeout: float = 3,
+        timeout: float = 4,
         disconnect_other_clients: bool = False,
     ):
         """Start receiving telemetry info from the drone, and publishing watchdog messages
