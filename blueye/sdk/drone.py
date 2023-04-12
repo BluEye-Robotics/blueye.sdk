@@ -103,8 +103,8 @@ class Drone:
             requests.ReadTimeout,
             requests.ConnectionError,
             JSONDecodeError,
-        ):
-            raise ConnectionError("Could not establish connection with drone")
+        ) as e:
+            raise ConnectionError("Could not establish connection with drone") from e
         try:
             self.features = list(filter(None, response["features"].split(",")))
         except KeyError:
