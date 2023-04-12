@@ -7,6 +7,7 @@ from json import JSONDecodeError
 from typing import Dict, List
 
 import blueye.protocol
+import proto
 import requests
 from packaging import version
 
@@ -305,3 +306,19 @@ class Drone:
         Raises a ResponseTimeout exception if the drone does not respond within the timeout period.
         """
         self._req_rep_client.ping(timeout)
+
+    def set_telemetry_msg_publish_frequency(self, msg: proto.message.Message, frequency: float):
+        """Set the publishing frequency of a specific telemetry message
+
+        Raises a RuntimeError if the drone fails to set the frequency. Possible causes could be a
+        frequency outside the valid range, or an incorrect message type.
+
+        *Arguments*:
+
+        * msg (proto.message.Message): The message to set the frequency of. Needs to be one of the messages in blueye.protocol that end in Tel, eg. blueye.protocol.DepthTel
+        * frequency (float): The frequency in Hz. Valid range is (0 .. 100).
+
+        """
+        resp = self._req_rep_client.set_telemetry_msg_publish_frequency(msg, frequency)
+        if not resp.success:
+            raise RuntimeError("Could not set telemetry message frequency")
