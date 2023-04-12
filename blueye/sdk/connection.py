@@ -4,7 +4,6 @@ import queue
 import threading
 
 import blueye.protocol
-import proto
 import zmq
 
 
