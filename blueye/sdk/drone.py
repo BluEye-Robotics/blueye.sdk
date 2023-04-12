@@ -190,13 +190,17 @@ class Drone:
         )
         return tel_msg.client_id_in_control
 
-    def take_control(self):
+    def take_control(self, timeout=1):
         """Take control of the drone, disconnecting other clients
 
         Will disconnect other clients until the client is in control of the drone.
+        Raises a RuntimeError if the client could not take control of the drone in the given time.
         """
+        start_time = time.time()
         client_in_control = self.client_in_control
         while self.client_id != client_in_control:
+            if time.time() - start_time > timeout:
+                raise RuntimeError("Could not take control of the drone in the given time")
             resp = self._req_rep_client.disconnect_client(client_in_control)
             client_in_control = resp.client_id_in_control
         self.in_control = True
