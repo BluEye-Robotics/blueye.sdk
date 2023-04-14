@@ -315,7 +315,9 @@ class Drone:
 
         *Arguments*:
 
-        * msg (proto.message.Message): The message to set the frequency of. Needs to be one of the messages in blueye.protocol that end in Tel, eg. blueye.protocol.DepthTel
+        * msg (proto.message.Message): The message to set the frequency of. Needs to be one of the
+                                       messages in blueye.protocol that end in Tel, eg.
+                                       blueye.protocol.DepthTel
         * frequency (float): The frequency in Hz. Valid range is (0 .. 100).
 
         """
