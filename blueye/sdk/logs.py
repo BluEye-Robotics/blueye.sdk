@@ -29,7 +29,7 @@ class LogFile:
     def __init__(self, maxdepth, name, timestamp, binsize, ip):
         self.maxdepth = maxdepth
         self.name = name
-        self.timestamp = datetime.fromisoformat(timestamp)
+        self.timestamp = datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S.%f%z")
         self.binsize = binsize
         self.download_path = "http://" + ip + "/logcsv/" + name
         self._formatted_values = [
