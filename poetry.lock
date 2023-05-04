@@ -2048,4 +2048,4 @@ examples = ["asciimatics", "inputs", "matplotlib", "pandas", "webdavclient3"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.7.1, <3.11"
-content-hash = "3b1be48cb5ba6aa9a2f40541e925342feb31fcdddac93604c75a6e82f49178b4"
+content-hash = "ffee950480bb9363ead081aa22e75c2e33317b8d86e82417f6796a40ce3d3f2a"
