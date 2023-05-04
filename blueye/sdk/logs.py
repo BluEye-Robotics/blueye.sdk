@@ -1,5 +1,6 @@
 from datetime import datetime
 
+import dateutil.parser
 import requests
 import tabulate
 
@@ -29,7 +30,7 @@ class LogFile:
     def __init__(self, maxdepth, name, timestamp, binsize, ip):
         self.maxdepth = maxdepth
         self.name = name
-        self.timestamp = datetime.fromisoformat(timestamp)
+        self.timestamp: datetime = dateutil.parser.isoparse(timestamp)
         self.binsize = binsize
         self.download_path = "http://" + ip + "/logcsv/" + name
         self._formatted_values = [
@@ -119,9 +120,13 @@ class Logs:
     def _build_log_files_from_dictionary(self, list_of_logs_in_dictionaries):
         loglist = {}
         for log in list_of_logs_in_dictionaries:
-            loglist[log["name"]] = LogFile(
-                log["maxdepth"], log["name"], log["timestamp"], log["binsize"], self.ip
-            )
+            try:
+                loglist[log["name"]] = LogFile(
+                    log["maxdepth"], log["name"], log["timestamp"], log["binsize"], self.ip
+                )
+            except dateutil.parser.ParserError:
+                # TODO: Log this instead of printing when logging is implemented
+                print(f"Could not parse timestamp for log {log['name']}, skipping this log file")
         return loglist
 
     def refresh_log_index(self):
