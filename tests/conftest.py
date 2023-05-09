@@ -2,7 +2,6 @@ import blueye.protocol as bp
 import pytest
 
 import blueye.sdk
-from blueye.sdk import Drone
 
 
 @pytest.fixture(scope="class")
@@ -11,7 +10,7 @@ def real_drone():
 
     Used for integration tests with physical hardware.
     """
-    return Drone()
+    return blueye.sdk.Drone()
 
 
 @pytest.fixture
