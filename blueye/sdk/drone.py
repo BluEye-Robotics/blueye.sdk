@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
-import socket
-import threading
 import time
-import warnings
 from json import JSONDecodeError
 from typing import Dict, List
 
