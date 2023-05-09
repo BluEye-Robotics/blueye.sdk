@@ -569,21 +569,21 @@ class Camera:
 
         *Arguments*:
 
-        * whitebalance (int): Set the camera white balance. Valid values are in the range
-                              (2800..9300) or -1 for auto white balance
+        * white_balance (int): Set the camera white balance. Valid values are in the range
+                               (2800..9300) or -1 for auto white balance
 
         *Returns*:
 
-        * whitebalance (int): Get the camera white balance
+        * white_balance (int): Get the camera white balance
         """
         self._update_camera_parameters()
-        return self._camera_parameters.whitebalance
+        return self._camera_parameters.white_balance
 
     @whitebalance.setter
-    def whitebalance(self, whitebalance: int):
+    def whitebalance(self, white_balance: int):
         if self._camera_parameters is None:
             self._update_camera_parameters()
-        self._camera_parameters.whitebalance = whitebalance
+        self._camera_parameters.white_balance = white_balance
         self._parent_drone._req_rep_client.set_camera_parameters(self._camera_parameters)
 
     @property
