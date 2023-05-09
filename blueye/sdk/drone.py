@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import time
 from json import JSONDecodeError
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 import blueye.protocol
 import proto
@@ -168,20 +168,24 @@ class Drone:
         self.connected = False
 
     @property
-    def connected_clients(self) -> List[blueye.protocol.ConnectedClient]:
+    def connected_clients(self) -> Optional[List[blueye.protocol.ConnectedClient]]:
         """Get a list of connected clients"""
-        tel_msg = blueye.protocol.ConnectedClientsTel.deserialize(
-            self._telemetry_watcher.state["blueye.protocol.ConnectedClientsTel"]
-        )
-        return list(tel_msg.connected_clients)
+        try:
+            clients_msg = self._telemetry_watcher.state["blueye.protocol.ConnectedClientsTel"]
+        except KeyError:
+            return None
+        clients_msg_deserialized = blueye.protocol.ConnectedClientsTel.deserialize(clients_msg)
+        return list(clients_msg_deserialized.connected_clients)
 
     @property
-    def client_in_control(self) -> int:
+    def client_in_control(self) -> Optional[int]:
         """Get the client id of the client in control of the drone"""
-        tel_msg = blueye.protocol.ConnectedClientsTel.deserialize(
-            self._telemetry_watcher.state["blueye.protocol.ConnectedClientsTel"]
-        )
-        return tel_msg.client_id_in_control
+        try:
+            clients_msg = self._telemetry_watcher.state["blueye.protocol.ConnectedClientsTel"]
+        except KeyError:
+            return None
+        clients_msg_deserialized = blueye.protocol.ConnectedClientsTel.deserialize(clients_msg)
+        return clients_msg_deserialized.client_id_in_control
 
     def take_control(self, timeout=1):
         """Take control of the drone, disconnecting other clients
@@ -199,7 +203,7 @@ class Drone:
         self.in_control = True
 
     @property
-    def lights(self) -> float:
+    def lights(self) -> Optional[float]:
         """Get or set the intensity of the drone lights
 
         *Arguments*:
@@ -210,9 +214,11 @@ class Drone:
 
         * brightness (float): The intensity of the drone light (0..1)
         """
-        lights_msg = self._telemetry_watcher.state["blueye.protocol.LightsTel"]
-        value = blueye.protocol.LightsTel.deserialize(lights_msg).lights.value
-        return value
+        try:
+            lights_msg = self._telemetry_watcher.state["blueye.protocol.LightsTel"]
+        except KeyError:
+            return None
+        return blueye.protocol.LightsTel.deserialize(lights_msg).lights.value
 
     @lights.setter
     def lights(self, brightness: float):
@@ -221,26 +227,32 @@ class Drone:
         self._ctrl_client.set_lights(brightness)
 
     @property
-    def depth(self) -> float:
+    def depth(self) -> Optional[float]:
         """Get the current depth in meters
 
         *Returns*:
 
         * depth (float): The depth in meters of water column.
         """
-        depthTel = self._telemetry_watcher.state["blueye.protocol.DepthTel"]
+        try:
+            depthTel = self._telemetry_watcher.state["blueye.protocol.DepthTel"]
+        except KeyError:
+            return None
         depthTel_msg = blueye.protocol.DepthTel.deserialize(depthTel)
         return depthTel_msg.depth.value
 
     @property
-    def pose(self) -> dict:
+    def pose(self) -> Optional[dict]:
         """Get the current orientation of the drone
 
         *Returns*:
 
         * pose (dict): Dictionary with roll, pitch, and yaw in degrees, from 0 to 359.
         """
-        attitude_msg = self._telemetry_watcher.state["blueye.protocol.AttitudeTel"]
+        try:
+            attitude_msg = self._telemetry_watcher.state["blueye.protocol.AttitudeTel"]
+        except KeyError:
+            return None
         attitude = blueye.protocol.AttitudeTel.deserialize(attitude_msg).attitude
         pose = {
             "roll": (attitude.roll + 360) % 360,
@@ -250,26 +262,32 @@ class Drone:
         return pose
 
     @property
-    def battery_state_of_charge(self) -> float:
+    def battery_state_of_charge(self) -> Optional[float]:
         """Get the battery state of charge
 
         *Returns*:
 
         * State of charge (float): Current state of charge of the drone battery (0..1)
         """
-        batteryTel = self._telemetry_watcher.state["blueye.protocol.BatteryTel"]
+        try:
+            batteryTel = self._telemetry_watcher.state["blueye.protocol.BatteryTel"]
+        except KeyError:
+            return None
         batteryTel_msg = blueye.protocol.BatteryTel.deserialize(batteryTel)
         return batteryTel_msg.battery.level
 
     @property
-    def error_flags(self) -> Dict[str, bool]:
+    def error_flags(self) -> Optional[Dict[str, bool]]:
         """Get the error flags
 
         *Returns*:
 
         * error_flags (dict): The error flags as bools in a dictionary
         """
-        error_flags_tel = self._telemetry_watcher.state["blueye.protocol.ErrorFlagsTel"]
+        try:
+            error_flags_tel = self._telemetry_watcher.state["blueye.protocol.ErrorFlagsTel"]
+        except KeyError:
+            return None
         error_flags_msg: blueye.protocol.ErrorFlags = blueye.protocol.ErrorFlagsTel.deserialize(
             error_flags_tel
         ).error_flags
@@ -281,14 +299,17 @@ class Drone:
         return error_flags
 
     @property
-    def active_video_streams(self) -> Dict[str, int]:
+    def active_video_streams(self) -> Optional[Dict[str, int]]:
         """Get the number of currently active connections to the video stream
 
         Every client connected to the RTSP stream (does not matter if it's directly from GStreamer,
         or from the Blueye app) counts as one connection.
 
         """
-        NStreamersTel = self._telemetry_watcher.state["blueye.protocol.NStreamersTel"]
+        try:
+            NStreamersTel = self._telemetry_watcher.state["blueye.protocol.NStreamersTel"]
+        except KeyError:
+            return None
         n_streamers_msg = blueye.protocol.NStreamersTel.deserialize(NStreamersTel).n_streamers
         return {"main": n_streamers_msg.main, "guestport": n_streamers_msg.guestport}
 
