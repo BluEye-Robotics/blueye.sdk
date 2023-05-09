@@ -1,4 +1,5 @@
 import threading
+from typing import Optional
 
 import blueye.protocol
 
@@ -172,7 +173,7 @@ class Motion:
             self._send_motion_input_message()
 
     @property
-    def auto_depth_active(self) -> bool:
+    def auto_depth_active(self) -> Optional[bool]:
         """Enable or disable the auto depth control mode
 
         When auto depth is active, input for the heave direction to the thruster_setpoint function
@@ -188,10 +189,12 @@ class Motion:
 
         * Auto depth state (bool): True if auto depth is active, false if not
         """
-
-        control_mode_tel = self._parent_drone._telemetry_watcher.state[
-            "blueye.protocol.ControlModeTel"
-        ]
+        try:
+            control_mode_tel = self._parent_drone._telemetry_watcher.state[
+                "blueye.protocol.ControlModeTel"
+            ]
+        except KeyError:
+            return None
         control_mode = blueye.protocol.ControlModeTel.deserialize(control_mode_tel).state
         return control_mode.auto_depth
 
@@ -200,7 +203,7 @@ class Motion:
         self._parent_drone._ctrl_client.set_auto_depth_state(enable)
 
     @property
-    def auto_heading_active(self) -> bool:
+    def auto_heading_active(self) -> Optional[bool]:
         """Enable or disable the auto heading control mode
 
         When auto heading is active, input for the yaw direction to the thruster_setpoint function
@@ -216,9 +219,12 @@ class Motion:
 
         * Auto heading state (bool): True if auto heading mode is active, false if not
         """
-        control_mode_tel = self._parent_drone._telemetry_watcher.state[
-            "blueye.protocol.ControlModeTel"
-        ]
+        try:
+            control_mode_tel = self._parent_drone._telemetry_watcher.state[
+                "blueye.protocol.ControlModeTel"
+            ]
+        except KeyError:
+            return None
         control_mode = blueye.protocol.ControlModeTel.deserialize(control_mode_tel).state
         return control_mode.auto_heading
 

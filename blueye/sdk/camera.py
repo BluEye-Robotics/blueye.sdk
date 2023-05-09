@@ -37,13 +37,16 @@ class Tilt:
         self._parent_drone._ctrl_client.set_tilt_velocity(velocity)
 
     @property
-    def angle(self) -> float:
+    def angle(self) -> Optional[float]:
         """Return the current angle of the camera tilt
 
         Raises a RuntimeError if the connected drone does not have the tilt option
         """
         self._verify_tilt_in_features()
-        TiltAngleTel = self._parent_drone._telemetry_watcher.state["blueye.protocol.TiltAngleTel"]
+        try:
+            TiltAngleTel = self._parent_drone._telemetry_watcher.state["blueye.protocol.TiltAngleTel"]
+        except KeyError:
+            return None
         tilt_angle = blueye.protocol.TiltAngleTel.deserialize(TiltAngleTel).angle.value
         return tilt_angle
 
