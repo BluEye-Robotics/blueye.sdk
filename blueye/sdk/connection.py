@@ -93,7 +93,8 @@ class CtrlClient(threading.Thread):
                     ]
                 )
             except queue.Empty:
-                pass
+                # No messages to send, so we can
+                continue
 
     def stop(self):
         self._exit_flag.set()
@@ -182,6 +183,7 @@ class ReqRepClient(threading.Thread):
                     ]
                 )
             except queue.Empty:
+                # No requests to send, so we can
                 continue
             # TODO: Deal with timeout
             resp = self._socket.recv_multipart()
