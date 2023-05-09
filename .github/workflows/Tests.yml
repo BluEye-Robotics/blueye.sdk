@@ -33,7 +33,7 @@ jobs:
           env_vars: OS,PYTHON
           fail_ci_if_error: false
           files: ./coverage.xml
-          flags: unittests
+          flags: ${{ matrix.os }}_${{ matrix.python }}
           name: codecov-umbrella
         continue-on-error: true
 
