@@ -78,12 +78,6 @@ class Drone:
         Raises a RuntimeError if the Blunux version of the connected drone does not match or exceed
         the requirement.
         """
-
-        if not self.connected:
-            raise ConnectionError(
-                "The connection to the drone is not established, try calling the connect method "
-                "before retrying"
-            )
         if version.parse(self.software_version_short) < version.parse(requirement):
             raise RuntimeError(
                 f"Blunux version of connected drone is {self.software_version_short}. Version "
