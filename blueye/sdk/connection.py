@@ -54,6 +54,9 @@ class TelemetryClient(threading.Thread):
         self.socket.setsockopt_string(zmq.SUBSCRIBE, "")
         self._exit_flag = threading.Event()
         self.state = {}
+        """`state` is dictionary of the latest received messages, where the key is the protobuf
+        message name, eg. "blueye.protocol.TiltAngleTel" and the value is the serialized protobuf
+        message"""
 
     def run(self):
         poller = zmq.Poller()
