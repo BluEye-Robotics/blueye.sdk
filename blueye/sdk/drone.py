@@ -122,6 +122,7 @@ class Drone:
         """
         # TODO: Deal with exceptions
         self._update_drone_info(timeout=timeout)
+        self._verify_required_blunux_version("3.1")
 
         self._telemetry_watcher = TelemetryClient(self)
         self._ctrl_client = CtrlClient(self)

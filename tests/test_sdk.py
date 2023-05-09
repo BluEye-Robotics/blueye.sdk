@@ -1,3 +1,4 @@
+import json
 from time import time
 from unittest.mock import Mock, PropertyMock
 
@@ -52,8 +53,6 @@ def test_feature_list(mocked_drone):
 
 
 def test_feature_list_is_empty_on_old_versions(mocked_drone, requests_mock):
-    import json
-
     dummy_drone_info = {
         "commit_id_csys": "299238949a",
         "hardware_id": "ea9ac92e1817a1d4",
@@ -75,14 +74,29 @@ def test_feature_list_is_empty_on_old_versions(mocked_drone, requests_mock):
 
 def test_software_version(mocked_drone):
     mocked_drone._update_drone_info()
-    assert mocked_drone.software_version == "1.4.7-warrior-master"
-    assert mocked_drone.software_version_short == "1.4.7"
+    assert mocked_drone.software_version == "3.1.52-honister-master"
+    assert mocked_drone.software_version_short == "3.1.52"
 
 
-def test_verify_sw_version_raises_connection_error_when_not_connected(mocked_drone: Drone):
-    mocked_drone.connected = False
-    with pytest.raises(ConnectionError):
-        mocked_drone._verify_required_blunux_version("1.4.7")
+def test_connect_fails_on_old_versions(mocked_drone, requests_mock):
+    mocked_drone.software_version_short = "1.3.2"
+    dummy_drone_info = {
+        "commit_id_csys": "299238949a",
+        "hardware_id": "ea9ac92e1817a1d4",
+        "manufacturer": "Blueye Robotics",
+        "model_description": "Blueye Pioneer Underwater Drone",
+        "model_name": "Blueye Pioneer",
+        "model_url": "https://www.blueyerobotics.com",
+        "operating_system": "blunux",
+        "serial_number": "BYEDP123456",
+        "sw_version": "1.3.2-rocko-master",
+    }
+    requests_mock.get(
+        "http://192.168.1.101/diagnostics/drone_info",
+        content=json.dumps(dummy_drone_info).encode(),
+    )
+    with pytest.raises(RuntimeError):
+        mocked_drone.connect()
 
 
 def test_depth_reading(mocked_drone):
