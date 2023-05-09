@@ -12,11 +12,9 @@ class WatchdogPublisher(threading.Thread):
     def __init__(self, parent_drone: "blueye.sdk.Drone", context: zmq.Context = None):
         super().__init__(daemon=True)
         self._parent_drone = parent_drone
-        self.drone_ip = self._parent_drone._ip
-        self.port = 5557
-        self.context = context or zmq.Context().instance()
-        self.socket = self.context.socket(zmq.PUB)
-        self.socket.connect(f"tcp://{self.drone_ip}:{self.port}")
+        self._context = context or zmq.Context().instance()
+        self._socket = self._context.socket(zmq.PUB)
+        self._socket.connect(f"tcp://{self._parent_drone._ip}:5557")
         self._exit_flag = threading.Event()
 
     def run(self):
@@ -30,7 +28,7 @@ class WatchdogPublisher(threading.Thread):
         msg = blueye.protocol.WatchdogCtrl(
             connection_duration={"value": duration}, client_id=self._parent_drone.client_id
         )
-        self.socket.send_multipart(
+        self._socket.send_multipart(
             [
                 bytes(msg._pb.DESCRIPTOR.full_name, "utf-8"),
                 blueye.protocol.WatchdogCtrl.serialize(msg),
@@ -46,12 +44,10 @@ class TelemetryClient(threading.Thread):
     def __init__(self, parent_drone: "blueye.sdk.Drone", context: zmq.Context = None):
         super().__init__(daemon=True)
         self._parent_drone = parent_drone
-        self.context = context or zmq.Context().instance()
-        self.host = self._parent_drone._ip
-        self.port = 5555
-        self.socket = self.context.socket(zmq.SUB)
-        self.socket.connect(f"tcp://{self.host}:{self.port}")
-        self.socket.setsockopt_string(zmq.SUBSCRIBE, "")
+        self._context = context or zmq.Context().instance()
+        self._socket = self._context.socket(zmq.SUB)
+        self._socket.connect(f"tcp://{self._parent_drone._ip}:5555")
+        self._socket.setsockopt_string(zmq.SUBSCRIBE, "")
         self._exit_flag = threading.Event()
         self.state = {}
         """`state` is dictionary of the latest received messages, where the key is the protobuf
@@ -60,12 +56,12 @@ class TelemetryClient(threading.Thread):
 
     def run(self):
         poller = zmq.Poller()
-        poller.register(self.socket, zmq.POLLIN)
+        poller.register(self._socket, zmq.POLLIN)
 
         while not self._exit_flag.is_set():
             events_to_be_processed = poller.poll(10)
             if len(events_to_be_processed) > 0:
-                msg = self.socket.recv_multipart()
+                msg = self._socket.recv_multipart()
                 self.state[msg[0].decode("utf-8")] = msg[1]
 
     def stop(self):
@@ -79,21 +75,18 @@ class CtrlClient(threading.Thread):
         context: zmq.Context = None,
     ):
         super().__init__(daemon=True)
-        self.context = context or zmq.Context().instance()
+        self._context = context or zmq.Context().instance()
         self._parent_drone = parent_drone
-
-        self.port = 5557
-        self.drone_pub_socket = self.context.socket(zmq.PUB)
-        self.drone_pub_socket.connect(f"tcp://{self._parent_drone._ip}:{self.port}")
-
-        self.messages_to_send = queue.Queue()
+        self._drone_pub_socket = self._context.socket(zmq.PUB)
+        self._drone_pub_socket.connect(f"tcp://{self._parent_drone._ip}:5557")
+        self._messages_to_send = queue.Queue()
         self._exit_flag = threading.Event()
 
     def run(self):
         while not self._exit_flag.is_set():
             try:
-                msg = self.messages_to_send.get(timeout=0.1)
-                self.drone_pub_socket.send_multipart(
+                msg = self._messages_to_send.get(timeout=0.1)
+                self._drone_pub_socket.send_multipart(
                     [
                         bytes(msg._pb.DESCRIPTOR.full_name, "utf-8"),
                         msg.__class__.serialize(msg),
@@ -107,19 +100,19 @@ class CtrlClient(threading.Thread):
 
     def set_lights(self, value: float):
         msg = blueye.protocol.LightsCtrl(lights={"value": value})
-        self.messages_to_send.put(msg)
+        self._messages_to_send.put(msg)
 
     def set_water_density(self, value: float):
         msg = blueye.protocol.WaterDensityCtrl(density={"value": value})
-        self.messages_to_send.put(msg)
+        self._messages_to_send.put(msg)
 
     def set_tilt_velocity(self, value: float):
         msg = blueye.protocol.TiltVelocityCtrl(velocity={"value": value})
-        self.messages_to_send.put(msg)
+        self._messages_to_send.put(msg)
 
     def set_tilt_stabilization(self, enabled: bool):
         msg = blueye.protocol.TiltStabilizationCtrl(state={"enabled": enabled})
-        self.messages_to_send.put(msg)
+        self._messages_to_send.put(msg)
 
     def set_motion_input(
         self, surge: float, sway: float, heave: float, yaw: float, slow: float, boost: float
@@ -134,36 +127,35 @@ class CtrlClient(threading.Thread):
                 "boost": boost,
             }
         )
-        self.messages_to_send.put(msg)
+        self._messages_to_send.put(msg)
 
     def set_auto_depth_state(self, enabled: bool):
         msg = blueye.protocol.AutoDepthCtrl(state={"enabled": enabled})
-        self.messages_to_send.put(msg)
+        self._messages_to_send.put(msg)
 
     def set_auto_heading_state(self, enabled: bool):
         msg = blueye.protocol.AutoHeadingCtrl(state={"enabled": enabled})
-        self.messages_to_send.put(msg)
+        self._messages_to_send.put(msg)
 
     def set_recording_state(self, main_enabled: bool, guestport_enabled: bool):
         msg = blueye.protocol.RecordCtrl(
             record_on={"main": main_enabled, "guestport": guestport_enabled}
         )
-        self.messages_to_send.put(msg)
+        self._messages_to_send.put(msg)
 
     def take_still_picture(self):
         msg = blueye.protocol.TakePictureCtrl()
-        self.messages_to_send.put(msg)
+        self._messages_to_send.put(msg)
 
 
 class ReqRepClient(threading.Thread):
     def __init__(self, parent_drone: "blueye.sdk.Drone", context: zmq.Context = None):
         super().__init__(daemon=True)
-        self.context = context or zmq.Context().instance()
+        self._context = context or zmq.Context().instance()
         self._parent_drone = parent_drone
-        self.port = 5556
-        self.socket = self.context.socket(zmq.REQ)
-        self.socket.connect(f"tcp://{self._parent_drone._ip}:{self.port}")
-        self.requests_to_send = queue.Queue()
+        self._socket = self._context.socket(zmq.REQ)
+        self._socket.connect(f"tcp://{self._parent_drone._ip}:5556")
+        self._requests_to_send = queue.Queue()
         self._exit_flag = threading.Event()
 
     def _get_client_info(self) -> blueye.protocol.ClientInfo:
@@ -180,8 +172,10 @@ class ReqRepClient(threading.Thread):
     def run(self):
         while not self._exit_flag.is_set():
             try:
-                msg, response_type, response_callback_queue = self.requests_to_send.get(timeout=0.1)
-                self.socket.send_multipart(
+                msg, response_type, response_callback_queue = self._requests_to_send.get(
+                    timeout=0.1
+                )
+                self._socket.send_multipart(
                     [
                         bytes(msg._pb.DESCRIPTOR.full_name, "utf-8"),
                         msg.__class__.serialize(msg),
@@ -190,7 +184,7 @@ class ReqRepClient(threading.Thread):
             except queue.Empty:
                 continue
             # TODO: Deal with timeout
-            resp = self.socket.recv_multipart()
+            resp = self._socket.recv_multipart()
             resp_deserialized = response_type.deserialize(resp[1])
             response_callback_queue.put(resp_deserialized)
 
@@ -200,7 +194,7 @@ class ReqRepClient(threading.Thread):
     def ping(self, timeout: float) -> blueye.protocol.PingRep:
         request = blueye.protocol.PingReq()
         response_queue = queue.Queue(maxsize=1)
-        self.requests_to_send.put((request, blueye.protocol.PingRep, response_queue))
+        self._requests_to_send.put((request, blueye.protocol.PingRep, response_queue))
         try:
             return response_queue.get(timeout=timeout)
         except queue.Empty:
@@ -213,7 +207,9 @@ class ReqRepClient(threading.Thread):
     ) -> blueye.protocol.CameraParameters:
         request = blueye.protocol.GetCameraParametersReq(camera=camera)
         response_queue = queue.Queue(maxsize=1)
-        self.requests_to_send.put((request, blueye.protocol.GetCameraParametersRep, response_queue))
+        self._requests_to_send.put(
+            (request, blueye.protocol.GetCameraParametersRep, response_queue)
+        )
         try:
             return response_queue.get(timeout=timeout).camera_parameters
         except queue.Empty:
@@ -228,7 +224,9 @@ class ReqRepClient(threading.Thread):
     ):
         request = blueye.protocol.SetCameraParametersReq(camera_parameters=parameters)
         response_queue = queue.Queue(maxsize=1)
-        self.requests_to_send.put((request, blueye.protocol.SetCameraParametersRep, response_queue))
+        self._requests_to_send.put(
+            (request, blueye.protocol.SetCameraParametersRep, response_queue)
+        )
         try:
             response_queue.get(timeout=timeout)
         except queue.Empty:
@@ -239,7 +237,7 @@ class ReqRepClient(threading.Thread):
     def get_overlay_parameters(self, timeout: float = 0.05) -> blueye.protocol.OverlayParameters:
         request = blueye.protocol.GetOverlayParametersReq()
         response_queue = queue.Queue(maxsize=1)
-        self.requests_to_send.put(
+        self._requests_to_send.put(
             (request, blueye.protocol.GetOverlayParametersRep, response_queue)
         )
         try:
@@ -254,7 +252,7 @@ class ReqRepClient(threading.Thread):
     ):
         request = blueye.protocol.SetOverlayParametersReq(overlay_parameters=parameters)
         response_queue = queue.Queue(maxsize=1)
-        self.requests_to_send.put(
+        self._requests_to_send.put(
             (request, blueye.protocol.SetOverlayParametersRep, response_queue)
         )
         try:
@@ -269,7 +267,7 @@ class ReqRepClient(threading.Thread):
             time={"unix_timestamp": {"seconds": time, "nanos": 0}}
         )
         response_queue = queue.Queue(maxsize=1)
-        self.requests_to_send.put((request, blueye.protocol.SyncTimeRep, response_queue))
+        self._requests_to_send.put((request, blueye.protocol.SyncTimeRep, response_queue))
         try:
             response_queue.get(timeout=timeout)
         except queue.Empty:
@@ -283,7 +281,7 @@ class ReqRepClient(threading.Thread):
         client = client_info or self._get_client_info()
         request = blueye.protocol.ConnectClientReq(client_info=client)
         response_queue = queue.Queue(maxsize=1)
-        self.requests_to_send.put((request, blueye.protocol.ConnectClientRep, response_queue))
+        self._requests_to_send.put((request, blueye.protocol.ConnectClientRep, response_queue))
         try:
             return response_queue.get(timeout=timeout)
         except queue.Empty:
@@ -296,7 +294,7 @@ class ReqRepClient(threading.Thread):
     ) -> blueye.protocol.DisconnectClientRep:
         request = blueye.protocol.DisconnectClientReq(client_id=client_id)
         response_queue = queue.Queue(maxsize=1)
-        self.requests_to_send.put((request, blueye.protocol.DisconnectClientRep, response_queue))
+        self._requests_to_send.put((request, blueye.protocol.DisconnectClientRep, response_queue))
         try:
             return response_queue.get(timeout=timeout)
         except queue.Empty:
@@ -312,7 +310,7 @@ class ReqRepClient(threading.Thread):
             frequency=frequency,
         )
         response_queue = queue.Queue(maxsize=1)
-        self.requests_to_send.put((request, blueye.protocol.SetPubFrequencyRep, response_queue))
+        self._requests_to_send.put((request, blueye.protocol.SetPubFrequencyRep, response_queue))
         try:
             return response_queue.get(timeout=timeout)
         except queue.Empty:
