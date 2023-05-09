@@ -23,12 +23,12 @@ def mocked_requests(requests_mock):
         "features": "lasers,harpoon",
         "hardware_id": "ea9ac92e1817a1d4",
         "manufacturer": "Blueye Robotics",
-        "model_description": "Blueye Pioneer Underwater Drone",
-        "model_name": "Blueye Pioneer",
+        "model_description": "Blueye X3 Underwater Drone",
+        "model_name": "Blueye X3",
         "model_url": "https://www.blueyerobotics.com",
         "operating_system": "blunux",
-        "serial_number": "BYEDP123456",
-        "sw_version": "1.4.7-warrior-master",
+        "serial_number": "BYEDP230000",
+        "sw_version": "3.1.52-honister-master",
     }
     requests_mock.get(
         "http://192.168.1.101/diagnostics/drone_info",
