@@ -70,7 +70,7 @@ class TelemetryClient(threading.Thread):
                 msg_payload = msg[1]
                 with self._state_lock:
                     self._state[msg_type] = msg_payload
-                for cb in [cb for cb in self._callbacks if re.match(cb[0], msg_type)]:
+                for cb in [cb for cb in self._callbacks if re.fullmatch(cb[0], msg_type)]:
                     try:
                         payload_msg = blueye.protocol.__getattribute__(msg_type).deserialize(
                             msg_payload
