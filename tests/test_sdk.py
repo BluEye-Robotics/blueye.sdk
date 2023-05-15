@@ -16,7 +16,7 @@ class TestLights:
     def test_lights_returns_value(self, mocked_drone):
         lights_tel = bp.LightsTel(lights={"value": 0})
         lights_tel_serialized = lights_tel.__class__.serialize(lights_tel)
-        mocked_drone._telemetry_watcher.state["blueye.protocol.LightsTel"] = lights_tel_serialized
+        mocked_drone._telemetry_watcher._state["LightsTel"] = lights_tel_serialized
         assert mocked_drone.lights == 0
 
 
@@ -27,9 +27,7 @@ class TestPose:
             attitude={"roll": old_angle, "pitch": old_angle, "yaw": old_angle}
         )
         attitude_tel_serialized = attitude_tel.__class__.serialize(attitude_tel)
-        mocked_drone._telemetry_watcher.state[
-            "blueye.protocol.AttitudeTel"
-        ] = attitude_tel_serialized
+        mocked_drone._telemetry_watcher._state["AttitudeTel"] = attitude_tel_serialized
         pose = mocked_drone.pose
         assert pose["roll"] == new_angle
         assert pose["pitch"] == new_angle
@@ -103,14 +101,14 @@ def test_depth_reading(mocked_drone):
     depth = 10
     depthTel = bp.DepthTel(depth={"value": depth})
     depthTel_serialized = depthTel.__class__.serialize(depthTel)
-    mocked_drone._telemetry_watcher.state["blueye.protocol.DepthTel"] = depthTel_serialized
+    mocked_drone._telemetry_watcher._state["DepthTel"] = depthTel_serialized
     assert mocked_drone.depth == depth
 
 
 def test_error_flags(mocked_drone):
     error_flags_tel = bp.ErrorFlagsTel(error_flags={"depth_read": True})
     error_flags_serialized = error_flags_tel.__class__.serialize(error_flags_tel)
-    mocked_drone._telemetry_watcher.state["blueye.protocol.ErrorFlagsTel"] = error_flags_serialized
+    mocked_drone._telemetry_watcher._state["ErrorFlagsTel"] = error_flags_serialized
     assert mocked_drone.error_flags["depth_read"] == True
 
 
@@ -118,7 +116,7 @@ def test_battery_state_of_charge_reading(mocked_drone):
     SoC = 0.77
     batteryTel = bp.BatteryTel(battery={"level": SoC})
     batteryTel_msg = batteryTel.__class__.serialize(batteryTel)
-    mocked_drone._telemetry_watcher.state["blueye.protocol.BatteryTel"] = batteryTel_msg
+    mocked_drone._telemetry_watcher._state["BatteryTel"] = batteryTel_msg
     assert mocked_drone.battery_state_of_charge == pytest.approx(SoC)
 
 
@@ -146,9 +144,7 @@ def test_update_drone_info_raises_ConnectionError_when_not_connected(
 def test_active_video_streams_return_correct_number(mocked_drone: Drone):
     NStreamersTel = bp.NStreamersTel(n_streamers={"main": 1, "guestport": 2})
     NStreamersTel_serialized = NStreamersTel.__class__.serialize(NStreamersTel)
-    mocked_drone._telemetry_watcher.state[
-        "blueye.protocol.NStreamersTel"
-    ] = NStreamersTel_serialized
+    mocked_drone._telemetry_watcher._state["NStreamersTel"] = NStreamersTel_serialized
 
     assert mocked_drone.active_video_streams["main"] == 1
     assert mocked_drone.active_video_streams["guestport"] == 2
@@ -192,9 +188,7 @@ class TestTilt:
         mocked_drone.features = ["tilt"]
         TiltAngleTel = bp.TiltAngleTel(angle={"value": expected_angle})
         TiltAngleTel_serialized = bp.TiltAngleTel.serialize(TiltAngleTel)
-        mocked_drone._telemetry_watcher.state[
-            "blueye.protocol.TiltAngleTel"
-        ] = TiltAngleTel_serialized
+        mocked_drone._telemetry_watcher._state["TiltAngleTel"] = TiltAngleTel_serialized
         assert mocked_drone.camera.tilt.angle == expected_angle
 
     @pytest.mark.parametrize(
@@ -208,8 +202,8 @@ class TestTilt:
         mocked_drone.features = ["tilt"]
         TiltStabilizationTel = bp.TiltStabilizationTel(state={"enabled": expected_state})
         TiltStabilizationTel_serialized = bp.TiltStabilizationTel.serialize(TiltStabilizationTel)
-        mocked_drone._telemetry_watcher.state[
-            "blueye.protocol.TiltStabilizationTel"
+        mocked_drone._telemetry_watcher._state[
+            "TiltStabilizationTel"
         ] = TiltStabilizationTel_serialized
         assert mocked_drone.camera.tilt.stabilization_enabled == expected_state
 
@@ -263,8 +257,8 @@ def test_gp_cam_recording(mocked_drone):
     record_state_tel = bp.RecordStateTel(
         record_state={"main_is_recording": False, "guestport_is_recording": False}
     )
-    mocked_drone._telemetry_watcher.state[
-        "blueye.protocol.RecordStateTel"
-    ] = bp.RecordStateTel.serialize(record_state_tel)
+    mocked_drone._telemetry_watcher._state["RecordStateTel"] = bp.RecordStateTel.serialize(
+        record_state_tel
+    )
     mocked_drone.gp_cam.is_recording = True
     mocked_drone._ctrl_client.set_recording_state.assert_called_with(False, True)

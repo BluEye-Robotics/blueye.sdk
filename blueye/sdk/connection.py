@@ -6,6 +6,8 @@ import threading
 import blueye.protocol
 import proto
 import zmq
+import re
+import uuid
 
 
 class WatchdogPublisher(threading.Thread):
@@ -49,9 +51,11 @@ class TelemetryClient(threading.Thread):
         self._socket.connect(f"tcp://{self._parent_drone._ip}:5555")
         self._socket.setsockopt_string(zmq.SUBSCRIBE, "")
         self._exit_flag = threading.Event()
-        self.state = {}
+        self._state_lock = threading.Lock()
+        self._state = {}
+        self._callbacks = []
         """`state` is dictionary of the latest received messages, where the key is the protobuf
-        message name, eg. "blueye.protocol.TiltAngleTel" and the value is the serialized protobuf
+        message name, eg. "TiltAngleTel" and the value is the serialized protobuf
         message"""
 
     def run(self):
@@ -62,7 +66,45 @@ class TelemetryClient(threading.Thread):
             events_to_be_processed = poller.poll(10)
             if len(events_to_be_processed) > 0:
                 msg = self._socket.recv_multipart()
-                self.state[msg[0].decode("utf-8")] = msg[1]
+                msg_type = msg[0].decode("utf-8").repalce("blueye.protocol.", "")
+                msg_payload = msg[1]
+                with self._state_lock:
+                    self._state[msg_type] = msg_payload
+                for cb in [cb for cb in self._callbacks if re.match(cb[0], msg_type)]:
+                    try:
+                        payload_msg = blueye.protocol.__getattribute__(msg_type).deserialize(
+                            msg_payload
+                        )
+                    except AttributeError:
+                        # print(f"Message type {msg_type} not found in blueye.protocol")
+                        # The message requested is not part of blueye.protocol. Remove callback
+                        # self.remove_callback(cb[2])
+                        pass
+                    else:
+                        cb[1](payload_msg)
+
+    def add_callback(self, msg_type, callback):
+        mgs_type_without_prefix = msg_type.replace("blueye.protocol.", "")
+        # if not mgs_type_without_prefix in dir(blueye.protocol):
+        #    print(f"{mgs_type_without_prefix} not in blueye.protocol")
+        #    return None
+        try:
+            re.compile(msg_type)
+        except re.error:
+            return None
+        uuid_hex = uuid.uuid1().hex
+        self._callbacks.append(tuple([mgs_type_without_prefix, callback, uuid_hex]))
+        return uuid_hex
+
+    def remove_callback(self, callback_id):
+        try:
+            self._callbacks.pop([cb[2] for cb in self._callbacks].index(callback_id))
+        except ValueError:
+            pass
+
+    def get(self, key: str):
+        with self._state_lock:
+            return self._state[key]
 
     def stop(self):
         self._exit_flag.set()
@@ -305,10 +347,15 @@ class ReqRepClient(threading.Thread):
             )
 
     def set_telemetry_msg_publish_frequency(
-        self, msg: proto.message.Message, frequency: float, timeout: float = 0.05
+        self, msg: proto.message.Message | str, frequency: float, timeout: float = 0.05
     ) -> blueye.protocol.SetPubFrequencyRep:
+        message_type = (
+            msg.meta.full_name.replace("blueye.protocol.", "")
+            if type(msg) == proto.message.Message
+            else msg.replace("blueye.protocol.", "")
+        )
         request = blueye.protocol.SetPubFrequencyReq(
-            message_type=msg.meta.full_name.split(".")[-1],
+            message_type=message_type,
             frequency=frequency,
         )
         response_queue = queue.Queue(maxsize=1)
