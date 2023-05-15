@@ -44,7 +44,7 @@ class Tilt:
         """
         self._verify_tilt_in_features()
         try:
-            TiltAngleTel = self._parent_drone._telemetry_watcher.state["blueye.protocol.TiltAngleTel"]
+            TiltAngleTel = self._parent_drone._telemetry_watcher.get("TiltAngleTel")
         except KeyError:
             return None
         tilt_angle = blueye.protocol.TiltAngleTel.deserialize(TiltAngleTel).angle.value
@@ -63,9 +63,7 @@ class Tilt:
         * enabled (bool): Current state of active camera stabilization
         """
         self._verify_tilt_in_features()
-        TiltStabilizationTel = self._parent_drone._telemetry_watcher.state[
-            "blueye.protocol.TiltStabilizationTel"
-        ]
+        TiltStabilizationTel = self._parent_drone._telemetry_watcher.get("TiltStabilizationTel")
         tilt_stabilization = blueye.protocol.TiltStabilizationTel.deserialize(
             TiltStabilizationTel
         ).state.enabled
@@ -455,9 +453,7 @@ class Camera:
         self._camera_parameters = None
 
     def _get_record_state(self) -> blueye.protocol.RecordState:
-        record_state_tel = self._parent_drone._telemetry_watcher.state[
-            "blueye.protocol.RecordStateTel"
-        ]
+        record_state_tel = self._parent_drone._telemetry_watcher.get("RecordStateTel")
         return blueye.protocol.RecordStateTel.deserialize(record_state_tel).record_state
 
     def _update_camera_parameters(self):

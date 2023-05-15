@@ -2,6 +2,8 @@
 import time
 from json import JSONDecodeError
 from typing import Dict, List, Optional
+from collections.abc import Callable
+
 
 import blueye.protocol
 import proto
@@ -171,7 +173,7 @@ class Drone:
     def connected_clients(self) -> Optional[List[blueye.protocol.ConnectedClient]]:
         """Get a list of connected clients"""
         try:
-            clients_msg = self._telemetry_watcher.state["blueye.protocol.ConnectedClientsTel"]
+            clients_msg = self._telemetry_watcher.get("ConnectedClientsTel")
         except KeyError:
             return None
         clients_msg_deserialized = blueye.protocol.ConnectedClientsTel.deserialize(clients_msg)
@@ -181,7 +183,7 @@ class Drone:
     def client_in_control(self) -> Optional[int]:
         """Get the client id of the client in control of the drone"""
         try:
-            clients_msg = self._telemetry_watcher.state["blueye.protocol.ConnectedClientsTel"]
+            clients_msg = self._telemetry_watcher.get("ConnectedClientsTel")
         except KeyError:
             return None
         clients_msg_deserialized = blueye.protocol.ConnectedClientsTel.deserialize(clients_msg)
@@ -215,7 +217,7 @@ class Drone:
         * brightness (float): The intensity of the drone light (0..1)
         """
         try:
-            lights_msg = self._telemetry_watcher.state["blueye.protocol.LightsTel"]
+            lights_msg = self._telemetry_watcher.get("LightsTel")
         except KeyError:
             return None
         return blueye.protocol.LightsTel.deserialize(lights_msg).lights.value
@@ -235,7 +237,7 @@ class Drone:
         * depth (float): The depth in meters of water column.
         """
         try:
-            depthTel = self._telemetry_watcher.state["blueye.protocol.DepthTel"]
+            depthTel = self._telemetry_watcher.get("DepthTel")
         except KeyError:
             return None
         depthTel_msg = blueye.protocol.DepthTel.deserialize(depthTel)
@@ -250,7 +252,7 @@ class Drone:
         * pose (dict): Dictionary with roll, pitch, and yaw in degrees, from 0 to 359.
         """
         try:
-            attitude_msg = self._telemetry_watcher.state["blueye.protocol.AttitudeTel"]
+            attitude_msg = self._telemetry_watcher.get("AttitudeTel")
         except KeyError:
             return None
         attitude = blueye.protocol.AttitudeTel.deserialize(attitude_msg).attitude
@@ -270,7 +272,7 @@ class Drone:
         * State of charge (float): Current state of charge of the drone battery (0..1)
         """
         try:
-            batteryTel = self._telemetry_watcher.state["blueye.protocol.BatteryTel"]
+            batteryTel = self._telemetry_watcher.get("BatteryTel")
         except KeyError:
             return None
         batteryTel_msg = blueye.protocol.BatteryTel.deserialize(batteryTel)
@@ -285,7 +287,7 @@ class Drone:
         * error_flags (dict): The error flags as bools in a dictionary
         """
         try:
-            error_flags_tel = self._telemetry_watcher.state["blueye.protocol.ErrorFlagsTel"]
+            error_flags_tel = self._telemetry_watcher.get("ErrorFlagsTel")
         except KeyError:
             return None
         error_flags_msg: blueye.protocol.ErrorFlags = blueye.protocol.ErrorFlagsTel.deserialize(
@@ -307,7 +309,7 @@ class Drone:
 
         """
         try:
-            NStreamersTel = self._telemetry_watcher.state["blueye.protocol.NStreamersTel"]
+            NStreamersTel = self._telemetry_watcher.get("NStreamersTel")
         except KeyError:
             return None
         n_streamers_msg = blueye.protocol.NStreamersTel.deserialize(NStreamersTel).n_streamers
@@ -337,3 +339,36 @@ class Drone:
         resp = self._req_rep_client.set_telemetry_msg_publish_frequency(msg, frequency)
         if not resp.success:
             raise RuntimeError("Could not set telemetry message frequency")
+
+    def add_telemetry_msg_callback(
+        self, msg_type: str, callback: Callable[[proto.message.Message], None]
+    ) -> Optional[str]:
+        """Register a telemetry message callback. The callback is called each time a message of the
+        type is received
+
+        *Arguments*:
+
+        * msg_type (str): A regex to register the callback for. Eg. ".*", "DepthTel", "DepthTel|Imu1Tel"
+        * callback (Callable[[proto.message.Message], None]): The callback function. It should be minimal
+                                                              and return as fast as possible to not block
+                                                              the telemetry communication
+
+        *Returns*:
+
+        * uuid (Optional[str]): Callback id. Can be used to remove callback
+
+        """
+        resp = self._telemetry_watcher.add_callback(msg_type, callback)
+        if not resp:
+            raise RuntimeError("Could not add callback")
+        return resp
+
+    def remove_telemetry_msg_callback(self, callback_id: str) -> Optional[str]:
+        """Remove a telemetry message callback
+
+        *Arguments*:
+
+        * callback_id (str): The callback id
+
+        """
+        self._telemetry_watcher.remove_callback(callback_id)
