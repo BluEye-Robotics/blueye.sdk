@@ -341,7 +341,10 @@ class Drone:
             raise RuntimeError("Could not set telemetry message frequency")
 
     def add_telemetry_msg_callback(
-        self, msg_type: str, callback: Callable[[proto.message.Message], None]
+        self,
+        msg_type: str,
+        callback: Callable[[str, proto.message.Message], None],
+        raw: bool = False,
     ) -> Optional[str]:
         """Register a telemetry message callback. The callback is called each time a message of the
         type is received
@@ -349,16 +352,19 @@ class Drone:
         *Arguments*:
 
         * msg_type (str): A regex to register the callback for. Eg. ".*", "DepthTel", "DepthTel|Imu1Tel"
-        * callback (Callable[[proto.message.Message], None]): The callback function. It should be minimal
-                                                              and return as fast as possible to not block
-                                                              the telemetry communication
+        * callback (Callable[[str, proto.message.Message], None]): The callback function. It should be minimal
+                                                                   and return as fast as possible to not block
+                                                                   the telemetry communication. It is called
+                                                                   with two arguments, the message type name
+                                                                   and the message object
+        * raw (bool): Return the raw data instead of the deserialized message
 
         *Returns*:
 
         * uuid (Optional[str]): Callback id. Can be used to remove callback
 
         """
-        resp = self._telemetry_watcher.add_callback(msg_type, callback)
+        resp = self._telemetry_watcher.add_callback(msg_type, callback, raw=raw)
         if not resp:
             raise RuntimeError("Could not add callback")
         return resp

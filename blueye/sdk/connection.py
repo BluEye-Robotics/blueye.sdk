@@ -66,24 +66,27 @@ class TelemetryClient(threading.Thread):
             events_to_be_processed = poller.poll(10)
             if len(events_to_be_processed) > 0:
                 msg = self._socket.recv_multipart()
-                msg_type = msg[0].decode("utf-8").repalce("blueye.protocol.", "")
+                msg_type = msg[0].decode("utf-8").replace("blueye.protocol.", "")
                 msg_payload = msg[1]
                 with self._state_lock:
                     self._state[msg_type] = msg_payload
                 for cb in [cb for cb in self._callbacks if re.fullmatch(cb[0], msg_type)]:
-                    try:
-                        payload_msg = blueye.protocol.__getattribute__(msg_type).deserialize(
-                            msg_payload
-                        )
-                    except AttributeError:
-                        # print(f"Message type {msg_type} not found in blueye.protocol")
-                        # The message requested is not part of blueye.protocol. Remove callback
-                        # self.remove_callback(cb[2])
-                        pass
+                    if cb[2]:
+                        cb[1](msg_type, msg_payload)
                     else:
-                        cb[1](payload_msg)
+                        try:
+                            msg_object = blueye.protocol.__getattribute__(msg_type).deserialize(
+                                msg_payload
+                            )
+                        except AttributeError:
+                            # print(f"Message type {msg_type} not found in blueye.protocol")
+                            # The message requested is not part of blueye.protocol. Remove callback
+                            # self.remove_callback(cb[2])
+                            pass
+                        else:
+                            cb[1](msg_type, msg_object)
 
-    def add_callback(self, msg_type, callback):
+    def add_callback(self, msg_type, callback, raw=False):
         mgs_type_without_prefix = msg_type.replace("blueye.protocol.", "")
         # if not mgs_type_without_prefix in dir(blueye.protocol):
         #    print(f"{mgs_type_without_prefix} not in blueye.protocol")
@@ -93,12 +96,12 @@ class TelemetryClient(threading.Thread):
         except re.error:
             return None
         uuid_hex = uuid.uuid1().hex
-        self._callbacks.append(tuple([mgs_type_without_prefix, callback, uuid_hex]))
+        self._callbacks.append(tuple([mgs_type_without_prefix, callback, raw, uuid_hex]))
         return uuid_hex
 
     def remove_callback(self, callback_id):
         try:
-            self._callbacks.pop([cb[2] for cb in self._callbacks].index(callback_id))
+            self._callbacks.pop([cb[3] for cb in self._callbacks].index(callback_id))
         except ValueError:
             pass
 
