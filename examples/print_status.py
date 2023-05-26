@@ -10,7 +10,7 @@ from blueye.sdk import Drone
 
 def print_state(screen: ManagedScreen, drone: Drone):
     """Updates and prints some of the information from the drone"""
-    screen.print_at(f"Lights: {drone.lights * 100} %", 2, 1)
+    screen.print_at(f"Lights: {drone.lights * 100:5.1f} %", 2, 1)
 
     screen.print_at(f"Auto-depth: {'On' if drone.motion.auto_depth_active else 'Off':>5}", 2, 3)
     screen.print_at(f"Auto-heading: {'On' if drone.motion.auto_heading_active else 'Off':>3}", 2, 4)
