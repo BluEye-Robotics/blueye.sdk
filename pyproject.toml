@@ -25,7 +25,7 @@ webdavclient3 = {version = "^3.14.6", optional = true}
 requests = "^2.22.0"
 tabulate = "^0.8.5"
 packaging = "^22.0"
-"blueye.protocol" = "^2.1.0"
+"blueye.protocol" = "^2.2.0"
 python-dateutil = "^2.8.2"
 pyzmq = "^25.0.0"
 proto-plus = "^1.22.2"
