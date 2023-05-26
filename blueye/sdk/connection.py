@@ -1,13 +1,15 @@
+from __future__ import annotations
+
 import importlib.metadata
 import platform
 import queue
+import re
 import threading
+import uuid
 
 import blueye.protocol
 import proto
 import zmq
-import re
-import uuid
 
 
 class WatchdogPublisher(threading.Thread):
