@@ -69,7 +69,13 @@ class TelemetryClient(threading.Thread):
             events_to_be_processed = poller.poll(10)
             if len(events_to_be_processed) > 0:
                 msg = self._socket.recv_multipart()
-                msg_type = msg[0].decode("utf-8").replace("blueye.protocol.", "")
+                msg_type_name = msg[0].decode("utf-8").replace("blueye.protocol.", "")
+                try:
+                    msg_type = blueye.protocol.__getattribute__(msg_type_name)
+                except AttributeError:
+                    # We've received a message we're unable to parse, we disregard this message
+                    # TODO: Log this
+                    continue
                 msg_payload = msg[1]
                 with self._state_lock:
                     self._state[msg_type] = msg_payload
