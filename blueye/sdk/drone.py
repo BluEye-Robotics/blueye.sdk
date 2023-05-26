@@ -340,39 +340,38 @@ class Drone:
 
     def add_telemetry_msg_callback(
         self,
-        msg_type: str,
+        msg_filter: List[proto.message.Message],
         callback: Callable[[str, proto.message.Message], None],
         raw: bool = False,
-    ) -> Optional[str]:
-        """Register a telemetry message callback. The callback is called each time a message of the
-        type is received
+    ) -> str:
+        """Register a telemetry message callback
+
+        The callback is called each time a message of the type is received
 
         *Arguments*:
 
-        * msg_type (str): A regex to register the callback for. Eg. ".*", "DepthTel", "DepthTel|Imu1Tel"
-        * callback (Callable[[str, proto.message.Message], None]): The callback function. It should be minimal
-                                                                   and return as fast as possible to not block
-                                                                   the telemetry communication. It is called
-                                                                   with two arguments, the message type name
-                                                                   and the message object
-        * raw (bool): Return the raw data instead of the deserialized message
+        * msg_filter: A list of message types to register the callback for.
+                      Eg. `[blueye.protocol.DepthTel, blueye.protocol.Imu1Tel]`. If the list is
+                      empty the callback will be registered for all message types
+        * callback: The callback function. It should be minimal and return as fast as possible to
+                    not block the telemetry communication. It is called with two arguments, the
+                    message type name and the message object
+        * raw: Pass the raw data instead of the deserialized message to the callback function
 
         *Returns*:
 
-        * uuid (Optional[str]): Callback id. Can be used to remove callback
+        * uuid: Callback id. Can be used to remove callback in the future
 
         """
-        resp = self._telemetry_watcher.add_callback(msg_type, callback, raw=raw)
-        if not resp:
-            raise RuntimeError("Could not add callback")
-        return resp
+        uuid_hex = self._telemetry_watcher.add_callback(msg_filter, callback, raw=raw)
+        return uuid_hex
 
     def remove_telemetry_msg_callback(self, callback_id: str) -> Optional[str]:
         """Remove a telemetry message callback
 
         *Arguments*:
 
-        * callback_id (str): The callback id
+        * callback_id: The callback id
 
         """
         self._telemetry_watcher.remove_callback(callback_id)
