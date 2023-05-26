@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 import time
 from json import JSONDecodeError
-from typing import Dict, List, Optional
-from collections.abc import Callable
-
+from typing import Callable, Dict, List, Optional
 
 import blueye.protocol
 import proto
