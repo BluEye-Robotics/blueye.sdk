@@ -2,7 +2,6 @@
 import time
 
 from blueye.sdk import Drone
-import blueye.protocol
 
 last_message = {}
 message_size = {}
@@ -37,9 +36,8 @@ myDrone = Drone()
 print("Listening to protobuf messages")
 
 loop_time = time.time()
-myDrone.add_telemetry_msg_callback(".*", parse_message, raw=True)
+myDrone.add_telemetry_msg_callback([], parse_message, raw=True)
 while True:
-
     if time.time() - loop_time > 1:
         loop_time = time.time()
 

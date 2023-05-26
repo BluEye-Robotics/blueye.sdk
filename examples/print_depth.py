@@ -1,5 +1,8 @@
-from blueye.sdk import Drone
 import time
+
+import blueye.protocol as bp
+
+from blueye.sdk import Drone
 
 
 def callback_depth(msg_type, msg):
@@ -8,8 +11,8 @@ def callback_depth(msg_type, msg):
 
 if __name__ == "__main__":
     my_drone = Drone()
-    cb = my_drone.add_telemetry_msg_callback("DepthTel", callback_depth)
-    my_drone.set_telemetry_msg_publish_frequency("DepthTel", 5)
+    callback_id = my_drone.add_telemetry_msg_callback([bp.DepthTel], callback_depth)
+    my_drone.set_telemetry_msg_publish_frequency(bp.DepthTel, 5)
 
     time.sleep(5)
-    my_drone.remove_telemetry_msg_callback(cb)
+    my_drone.remove_telemetry_msg_callback(callback_id)

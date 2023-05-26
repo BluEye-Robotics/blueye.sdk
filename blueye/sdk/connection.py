@@ -6,7 +6,7 @@ import queue
 import re
 import threading
 import uuid
-from typing import Dict
+from typing import Callable, Dict, List, NamedTuple
 
 import blueye.protocol
 import proto
@@ -45,6 +45,15 @@ class WatchdogPublisher(threading.Thread):
         self._exit_flag.set()
 
 
+class Callback(NamedTuple):
+    """Specifications for callback for telemetry messages"""
+
+    message_filter: List[proto.messages.Message]
+    function: Callable[[str, proto.message.Message], None]
+    pass_raw_data: bool
+    uuid_hex: str
+
+
 class TelemetryClient(threading.Thread):
     def __init__(self, parent_drone: "blueye.sdk.Drone", context: zmq.Context = None):
         super().__init__(daemon=True)
@@ -55,7 +64,7 @@ class TelemetryClient(threading.Thread):
         self._socket.setsockopt_string(zmq.SUBSCRIBE, "")
         self._exit_flag = threading.Event()
         self._state_lock = threading.Lock()
-        self._callbacks = []
+        self._callbacks: List[Callback] = []
         self._state: Dict[proto.message.Message, bytes] = {}
         """`_state` is dictionary of the latest received messages, where the key is the protobuf
         message class, eg. blueye.protocol.DepthTel and the value is the serialized protobuf
@@ -79,39 +88,30 @@ class TelemetryClient(threading.Thread):
                 msg_payload = msg[1]
                 with self._state_lock:
                     self._state[msg_type] = msg_payload
-                for cb in [cb for cb in self._callbacks if re.fullmatch(cb[0], msg_type)]:
-                    if cb[2]:
-                        cb[1](msg_type, msg_payload)
-                    else:
-                        try:
-                            msg_object = blueye.protocol.__getattribute__(msg_type).deserialize(
-                                msg_payload
-                            )
-                        except AttributeError:
-                            # print(f"Message type {msg_type} not found in blueye.protocol")
-                            # The message requested is not part of blueye.protocol. Remove callback
-                            # self.remove_callback(cb[2])
-                            pass
+                for callback in self._callbacks:
+                    if msg_type in callback.message_filter or callback.message_filter == []:
+                        if callback.pass_raw_data:
+                            callback.function(msg_type_name, msg_payload)
                         else:
-                            cb[1](msg_type, msg_object)
+                            msg_deserialized = msg_type.deserialize(msg_payload)
+                            callback.function(msg_type_name, msg_deserialized)
 
-    def add_callback(self, msg_type, callback, raw=False):
-        mgs_type_without_prefix = msg_type.replace("blueye.protocol.", "")
-        # if not mgs_type_without_prefix in dir(blueye.protocol):
-        #    print(f"{mgs_type_without_prefix} not in blueye.protocol")
-        #    return None
-        try:
-            re.compile(msg_type)
-        except re.error:
-            return None
+    def add_callback(
+        self,
+        msg_filter: List[proto.message.Message],
+        callback_function: Callable[[str, proto.message.Message], None],
+        raw: bool,
+    ):
         uuid_hex = uuid.uuid1().hex
-        self._callbacks.append(tuple([mgs_type_without_prefix, callback, raw, uuid_hex]))
+        self._callbacks.append(Callback(msg_filter, callback_function, raw, uuid_hex))
         return uuid_hex
 
     def remove_callback(self, callback_id):
         try:
-            self._callbacks.pop([cb[3] for cb in self._callbacks].index(callback_id))
+            self._callbacks.pop([cb.uuid_hex for cb in self._callbacks].index(callback_id))
         except ValueError:
+            # No callback registered with the specified id, ignoring
+            # TODO: Log this
             pass
 
     def get(self, key: proto.message.Message):
@@ -363,7 +363,7 @@ class ReqRepClient(threading.Thread):
     ) -> blueye.protocol.SetPubFrequencyRep:
         message_type = (
             msg.meta.full_name.replace("blueye.protocol.", "")
-            if type(msg) == proto.message.Message
+            if type(msg) in [proto.message.Message, proto.message.MessageMeta]
             else msg.replace("blueye.protocol.", "")
         )
         request = blueye.protocol.SetPubFrequencyReq(
