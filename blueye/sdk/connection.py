@@ -3,7 +3,6 @@ from __future__ import annotations
 import importlib.metadata
 import platform
 import queue
-import re
 import threading
 import uuid
 from typing import Callable, Dict, List, NamedTuple
