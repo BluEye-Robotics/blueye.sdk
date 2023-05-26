@@ -173,7 +173,7 @@ class Drone:
     def connected_clients(self) -> Optional[List[blueye.protocol.ConnectedClient]]:
         """Get a list of connected clients"""
         try:
-            clients_msg = self._telemetry_watcher.get("ConnectedClientsTel")
+            clients_msg = self._telemetry_watcher.get(blueye.protocol.ConnectedClientsTel)
         except KeyError:
             return None
         clients_msg_deserialized = blueye.protocol.ConnectedClientsTel.deserialize(clients_msg)
@@ -183,7 +183,7 @@ class Drone:
     def client_in_control(self) -> Optional[int]:
         """Get the client id of the client in control of the drone"""
         try:
-            clients_msg = self._telemetry_watcher.get("ConnectedClientsTel")
+            clients_msg = self._telemetry_watcher.get(blueye.protocol.ConnectedClientsTel)
         except KeyError:
             return None
         clients_msg_deserialized = blueye.protocol.ConnectedClientsTel.deserialize(clients_msg)
@@ -217,7 +217,7 @@ class Drone:
         * brightness (float): The intensity of the drone light (0..1)
         """
         try:
-            lights_msg = self._telemetry_watcher.get("LightsTel")
+            lights_msg = self._telemetry_watcher.get(blueye.protocol.LightsTel)
         except KeyError:
             return None
         return blueye.protocol.LightsTel.deserialize(lights_msg).lights.value
@@ -237,7 +237,7 @@ class Drone:
         * depth (float): The depth in meters of water column.
         """
         try:
-            depthTel = self._telemetry_watcher.get("DepthTel")
+            depthTel = self._telemetry_watcher.get(blueye.protocol.DepthTel)
         except KeyError:
             return None
         depthTel_msg = blueye.protocol.DepthTel.deserialize(depthTel)
@@ -252,7 +252,7 @@ class Drone:
         * pose (dict): Dictionary with roll, pitch, and yaw in degrees, from 0 to 359.
         """
         try:
-            attitude_msg = self._telemetry_watcher.get("AttitudeTel")
+            attitude_msg = self._telemetry_watcher.get(blueye.protocol.AttitudeTel)
         except KeyError:
             return None
         attitude = blueye.protocol.AttitudeTel.deserialize(attitude_msg).attitude
@@ -272,7 +272,7 @@ class Drone:
         * State of charge (float): Current state of charge of the drone battery (0..1)
         """
         try:
-            batteryTel = self._telemetry_watcher.get("BatteryTel")
+            batteryTel = self._telemetry_watcher.get(blueye.protocol.BatteryTel)
         except KeyError:
             return None
         batteryTel_msg = blueye.protocol.BatteryTel.deserialize(batteryTel)
@@ -287,7 +287,7 @@ class Drone:
         * error_flags (dict): The error flags as bools in a dictionary
         """
         try:
-            error_flags_tel = self._telemetry_watcher.get("ErrorFlagsTel")
+            error_flags_tel = self._telemetry_watcher.get(blueye.protocol.ErrorFlagsTel)
         except KeyError:
             return None
         error_flags_msg: blueye.protocol.ErrorFlags = blueye.protocol.ErrorFlagsTel.deserialize(
@@ -309,7 +309,7 @@ class Drone:
 
         """
         try:
-            NStreamersTel = self._telemetry_watcher.get("NStreamersTel")
+            NStreamersTel = self._telemetry_watcher.get(blueye.protocol.NStreamersTel)
         except KeyError:
             return None
         n_streamers_msg = blueye.protocol.NStreamersTel.deserialize(NStreamersTel).n_streamers
