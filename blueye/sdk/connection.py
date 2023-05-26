@@ -6,6 +6,7 @@ import queue
 import re
 import threading
 import uuid
+from typing import Dict
 
 import blueye.protocol
 import proto
@@ -54,10 +55,10 @@ class TelemetryClient(threading.Thread):
         self._socket.setsockopt_string(zmq.SUBSCRIBE, "")
         self._exit_flag = threading.Event()
         self._state_lock = threading.Lock()
-        self._state = {}
         self._callbacks = []
-        """`state` is dictionary of the latest received messages, where the key is the protobuf
-        message name, eg. "TiltAngleTel" and the value is the serialized protobuf
+        self._state: Dict[proto.message.Message, bytes] = {}
+        """`_state` is dictionary of the latest received messages, where the key is the protobuf
+        message class, eg. blueye.protocol.DepthTel and the value is the serialized protobuf
         message"""
 
     def run(self):
@@ -107,7 +108,7 @@ class TelemetryClient(threading.Thread):
         except ValueError:
             pass
 
-    def get(self, key: str):
+    def get(self, key: proto.message.Message):
         with self._state_lock:
             return self._state[key]
 
