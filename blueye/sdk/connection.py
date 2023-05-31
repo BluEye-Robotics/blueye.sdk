@@ -246,10 +246,14 @@ class ReqRepClient(threading.Thread):
     def stop(self):
         self._exit_flag.set()
 
-    def ping(self, timeout: float) -> blueye.protocol.PingRep:
-        request = blueye.protocol.PingReq()
+    def _send_request_get_response(
+        self,
+        request: proto.message.Message,
+        expected_response: proto.message.Message,
+        timeout: float,
+    ):
         response_queue = queue.Queue(maxsize=1)
-        self._requests_to_send.put((request, blueye.protocol.PingRep, response_queue))
+        self._requests_to_send.put((request, expected_response, response_queue))
         try:
             return response_queue.get(timeout=timeout)
         except queue.Empty:
@@ -257,20 +261,18 @@ class ReqRepClient(threading.Thread):
                 "No response received from drone before timeout"
             )
 
+    def ping(self, timeout: float) -> blueye.protocol.PingRep:
+        request = blueye.protocol.PingReq()
+        return self._send_request_get_response(request, blueye.protocol.PingRep, timeout)
+
     def get_camera_parameters(
         self, camera: blueye.protocol.Camera, timeout: float = 0.05
     ) -> blueye.protocol.CameraParameters:
         request = blueye.protocol.GetCameraParametersReq(camera=camera)
-        response_queue = queue.Queue(maxsize=1)
-        self._requests_to_send.put(
-            (request, blueye.protocol.GetCameraParametersRep, response_queue)
+        response = self._send_request_get_response(
+            request, blueye.protocol.GetCameraParametersRep, timeout
         )
-        try:
-            return response_queue.get(timeout=timeout).camera_parameters
-        except queue.Empty:
-            raise blueye.protocol.exceptions.ResponseTimeout(
-                "No response received from drone before timeout"
-            )
+        return response.camera_parameters
 
     def set_camera_parameters(
         self,
@@ -278,84 +280,45 @@ class ReqRepClient(threading.Thread):
         timeout: float = 0.05,
     ):
         request = blueye.protocol.SetCameraParametersReq(camera_parameters=parameters)
-        response_queue = queue.Queue(maxsize=1)
-        self._requests_to_send.put(
-            (request, blueye.protocol.SetCameraParametersRep, response_queue)
+        return self._send_request_get_response(
+            request, blueye.protocol.SetCameraParametersRep, timeout
         )
-        try:
-            response_queue.get(timeout=timeout)
-        except queue.Empty:
-            raise blueye.protocol.exceptions.ResponseTimeout(
-                "No response received from drone before timeout"
-            )
 
     def get_overlay_parameters(self, timeout: float = 0.05) -> blueye.protocol.OverlayParameters:
         request = blueye.protocol.GetOverlayParametersReq()
-        response_queue = queue.Queue(maxsize=1)
-        self._requests_to_send.put(
-            (request, blueye.protocol.GetOverlayParametersRep, response_queue)
+        response = self._send_request_get_response(
+            request, blueye.protocol.GetOverlayParametersRep, timeout
         )
-        try:
-            return response_queue.get(timeout=timeout).overlay_parameters
-        except queue.Empty:
-            raise blueye.protocol.exceptions.ResponseTimeout(
-                "No response received from drone before timeout"
-            )
+        return response.overlay_parameters
 
     def set_overlay_parameters(
         self, parameters: blueye.protocol.OverlayParameters, timeout: float = 0.05
     ):
         request = blueye.protocol.SetOverlayParametersReq(overlay_parameters=parameters)
-        response_queue = queue.Queue(maxsize=1)
-        self._requests_to_send.put(
-            (request, blueye.protocol.SetOverlayParametersRep, response_queue)
+        return self._send_request_get_response(
+            request, blueye.protocol.SetOverlayParametersRep, timeout
         )
-        try:
-            response_queue.get(timeout=timeout)
-        except queue.Empty:
-            raise blueye.protocol.exceptions.ResponseTimeout(
-                "No response received from drone before timeout"
-            )
 
     def sync_time(self, time: int, timeout: float = 0.05):
         request = blueye.protocol.SyncTimeReq(
             time={"unix_timestamp": {"seconds": time, "nanos": 0}}
         )
-        response_queue = queue.Queue(maxsize=1)
-        self._requests_to_send.put((request, blueye.protocol.SyncTimeRep, response_queue))
-        try:
-            response_queue.get(timeout=timeout)
-        except queue.Empty:
-            raise blueye.protocol.exceptions.ResponseTimeout(
-                "No response received from drone before timeout"
-            )
+        return self._send_request_get_response(request, blueye.protocol.SyncTimeRep, timeout)
 
     def connect_client(
         self, client_info: blueye.protocol.ClientInfo = None, timeout: float = 0.05
     ) -> blueye.protocol.ConnectClientRep:
         client = client_info or self._get_client_info()
         request = blueye.protocol.ConnectClientReq(client_info=client)
-        response_queue = queue.Queue(maxsize=1)
-        self._requests_to_send.put((request, blueye.protocol.ConnectClientRep, response_queue))
-        try:
-            return response_queue.get(timeout=timeout)
-        except queue.Empty:
-            raise blueye.protocol.exceptions.ResponseTimeout(
-                "No response received from drone before timeout"
-            )
+        return self._send_request_get_response(request, blueye.protocol.ConnectClientRep, timeout)
 
     def disconnect_client(
         self, client_id: int, timeout: float = 0.05
     ) -> blueye.protocol.DisconnectClientRep:
         request = blueye.protocol.DisconnectClientReq(client_id=client_id)
-        response_queue = queue.Queue(maxsize=1)
-        self._requests_to_send.put((request, blueye.protocol.DisconnectClientRep, response_queue))
-        try:
-            return response_queue.get(timeout=timeout)
-        except queue.Empty:
-            raise blueye.protocol.exceptions.ResponseTimeout(
-                "No response received from drone before timeout"
-            )
+        return self._send_request_get_response(
+            request, blueye.protocol.DisconnectClientRep, timeout
+        )
 
     def set_telemetry_msg_publish_frequency(
         self, msg: proto.message.Message | str, frequency: float, timeout: float = 0.05
@@ -369,11 +332,4 @@ class ReqRepClient(threading.Thread):
             message_type=message_type,
             frequency=frequency,
         )
-        response_queue = queue.Queue(maxsize=1)
-        self._requests_to_send.put((request, blueye.protocol.SetPubFrequencyRep, response_queue))
-        try:
-            return response_queue.get(timeout=timeout)
-        except queue.Empty:
-            raise blueye.protocol.exceptions.ResponseTimeout(
-                "No response received from drone before timeout"
-            )
+        return self._send_request_get_response(request, blueye.protocol.SetPubFrequencyRep, timeout)
