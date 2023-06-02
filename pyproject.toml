@@ -101,6 +101,9 @@ custom_dir = "docs/mkdocs_templates"
 "Configure drone parameters" = "docs/configuration.md"
 
 [[tool.portray.mkdocs.nav]]
+"Subscribing to a telemetry message" = "docs/telemetry-callback.md"
+
+[[tool.portray.mkdocs.nav]]
 "HTTP API" = "docs/http-api.html"
 
 [tool.black]
