@@ -49,13 +49,13 @@ class Drone:
     """A class providing an interface to a Blueye drone's functions
 
     Automatically connects to the drone using the default ip when instantiated, this behaviour can
-    be disabled by setting `autoConnect=False`.
+    be disabled by setting `auto_connect=False`.
     """
 
     def __init__(
         self,
         ip="192.168.1.101",
-        autoConnect=True,
+        auto_connect=True,
         timeout=3,
         disconnect_other_clients=False,
     ):
@@ -67,7 +67,7 @@ class Drone:
         self.connected = False
         self.client_id: int = None
         self.in_control: bool = False
-        if autoConnect is True:
+        if auto_connect is True:
             self.connect(timeout=timeout, disconnect_other_clients=disconnect_other_clients)
 
     def _verify_required_blunux_version(self, requirement: str):
