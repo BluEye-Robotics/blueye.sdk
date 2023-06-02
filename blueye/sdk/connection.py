@@ -212,7 +212,8 @@ class ReqRepClient(threading.Thread):
         self._requests_to_send = queue.Queue()
         self._exit_flag = threading.Event()
 
-    def _get_client_info(self) -> blueye.protocol.ClientInfo:
+    @staticmethod
+    def _get_client_info() -> blueye.protocol.ClientInfo:
         client_info = blueye.protocol.ClientInfo(
             type="SDK",
             version=f"{importlib.metadata.version('blueye.sdk')}",
