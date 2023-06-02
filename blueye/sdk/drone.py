@@ -8,6 +8,7 @@ import proto
 import requests
 from packaging import version
 
+from .battery import Battery
 from .camera import Camera
 from .connection import CtrlClient, ReqRepClient, TelemetryClient, WatchdogPublisher
 from .constants import WaterDensities
@@ -64,6 +65,7 @@ class Drone:
         self.motion = Motion(self)
         self.logs = Logs(self)
         self.config = Config(self)
+        self.battery = Battery(self)
         self.connected = False
         self.client_id: int = None
         self.in_control: bool = False
@@ -260,21 +262,6 @@ class Drone:
             "yaw": (attitude.yaw + 360) % 360,
         }
         return pose
-
-    @property
-    def battery_state_of_charge(self) -> Optional[float]:
-        """Get the battery state of charge
-
-        *Returns*:
-
-        * State of charge (float): Current state of charge of the drone battery (0..1)
-        """
-        try:
-            batteryTel = self._telemetry_watcher.get(blueye.protocol.BatteryTel)
-        except KeyError:
-            return None
-        batteryTel_msg = blueye.protocol.BatteryTel.deserialize(batteryTel)
-        return batteryTel_msg.battery.level
 
     @property
     def error_flags(self) -> Optional[Dict[str, bool]]:

@@ -117,7 +117,7 @@ def test_battery_state_of_charge_reading(mocked_drone):
     batteryTel = bp.BatteryTel(battery={"level": SoC})
     batteryTel_msg = batteryTel.__class__.serialize(batteryTel)
     mocked_drone._telemetry_watcher._state[bp.BatteryTel] = batteryTel_msg
-    assert mocked_drone.battery_state_of_charge == pytest.approx(SoC)
+    assert mocked_drone.battery.state_of_charge == pytest.approx(SoC)
 
 
 def test_still_picture_works(mocked_drone):
