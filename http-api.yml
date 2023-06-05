@@ -690,6 +690,20 @@ paths:
             type: integer
             default: 1
             enum: [0, 1]
+        - name: field-gps
+          in: query
+          description: |
+            Display GPS coordinates (decimal degrees) in the image overlay.
+            Requires Blunux 3.x or newer.
+            If a location system is used, the coordinates of the drone is shown, else the operator
+            position reported by the app is shown.
+            * `1` - Enable
+            * `0` - Disable
+          required: false
+          schema:
+            type: integer
+            default: 0
+            enum: [0, 1]
 
       responses:
         '200':
