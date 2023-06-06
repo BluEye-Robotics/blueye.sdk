@@ -482,9 +482,9 @@ paths:
     get:
       tags:
         - "Pictures"
-      summary: Download a thumbnail of a picture with metadata overlay
+      summary: Download a thumbnail of a picture
       description: |
-        Downloads a picture (jpg) with metadata from when the photo was captured.
+        Downloads a picture (jpg) with EXIF metadata from when the photo was captured.
       parameters:
         - name: file
           in: query
@@ -493,6 +493,27 @@ paths:
           schema:
             type: string
             example: "picture_BYEDP123456_2019-01-01_000001.001.jpg"
+        - name: width
+          in: query
+          description: "Width of the thumbnail in pixels."
+          required: false
+          schema:
+            type: integer
+            default: 1024
+        - name: height
+          in: query
+          description: "Height of the thumbnail in pixels."
+          required: false
+          schema:
+            type: integer
+            default: 576
+        - name: quality
+          in: query
+          description: "JPG compression level, 0-100. 100 is best quality, 0 is worst quality."
+          required: false
+          schema:
+            type: integer
+            default: 85
       responses:
         '200':
             description: Picture thumbnail
@@ -689,6 +710,20 @@ paths:
           schema:
             type: integer
             default: 1
+            enum: [0, 1]
+        - name: field-gps
+          in: query
+          description: |
+            Display GPS coordinates (decimal degrees) in the image overlay.
+            Requires Blunux 3.0 or newer.
+            If a positioning system is used, the coordinates of the drone is shown, else the operator
+            position reported by the app is shown.
+            * `1` - Enable
+            * `0` - Disable
+          required: false
+          schema:
+            type: integer
+            default: 0
             enum: [0, 1]
 
       responses:
