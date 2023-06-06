@@ -482,7 +482,7 @@ paths:
     get:
       tags:
         - "Pictures"
-      summary: Download a thumbnail of a picture.
+      summary: Download a thumbnail of a picture
       description: |
         Downloads a picture (jpg) with EXIF metadata from when the photo was captured.
       parameters:
