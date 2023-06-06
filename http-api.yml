@@ -715,7 +715,7 @@ paths:
           in: query
           description: |
             Display GPS coordinates (decimal degrees) in the image overlay.
-            Requires Blunux 3.x or newer.
+            Requires Blunux 3.0 or newer.
             If a location system is used, the coordinates of the drone is shown, else the operator
             position reported by the app is shown.
             * `1` - Enable
