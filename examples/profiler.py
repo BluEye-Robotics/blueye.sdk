@@ -36,7 +36,7 @@ myDrone = Drone()
 print("Listening to protobuf messages")
 
 loop_time = time.time()
-myDrone.add_telemetry_msg_callback([], parse_message, raw=True)
+myDrone.telemetry.add_msg_callback([], parse_message, raw=True)
 while True:
     if time.time() - loop_time > 1:
         loop_time = time.time()

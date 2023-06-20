@@ -23,14 +23,14 @@ if __name__ == "__main__":
     my_drone = Drone()
 
     # Add a callback for the DepthTel message, storing the ID for later use
-    callback_id = my_drone.add_telemetry_msg_callback([bp.DepthTel], callback_depth)
+    callback_id = my_drone.telemetry.add_msg_callback([bp.DepthTel], callback_depth)
 
     # Adjust the publishing frequency to 5 Hz
-    my_drone.set_telemetry_msg_publish_frequency(bp.DepthTel, 5)
+    my_drone.telemetry.set_msg_publish_frequency(bp.DepthTel, 5)
 
     # Callback is triggered by a separate thread while we sleep here
     time.sleep(5)
 
     # Remove the callback using the ID we stored when it was created (not really necessary here
     # since the my_drone object goes out of scope immediately afterwards)
-    my_drone.remove_telemetry_msg_callback(callback_id)
+    my_drone.telemetry.remove_msg_callback(callback_id)

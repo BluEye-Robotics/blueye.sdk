@@ -46,6 +46,69 @@ class Config:
         self._parent_drone._req_rep_client.sync_time(time)
 
 
+class Telemetry:
+    def __init__(self, parent_drone: "Drone"):
+        self._parent_drone = parent_drone
+
+    def set_msg_publish_frequency(self, msg: proto.message.Message, frequency: float):
+        """Set the publishing frequency of a specific telemetry message
+
+        Raises a RuntimeError if the drone fails to set the frequency. Possible causes could be a
+        frequency outside the valid range, or an incorrect message type.
+
+        *Arguments*:
+
+        * msg (proto.message.Message): The message to set the frequency of. Needs to be one of the
+                                       messages in blueye.protocol that end in Tel, eg.
+                                       blueye.protocol.DepthTel
+        * frequency (float): The frequency in Hz. Valid range is (0 .. 100).
+
+        """
+        resp = self._parent_drone._req_rep_client.set_telemetry_msg_publish_frequency(
+            msg, frequency
+        )
+        if not resp.success:
+            raise RuntimeError("Could not set telemetry message frequency")
+
+    def add_msg_callback(
+        self,
+        msg_filter: List[proto.message.Message],
+        callback: Callable[[str, proto.message.Message], None],
+        raw: bool = False,
+    ) -> str:
+        """Register a telemetry message callback
+
+        The callback is called each time a message of the type is received
+
+        *Arguments*:
+
+        * msg_filter: A list of message types to register the callback for.
+                      Eg. `[blueye.protocol.DepthTel, blueye.protocol.Imu1Tel]`. If the list is
+                      empty the callback will be registered for all message types
+        * callback: The callback function. It should be minimal and return as fast as possible to
+                    not block the telemetry communication. It is called with two arguments, the
+                    message type name and the message object
+        * raw: Pass the raw data instead of the deserialized message to the callback function
+
+        *Returns*:
+
+        * uuid: Callback id. Can be used to remove callback in the future
+
+        """
+        uuid_hex = self._parent_drone._telemetry_watcher.add_callback(msg_filter, callback, raw=raw)
+        return uuid_hex
+
+    def remove_msg_callback(self, callback_id: str) -> Optional[str]:
+        """Remove a telemetry message callback
+
+        *Arguments*:
+
+        * callback_id: The callback id
+
+        """
+        self._parent_drone._telemetry_watcher.remove_callback(callback_id)
+
+
 class Drone:
     """A class providing an interface to a Blueye drone's functions
 
@@ -66,6 +129,7 @@ class Drone:
         self.logs = Logs(self)
         self.config = Config(self)
         self.battery = Battery(self)
+        self.telemetry = Telemetry(self)
         self.connected = False
         self.client_id: int = None
         self.in_control: bool = False
@@ -306,59 +370,3 @@ class Drone:
         Raises a ResponseTimeout exception if the drone does not respond within the timeout period.
         """
         self._req_rep_client.ping(timeout)
-
-    def set_telemetry_msg_publish_frequency(self, msg: proto.message.Message, frequency: float):
-        """Set the publishing frequency of a specific telemetry message
-
-        Raises a RuntimeError if the drone fails to set the frequency. Possible causes could be a
-        frequency outside the valid range, or an incorrect message type.
-
-        *Arguments*:
-
-        * msg (proto.message.Message): The message to set the frequency of. Needs to be one of the
-                                       messages in blueye.protocol that end in Tel, eg.
-                                       blueye.protocol.DepthTel
-        * frequency (float): The frequency in Hz. Valid range is (0 .. 100).
-
-        """
-        resp = self._req_rep_client.set_telemetry_msg_publish_frequency(msg, frequency)
-        if not resp.success:
-            raise RuntimeError("Could not set telemetry message frequency")
-
-    def add_telemetry_msg_callback(
-        self,
-        msg_filter: List[proto.message.Message],
-        callback: Callable[[str, proto.message.Message], None],
-        raw: bool = False,
-    ) -> str:
-        """Register a telemetry message callback
-
-        The callback is called each time a message of the type is received
-
-        *Arguments*:
-
-        * msg_filter: A list of message types to register the callback for.
-                      Eg. `[blueye.protocol.DepthTel, blueye.protocol.Imu1Tel]`. If the list is
-                      empty the callback will be registered for all message types
-        * callback: The callback function. It should be minimal and return as fast as possible to
-                    not block the telemetry communication. It is called with two arguments, the
-                    message type name and the message object
-        * raw: Pass the raw data instead of the deserialized message to the callback function
-
-        *Returns*:
-
-        * uuid: Callback id. Can be used to remove callback in the future
-
-        """
-        uuid_hex = self._telemetry_watcher.add_callback(msg_filter, callback, raw=raw)
-        return uuid_hex
-
-    def remove_telemetry_msg_callback(self, callback_id: str) -> Optional[str]:
-        """Remove a telemetry message callback
-
-        *Arguments*:
-
-        * callback_id: The callback id
-
-        """
-        self._telemetry_watcher.remove_callback(callback_id)
