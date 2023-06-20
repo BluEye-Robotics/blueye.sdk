@@ -107,6 +107,9 @@ custom_dir = "docs/mkdocs_templates"
 "Updating from v1 to v2" = "docs/migrating-to-v2.md"
 
 [[tool.portray.mkdocs.nav]]
+"Protobuf protocol" = "docs/protobuf-protocol.md"
+
+[[tool.portray.mkdocs.nav]]
 "HTTP API" = "docs/http-api.html"
 
 [tool.black]
