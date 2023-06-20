@@ -104,6 +104,9 @@ custom_dir = "docs/mkdocs_templates"
 "Subscribing to a telemetry message" = "docs/telemetry-callback.md"
 
 [[tool.portray.mkdocs.nav]]
+"Updating from v1 to v2" = "docs/migrating-to-v2.md"
+
+[[tool.portray.mkdocs.nav]]
 "HTTP API" = "docs/http-api.html"
 
 [tool.black]
