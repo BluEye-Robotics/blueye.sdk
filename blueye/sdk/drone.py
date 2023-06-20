@@ -48,6 +48,19 @@ class Config:
         self._parent_drone._req_rep_client.sync_time(time)
 
 
+class _NoConnectionClient:
+    """A client that raises a ConnectionError if you use any of its functions"""
+
+    def __getattr__(self, name):
+        def method(*args, **kwargs):
+            raise ConnectionError(
+                "The connection to the drone is not established, "
+                "try calling the connect method before retrying"
+            )
+
+        return method
+
+
 class Telemetry:
     def __init__(self, parent_drone: "Drone"):
         self._parent_drone = parent_drone
@@ -161,6 +174,10 @@ class Drone:
         self.connected = False
         self.client_id: int = None
         self.in_control: bool = False
+        self._watchdog_publisher = _NoConnectionClient()
+        self._telemetry_watcher = _NoConnectionClient()
+        self._req_rep_client = _NoConnectionClient()
+        self._ctrl_client = _NoConnectionClient()
         if auto_connect is True:
             self.connect(timeout=timeout, disconnect_other_clients=disconnect_other_clients)
 
@@ -254,10 +271,10 @@ class Drone:
         self._req_rep_client.stop()
         self._ctrl_client.stop()
 
-        self._watchdog_publisher = None
-        self._telemetry_watcher = None
-        self._req_rep_client = None
-        self._ctrl_client = None
+        self._watchdog_publisher = _NoConnectionClient()
+        self._telemetry_watcher = _NoConnectionClient()
+        self._req_rep_client = _NoConnectionClient()
+        self._ctrl_client = _NoConnectionClient()
 
         self.connected = False
 
