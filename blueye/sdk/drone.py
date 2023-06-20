@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+from __future__ import annotations
+
 import time
 from json import JSONDecodeError
 from typing import Callable, Dict, List, Optional
@@ -107,6 +109,32 @@ class Telemetry:
 
         """
         self._parent_drone._telemetry_watcher.remove_callback(callback_id)
+
+    def get(
+        self, msg_type: proto.message.Message, deserialize=True
+    ) -> Optional[proto.message.Message | bytes]:
+        """Get the latest telemetry message of the specified type
+
+        *Arguments*:
+
+
+        * msg_type: The message type to get. Eg. blueye.protocol.DepthTel
+        * deserialize: If True, the message will be deserialized before being returned. If False,
+                       the raw bytes will be returned.
+
+        *Returns*:
+
+        * The latest message of the specified type, or None if no message has been received yet
+
+        """
+        try:
+            msg = self._parent_drone._telemetry_watcher.get(msg_type)
+        except KeyError:
+            return None
+        if deserialize:
+            return msg_type.deserialize(msg)
+        else:
+            return msg
 
 
 class Drone:
