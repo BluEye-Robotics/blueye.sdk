@@ -21,9 +21,4 @@ class Battery:
 
         * Current state of charge of the drone battery (0..1)
         """
-        try:
-            batteryTel = self._parent_drone._telemetry_watcher.get(blueye.protocol.BatteryTel)
-        except KeyError:
-            return None
-        batteryTel_msg = blueye.protocol.BatteryTel.deserialize(batteryTel)
-        return batteryTel_msg.battery.level
+        return self._parent_drone.telemetry.get(blueye.protocol.BatteryTel).battery.level
