@@ -6,8 +6,8 @@ The underlying communications protocol has been changed from UDP/TCP to protobuf
 
 Another added benefit is the ability to list and disconnect other clients connected to the drone.
 
-## Requirement on Blunux v3.1 or newer
-The SDK now requires v3.1 or newer of the Blunux operating system to be installed on the drone to able to connect to it.
+## Requirement on Blunux v3.2 or newer
+The SDK now requires v3.2 or newer of the Blunux operating system to be installed on the drone to able to connect to it.
 
 ## Dropped support Python 3.7
 One or several of our subdependencies has dropped support for 3.7, and in an effort to reduce the maintenance burden we decided to drop support for 3.7 when adding support for 3.11.

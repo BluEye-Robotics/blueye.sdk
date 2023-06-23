@@ -27,7 +27,7 @@ def mocked_requests(requests_mock):
         "model_url": "https://www.blueyerobotics.com",
         "operating_system": "blunux",
         "serial_number": "BYEDP230000",
-        "sw_version": "3.1.52-honister-master",
+        "sw_version": "3.2.62-honister-master",
     }
     requests_mock.get(
         "http://192.168.1.101/diagnostics/drone_info",

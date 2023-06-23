@@ -72,8 +72,8 @@ def test_feature_list_is_empty_on_old_versions(mocked_drone, requests_mock):
 
 def test_software_version(mocked_drone):
     mocked_drone._update_drone_info()
-    assert mocked_drone.software_version == "3.1.52-honister-master"
-    assert mocked_drone.software_version_short == "3.1.52"
+    assert mocked_drone.software_version == "3.2.62-honister-master"
+    assert mocked_drone.software_version_short == "3.2.62"
 
 
 def test_connect_fails_on_old_versions(mocked_drone, requests_mock):
