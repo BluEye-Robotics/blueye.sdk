@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.metadata
+import logging
 import platform
 import queue
 import threading
@@ -10,6 +11,8 @@ from typing import Callable, Dict, List, NamedTuple
 import blueye.protocol
 import proto
 import zmq
+
+logger = logging.getLogger(__name__)
 
 
 class WatchdogPublisher(threading.Thread):
@@ -81,8 +84,9 @@ class TelemetryClient(threading.Thread):
                 try:
                     msg_type = blueye.protocol.__getattribute__(msg_type_name)
                 except AttributeError:
-                    # We've received a message we're unable to parse, we disregard this message
-                    # TODO: Log this
+                    # If a new telemetry message is introduced before the SDK is updated this can
+                    # be a common occurence, so choosing to log with info instead of warning
+                    logger.info(f"Ignoring unknown message type: {msg_type_name}")
                     continue
                 msg_payload = msg[1]
                 with self._state_lock:
