@@ -6,7 +6,7 @@ import platform
 import queue
 import threading
 import uuid
-from typing import Callable, Dict, List, NamedTuple
+from typing import Callable, Dict, List, NamedTuple, Tuple
 
 import blueye.protocol
 import proto
@@ -72,6 +72,26 @@ class TelemetryClient(threading.Thread):
         message class, eg. blueye.protocol.DepthTel and the value is the serialized protobuf
         message"""
 
+    def _handle_message(self, msg: Tuple[bytes, bytes]):
+        msg_type_name = msg[0].decode("utf-8").replace("blueye.protocol.", "")
+        try:
+            msg_type = blueye.protocol.__getattribute__(msg_type_name)
+        except AttributeError:
+            # If a new telemetry message is introduced before the SDK is updated this can
+            # be a common occurence, so choosing to log with info instead of warning
+            logger.info(f"Ignoring unknown message type: {msg_type_name}")
+            return
+        msg_payload = msg[1]
+        with self._state_lock:
+            self._state[msg_type] = msg_payload
+        for callback in self._callbacks:
+            if msg_type in callback.message_filter or callback.message_filter == []:
+                if callback.pass_raw_data:
+                    callback.function(msg_type_name, msg_payload)
+                else:
+                    msg_deserialized = msg_type.deserialize(msg_payload)
+                    callback.function(msg_type_name, msg_deserialized)
+
     def run(self):
         poller = zmq.Poller()
         poller.register(self._socket, zmq.POLLIN)
@@ -80,24 +100,7 @@ class TelemetryClient(threading.Thread):
             events_to_be_processed = poller.poll(10)
             if len(events_to_be_processed) > 0:
                 msg = self._socket.recv_multipart()
-                msg_type_name = msg[0].decode("utf-8").replace("blueye.protocol.", "")
-                try:
-                    msg_type = blueye.protocol.__getattribute__(msg_type_name)
-                except AttributeError:
-                    # If a new telemetry message is introduced before the SDK is updated this can
-                    # be a common occurence, so choosing to log with info instead of warning
-                    logger.info(f"Ignoring unknown message type: {msg_type_name}")
-                    continue
-                msg_payload = msg[1]
-                with self._state_lock:
-                    self._state[msg_type] = msg_payload
-                for callback in self._callbacks:
-                    if msg_type in callback.message_filter or callback.message_filter == []:
-                        if callback.pass_raw_data:
-                            callback.function(msg_type_name, msg_payload)
-                        else:
-                            msg_deserialized = msg_type.deserialize(msg_payload)
-                            callback.function(msg_type_name, msg_deserialized)
+                self._handle_message(msg)
 
     def add_callback(
         self,
