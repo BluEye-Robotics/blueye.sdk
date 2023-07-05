@@ -101,7 +101,7 @@ class Logs:
     You can access logfile objects either by index or by name. Eg. if you want the first
     logfile in the list you can do `myDrone.logs[0]`, or if you want some particular log you
     can do `myDrone.logs["exampleName0001.csv"]`. You can even give it a slice, so if you want
-    the last 10 logs you can do `myDrone.logs[:-10]`.
+    the last 10 logs you can do `myDrone.logs[-10:]`.
     """
 
     def __init__(self, parent_drone, auto_download_index=False):
