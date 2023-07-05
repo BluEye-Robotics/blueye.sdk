@@ -113,9 +113,7 @@ class TelemetryClient(threading.Thread):
         try:
             self._callbacks.pop([cb.uuid_hex for cb in self._callbacks].index(callback_id))
         except ValueError:
-            # No callback registered with the specified id, ignoring
-            # TODO: Log this
-            pass
+            logger.warning(f"Callback with id {callback_id} not found, ignoring")
 
     def get(self, key: proto.message.Message):
         with self._state_lock:
