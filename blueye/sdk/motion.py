@@ -189,7 +189,11 @@ class Motion:
 
         * Auto depth state (bool): True if auto depth is active, false if not
         """
-        return self._parent_drone.telemetry.get(blueye.protocol.ControlModeTel).state.auto_depth
+        control_mode_tel = self._parent_drone.telemetry.get(blueye.protocol.ControlModeTel)
+        if control_mode_tel is None:
+            return None
+        else:
+            return control_mode_tel.state.auto_depth
 
     @auto_depth_active.setter
     def auto_depth_active(self, enable: bool):
@@ -212,7 +216,11 @@ class Motion:
 
         * Auto heading state (bool): True if auto heading mode is active, false if not
         """
-        return self._parent_drone.telemetry.get(blueye.protocol.ControlModeTel).state.auto_heading
+        control_mode_tel = self._parent_drone.telemetry.get(blueye.protocol.ControlModeTel)
+        if control_mode_tel is None:
+            return None
+        else:
+            return control_mode_tel.state.auto_heading
 
     @auto_heading_active.setter
     def auto_heading_active(self, enable: bool):

@@ -43,10 +43,14 @@ class Tilt:
         Raises a RuntimeError if the connected drone does not have the tilt option
         """
         self._verify_tilt_in_features()
-        return self._parent_drone.telemetry.get(blueye.protocol.TiltAngleTel).angle.value
+        tilt_angle_tel = self._parent_drone.telemetry.get(blueye.protocol.TiltAngleTel)
+        if tilt_angle_tel is not None:
+            return tilt_angle_tel.angle.value
+        else:
+            return None
 
     @property
-    def stabilization_enabled(self) -> bool:
+    def stabilization_enabled(self) -> Optional[bool]:
         """Get or set the state of active camera stabilization
 
         *Arguments*:
@@ -58,7 +62,11 @@ class Tilt:
         * enabled (bool): Current state of active camera stabilization
         """
         self._verify_tilt_in_features()
-        return self._parent_drone.telemetry.get(blueye.protocol.TiltStabilizationTel).state.enabled
+        tilt_stab_tel = self._parent_drone.telemetry.get(blueye.protocol.TiltStabilizationTel)
+        if tilt_stab_tel is not None:
+            return tilt_stab_tel.state.enabled
+        else:
+            return None
 
     @stabilization_enabled.setter
     def stabilization_enabled(self, enabled: bool):
@@ -443,8 +451,12 @@ class Camera:
             self.overlay = Overlay(parent_drone)
         self._camera_parameters = None
 
-    def _get_record_state(self) -> blueye.protocol.RecordState:
-        return self._parent_drone.telemetry.get(blueye.protocol.RecordStateTel).record_state
+    def _get_record_state(self) -> Optional[blueye.protocol.RecordState]:
+        record_state_tel = self._parent_drone.telemetry.get(blueye.protocol.RecordStateTel)
+        if record_state_tel is not None:
+            return record_state_tel.record_state
+        else:
+            return None
 
     def _update_camera_parameters(self):
         self._camera_parameters = self._parent_drone._req_rep_client.get_camera_parameters(
@@ -452,7 +464,7 @@ class Camera:
         )
 
     @property
-    def is_recording(self) -> bool:
+    def is_recording(self) -> Optional[bool]:
         """Get or set the camera recording state
 
         *Arguments*:
@@ -465,6 +477,8 @@ class Camera:
         * Recording state (bool): True if the camera is currently recording, False if not
         """
         record_state = self._get_record_state()
+        if record_state is None:
+            return None
         if self._is_guestport_camera:
             return record_state.guestport_is_recording
         else:
@@ -473,6 +487,9 @@ class Camera:
     @is_recording.setter
     def is_recording(self, start_recording: bool):
         record_state = self._get_record_state()
+        if record_state is None:
+            # TODO: Log this as a warning
+            return
         if self._is_guestport_camera:
             self._parent_drone._ctrl_client.set_recording_state(
                 record_state.main_is_recording, start_recording
@@ -663,7 +680,7 @@ class Camera:
         self._parent_drone._req_rep_client.set_camera_parameters(self._camera_parameters)
 
     @property
-    def record_time(self) -> int:
+    def record_time(self) -> Optional[int]:
         """Set or get the duration of the current camera recording
 
         *Returns*:
@@ -671,6 +688,8 @@ class Camera:
         * record_time (int): The length in seconds of the current recording, -1 if the camera is not currently recording
         """
         record_state = self._get_record_state()
+        if record_state is None:
+            return None
         if self._is_guestport_camera:
             return record_state.guestport_seconds
         else:

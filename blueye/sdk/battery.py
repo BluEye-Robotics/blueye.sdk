@@ -21,4 +21,8 @@ class Battery:
 
         * Current state of charge of the drone battery (0..1)
         """
-        return self._parent_drone.telemetry.get(blueye.protocol.BatteryTel).battery.level
+        battery_tel = self._parent_drone.telemetry.get(blueye.protocol.BatteryTel)
+        if battery_tel is not None:
+            return battery_tel.battery.level
+        else:
+            return None

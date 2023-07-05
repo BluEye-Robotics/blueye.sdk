@@ -281,12 +281,20 @@ class Drone:
     @property
     def connected_clients(self) -> Optional[List[blueye.protocol.ConnectedClient]]:
         """Get a list of connected clients"""
-        return list(self.telemetry.get(blueye.protocol.ConnectedClientsTel).connected_clients)
+        clients_tel = self.telemetry.get(blueye.protocol.ConnectedClientsTel)
+        if clients_tel is None:
+            return None
+        else:
+            return list(clients_tel.connected_clients)
 
     @property
     def client_in_control(self) -> Optional[int]:
         """Get the client id of the client in control of the drone"""
-        return self.telemetry.get(blueye.protocol.ConnectedClientsTel).client_id_in_control
+        clients_tel = self.telemetry.get(blueye.protocol.ConnectedClientsTel)
+        if clients_tel is None:
+            return None
+        else:
+            return clients_tel.client_id_in_control
 
     def take_control(self, timeout=1):
         """Take control of the drone, disconnecting other clients
@@ -331,7 +339,11 @@ class Drone:
 
         * depth (float): The depth in meters of water column.
         """
-        return self.telemetry.get(blueye.protocol.DepthTel).depth.value
+        depth_tel = self.telemetry.get(blueye.protocol.DepthTel)
+        if depth_tel is None:
+            return None
+        else:
+            return depth_tel.depth.value
 
     @property
     def pose(self) -> Optional[dict]:
@@ -341,7 +353,10 @@ class Drone:
 
         * pose (dict): Dictionary with roll, pitch, and yaw in degrees, from 0 to 359.
         """
-        attitude = self.telemetry.get(blueye.protocol.AttitudeTel).attitude
+        attitude_tel = self.telemetry.get(blueye.protocol.AttitudeTel)
+        if attitude_tel is None:
+            return None
+        attitude = attitude_tel.attitude
         pose = {
             "roll": (attitude.roll + 360) % 360,
             "pitch": (attitude.pitch + 360) % 360,
@@ -357,7 +372,10 @@ class Drone:
 
         * error_flags (dict): The error flags as bools in a dictionary
         """
-        error_flags_msg = self.telemetry.get(blueye.protocol.ErrorFlagsTel).error_flags
+        error_flags_tel = self.telemetry.get(blueye.protocol.ErrorFlagsTel)
+        if error_flags_tel is None:
+            return None
+        error_flags_msg = error_flags_tel.error_flags
         error_flags = {}
         possible_flags = [attr for attr in dir(error_flags_msg) if not attr.startswith("__")]
         for flag in possible_flags:
@@ -372,7 +390,10 @@ class Drone:
         or from the Blueye app) counts as one connection.
 
         """
-        n_streamers_msg = self.telemetry.get(blueye.protocol.NStreamersTel).n_streamers
+        n_streamers_msg_tel = self.telemetry.get(blueye.protocol.NStreamersTel)
+        if n_streamers_msg_tel is None:
+            return None
+        n_streamers_msg = n_streamers_msg_tel.n_streamers
         return {"main": n_streamers_msg.main, "guestport": n_streamers_msg.guestport}
 
     def ping(self, timeout: float = 1.0):
