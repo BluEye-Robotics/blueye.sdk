@@ -452,6 +452,51 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../../docs/telemetry-callback/" class="md-nav__link">
+        Subscribing to a telemetry message
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/migrating-to-v2/" class="md-nav__link">
+        Updating from v1 to v2
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/protobuf-protocol/" class="md-nav__link">
+        Protobuf protocol
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../../docs/http-api.html" class="md-nav__link">
         HTTP API
       </a>
@@ -472,18 +517,18 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8" type="checkbox" id="__nav_8" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_11" type="checkbox" id="__nav_11" checked>
       
       
       
       
-        <label class="md-nav__link" for="__nav_8">
+        <label class="md-nav__link" for="__nav_11">
           Reference
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Reference" data-md-level="1">
-        <label class="md-nav__title" for="__nav_8">
+        <label class="md-nav__title" for="__nav_11">
           <span class="md-nav__icon md-icon"></span>
           Reference
         </label>
@@ -500,18 +545,18 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_1" type="checkbox" id="__nav_8_1" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_11_1" type="checkbox" id="__nav_11_1" checked>
       
       
       
       
-        <label class="md-nav__link" for="__nav_8_1">
+        <label class="md-nav__link" for="__nav_11_1">
           Blueye
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Blueye" data-md-level="2">
-        <label class="md-nav__title" for="__nav_8_1">
+        <label class="md-nav__title" for="__nav_11_1">
           <span class="md-nav__icon md-icon"></span>
           Blueye
         </label>
@@ -528,18 +573,18 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_1_1" type="checkbox" id="__nav_8_1_1" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_11_1_1" type="checkbox" id="__nav_11_1_1" checked>
       
       
       
       
-        <label class="md-nav__link" for="__nav_8_1_1">
+        <label class="md-nav__link" for="__nav_11_1_1">
           Sdk
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Sdk" data-md-level="3">
-        <label class="md-nav__title" for="__nav_8_1_1">
+        <label class="md-nav__title" for="__nav_11_1_1">
           <span class="md-nav__icon md-icon"></span>
           Sdk
         </label>
@@ -551,8 +596,36 @@
   
   
     <li class="md-nav__item">
+      <a href="../battery/" class="md-nav__link">
+        Battery
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../camera/" class="md-nav__link">
         Camera
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../connection/" class="md-nav__link">
+        Connection
       </a>
     </li>
   
@@ -842,6 +915,10 @@
 <summary>View Source</summary>
 <pre><code>import threading
 
+from typing import Optional
+
+import blueye.protocol
+
 class Motion:
 
     """Control the motion of the drone, and set automatic control modes
@@ -858,8 +935,6 @@ class Motion:
 
         self._parent_drone = parent_drone
 
-        self._state_watcher = parent_drone._state_watcher
-
         self.thruster_lock = threading.Lock()
 
         self._current_thruster_setpoints = {"surge": 0, "sway": 0, "heave": 0, "yaw": 0}
@@ -872,9 +947,9 @@ class Motion:
 
         """Returns the current setpoints for the thrusters
 
-        We maintain this state in the SDK since the drone does not report back it's current
+        We maintain this state in the SDK since the drone expects to receive all of the setpoints at
 
-        setpoint.
+        once.
 
         For setting the setpoints you should use the dedicated properties/functions for that, trying
 
@@ -904,7 +979,7 @@ class Motion:
 
         boost_setpoints = self._current_boost_setpoints.values()
 
-        self._parent_drone._tcp_client.motion_input(*thruster_setpoints, *boost_setpoints)
+        self._parent_drone._ctrl_client.set_motion_input(*thruster_setpoints, *boost_setpoints)
 
     @property
 
@@ -1106,7 +1181,7 @@ class Motion:
 
     @property
 
-    def auto_depth_active(self) -&gt; bool:
+    def auto_depth_active(self) -&gt; Optional[bool]:
 
         """Enable or disable the auto depth control mode
 
@@ -1120,49 +1195,33 @@ class Motion:
 
         *Arguments*:
 
-        * active (bool): Activate auto depth mode if active is true, de-activate if false
+        * Enable (bool): Activate auto depth mode if true, de-activate if false
 
         *Returns*:
 
-        * active (bool): Returns true if auto depth is active, false if it is not active
+        * Auto depth state (bool): True if auto depth is active, false if not
 
         """
 
-        AUTO_DEPTH_MODE = 3
+        control_mode_tel = self._parent_drone.telemetry.get(blueye.protocol.ControlModeTel)
 
-        AUTO_HEADING_AND_AUTO_DEPTH_MODE = 9
+        if control_mode_tel is None:
 
-        state = self._state_watcher.general_state
-
-        if (
-
-            state["control_mode"] is AUTO_DEPTH_MODE
-
-            or state["control_mode"] is AUTO_HEADING_AND_AUTO_DEPTH_MODE
-
-        ):
-
-            return True
+            return None
 
         else:
 
-            return False
+            return control_mode_tel.state.auto_depth
 
     @auto_depth_active.setter
 
-    def auto_depth_active(self, active: bool):
+    def auto_depth_active(self, enable: bool):
 
-        if active:
-
-            self._parent_drone._tcp_client.auto_depth_on()
-
-        else:
-
-            self._parent_drone._tcp_client.auto_depth_off()
+        self._parent_drone._ctrl_client.set_auto_depth_state(enable)
 
     @property
 
-    def auto_heading_active(self) -&gt; bool:
+    def auto_heading_active(self) -&gt; Optional[bool]:
 
         """Enable or disable the auto heading control mode
 
@@ -1176,45 +1235,29 @@ class Motion:
 
         *Arguments*:
 
-        * active (bool): Activate auto heading mode if active is true, de-activate if false
+        * Enable (bool): Activate auto heading mode if true, de-activate if false
 
         *Returns*:
 
-        * active (bool): Returns true if auto heading mode is active, false if it is not active
+        * Auto heading state (bool): True if auto heading mode is active, false if not
 
         """
 
-        AUTO_HEADING_MODE = 7
+        control_mode_tel = self._parent_drone.telemetry.get(blueye.protocol.ControlModeTel)
 
-        AUTO_HEADING_AND_AUTO_DEPTH_MODE = 9
+        if control_mode_tel is None:
 
-        state = self._state_watcher.general_state
-
-        if (
-
-            state["control_mode"] is AUTO_HEADING_MODE
-
-            or state["control_mode"] is AUTO_HEADING_AND_AUTO_DEPTH_MODE
-
-        ):
-
-            return True
+            return None
 
         else:
 
-            return False
+            return control_mode_tel.state.auto_heading
 
     @auto_heading_active.setter
 
-    def auto_heading_active(self, active: bool):
+    def auto_heading_active(self, enable: bool):
 
-        if active:
-
-            self._parent_drone._tcp_client.auto_heading_on()
-
-        else:
-
-            self._parent_drone._tcp_client.auto_heading_off()
+        self._parent_drone._ctrl_client.set_auto_heading_state(enable)
 </code></pre>
 </details>
 <h2 id="classes">Classes</h2>
@@ -1245,8 +1288,6 @@ class Motion:
 
         self._parent_drone = parent_drone
 
-        self._state_watcher = parent_drone._state_watcher
-
         self.thruster_lock = threading.Lock()
 
         self._current_thruster_setpoints = {"surge": 0, "sway": 0, "heave": 0, "yaw": 0}
@@ -1259,9 +1300,9 @@ class Motion:
 
         """Returns the current setpoints for the thrusters
 
-        We maintain this state in the SDK since the drone does not report back it's current
+        We maintain this state in the SDK since the drone expects to receive all of the setpoints at
 
-        setpoint.
+        once.
 
         For setting the setpoints you should use the dedicated properties/functions for that, trying
 
@@ -1291,7 +1332,7 @@ class Motion:
 
         boost_setpoints = self._current_boost_setpoints.values()
 
-        self._parent_drone._tcp_client.motion_input(*thruster_setpoints, *boost_setpoints)
+        self._parent_drone._ctrl_client.set_motion_input(*thruster_setpoints, *boost_setpoints)
 
     @property
 
@@ -1493,7 +1534,7 @@ class Motion:
 
     @property
 
-    def auto_depth_active(self) -&gt; bool:
+    def auto_depth_active(self) -&gt; Optional[bool]:
 
         """Enable or disable the auto depth control mode
 
@@ -1507,49 +1548,33 @@ class Motion:
 
         *Arguments*:
 
-        * active (bool): Activate auto depth mode if active is true, de-activate if false
+        * Enable (bool): Activate auto depth mode if true, de-activate if false
 
         *Returns*:
 
-        * active (bool): Returns true if auto depth is active, false if it is not active
+        * Auto depth state (bool): True if auto depth is active, false if not
 
         """
 
-        AUTO_DEPTH_MODE = 3
+        control_mode_tel = self._parent_drone.telemetry.get(blueye.protocol.ControlModeTel)
 
-        AUTO_HEADING_AND_AUTO_DEPTH_MODE = 9
+        if control_mode_tel is None:
 
-        state = self._state_watcher.general_state
-
-        if (
-
-            state["control_mode"] is AUTO_DEPTH_MODE
-
-            or state["control_mode"] is AUTO_HEADING_AND_AUTO_DEPTH_MODE
-
-        ):
-
-            return True
+            return None
 
         else:
 
-            return False
+            return control_mode_tel.state.auto_depth
 
     @auto_depth_active.setter
 
-    def auto_depth_active(self, active: bool):
+    def auto_depth_active(self, enable: bool):
 
-        if active:
-
-            self._parent_drone._tcp_client.auto_depth_on()
-
-        else:
-
-            self._parent_drone._tcp_client.auto_depth_off()
+        self._parent_drone._ctrl_client.set_auto_depth_state(enable)
 
     @property
 
-    def auto_heading_active(self) -&gt; bool:
+    def auto_heading_active(self) -&gt; Optional[bool]:
 
         """Enable or disable the auto heading control mode
 
@@ -1563,45 +1588,29 @@ class Motion:
 
         *Arguments*:
 
-        * active (bool): Activate auto heading mode if active is true, de-activate if false
+        * Enable (bool): Activate auto heading mode if true, de-activate if false
 
         *Returns*:
 
-        * active (bool): Returns true if auto heading mode is active, false if it is not active
+        * Auto heading state (bool): True if auto heading mode is active, false if not
 
         """
 
-        AUTO_HEADING_MODE = 7
+        control_mode_tel = self._parent_drone.telemetry.get(blueye.protocol.ControlModeTel)
 
-        AUTO_HEADING_AND_AUTO_DEPTH_MODE = 9
+        if control_mode_tel is None:
 
-        state = self._state_watcher.general_state
-
-        if (
-
-            state["control_mode"] is AUTO_HEADING_MODE
-
-            or state["control_mode"] is AUTO_HEADING_AND_AUTO_DEPTH_MODE
-
-        ):
-
-            return True
+            return None
 
         else:
 
-            return False
+            return control_mode_tel.state.auto_heading
 
     @auto_heading_active.setter
 
-    def auto_heading_active(self, active: bool):
+    def auto_heading_active(self, enable: bool):
 
-        if active:
-
-            self._parent_drone._tcp_client.auto_heading_on()
-
-        else:
-
-            self._parent_drone._tcp_client.auto_heading_off()
+        self._parent_drone._ctrl_client.set_auto_heading_state(enable)
 </code></pre>
 </details>
 <hr />
@@ -1615,11 +1624,11 @@ then attempt to maintain the wanted speed in the heave direction as long as auto
 active.</p>
 <p><em>Arguments</em>:</p>
 <ul>
-<li>active (bool): Activate auto depth mode if active is true, de-activate if false</li>
+<li>Enable (bool): Activate auto depth mode if true, de-activate if false</li>
 </ul>
 <p><em>Returns</em>:</p>
 <ul>
-<li>active (bool): Returns true if auto depth is active, false if it is not active</li>
+<li>Auto depth state (bool): True if auto depth is active, false if not</li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="n">auto_heading_active</span>
 </code></pre></div>
@@ -1630,11 +1639,11 @@ drone will then attempt to maintain the wanted angular velocity in the yaw direc
 long as auto heading is active.</p>
 <p><em>Arguments</em>:</p>
 <ul>
-<li>active (bool): Activate auto heading mode if active is true, de-activate if false</li>
+<li>Enable (bool): Activate auto heading mode if true, de-activate if false</li>
 </ul>
 <p><em>Returns</em>:</p>
 <ul>
-<li>active (bool): Returns true if auto heading mode is active, false if it is not active</li>
+<li>Auto heading state (bool): True if auto heading mode is active, false if not</li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="n">boost</span>
 </code></pre></div>
@@ -1646,8 +1655,8 @@ long as auto heading is active.</p>
 <div class="highlight"><pre><span></span><code><span class="n">current_thruster_setpoints</span>
 </code></pre></div>
 <p>Returns the current setpoints for the thrusters</p>
-<p>We maintain this state in the SDK since the drone does not report back it's current
-setpoint.</p>
+<p>We maintain this state in the SDK since the drone expects to receive all of the setpoints at
+once.</p>
 <p>For setting the setpoints you should use the dedicated properties/functions for that, trying
 to set them directly with this property will raise an AttributeError.</p>
 <div class="highlight"><pre><span></span><code><span class="n">heave</span>
