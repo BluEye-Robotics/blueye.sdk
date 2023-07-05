@@ -140,6 +140,11 @@ class Logs:
         self._logs = self._build_log_files_from_dictionary(list_of_logs_in_dictionaries)
         self.index_downloaded = True
 
+    def __len__(self):
+        if not self.index_downloaded:
+            self.refresh_log_index()
+        return len(self._logs)
+
     def __getitem__(self, item):
         if not self.index_downloaded:
             self.refresh_log_index()
