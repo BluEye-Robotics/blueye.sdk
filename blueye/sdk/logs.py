@@ -1,8 +1,11 @@
+import logging
 from datetime import datetime
 
 import dateutil.parser
 import requests
 import tabulate
+
+logger = logging.getLogger(__name__)
 
 
 class LogFile:
@@ -125,8 +128,9 @@ class Logs:
                     log["maxdepth"], log["name"], log["timestamp"], log["binsize"], self.ip
                 )
             except dateutil.parser.ParserError:
-                # TODO: Log this instead of printing when logging is implemented
-                print(f"Could not parse timestamp for log {log['name']}, skipping this log file")
+                logger.warning(
+                    f"Could not parse timestamp for log {log['name']}, skipping this log file"
+                )
         return loglist
 
     def refresh_log_index(self):
