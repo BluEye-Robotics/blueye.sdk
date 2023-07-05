@@ -1,8 +1,7 @@
-from unittest.mock import Mock
+import blueye.protocol as bp
+import pytest
 
 import blueye.sdk
-import pytest
-from blueye.sdk import Drone
 
 
 @pytest.fixture(scope="class")
@@ -11,7 +10,7 @@ def real_drone():
 
     Used for integration tests with physical hardware.
     """
-    return Drone()
+    return blueye.sdk.Drone()
 
 
 @pytest.fixture
@@ -23,12 +22,12 @@ def mocked_requests(requests_mock):
         "features": "lasers,harpoon",
         "hardware_id": "ea9ac92e1817a1d4",
         "manufacturer": "Blueye Robotics",
-        "model_description": "Blueye Pioneer Underwater Drone",
-        "model_name": "Blueye Pioneer",
+        "model_description": "Blueye X3 Underwater Drone",
+        "model_name": "Blueye X3",
         "model_url": "https://www.blueyerobotics.com",
         "operating_system": "blunux",
-        "serial_number": "BYEDP123456",
-        "sw_version": "1.4.7-warrior-master",
+        "serial_number": "BYEDP230000",
+        "sw_version": "3.2.62-honister-master",
     }
     requests_mock.get(
         "http://192.168.1.101/diagnostics/drone_info",
@@ -55,41 +54,61 @@ def mocked_requests(requests_mock):
 
 
 @pytest.fixture
-def mocked_TcpClient(mocker):
-    """Fixture for mocking the TcpClient from blueye.protocol
-
-    Note: This mock is passed create=True, which has the potential to be dangerous since it would
-    allow you to test against methods that don't exist on the actual class. Due to the way methods
-    are added to TcpClient (they are instantiated on runtime, depending on which version of the
-    protocol is requested) mocking the class in the usual way would be quite cumbersome.
-    """
-    return mocker.patch("blueye.sdk.drone.TcpClient", create=True)
+def mocked_ctrl_client(mocker):
+    return mocker.patch("blueye.sdk.drone.CtrlClient", autospec=True)
 
 
 @pytest.fixture
-def mocked_UdpClient(mocker):
-    return mocker.patch("blueye.sdk.drone.UdpClient", autospec=True)
+def mocked_telemetry_client(mocker):
+    return mocker.patch("blueye.sdk.drone.TelemetryClient", autospec=True)
 
 
 @pytest.fixture
-def mocked_drone(request, mocker, mocked_TcpClient, mocked_UdpClient, mocked_requests):
-    drone = blueye.sdk.Drone(autoConnect=False)
-    drone._wait_for_udp_communication = Mock()
-    # Mocking out the run function to avoid blowing up the stack when the thread continuously calls
-    # the get_data_dict function (which won't block since it's mocked).
-    drone._state_watcher.run = Mock()
-    drone.connect()
+def mocked_watchdog_publisher(mocker):
+    return mocker.patch("blueye.sdk.drone.WatchdogPublisher", autospec=True)
+
+
+@pytest.fixture
+def mocked_req_rep_client(mocker):
+    return mocker.patch("blueye.sdk.drone.ReqRepClient", autospec=True)
+
+
+@pytest.fixture
+def mocked_drone(
+    request,
+    mocker,
+    mocked_requests,
+    mocked_ctrl_client,
+    mocked_watchdog_publisher,
+    mocked_req_rep_client,
+):
+    drone = blueye.sdk.Drone()
+    drone._req_rep_client.get_overlay_parameters.return_value = bp.OverlayParameters(
+        temperature_enabled=False,
+        depth_enabled=False,
+        heading_enabled=False,
+        tilt_enabled=False,
+        date_enabled=False,
+        distance_enabled=False,
+        altitude_enabled=False,
+        cp_probe_enabled=False,
+        drone_location_enabled=False,
+        logo_type=bp.LogoType.LOGO_TYPE_NONE,
+        depth_unit=bp.DepthUnit.DEPTH_UNIT_METERS,
+        temperature_unit=bp.TemperatureUnit.TEMPERATURE_UNIT_CELSIUS,
+        thickness_unit=bp.ThicknessUnit.THICKNESS_UNIT_MILLIMETERS,
+        timezone_offset=60,
+        margin_width=30,
+        margin_height=15,
+        font_size=bp.FontSize.FONT_SIZE_PX25,
+        title="",
+        subtitle="",
+        date_format="%m/%d/%Y %I:%M:%S %p",
+        shading=0,
+    )
+    drone._req_rep_client.connect_client.return_value = bp.ConnectClientRep(
+        client_id=1, client_id_in_control=1
+    )
     if hasattr(request, "param"):
         drone.software_version_short = request.param
-    return drone
-
-
-@pytest.fixture
-def mocked_slave_drone(mocker, mocked_TcpClient, mocked_UdpClient, mocked_requests):
-    drone = blueye.sdk.Drone(autoConnect=False, slaveModeEnabled=True)
-    drone._wait_for_udp_communication = Mock()
-    # Mocking out the run function to avoid blowing up the stack when the thread continuously calls
-    # the get_data_dict function (which won't block since it's mocked).
-    drone._state_watcher.run = Mock()
-    drone.connect()
     return drone

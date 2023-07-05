@@ -1,4 +1,7 @@
 import threading
+from typing import Optional
+
+import blueye.protocol
 
 
 class Motion:
@@ -11,7 +14,6 @@ class Motion:
 
     def __init__(self, parent_drone):
         self._parent_drone = parent_drone
-        self._state_watcher = parent_drone._state_watcher
         self.thruster_lock = threading.Lock()
         self._current_thruster_setpoints = {"surge": 0, "sway": 0, "heave": 0, "yaw": 0}
         self._current_boost_setpoints = {"slow": 0, "boost": 0}
@@ -20,8 +22,8 @@ class Motion:
     def current_thruster_setpoints(self):
         """Returns the current setpoints for the thrusters
 
-        We maintain this state in the SDK since the drone does not report back it's current
-        setpoint.
+        We maintain this state in the SDK since the drone expects to receive all of the setpoints at
+        once.
 
         For setting the setpoints you should use the dedicated properties/functions for that, trying
         to set them directly with this property will raise an AttributeError.
@@ -40,7 +42,7 @@ class Motion:
         """Small helper function for building argument list to motion_input command"""
         thruster_setpoints = self.current_thruster_setpoints.values()
         boost_setpoints = self._current_boost_setpoints.values()
-        self._parent_drone._tcp_client.motion_input(*thruster_setpoints, *boost_setpoints)
+        self._parent_drone._ctrl_client.set_motion_input(*thruster_setpoints, *boost_setpoints)
 
     @property
     def surge(self) -> float:
@@ -171,7 +173,7 @@ class Motion:
             self._send_motion_input_message()
 
     @property
-    def auto_depth_active(self) -> bool:
+    def auto_depth_active(self) -> Optional[bool]:
         """Enable or disable the auto depth control mode
 
         When auto depth is active, input for the heave direction to the thruster_setpoint function
@@ -181,32 +183,24 @@ class Motion:
 
         *Arguments*:
 
-        * active (bool): Activate auto depth mode if active is true, de-activate if false
+        * Enable (bool): Activate auto depth mode if true, de-activate if false
 
         *Returns*:
 
-        * active (bool): Returns true if auto depth is active, false if it is not active
+        * Auto depth state (bool): True if auto depth is active, false if not
         """
-        AUTO_DEPTH_MODE = 3
-        AUTO_HEADING_AND_AUTO_DEPTH_MODE = 9
-        state = self._state_watcher.general_state
-        if (
-            state["control_mode"] is AUTO_DEPTH_MODE
-            or state["control_mode"] is AUTO_HEADING_AND_AUTO_DEPTH_MODE
-        ):
-            return True
+        control_mode_tel = self._parent_drone.telemetry.get(blueye.protocol.ControlModeTel)
+        if control_mode_tel is None:
+            return None
         else:
-            return False
+            return control_mode_tel.state.auto_depth
 
     @auto_depth_active.setter
-    def auto_depth_active(self, active: bool):
-        if active:
-            self._parent_drone._tcp_client.auto_depth_on()
-        else:
-            self._parent_drone._tcp_client.auto_depth_off()
+    def auto_depth_active(self, enable: bool):
+        self._parent_drone._ctrl_client.set_auto_depth_state(enable)
 
     @property
-    def auto_heading_active(self) -> bool:
+    def auto_heading_active(self) -> Optional[bool]:
         """Enable or disable the auto heading control mode
 
         When auto heading is active, input for the yaw direction to the thruster_setpoint function
@@ -216,26 +210,18 @@ class Motion:
 
         *Arguments*:
 
-        * active (bool): Activate auto heading mode if active is true, de-activate if false
+        * Enable (bool): Activate auto heading mode if true, de-activate if false
 
         *Returns*:
 
-        * active (bool): Returns true if auto heading mode is active, false if it is not active
+        * Auto heading state (bool): True if auto heading mode is active, false if not
         """
-        AUTO_HEADING_MODE = 7
-        AUTO_HEADING_AND_AUTO_DEPTH_MODE = 9
-        state = self._state_watcher.general_state
-        if (
-            state["control_mode"] is AUTO_HEADING_MODE
-            or state["control_mode"] is AUTO_HEADING_AND_AUTO_DEPTH_MODE
-        ):
-            return True
+        control_mode_tel = self._parent_drone.telemetry.get(blueye.protocol.ControlModeTel)
+        if control_mode_tel is None:
+            return None
         else:
-            return False
+            return control_mode_tel.state.auto_heading
 
     @auto_heading_active.setter
-    def auto_heading_active(self, active: bool):
-        if active:
-            self._parent_drone._tcp_client.auto_heading_on()
-        else:
-            self._parent_drone._tcp_client.auto_heading_off()
+    def auto_heading_active(self, enable: bool):
+        self._parent_drone._ctrl_client.set_auto_heading_state(enable)
