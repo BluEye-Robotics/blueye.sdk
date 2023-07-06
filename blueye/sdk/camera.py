@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import re
 import warnings
 from typing import TYPE_CHECKING, Optional
@@ -10,6 +11,9 @@ import requests
 # Necessary to avoid cyclic imports
 if TYPE_CHECKING:
     from .drone import Drone
+
+
+logger = logging.getLogger(__name__)
 
 
 class Tilt:
@@ -488,7 +492,7 @@ class Camera:
     def is_recording(self, start_recording: bool):
         record_state = self._get_record_state()
         if record_state is None:
-            # TODO: Log this as a warning
+            logger.warning("Unable to set recording state, no record state telemetry received")
             return
         if self._is_guestport_camera:
             self._parent_drone._ctrl_client.set_recording_state(
