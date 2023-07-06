@@ -36,7 +36,16 @@ def test_callback_is_called(mocker, telemetry_client):
     depth_tel = bp.DepthTel.serialize(bp.DepthTel(depth={"value": 1.0}))
     msg = (bytes("blueye.protocol.DepthTel", "utf-8"), depth_tel)
     telemetry_client._handle_message(msg)
-    callback.assert_called()
+    callback.assert_called_with("DepthTel", bp.DepthTel.deserialize(depth_tel))
+
+
+def test_callback_return_raw(mocker, telemetry_client):
+    callback = mocker.MagicMock()
+    telemetry_client.add_callback([bp.DepthTel], callback, raw=True)
+    depth_tel = bp.DepthTel.serialize(bp.DepthTel(depth={"value": 1.0}))
+    msg = (bytes("blueye.protocol.DepthTel", "utf-8"), depth_tel)
+    telemetry_client._handle_message(msg)
+    callback.assert_called_with("DepthTel", depth_tel)
 
 
 def test_remove_callback_warns_nonexistant_callback(mocker, telemetry_client):
