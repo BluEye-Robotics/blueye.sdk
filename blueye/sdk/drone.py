@@ -227,12 +227,26 @@ class Drone:
         timeout: float = 4,
         disconnect_other_clients: bool = False,
     ):
-        """Start receiving telemetry info from the drone, and publishing watchdog messages
+        """Establish a connection to the drone
 
-        When watchdog message are published the thrusters are armed, to stop the drone from moving
-        unexpectedly when connecting all thruster set points are set to zero when connecting.
+        Spawns of several threads for receiving telemetry, sending control messages and publishing
+        watchdog messages.
 
-        - *timeout* (float): Seconds to wait for connection
+        When a watchdog message is receieved by the drone the thrusters are armed, so to stop the
+        drone from moving unexpectedly when connecting all thruster set points are set to zero when
+        connecting.
+
+        ** Arguments **
+        - *client_info*: Information about the client connecting, if None the SDK will attempt to
+                         read it from the environment
+        - *timeout*: Seconds to wait for connection. The first connection on boot can be a little
+                     slower than the following ones
+        - *disconnect_other_clients*: If True, disconnect clients until drone reports that we are in
+                                      control
+
+        ** Raises **
+        - *ConnectionError*: If the connection attempt fails
+        - *RuntimeError*: If the Blunux version of the connected drone is too old
         """
         logger.info(f"Attempting to connect to drone at {self._ip}")
         self._update_drone_info(timeout=timeout)
