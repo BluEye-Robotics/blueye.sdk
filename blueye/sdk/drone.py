@@ -231,7 +231,6 @@ class Drone:
 
         - *timeout* (float): Seconds to wait for connection
         """
-        # TODO: Deal with exceptions
         self._update_drone_info(timeout=timeout)
         self._verify_required_blunux_version("3.2")
 
