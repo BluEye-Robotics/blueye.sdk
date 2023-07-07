@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import logging
 import time
 from json import JSONDecodeError
 from typing import Callable, Dict, List, Optional
@@ -16,6 +17,8 @@ from .connection import CtrlClient, ReqRepClient, TelemetryClient, WatchdogPubli
 from .constants import WaterDensities
 from .logs import Logs
 from .motion import Motion
+
+logger = logging.getLogger(__name__)
 
 
 class Config:
@@ -231,6 +234,7 @@ class Drone:
 
         - *timeout* (float): Seconds to wait for connection
         """
+        logger.info(f"Attempting to connect to drone at {self._ip}")
         self._update_drone_info(timeout=timeout)
         self._verify_required_blunux_version("3.2")
 
@@ -246,6 +250,9 @@ class Drone:
 
         self.ping()
         connect_resp = self._req_rep_client.connect_client(client_info=client_info)
+        logger.info(f"Connection successful, client id: {connect_resp.client_id}")
+        logger.info(f"Client id in control: {connect_resp.client_id_in_control}")
+        logger.info(f"There are {len(connect_resp.connected_clients)-1} other clients connected")
         self.client_id = connect_resp.client_id
         self.in_control = connect_resp.client_id == connect_resp.client_id_in_control
         self.connected = True
@@ -254,7 +261,10 @@ class Drone:
         if self.in_control:
             # The drone runs from a read-only filesystem, and as such does not keep any state,
             # therefore when we connect to it we should send the current time
-            self.config.set_drone_time(int(time.time()))
+            current_time = int(time.time())
+            logger.debug(f"Setting current time to {current_time}")
+            self.config.set_drone_time(current_time)
+            logger.debug(f"Disabling thrusters")
             self.motion.send_thruster_setpoint(0, 0, 0, 0)
 
     def disconnect(self):
