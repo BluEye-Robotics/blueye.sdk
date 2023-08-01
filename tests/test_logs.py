@@ -3,11 +3,11 @@ from datetime import datetime
 
 import pytest
 
-from blueye.sdk.logs import LogFile, Logs
+from blueye.sdk.logs import LegacyLogFile, LegacyLogs
 
 
 @pytest.fixture
-def log_list_with_two_logs(requests_mock, mocker):
+def legacy_log_list_with_two_logs(requests_mock, mocker):
     dummy_json = json.dumps(
         [
             {
@@ -28,7 +28,7 @@ def log_list_with_two_logs(requests_mock, mocker):
     requests_mock.get(f"http://192.168.1.101/logcsv", content=str.encode(dummy_json))
     mocked_drone = mocker.patch("blueye.sdk.Drone", autospec=True, _ip="192.168.1.101")
     mocked_drone.connected = True
-    return Logs(mocked_drone)
+    return LegacyLogs(mocked_drone)
 
 
 @pytest.mark.parametrize(
@@ -41,8 +41,8 @@ def log_list_with_two_logs(requests_mock, mocker):
         (1024**3, "1.0 GiB"),
     ],
 )
-def test_human_readable_filesizes(binsize, expected_output):
-    logfile = LogFile(0, "name", "2019-01-01T00:00:00.000000", binsize, "192.168.1.101")
+def test_legacy_human_readable_filesizes(binsize, expected_output):
+    logfile = LegacyLogFile(0, "name", "2019-01-01T00:00:00.000000", binsize, "192.168.1.101")
     assert logfile._human_readable_filesize() == expected_output
 
 
@@ -50,14 +50,14 @@ def test_human_readable_filesizes(binsize, expected_output):
     "isoformat_string, expected_datetime",
     [("2019-01-01T00:00:00.000000", datetime(2019, 1, 1, 0, 0, 0, 0))],
 )
-def test_timestamp_isoformat_conversion(isoformat_string, expected_datetime):
-    logfile = LogFile(0, "", isoformat_string, 0, "192.168.1.101")
+def test_legacy_timestamp_isoformat_conversion(isoformat_string, expected_datetime):
+    logfile = LegacyLogFile(0, "", isoformat_string, 0, "192.168.1.101")
     assert logfile.timestamp == expected_datetime
 
 
-def test_default_download_path(requests_mock, mocker):
+def test_legacy_default_download_path(requests_mock, mocker):
     logname = "log.csv"
-    dummylog = LogFile(0, logname, "2019-01-01T00:00:00.000000", 0, "192.168.1.101")
+    dummylog = LegacyLogFile(0, logname, "2019-01-01T00:00:00.000000", 0, "192.168.1.101")
 
     dummy_csv_content = b"1,2,3"
     requests_mock.get(f"http://192.168.1.101/logcsv/{logname}", content=dummy_csv_content)
@@ -71,8 +71,8 @@ def test_default_download_path(requests_mock, mocker):
     mocked_filehandle.write.assert_called_once_with(dummy_csv_content)
 
 
-def test_logfile_formatting_with_header():
-    log = LogFile(1000, "log1.csv", "2019-01-01T00:00:00.000000", 1024, "192.168.1.101")
+def test_legacy_logfile_formatting_with_header():
+    log = LegacyLogFile(1000, "log1.csv", "2019-01-01T00:00:00.000000", 1024, "192.168.1.101")
     expected_output = (
         "Name      Time                Max depth    Size\n"
         + "log1.csv  01. Jan 2019 00:00  1.00 m       1.0 KiB"
@@ -80,61 +80,61 @@ def test_logfile_formatting_with_header():
     assert f"{log:with_header}" == expected_output
 
 
-def test_logfile_formatting_without_header():
-    log = LogFile(1000, "log1.csv", "2019-01-01T00:00:00.000000", 1024, "192.168.1.101")
+def test_legacy_logfile_formatting_without_header():
+    log = LegacyLogFile(1000, "log1.csv", "2019-01-01T00:00:00.000000", 1024, "192.168.1.101")
     expected_output = "log1.csv  01. Jan 2019 00:00  1.00 m  1.0 KiB"
     assert f"{log}" == expected_output
 
 
-def test_loglist_formatting(log_list_with_two_logs):
+def test_legacy_loglist_formatting(legacy_log_list_with_two_logs):
     expected_output = (
         "Name      Time                Max depth    Size\n"
         + "log1.csv  01. Jan 2019 00:00  1.00 m       1.0 KiB\n"
         + "log2.csv  02. Jan 2019 00:00  2.00 m       2.0 KiB"
     )
-    assert f"{log_list_with_two_logs}" == expected_output
+    assert f"{legacy_log_list_with_two_logs}" == expected_output
 
 
-def test_log_list_is_subscriptable(log_list_with_two_logs):
-    assert log_list_with_two_logs[0].name == "log1.csv"
-    assert log_list_with_two_logs[1].name == "log2.csv"
+def test_legacy_log_list_is_subscriptable(legacy_log_list_with_two_logs):
+    assert legacy_log_list_with_two_logs[0].name == "log1.csv"
+    assert legacy_log_list_with_two_logs[1].name == "log2.csv"
 
 
-def test_log_list_is_accessible_by_key(log_list_with_two_logs):
-    assert log_list_with_two_logs["log1.csv"]
+def test_legacy_log_list_is_accessible_by_key(legacy_log_list_with_two_logs):
+    assert legacy_log_list_with_two_logs["log1.csv"]
 
 
-def test_log_list_is_iterable(log_list_with_two_logs):
+def test_legacy_log_list_is_iterable(legacy_log_list_with_two_logs):
     expected_names = "log1.csvlog2.csv"
     names = ""
-    for log in log_list_with_two_logs:
+    for log in legacy_log_list_with_two_logs:
         names += log.name
     assert names == expected_names
 
 
-def test_logs_raises_KeyError(log_list_with_two_logs):
+def test_legacy_logs_raises_KeyError(legacy_log_list_with_two_logs):
     with pytest.raises(KeyError):
-        log_list_with_two_logs["non_existing_log_name"]
+        legacy_log_list_with_two_logs["non_existing_log_name"]
 
 
-def test_logs_raises_IndexError(log_list_with_two_logs):
+def test_legacy_logs_raises_IndexError(legacy_log_list_with_two_logs):
     with pytest.raises(IndexError):
-        log_list_with_two_logs[3]
+        legacy_log_list_with_two_logs[3]
 
 
-def test_index_is_downloaded_on_first_access(log_list_with_two_logs):
+def test_legacy_index_is_downloaded_on_first_access(legacy_log_list_with_two_logs):
     """Tests that logs are not downloaded before someone attempts to access the logs. And that the
     logs are downloaded after an access is attempted.
     """
-    assert log_list_with_two_logs._logs == {}
-    _ = log_list_with_two_logs[0]
-    assert len(log_list_with_two_logs[::]) == 2
+    assert legacy_log_list_with_two_logs._logs == {}
+    _ = legacy_log_list_with_two_logs[0]
+    assert len(legacy_log_list_with_two_logs[::]) == 2
 
 
 @pytest.mark.parametrize("divisor", [1, 10])
-def test_divisor_parameter_is_passed_to_request(requests_mock, mocker, divisor):
+def test_legacy_divisor_parameter_is_passed_to_request(requests_mock, mocker, divisor):
     logname = "log.csv"
-    dummylog = LogFile(0, logname, "2019-01-01T00:00:00.000000", 0, "192.168.1.101")
+    dummylog = LegacyLogFile(0, logname, "2019-01-01T00:00:00.000000", 0, "192.168.1.101")
 
     dummy_csv_content = b"1,2,3"
     requests_mock.get(

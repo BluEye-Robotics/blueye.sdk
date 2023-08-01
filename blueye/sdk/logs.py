@@ -8,7 +8,7 @@ import tabulate
 logger = logging.getLogger(__name__)
 
 
-class LogFile:
+class LegacyLogFile:
     """
     This class is a container for a log file stored on the drone
 
@@ -88,14 +88,14 @@ class LogFile:
         return self._formatted_values[item]
 
 
-class Logs:
-    """This class is an index of the log files stored on the drone
+class LegacyLogs:
+    """This class is an index of the legacy csv log files stored on the drone
 
     To show the available logs you simply print this object, ie. if your Drone object
     is called `myDrone`, you can do:
 
     ```
-    print(myDrone.logs)
+    print(myDrone.legacy_logs)
     ```
 
     This will print a list of all available logs, with some of their metadata, such as
@@ -124,7 +124,7 @@ class Logs:
         loglist = {}
         for log in list_of_logs_in_dictionaries:
             try:
-                loglist[log["name"]] = LogFile(
+                loglist[log["name"]] = LegacyLogFile(
                     log["maxdepth"], log["name"], log["timestamp"], log["binsize"], self.ip
                 )
             except dateutil.parser.ParserError:

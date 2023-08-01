@@ -16,7 +16,7 @@ from .battery import Battery
 from .camera import Camera
 from .connection import CtrlClient, ReqRepClient, TelemetryClient, WatchdogPublisher
 from .constants import WaterDensities
-from .logs import Logs
+from .logs import LegacyLogs
 from .motion import Motion
 
 logger = logging.getLogger(__name__)
@@ -171,7 +171,7 @@ class Drone:
         self._ip = ip
         self.camera = Camera(self, is_guestport_camera=False)
         self.motion = Motion(self)
-        self.logs = Logs(self)
+        self.legacy_logs = LegacyLogs(self)
         self.config = Config(self)
         self.battery = Battery(self)
         self.telemetry = Telemetry(self)
