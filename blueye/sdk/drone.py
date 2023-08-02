@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import logging
 import time
+from datetime import datetime
 from json import JSONDecodeError
 from typing import Callable, Dict, List, Optional
 
@@ -276,7 +277,8 @@ class Drone:
             # The drone runs from a read-only filesystem, and as such does not keep any state,
             # therefore when we connect to it we should send the current time
             current_time = int(time.time())
-            logger.debug(f"Setting current time to {current_time}")
+            time_formatted = datetime.fromtimestamp(current_time).strftime("%d. %b %Y %H:%M")
+            logger.debug(f"Setting current time to {current_time} ({time_formatted})")
             self.config.set_drone_time(current_time)
             logger.debug(f"Disabling thrusters")
             self.motion.send_thruster_setpoint(0, 0, 0, 0)
