@@ -423,6 +423,20 @@
 
             
           
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/logs/runtime-logs/" class="md-nav__link">
+        Runtime logs
+      </a>
+    </li>
+  
+
+            
+          
         </ul>
       </nav>
     </li>
@@ -656,6 +670,13 @@
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#variables" class="md-nav__link">
+    Variables
+  </a>
+  
+</li>
       
         <li class="md-nav__item">
   <a href="#classes" class="md-nav__link">
@@ -1400,6 +1421,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#variables" class="md-nav__link">
+    Variables
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#classes" class="md-nav__link">
     Classes
   </a>
@@ -2029,6 +2057,8 @@
 
 import importlib.metadata
 
+import logging
+
 import platform
 
 import queue
@@ -2037,13 +2067,15 @@ import threading
 
 import uuid
 
-from typing import Callable, Dict, List, NamedTuple
+from typing import Callable, Dict, List, NamedTuple, Tuple
 
 import blueye.protocol
 
 import proto
 
 import zmq
+
+logger = logging.getLogger(__name__)
 
 class WatchdogPublisher(threading.Thread):
 
@@ -2141,6 +2173,44 @@ class TelemetryClient(threading.Thread):
 
         message"""
 
+    def _handle_message(self, msg: Tuple[bytes, bytes]):
+
+        msg_type_name = msg[0].decode("utf-8").replace("blueye.protocol.", "")
+
+        try:
+
+            msg_type = blueye.protocol.__getattribute__(msg_type_name)
+
+        except AttributeError:
+
+            # If a new telemetry message is introduced before the SDK is updated this can
+
+            # be a common occurence, so choosing to log with info instead of warning
+
+            logger.info(f"Ignoring unknown message type: {msg_type_name}")
+
+            return
+
+        msg_payload = msg[1]
+
+        with self._state_lock:
+
+            self._state[msg_type] = msg_payload
+
+        for callback in self._callbacks:
+
+            if msg_type in callback.message_filter or callback.message_filter == []:
+
+                if callback.pass_raw_data:
+
+                    callback.function(msg_type_name, msg_payload)
+
+                else:
+
+                    msg_deserialized = msg_type.deserialize(msg_payload)
+
+                    callback.function(msg_type_name, msg_deserialized)
+
     def run(self):
 
         poller = zmq.Poller()
@@ -2155,39 +2225,7 @@ class TelemetryClient(threading.Thread):
 
                 msg = self._socket.recv_multipart()
 
-                msg_type_name = msg[0].decode("utf-8").replace("blueye.protocol.", "")
-
-                try:
-
-                    msg_type = blueye.protocol.__getattribute__(msg_type_name)
-
-                except AttributeError:
-
-                    # We've received a message we're unable to parse, we disregard this message
-
-                    # TODO: Log this
-
-                    continue
-
-                msg_payload = msg[1]
-
-                with self._state_lock:
-
-                    self._state[msg_type] = msg_payload
-
-                for callback in self._callbacks:
-
-                    if msg_type in callback.message_filter or callback.message_filter == []:
-
-                        if callback.pass_raw_data:
-
-                            callback.function(msg_type_name, msg_payload)
-
-                        else:
-
-                            msg_deserialized = msg_type.deserialize(msg_payload)
-
-                            callback.function(msg_type_name, msg_deserialized)
+                self._handle_message(msg)
 
     def add_callback(
 
@@ -2215,11 +2253,7 @@ class TelemetryClient(threading.Thread):
 
         except ValueError:
 
-            # No callback registered with the specified id, ignoring
-
-            # TODO: Log this
-
-            pass
+            logger.warning(f"Callback with id {callback_id} not found, ignoring")
 
     def get(self, key: proto.message.Message):
 
@@ -2606,6 +2640,9 @@ class ReqRepClient(threading.Thread):
         return self._send_request_get_response(request, blueye.protocol.SetPubFrequencyRep, timeout)
 </code></pre>
 </details>
+<h2 id="variables">Variables</h2>
+<div class="highlight"><pre><span></span><code><span class="n">logger</span>
+</code></pre></div>
 <h2 id="classes">Classes</h2>
 <h3 id="callback">Callback</h3>
 <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Callback</span><span class="p">(</span>
@@ -4221,6 +4258,44 @@ by overriding the run() method in a subclass.</p>
 
         message"""
 
+    def _handle_message(self, msg: Tuple[bytes, bytes]):
+
+        msg_type_name = msg[0].decode("utf-8").replace("blueye.protocol.", "")
+
+        try:
+
+            msg_type = blueye.protocol.__getattribute__(msg_type_name)
+
+        except AttributeError:
+
+            # If a new telemetry message is introduced before the SDK is updated this can
+
+            # be a common occurence, so choosing to log with info instead of warning
+
+            logger.info(f"Ignoring unknown message type: {msg_type_name}")
+
+            return
+
+        msg_payload = msg[1]
+
+        with self._state_lock:
+
+            self._state[msg_type] = msg_payload
+
+        for callback in self._callbacks:
+
+            if msg_type in callback.message_filter or callback.message_filter == []:
+
+                if callback.pass_raw_data:
+
+                    callback.function(msg_type_name, msg_payload)
+
+                else:
+
+                    msg_deserialized = msg_type.deserialize(msg_payload)
+
+                    callback.function(msg_type_name, msg_deserialized)
+
     def run(self):
 
         poller = zmq.Poller()
@@ -4235,39 +4310,7 @@ by overriding the run() method in a subclass.</p>
 
                 msg = self._socket.recv_multipart()
 
-                msg_type_name = msg[0].decode("utf-8").replace("blueye.protocol.", "")
-
-                try:
-
-                    msg_type = blueye.protocol.__getattribute__(msg_type_name)
-
-                except AttributeError:
-
-                    # We've received a message we're unable to parse, we disregard this message
-
-                    # TODO: Log this
-
-                    continue
-
-                msg_payload = msg[1]
-
-                with self._state_lock:
-
-                    self._state[msg_type] = msg_payload
-
-                for callback in self._callbacks:
-
-                    if msg_type in callback.message_filter or callback.message_filter == []:
-
-                        if callback.pass_raw_data:
-
-                            callback.function(msg_type_name, msg_payload)
-
-                        else:
-
-                            msg_deserialized = msg_type.deserialize(msg_payload)
-
-                            callback.function(msg_type_name, msg_deserialized)
+                self._handle_message(msg)
 
     def add_callback(
 
@@ -4295,11 +4338,7 @@ by overriding the run() method in a subclass.</p>
 
         except ValueError:
 
-            # No callback registered with the specified id, ignoring
-
-            # TODO: Log this
-
-            pass
+            logger.warning(f"Callback with id {callback_id} not found, ignoring")
 
     def get(self, key: proto.message.Message):
 
@@ -4574,11 +4613,7 @@ exception.</p>
 
         except ValueError:
 
-            # No callback registered with the specified id, ignoring
-
-            # TODO: Log this
-
-            pass
+            logger.warning(f"Callback with id {callback_id} not found, ignoring")
 </code></pre>
 </details>
 <h4 id="run_2">run</h4>
@@ -4607,39 +4642,7 @@ from the args and kwargs arguments, respectively.</p>
 
                 msg = self._socket.recv_multipart()
 
-                msg_type_name = msg[0].decode("utf-8").replace("blueye.protocol.", "")
-
-                try:
-
-                    msg_type = blueye.protocol.__getattribute__(msg_type_name)
-
-                except AttributeError:
-
-                    # We've received a message we're unable to parse, we disregard this message
-
-                    # TODO: Log this
-
-                    continue
-
-                msg_payload = msg[1]
-
-                with self._state_lock:
-
-                    self._state[msg_type] = msg_payload
-
-                for callback in self._callbacks:
-
-                    if msg_type in callback.message_filter or callback.message_filter == []:
-
-                        if callback.pass_raw_data:
-
-                            callback.function(msg_type_name, msg_payload)
-
-                        else:
-
-                            msg_deserialized = msg_type.deserialize(msg_payload)
-
-                            callback.function(msg_type_name, msg_deserialized)
+                self._handle_message(msg)
 </code></pre>
 </details>
 <h4 id="setdaemon_2">setDaemon</h4>

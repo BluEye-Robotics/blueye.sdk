@@ -423,6 +423,20 @@
 
             
           
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/logs/runtime-logs/" class="md-nav__link">
+        Runtime logs
+      </a>
+    </li>
+  
+
+            
+          
         </ul>
       </nav>
     </li>
@@ -686,6 +700,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#variables" class="md-nav__link">
+    Variables
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#classes" class="md-nav__link">
     Classes
   </a>
@@ -947,6 +968,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#variables" class="md-nav__link">
+    Variables
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#classes" class="md-nav__link">
     Classes
   </a>
@@ -1123,7 +1151,11 @@
 
 from __future__ import annotations
 
+import logging
+
 import time
+
+from datetime import datetime
 
 from json import JSONDecodeError
 
@@ -1148,6 +1180,8 @@ from .constants import WaterDensities
 from .logs import Logs
 
 from .motion import Motion
+
+logger = logging.getLogger(__name__)
 
 class Config:
 
@@ -1473,17 +1507,41 @@ class Drone:
 
     ):
 
-        """Start receiving telemetry info from the drone, and publishing watchdog messages
+        """Establish a connection to the drone
 
-        When watchdog message are published the thrusters are armed, to stop the drone from moving
+        Spawns of several threads for receiving telemetry, sending control messages and publishing
 
-        unexpectedly when connecting all thruster set points are set to zero when connecting.
+        watchdog messages.
 
-        - *timeout* (float): Seconds to wait for connection
+        When a watchdog message is receieved by the drone the thrusters are armed, so to stop the
+
+        drone from moving unexpectedly when connecting all thruster set points are set to zero when
+
+        connecting.
+
+        ** Arguments **
+
+        - *client_info*: Information about the client connecting, if None the SDK will attempt to
+
+                         read it from the environment
+
+        - *timeout*: Seconds to wait for connection. The first connection on boot can be a little
+
+                     slower than the following ones
+
+        - *disconnect_other_clients*: If True, disconnect clients until drone reports that we are in
+
+                                      control
+
+        ** Raises **
+
+        - *ConnectionError*: If the connection attempt fails
+
+        - *RuntimeError*: If the Blunux version of the connected drone is too old
 
         """
 
-        # TODO: Deal with exceptions
+        logger.info(f"Attempting to connect to drone at {self._ip}")
 
         self._update_drone_info(timeout=timeout)
 
@@ -1509,6 +1567,12 @@ class Drone:
 
         connect_resp = self._req_rep_client.connect_client(client_info=client_info)
 
+        logger.info(f"Connection successful, client id: {connect_resp.client_id}")
+
+        logger.info(f"Client id in control: {connect_resp.client_id_in_control}")
+
+        logger.info(f"There are {len(connect_resp.connected_clients)-1} other clients connected")
+
         self.client_id = connect_resp.client_id
 
         self.in_control = connect_resp.client_id == connect_resp.client_id_in_control
@@ -1525,7 +1589,15 @@ class Drone:
 
             # therefore when we connect to it we should send the current time
 
-            self.config.set_drone_time(int(time.time()))
+            current_time = int(time.time())
+
+            time_formatted = datetime.fromtimestamp(current_time).strftime("%d. %b %Y %H:%M")
+
+            logger.debug(f"Setting current time to {current_time} ({time_formatted})")
+
+            self.config.set_drone_time(current_time)
+
+            logger.debug(f"Disabling thrusters")
 
             self.motion.send_thruster_setpoint(0, 0, 0, 0)
 
@@ -1766,6 +1838,9 @@ class Drone:
         self._req_rep_client.ping(timeout)
 </code></pre>
 </details>
+<h2 id="variables">Variables</h2>
+<div class="highlight"><pre><span></span><code><span class="n">logger</span>
+</code></pre></div>
 <h2 id="classes">Classes</h2>
 <h3 id="config">Config</h3>
 <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Config</span><span class="p">(</span>
@@ -1999,17 +2074,41 @@ be disabled by setting <code>auto_connect=False</code>.</p>
 
     ):
 
-        """Start receiving telemetry info from the drone, and publishing watchdog messages
+        """Establish a connection to the drone
 
-        When watchdog message are published the thrusters are armed, to stop the drone from moving
+        Spawns of several threads for receiving telemetry, sending control messages and publishing
 
-        unexpectedly when connecting all thruster set points are set to zero when connecting.
+        watchdog messages.
 
-        - *timeout* (float): Seconds to wait for connection
+        When a watchdog message is receieved by the drone the thrusters are armed, so to stop the
+
+        drone from moving unexpectedly when connecting all thruster set points are set to zero when
+
+        connecting.
+
+        ** Arguments **
+
+        - *client_info*: Information about the client connecting, if None the SDK will attempt to
+
+                         read it from the environment
+
+        - *timeout*: Seconds to wait for connection. The first connection on boot can be a little
+
+                     slower than the following ones
+
+        - *disconnect_other_clients*: If True, disconnect clients until drone reports that we are in
+
+                                      control
+
+        ** Raises **
+
+        - *ConnectionError*: If the connection attempt fails
+
+        - *RuntimeError*: If the Blunux version of the connected drone is too old
 
         """
 
-        # TODO: Deal with exceptions
+        logger.info(f"Attempting to connect to drone at {self._ip}")
 
         self._update_drone_info(timeout=timeout)
 
@@ -2035,6 +2134,12 @@ be disabled by setting <code>auto_connect=False</code>.</p>
 
         connect_resp = self._req_rep_client.connect_client(client_info=client_info)
 
+        logger.info(f"Connection successful, client id: {connect_resp.client_id}")
+
+        logger.info(f"Client id in control: {connect_resp.client_id_in_control}")
+
+        logger.info(f"There are {len(connect_resp.connected_clients)-1} other clients connected")
+
         self.client_id = connect_resp.client_id
 
         self.in_control = connect_resp.client_id == connect_resp.client_id_in_control
@@ -2051,7 +2156,15 @@ be disabled by setting <code>auto_connect=False</code>.</p>
 
             # therefore when we connect to it we should send the current time
 
-            self.config.set_drone_time(int(time.time()))
+            current_time = int(time.time())
+
+            time_formatted = datetime.fromtimestamp(current_time).strftime("%d. %b %Y %H:%M")
+
+            logger.debug(f"Setting current time to {current_time} ({time_formatted})")
+
+            self.config.set_drone_time(current_time)
+
+            logger.debug(f"Disabling thrusters")
 
             self.motion.send_thruster_setpoint(0, 0, 0, 0)
 
@@ -2346,12 +2459,22 @@ or from the Blueye app) counts as one connection.</p>
     <span class="n">disconnect_other_clients</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="p">)</span>
 </code></pre></div>
-<p>Start receiving telemetry info from the drone, and publishing watchdog messages</p>
-<p>When watchdog message are published the thrusters are armed, to stop the drone from moving
-unexpectedly when connecting all thruster set points are set to zero when connecting.</p>
-<ul>
-<li><em>timeout</em> (float): Seconds to wait for connection</li>
-</ul>
+<p>Establish a connection to the drone</p>
+<p>Spawns of several threads for receiving telemetry, sending control messages and publishing
+watchdog messages.</p>
+<p>When a watchdog message is receieved by the drone the thrusters are armed, so to stop the
+drone from moving unexpectedly when connecting all thruster set points are set to zero when
+connecting.</p>
+<p><strong> Arguments </strong>
+- <em>client_info</em>: Information about the client connecting, if None the SDK will attempt to
+                 read it from the environment
+- <em>timeout</em>: Seconds to wait for connection. The first connection on boot can be a little
+             slower than the following ones
+- <em>disconnect_other_clients</em>: If True, disconnect clients until drone reports that we are in
+                              control</p>
+<p><strong> Raises </strong>
+- <em>ConnectionError</em>: If the connection attempt fails
+- <em>RuntimeError</em>: If the Blunux version of the connected drone is too old</p>
 <details class="example">
 <summary>View Source</summary>
 <pre><code>    def connect(
@@ -2366,17 +2489,41 @@ unexpectedly when connecting all thruster set points are set to zero when connec
 
     ):
 
-        """Start receiving telemetry info from the drone, and publishing watchdog messages
+        """Establish a connection to the drone
 
-        When watchdog message are published the thrusters are armed, to stop the drone from moving
+        Spawns of several threads for receiving telemetry, sending control messages and publishing
 
-        unexpectedly when connecting all thruster set points are set to zero when connecting.
+        watchdog messages.
 
-        - *timeout* (float): Seconds to wait for connection
+        When a watchdog message is receieved by the drone the thrusters are armed, so to stop the
+
+        drone from moving unexpectedly when connecting all thruster set points are set to zero when
+
+        connecting.
+
+        ** Arguments **
+
+        - *client_info*: Information about the client connecting, if None the SDK will attempt to
+
+                         read it from the environment
+
+        - *timeout*: Seconds to wait for connection. The first connection on boot can be a little
+
+                     slower than the following ones
+
+        - *disconnect_other_clients*: If True, disconnect clients until drone reports that we are in
+
+                                      control
+
+        ** Raises **
+
+        - *ConnectionError*: If the connection attempt fails
+
+        - *RuntimeError*: If the Blunux version of the connected drone is too old
 
         """
 
-        # TODO: Deal with exceptions
+        logger.info(f"Attempting to connect to drone at {self._ip}")
 
         self._update_drone_info(timeout=timeout)
 
@@ -2402,6 +2549,12 @@ unexpectedly when connecting all thruster set points are set to zero when connec
 
         connect_resp = self._req_rep_client.connect_client(client_info=client_info)
 
+        logger.info(f"Connection successful, client id: {connect_resp.client_id}")
+
+        logger.info(f"Client id in control: {connect_resp.client_id_in_control}")
+
+        logger.info(f"There are {len(connect_resp.connected_clients)-1} other clients connected")
+
         self.client_id = connect_resp.client_id
 
         self.in_control = connect_resp.client_id == connect_resp.client_id_in_control
@@ -2418,7 +2571,15 @@ unexpectedly when connecting all thruster set points are set to zero when connec
 
             # therefore when we connect to it we should send the current time
 
-            self.config.set_drone_time(int(time.time()))
+            current_time = int(time.time())
+
+            time_formatted = datetime.fromtimestamp(current_time).strftime("%d. %b %Y %H:%M")
+
+            logger.debug(f"Setting current time to {current_time} ({time_formatted})")
+
+            self.config.set_drone_time(current_time)
+
+            logger.debug(f"Disabling thrusters")
 
             self.motion.send_thruster_setpoint(0, 0, 0, 0)
 </code></pre>

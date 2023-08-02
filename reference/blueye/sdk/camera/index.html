@@ -423,6 +423,20 @@
 
             
           
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/logs/runtime-logs/" class="md-nav__link">
+        Runtime logs
+      </a>
+    </li>
+  
+
+            
+          
         </ul>
       </nav>
     </li>
@@ -1093,6 +1107,8 @@
 <summary>View Source</summary>
 <pre><code>from __future__ import annotations
 
+import logging
+
 import re
 
 import warnings
@@ -1108,6 +1124,8 @@ import requests
 if TYPE_CHECKING:
 
     from .drone import Drone
+
+logger = logging.getLogger(__name__)
 
 class Tilt:
 
@@ -1877,7 +1895,7 @@ class Camera:
 
         if record_state is None:
 
-            # TODO: Log this as a warning
+            logger.warning("Unable to set recording state, no record state telemetry received")
 
             return
 
@@ -2211,6 +2229,8 @@ class Camera:
 <h2 id="variables">Variables</h2>
 <div class="highlight"><pre><span></span><code><span class="n">TYPE_CHECKING</span>
 </code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="n">logger</span>
+</code></pre></div>
 <h2 id="classes">Classes</h2>
 <h3 id="camera">Camera</h3>
 <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Camera</span><span class="p">(</span>
@@ -2306,7 +2326,7 @@ class Camera:
 
         if record_state is None:
 
-            # TODO: Log this as a warning
+            logger.warning("Unable to set recording state, no record state telemetry received")
 
             return
 
