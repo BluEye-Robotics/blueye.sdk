@@ -1,8 +1,11 @@
+import logging
 from datetime import datetime
 
 import dateutil.parser
 import requests
 import tabulate
+
+logger = logging.getLogger(__name__)
 
 
 class LogFile:
@@ -101,7 +104,7 @@ class Logs:
     You can access logfile objects either by index or by name. Eg. if you want the first
     logfile in the list you can do `myDrone.logs[0]`, or if you want some particular log you
     can do `myDrone.logs["exampleName0001.csv"]`. You can even give it a slice, so if you want
-    the last 10 logs you can do `myDrone.logs[:-10]`.
+    the last 10 logs you can do `myDrone.logs[-10:]`.
     """
 
     def __init__(self, parent_drone, auto_download_index=False):
@@ -125,8 +128,9 @@ class Logs:
                     log["maxdepth"], log["name"], log["timestamp"], log["binsize"], self.ip
                 )
             except dateutil.parser.ParserError:
-                # TODO: Log this instead of printing when logging is implemented
-                print(f"Could not parse timestamp for log {log['name']}, skipping this log file")
+                logger.warning(
+                    f"Could not parse timestamp for log {log['name']}, skipping this log file"
+                )
         return loglist
 
     def refresh_log_index(self):
@@ -135,10 +139,19 @@ class Logs:
         This is method is run on the first log access by default, but if you would like to check
         for new log files it can be called at any time.
         """
-
+        if not self._parent_drone.connected:
+            raise ConnectionError(
+                "The connection to the drone is not established, try calling the connect method "
+                "before retrying"
+            )
         list_of_logs_in_dictionaries = self._get_list_of_logs_from_drone()
         self._logs = self._build_log_files_from_dictionary(list_of_logs_in_dictionaries)
         self.index_downloaded = True
+
+    def __len__(self):
+        if not self.index_downloaded:
+            self.refresh_log_index()
+        return len(self._logs)
 
     def __getitem__(self, item):
         if not self.index_downloaded:

@@ -96,6 +96,8 @@ custom_dir = "docs/mkdocs_templates"
     "Log file format" = "docs/logs/log-file-format.md"
     [[tool.portray.mkdocs.nav.Logs]]
     "Plotting log files" = "docs/logs/plotting.md"
+    [[tool.portray.mkdocs.nav.Logs]]
+    "Runtime logs" = "docs/logs/runtime-logs.md"
 
 [[tool.portray.mkdocs.nav]]
 "Configure drone parameters" = "docs/configuration.md"
