@@ -3,7 +3,7 @@ from datetime import datetime
 
 import pytest
 
-from blueye.sdk.logs import LegacyLogFile, LegacyLogs
+from blueye.sdk.logs import LegacyLogFile, LegacyLogs, human_readable_filesize
 
 
 @pytest.fixture
@@ -41,9 +41,8 @@ def legacy_log_list_with_two_logs(requests_mock, mocker):
         (1024**3, "1.0 GiB"),
     ],
 )
-def test_legacy_human_readable_filesizes(binsize, expected_output):
-    logfile = LegacyLogFile(0, "name", "2019-01-01T00:00:00.000000", binsize, "192.168.1.101")
-    assert logfile._human_readable_filesize() == expected_output
+def test_human_readable_filesizes(binsize, expected_output):
+    assert human_readable_filesize(binsize) == expected_output
 
 
 @pytest.mark.parametrize(

@@ -8,6 +8,17 @@ import tabulate
 logger = logging.getLogger(__name__)
 
 
+def human_readable_filesize(binsize: int) -> str:
+    """Convert bytes to human readable string"""
+    suffix = "B"
+    num = binsize
+    for unit in ["", "Ki", "Mi"]:
+        if abs(num) < 1024.0:
+            return f"{num:3.1f} {unit}{suffix}"
+        num /= 1024.0
+    return f"{num:.1f} Gi{suffix}"
+
+
 class LegacyLogFile:
     """
     This class is a container for a log file stored on the drone
@@ -40,17 +51,8 @@ class LegacyLogFile:
             self.name,
             self.timestamp.strftime("%d. %b %Y %H:%M"),
             f"{self.maxdepth/1000:.2f} m",
-            self._human_readable_filesize(),
+            human_readable_filesize(self.binsize),
         ]
-
-    def _human_readable_filesize(self):
-        suffix = "B"
-        num = self.binsize
-        for unit in ["", "Ki", "Mi"]:
-            if abs(num) < 1024.0:
-                return f"{num:3.1f} {unit}{suffix}"
-            num /= 1024.0
-        return f"{num:.1f} Gi{suffix}"
 
     def download(self, output_path=None, output_name=None, downsample_divisor=10):
         """
