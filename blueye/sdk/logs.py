@@ -86,6 +86,11 @@ class Logs:
                 logger.info(f"Log {log['name']} does not have a binlog, ignoring")
         self.index_downloaded = True
 
+    def __len__(self):
+        if not self.index_downloaded:
+            self.refresh_log_index()
+        return len(self._logs)
+
 
 class LegacyLogFile:
     """

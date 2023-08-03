@@ -85,6 +85,10 @@ def Logs_object_with_two_logs(requests_mock, mocker):
     return Logs(mocked_drone)
 
 
+def test_logs_len_return_two(Logs_object_with_two_logs):
+    assert len(Logs_object_with_two_logs) == 2
+
+
 @pytest.fixture
 def legacy_log_list_with_two_logs(requests_mock, mocker):
     dummy_json = json.dumps(
