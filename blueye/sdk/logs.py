@@ -118,8 +118,10 @@ class LegacyLogs:
         else:
             self._logs = {}
 
-    def _get_list_of_logs_from_drone(self):
-        list_of_dictionaries = requests.get("http://" + self.ip + "/logcsv").json()
+    def _get_list_of_logs_from_drone(self, get_all: bool):
+        list_of_dictionaries = requests.get(
+            "http://" + self.ip + "/logcsv", params={"all": True} if get_all else {}
+        ).json()
         return list_of_dictionaries
 
     def _build_log_files_from_dictionary(self, list_of_logs_in_dictionaries):
@@ -135,18 +137,20 @@ class LegacyLogs:
                 )
         return loglist
 
-    def refresh_log_index(self):
+    def refresh_log_index(self, get_all_logs=False):
         """Refresh the log index from the drone
 
         This is method is run on the first log access by default, but if you would like to check
         for new log files it can be called at any time.
+
+        Pass with `get_all_logs=True` to include logs that are not classified as dives.
         """
         if not self._parent_drone.connected:
             raise ConnectionError(
                 "The connection to the drone is not established, try calling the connect method "
                 "before retrying"
             )
-        list_of_logs_in_dictionaries = self._get_list_of_logs_from_drone()
+        list_of_logs_in_dictionaries = self._get_list_of_logs_from_drone(get_all_logs)
         self._logs = self._build_log_files_from_dictionary(list_of_logs_in_dictionaries)
         self.index_downloaded = True
 
