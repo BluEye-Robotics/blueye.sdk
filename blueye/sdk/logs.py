@@ -1,9 +1,11 @@
 import logging
 from datetime import datetime
+from typing import List
 
 import dateutil.parser
 import requests
 import tabulate
+from packaging import version
 
 logger = logging.getLogger(__name__)
 
@@ -17,6 +19,72 @@ def human_readable_filesize(binsize: int) -> str:
             return f"{num:3.1f} {unit}{suffix}"
         num /= 1024.0
     return f"{num:.1f} Gi{suffix}"
+
+
+class LogFile:
+    def __init__(
+        self,
+        name: str,
+        is_dive: bool,
+        filesize: int,
+        start_time: int,
+        max_depth_magnitude: int,
+        ip: str,
+    ):
+        self.name = name
+        self.is_dive = is_dive
+        self.filesize = filesize
+        self.start_time: datetime = datetime.fromtimestamp(start_time)
+        self.max_depth_magnitude = max_depth_magnitude
+        self.download_url = f"http://{ip}/logs/{self.name}/binlog"
+
+
+class Logs:
+    def __init__(self, parent_drone, auto_download_index=False):
+        self._parent_drone = parent_drone
+        self.auto_download_index = auto_download_index
+        self.index_downloaded = False
+        self._logs = {}
+        if auto_download_index:
+            self.refresh_log_index()
+
+    def refresh_log_index(self):
+        """Refresh the log index from the drone
+
+        This is method is run on the first log access by default, but if you would like to check
+        for new log files it can be called at any time.
+        """
+        if not self._parent_drone.connected:
+            raise ConnectionError(
+                "The connection to the drone is not established, try calling the connect method "
+                "before retrying"
+            )
+        logs_endpoint = f"http://{self._parent_drone._ip}/logs"
+        logs: List[dict] = requests.get(logs_endpoint).json()
+
+        if version.parse(self._parent_drone.software_version_short) < version.parse("3.3"):
+            # Extend index with dive info, sends a request for each log file so can be quite slow
+            # for drones with many logs. Not necessary for Blunux >= 3.3 as dive info is included in
+            # the index.
+            for index, log in enumerate(logs):
+                dive_info = requests.get(f"{logs_endpoint}/{log['name']}/dive_info").json()
+                logs[index].update(dive_info)
+
+        # Instantiate log objects for each log
+        logger.debug(f"Creating log objects for {len(logs)} logs")
+        for log in logs:
+            if log["has_binlog"]:
+                self._logs[log["name"]] = LogFile(
+                    log["name"],
+                    log["is_dive"],
+                    log["binlog_size"],
+                    log["start_time"],
+                    log["max_depth_magnitude"],
+                    self._parent_drone._ip,
+                )
+            else:
+                logger.info(f"Log {log['name']} does not have a binlog, ignoring")
+        self.index_downloaded = True
 
 
 class LegacyLogFile:

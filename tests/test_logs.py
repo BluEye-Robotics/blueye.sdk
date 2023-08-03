@@ -3,7 +3,86 @@ from datetime import datetime
 
 import pytest
 
-from blueye.sdk.logs import LegacyLogFile, LegacyLogs, human_readable_filesize
+from blueye.sdk.logs import LegacyLogFile, LegacyLogs, Logs, human_readable_filesize
+
+
+@pytest.fixture
+def Logs_object_with_two_logs(requests_mock, mocker):
+    dummy_json = json.dumps(
+        [
+            {
+                "binlog_size": 1024,
+                "has_binlog": True,
+                "has_dive_info": True,
+                "is_dive": True,
+                "is_open": False,
+                "log_number": 1,
+                "name": "BYEDP123456_aabbccddeeff1234_00001",
+                "videos": [
+                    "/videos/video_BYEDP123456_2023-08-02_122432.mp4",
+                    "/videos/video_BYEDP123456_2023-08-02_122444_cam2.mp4",
+                ],
+            },
+            {
+                "binlog_size": 2048,
+                "has_binlog": True,
+                "has_dive_info": True,
+                "is_dive": True,
+                "is_open": False,
+                "log_number": 2,
+                "name": "BYEDP123456_aabbccddeeff1234_00002",
+                "videos": [
+                    "/videos/video_BYEDP123456_2023-08-03_122432.mp4",
+                    "/videos/video_BYEDP123456_2023-08-03_122444_cam2.mp4",
+                ],
+            },
+        ]
+    )
+    requests_mock.get("http://192.168.1.101/logs", content=str.encode(dummy_json))
+
+    log1_json = json.dumps(
+        {
+            "blunux_version": "3.2.63-honister-master",
+            "is_dive": True,
+            "is_valid": True,
+            "log_name": "BYEDP123456_aabbccddeeff1234_00001.bez",
+            "max_depth_magnitude": 100,
+            "model_name": "Blueye X3",
+            "start_time": 1690979463,
+            "videos": [
+                "/videos/video_BYEDP123456_2023-08-02_123249.mp4",
+                "/videos/video_BYEDP123456_2023-08-02_123255_cam2.mp4",
+            ],
+        }
+    )
+    log2_json = json.dumps(
+        {
+            "blunux_version": "3.2.63-honister-master",
+            "is_dive": True,
+            "is_valid": True,
+            "log_name": "BYEDP123456_aabbccddeeff1234_00001.bez",
+            "max_depth_magnitude": 10,
+            "model_name": "Blueye X3",
+            "start_time": 1691065863,
+            "videos": [
+                "/videos/video_BYEDP123456_2023-08-03_123249.mp4",
+                "/videos/video_BYEDP123456_2023-08-03_123255_cam2.mp4",
+            ],
+        }
+    )
+    requests_mock.get(
+        "http://192.168.1.101/logs/BYEDP123456_aabbccddeeff1234_00001/dive_info",
+        content=str.encode(log1_json),
+    )
+    requests_mock.get(
+        "http://192.168.1.101/logs/BYEDP123456_aabbccddeeff1234_00002/dive_info",
+        content=str.encode(log2_json),
+    )
+    mocked_drone = mocker.patch(
+        "blueye.sdk.Drone", autospec=True, _ip="192.168.1.101", software_version_short="3.2.63"
+    )
+    mocked_drone.connected = True
+    return Logs(mocked_drone)
 
 
 @pytest.fixture
