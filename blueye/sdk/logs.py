@@ -44,6 +44,25 @@ class LogFile:
             human_readable_filesize(self.filesize),
         ]
 
+    def download(self, output_path: Optional[str] = None, output_name: Optional[str] = None):
+        """
+        Download the specified log to your local file system
+
+        If you specify an output_path the log file will be downloaded to that directory
+        instead of the current one.
+
+        Specifying output_name will overwrite the default file name with whatever you
+        have specified.
+
+        """
+        log = requests.get(self.download_url).content
+        if output_path is None:
+            output_path = "./"
+        if output_name is None:
+            output_name = f"{self.name}.bez"
+        with open(f"{output_path}{output_name}", "wb") as f:
+            f.write(log)
+
     def __format__(self, format_specifier):
         if format_specifier == "with_header":
             return tabulate.tabulate(
