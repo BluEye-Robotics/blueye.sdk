@@ -48,6 +48,7 @@ class LogFile:
         self,
         output_path: Optional[str] = None,
         output_name: Optional[str] = None,
+        write_to_file: bool = True,
     ) -> bytes:
         """
         Download the specified log to your local file system
@@ -61,12 +62,13 @@ class LogFile:
         Returns the downloaded log as bytes
         """
         log = requests.get(self.download_url).content
-        if output_path is None:
-            output_path = "./"
-        if output_name is None:
-            output_name = f"{self.name}.bez"
-        with open(f"{output_path}{output_name}", "wb") as f:
-            f.write(log)
+        if write_to_file:
+            if output_path is None:
+                output_path = "./"
+            if output_name is None:
+                output_name = f"{self.name}.bez"
+            with open(f"{output_path}{output_name}", "wb") as f:
+                f.write(log)
         return log
 
     def __format__(self, format_specifier):
