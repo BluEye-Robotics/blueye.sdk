@@ -1,6 +1,6 @@
 import logging
 from datetime import datetime
-from typing import List
+from typing import List, Optional
 
 import dateutil.parser
 import requests
@@ -44,7 +44,11 @@ class LogFile:
             human_readable_filesize(self.filesize),
         ]
 
-    def download(self, output_path: Optional[str] = None, output_name: Optional[str] = None):
+    def download(
+        self,
+        output_path: Optional[str] = None,
+        output_name: Optional[str] = None,
+    ) -> bytes:
         """
         Download the specified log to your local file system
 
@@ -54,6 +58,7 @@ class LogFile:
         Specifying output_name will overwrite the default file name with whatever you
         have specified.
 
+        Returns the downloaded log as bytes
         """
         log = requests.get(self.download_url).content
         if output_path is None:
@@ -62,6 +67,7 @@ class LogFile:
             output_name = f"{self.name}.bez"
         with open(f"{output_path}{output_name}", "wb") as f:
             f.write(log)
+        return log
 
     def __format__(self, format_specifier):
         if format_specifier == "with_header":
