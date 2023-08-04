@@ -37,6 +37,26 @@ class LogFile:
         self.start_time: datetime = datetime.fromtimestamp(start_time)
         self.max_depth_magnitude = max_depth_magnitude
         self.download_url = f"http://{ip}/logs/{self.name}/binlog"
+        self._formatted_values = [
+            self.name,
+            self.start_time.strftime("%d. %b %Y %H:%M"),
+            f"{self.max_depth_magnitude} m",
+            human_readable_filesize(self.filesize),
+        ]
+
+    def __format__(self, format_specifier):
+        if format_specifier == "with_header":
+            return tabulate.tabulate(
+                [self], headers=["Name", "Time", "Max depth", "Size"], tablefmt="plain"
+            )
+        else:
+            return tabulate.tabulate([self], tablefmt="plain")
+
+    def __str__(self):
+        return f"{self}"
+
+    def __getitem__(self, item):
+        return self._formatted_values[item]
 
 
 class Logs:
@@ -90,6 +110,34 @@ class Logs:
         if not self.index_downloaded:
             self.refresh_log_index()
         return len(self._logs)
+
+    def __getitem__(self, item):
+        if not self.index_downloaded:
+            self.refresh_log_index()
+        if type(item) == str:
+            try:
+                return self._logs[item]
+            except KeyError:
+                raise KeyError(f"A log with the name '{item}' does not exist")
+        elif isinstance(item, slice):
+            logs_slice = Logs(self._parent_drone)
+            for log in list(self._logs.values())[item]:
+                logs_slice._logs[log.name] = log
+            logs_slice.index_downloaded = True
+            return logs_slice
+        else:
+            try:
+                return list(self._logs.values())[item]
+            except IndexError:
+                raise IndexError(
+                    f"Tried to access log nr {item}, "
+                    + f"but there are only {len(self._logs.values())} logs available"
+                )
+
+    def __str__(self):
+        return tabulate.tabulate(
+            self, headers=["Name", "Time", "Max depth", "Size"], tablefmt="plain"
+        )
 
 
 class LegacyLogFile:
