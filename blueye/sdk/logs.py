@@ -2,6 +2,7 @@ import logging
 from datetime import datetime
 from typing import List, Optional
 import zlib
+from pathlib import Path
 
 import dateutil.parser
 import requests
@@ -52,28 +53,34 @@ class LogFile:
 
     def download(
         self,
-        output_path: Optional[str] = None,
-        output_name: Optional[str] = None,
+        output_path: Optional[Path] = None,
         write_to_file: bool = True,
     ) -> bytes:
-        """
-        Download the specified log to your local file system
+        """Download a log file from the drone
 
-        If you specify an output_path the log file will be downloaded to that directory
-        instead of the current one.
+        *Arguments*:
 
-        Specifying output_name will overwrite the default file name with whatever you
-        have specified.
+        * `output_path`:
+            Path to write the log file to. If `None`, the log will be written to the
+            current working directory. If the path is a directory, the log will be
+            downloaded to that directory with its original name. Else the log will be
+            downloaded to the specified path.
+        * `write_to_file`:
+            If True, the log will be written to the specified path. If False, the
+            log will only be returned as a bytes object.
 
-        Returns the downloaded log as bytes
+        *Returns*:
+
+        The compressed log file as a bytes object.
         """
         log = requests.get(self.download_url).content
         if write_to_file:
             if output_path is None:
-                output_path = "./"
-            if output_name is None:
-                output_name = f"{self.name}.bez"
-            with open(f"{output_path}{output_name}", "wb") as f:
+                output_path = Path(f"{self.name}.bez")
+            else:
+                if output_path.is_dir():
+                    output_path = output_path.joinpath(f"{self.name}.bez")
+            with open(output_path, "wb") as f:
                 f.write(log)
         return log
 
