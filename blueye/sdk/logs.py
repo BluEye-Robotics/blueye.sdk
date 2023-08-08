@@ -55,6 +55,7 @@ class LogFile:
         self,
         output_path: Optional[Path] = None,
         write_to_file: bool = True,
+        timeout: float = 1,
     ) -> bytes:
         """Download a log file from the drone
 
@@ -68,12 +69,14 @@ class LogFile:
         * `write_to_file`:
             If True, the log will be written to the specified path. If False, the
             log will only be returned as a bytes object.
+        * `timeout`:
+            Seconds to wait for response
 
         *Returns*:
 
         The compressed log file as a bytes object.
         """
-        log = requests.get(self.download_url).content
+        log = requests.get(self.download_url, timeout=timeout).content
         if write_to_file:
             if output_path is None:
                 output_path = Path(f"{self.name}.bez")
