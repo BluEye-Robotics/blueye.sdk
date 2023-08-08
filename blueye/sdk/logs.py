@@ -1,6 +1,7 @@
 import logging
 from datetime import datetime
 from typing import List, Optional
+import zlib
 
 import dateutil.parser
 import requests
@@ -19,6 +20,11 @@ def human_readable_filesize(binsize: int) -> str:
             return f"{num:3.1f} {unit}{suffix}"
         num /= 1024.0
     return f"{num:.1f} Gi{suffix}"
+
+
+def decompress_log(log: bytes) -> bytes:
+    """Decompress a log file"""
+    return zlib.decompressobj(wbits=zlib.MAX_WBITS | 16).decompress(log)
 
 
 class LogFile:
