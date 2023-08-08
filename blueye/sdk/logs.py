@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 from datetime import datetime
 from typing import List, Optional
@@ -53,7 +55,7 @@ class LogFile:
 
     def download(
         self,
-        output_path: Optional[Path] = None,
+        output_path: Optional[Path | str] = None,
         write_to_file: bool = True,
         timeout: float = 1,
     ) -> bytes:
@@ -81,6 +83,8 @@ class LogFile:
             if output_path is None:
                 output_path = Path(f"{self.name}.bez")
             else:
+                if type(output_path) == str:
+                    output_path = Path(output_path)
                 if output_path.is_dir():
                     output_path = output_path.joinpath(f"{self.name}.bez")
             with open(output_path, "wb") as f:
