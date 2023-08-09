@@ -1,14 +1,17 @@
 from __future__ import annotations
 
 import logging
-from datetime import datetime
-from typing import Callable, List, Optional
 import zlib
+from datetime import datetime, timedelta
 from pathlib import Path
+from typing import Callable, Iterator, List, Optional, Tuple
 
+import blueye.protocol as bp
 import dateutil.parser
+import proto
 import requests
 import tabulate
+from google.protobuf.internal.decoder import _DecodeVarint as decodeVarint
 from packaging import version
 
 logger = logging.getLogger(__name__)
@@ -28,6 +31,59 @@ def human_readable_filesize(binsize: int) -> str:
 def decompress_log(log: bytes) -> bytes:
     """Decompress a log file"""
     return zlib.decompressobj(wbits=zlib.MAX_WBITS | 16).decompress(log)
+
+
+class LogStream:
+    """Class for streaming a log
+
+    Creates a stream from a downloaded log file. Iterate over the object to get the next log record.
+    """
+
+    def __init__(
+        self, log: bytes, decompress: bool = True
+    ) -> Iterator[
+        Tuple[
+            proto.datetime_helpers.DatetimeWithNanoseconds,  # Real time clock
+            timedelta,  # Time since first message
+            proto.message.MessageMeta,  # Message type
+            proto.message.Message,  # Message contents
+        ]
+    ]:
+        if decompress:
+            self.decompressed_log = decompress_log(log)
+        else:
+            self.decompressed_log = log
+        self.pos = 0
+        self.start_monotonic: proto.datetime_helpers.DatetimeWithNanoseconds = 0
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        if self.pos < len(self.decompressed_log):
+            msg_size, pos_msg_start = decodeVarint(self.decompressed_log, self.pos)
+            msg_data = self.decompressed_log[pos_msg_start : (pos_msg_start + msg_size)]
+
+            if len(msg_data) < msg_size:
+                raise EOFError("Not enough bytes to read message")
+
+            self.pos = pos_msg_start + msg_size
+            msg = bp.BinlogRecord.deserialize(msg_data)
+            payload_msg_name = msg.payload.type_url.replace(
+                "type.googleapis.com/blueye.protocol.", ""
+            )
+            payload_type = bp.__getattribute__(payload_msg_name)
+            payload_msg_deserialized = payload_type.deserialize(msg.payload.value)
+            if self.start_monotonic == 0:
+                self.start_monotonic = msg.clock_monotonic
+            return (
+                msg.unix_timestamp,
+                msg.clock_monotonic - self.start_monotonic,
+                payload_type,
+                payload_msg_deserialized,
+            )
+        else:
+            raise StopIteration
 
 
 class LogFile:
