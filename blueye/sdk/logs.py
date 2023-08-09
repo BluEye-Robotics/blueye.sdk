@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 from datetime import datetime
-from typing import List, Optional
+from typing import Callable, List, Optional
 import zlib
 from pathlib import Path
 
@@ -185,6 +185,28 @@ class Logs:
         return tabulate.tabulate(
             self, headers=["Name", "Time", "Max depth", "Size"], tablefmt="plain"
         )
+
+    def filter(self, filter_func: Callable[[LogFile], bool]) -> Logs:
+        """Return a new Logs object with only those matching the filter
+
+        Eg. to get logs classified as a dive:
+        ```
+        dive_logs = myDrone.logs.filter(lambda log: log.is_dive)
+        ```
+
+        or to get all logs with a max depth greater than 10m:
+        ```
+        deep_logs = myDrone.logs.filter(lambda log: log.max_depth_magnitude > 10)
+        ```
+        """
+        if not self.index_downloaded:
+            self.refresh_log_index()
+        filtered_logs = Logs(self._parent_drone)
+        filtered_logs.index_downloaded = True
+        for log in self:
+            if filter_func(log):
+                filtered_logs._logs[log.name] = log
+        return filtered_logs
 
 
 class LegacyLogFile:

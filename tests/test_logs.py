@@ -89,6 +89,11 @@ def test_logs_len_return_two(Logs_object_with_two_logs):
     assert len(Logs_object_with_two_logs) == 2
 
 
+def test_logs_filter(Logs_object_with_two_logs):
+    assert len(Logs_object_with_two_logs.filter(lambda log: log.is_dive == True)) == 2
+    assert len(Logs_object_with_two_logs.filter(lambda log: log.max_depth_magnitude > 50)) == 1
+
+
 @pytest.fixture
 def legacy_log_list_with_two_logs(requests_mock, mocker):
     dummy_json = json.dumps(
