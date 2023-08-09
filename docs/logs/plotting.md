@@ -3,41 +3,86 @@ This example shows how one can pull a log file from the drone and use
 [pandas](https://pandas.pydata.org/) and [matplotlib](https://matplotlib.org/) to plot
 it.
 
-We'll start by downloading a log file from the drone
+=== "Binary logs"
+    We'll start by downloading a log file from the drone
 
-```python
-from blueye.sdk import Drone
+    ```python
+    from blueye.sdk import Drone
 
-myDrone = Drone()
+    myDrone = Drone()
+    log_bytes = d.logs[0].download(write_to_file=False)
+    ```
 
-myDrone.logs[0].download(output_name="log0.csv")
-```
+    The `log_bytes` variable now contains the raw bytes of the log file. We can now initialize a `LogStream` object with these bytes and use it to iterate over the log entries.
 
-We can now read the csv-file into a pandas object for easy manipulation
+    ```python
+    from blueye.sdk.logs import LogStream
 
-```python
-import pandas
+    log_stream = LogStream(log_bytes)
+    ```
 
-divelog = pandas.read_csv("log0.csv")
-```
+    Next we'll create a pandas dataframe from the log stream. We'll also specify the column names to make it easier to work with the dataframe later.
 
-and then we'll convert the unix timestamp in `rt_clock` into a more readable format:
+    ```python
+    import pandas as pd
+    import blueye.protocol as bp
 
-```python
-divelog["rt_clock"] = pandas.to_datetime(divelog["rt_clock"], unit="s")
-```
+    columns = ["rt", "delta", "meta", "message"]
+    divelog = pd.DataFrame.from_records(log_stream, columns=columns)
+    ```
+
+    We'll now filter out all entries that are not depth telemetry messages, and extract the depth value from the remaining entries.
+
+    ```python
+    depth_log = divelog[divelog.meta == bp.DepthTel]
+    depth_log["depth"] = depth_log["message"].apply(lambda x: x.depth.value)
+
+    ```
+
+    We'll prepare our axes for plotting
+
+    ```python
+    x = depth_log["rt"]
+    y = depth_log["depth"]
+    ```
+
+=== "Legacy Logs"
+    We'll start by downloading a log file from the drone
+
+    ```python
+    from blueye.sdk import Drone
+
+    myDrone = Drone()
+    myDrone.legacy_logs[0].download(output_name="log0.csv")
+    ```
+
+    We can now read the csv-file into a pandas object for easy manipulation
+
+    ```python
+    import pandas as pd
+
+    divelog = pd.read_csv("log0.csv")
+    ```
+
+    and then we'll convert the unix timestamp in `rt_clock` into a more readable format:
+
+    ```python
+    divelog["rt_clock"] = pandas.to_datetime(divelog["rt_clock"], unit="s")
+    ```
+
+    We'll prepare our axes for plotting
+
+    ```python
+    x = divelog["rt_clock"]
+    y = divelog["depth"] / 1000  # Dividing by 1000 to get depth in meters
+    ```
 
 Next we will plot depth vs time with matplotlib:
-
-
 ```python
 import matplotlib.pyplot as plt
 
 # Instantiate our figure and axes to plot on
 figure, axes = plt.subplots()
-
-x = divelog["rt_clock"]
-y = divelog["depth"] / 1000  # Dividing by 1000 to get depth in meters
 
 # Plot the depth values against time
 axes.plot(x, y, label="depth")
