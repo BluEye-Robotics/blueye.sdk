@@ -97,11 +97,11 @@ features = ["content.tabs.link"]
     [[tool.portray.mkdocs.nav.Logs]]
     "Listing and downloading log files" = "docs/logs/listing-and-downloading.md"
     [[tool.portray.mkdocs.nav.Logs]]
-    "Log file format" = "docs/logs/log-file-format.md"
-    [[tool.portray.mkdocs.nav.Logs]]
     "Plotting log files" = "docs/logs/plotting.md"
     [[tool.portray.mkdocs.nav.Logs]]
     "Runtime logs" = "docs/logs/runtime-logs.md"
+    [[tool.portray.mkdocs.nav.Logs]]
+    "Legacy log file format" = "docs/logs/legacy-log-file-format.md"
 
 [[tool.portray.mkdocs.nav]]
 "Configure drone parameters" = "docs/configuration.md"
