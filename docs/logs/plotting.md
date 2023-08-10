@@ -11,24 +11,16 @@ it.
 
     myDrone = Drone()
     log = myDrone.logs[0]
-    log_bytes = log.download(write_to_file=False)
     ```
 
-    The `log_bytes` variable now contains the raw bytes of the log file. We can now initialize a `LogStream` object with these bytes and use it to iterate over the log entries.
-
-    ```python
-    from blueye.sdk.logs import LogStream
-
-    log_stream = LogStream(log_bytes)
-    ```
-
-    Next we'll create a pandas dataframe from the log stream. We'll also specify the column names to make it easier to work with the dataframe later.
+    Next we'll parse the log to a stream and create a pandas dataframe from the records. We'll also specify the column names to make it easier to work with the dataframe later.
 
     ```python
     import pandas as pd
     import blueye.protocol as bp
 
     columns = ["rt", "delta", "meta", "message"]
+    log_stream = log.parse_to_stream()
     divelog = pd.DataFrame.from_records(log_stream, columns=columns)
     ```
 

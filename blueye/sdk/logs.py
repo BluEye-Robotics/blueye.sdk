@@ -152,6 +152,17 @@ class LogFile:
                 f.write(self.content)
         return self.content
 
+    def parse_to_stream(self) -> LogStream:
+        """Parse the log file to a stream
+
+        Will download the log if it is not already downloaded.
+
+        *Returns*:
+
+        A `LogStream` object
+        """
+        return LogStream(self.download(write_to_file=False))
+
     def __format__(self, format_specifier):
         if format_specifier == "with_header":
             return tabulate.tabulate(
