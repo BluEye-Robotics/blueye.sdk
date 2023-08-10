@@ -166,54 +166,6 @@ paths:
             with open(logname, "wb") as f:
               f.write(response.content)
 
-  /pix4d:
-    get:
-      tags:
-        - "Dive data"
-      summary: Download CSV file with data for creating scaled 3D models
-      description: |
-        Download CSV file with data for creating scaled 3D models in Pix4d
-      parameters:
-        - name: file
-          in: query
-          description: "Name of the video file to download data for"
-          required: true
-          schema:
-            type: string
-            example: "video_BYEDP123456_2019-01-01_000001.mp4"
-        - name: frame-step
-          in: query
-          description: "Amout of steps between each frame grab"
-          required: false
-          schema:
-            type: integer
-            example: "20"
-      responses:
-        "200":
-          description: Comma-separated-value file with log data
-          content:
-            text/csv:
-              schema:
-                type: string
-      x-code-samples:
-        - lang: "curl"
-          source: |
-            # To get CSV logfile for filename video_BYEDP123456_2019-01-01_000001.mp4
-            curl -X GET "http://192.168.1.101/pix4d/" \
-              -d "file=video_BYEDP123456_2019-01-01_000001.mp4"
-
-        - lang: "Python"
-          source: |
-            import requests
-            fileName = "video_BYEDP123456_2019-01-01_000001"
-            parameters =  {
-                            "file": f"{fileName}.mp4",
-                            "frame-step": 20
-                          }
-            response = requests.get(f"http://192.168.1.101/pix4d" params=parameters)
-            with open(f"{fileName".csv}, "wb") as f:
-              f.write(response.content)
-
   /agisoft:
     get:
       tags:
