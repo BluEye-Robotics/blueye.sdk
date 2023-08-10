@@ -10,7 +10,8 @@ it.
     from blueye.sdk import Drone
 
     myDrone = Drone()
-    log_bytes = d.logs[0].download(write_to_file=False)
+    log = myDrone.logs[0]
+    log_bytes = log.download(write_to_file=False)
     ```
 
     The `log_bytes` variable now contains the raw bytes of the log file. We can now initialize a `LogStream` object with these bytes and use it to iterate over the log entries.
@@ -31,12 +32,17 @@ it.
     divelog = pd.DataFrame.from_records(log_stream, columns=columns)
     ```
 
-    We'll now filter out all entries that are not depth telemetry messages, and extract the depth value from the remaining entries.
+    We'll now filter out all entries that are not depth telemetry messages and messages that were logged before the start of the dive.
 
     ```python
     depth_log = divelog[divelog.meta == bp.DepthTel]
-    depth_log["depth"] = depth_log["message"].apply(lambda x: x.depth.value)
+    depth_log = depth_log[depth_log.rt > log.start_time]
+    ```
 
+    We can now extract the depth value from the remaining entries
+
+    ```python
+    depth_log["depth"] = depth_log["message"].apply(lambda x: x.depth.value)
     ```
 
     We'll prepare our axes for plotting
