@@ -443,8 +443,9 @@ paths:
             example: "2"
         - name: tz-offset
           in: query
-          description: "Add timezone offset to the picture EXIF data in minutes, can also be negative number.
-          For example in Norway during summer time the correct value would be 60, while it would be -180 in Chile"
+          description: |
+            Add timezone offset to the picture EXIF data in minutes, can also be negative number.
+            For example in Norway during summer time the correct value would be 60, while it would be -180 in Chile
           required: false
           schema:
             type: integer
