@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 import zlib
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Callable, Iterator, List, Optional, Tuple
 
@@ -99,7 +99,7 @@ class LogFile:
         self.name = name
         self.is_dive = is_dive
         self.filesize = filesize
-        self.start_time: datetime = datetime.fromtimestamp(start_time)
+        self.start_time: datetime = datetime.fromtimestamp(start_time, tz=timezone.utc)
         self.max_depth_magnitude = max_depth_magnitude
         self.download_url = f"http://{ip}/logs/{self.name}/binlog"
         self._formatted_values = [
