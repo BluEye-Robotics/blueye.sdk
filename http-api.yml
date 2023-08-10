@@ -82,6 +82,26 @@ paths:
       description: |
         Returns an array of logs from the drone. Each array item represents an available log file on
         the drone. Use the /logcsv/{filename} endpoint to get the full log.
+      parameters:
+        - name: all
+          in: query
+          description: |
+            Add `all` to the parameter list to show logs that are not classified as dives (no auto
+            functions enabled, and max depth < 0.25m). All logs will be shown regardless of the
+            content of the all parameter (even false, 0, etc).
+          required: false
+          schema:
+            type: any
+        - name: filter_depth_min_mm
+          in: query
+          description: |
+            Filter the minimum depth of the listed logs. Will be ignored if `all` is included in
+            parameter list.
+          required: false
+          schema:
+            type: integer
+            example: 1000
+            default: 250
 
       responses:
         "200":
