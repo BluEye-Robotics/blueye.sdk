@@ -1,7 +1,7 @@
-openapi: '3.0.2'
+openapi: "3.0.2"
 info:
   title: Blueye HTTP API
-  version: '1.0.1'
+  version: "1.0.1"
 servers:
   - url: http://192.168.1.101/
 
@@ -21,12 +21,12 @@ paths:
         Returns a JSON string of drone information. Using this endpoint is the easiest way to check
         if there is a drone connected to your network.
       responses:
-        '200':
+        "200":
           description: A JSON string of drone information.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DroneInfo'
+                $ref: "#/components/schemas/DroneInfo"
       x-code-samples:
         - lang: "curl"
           source: |
@@ -56,7 +56,7 @@ paths:
             type: integer
             default: 10
       responses:
-        '200':
+        "200":
           description: A JSON string with the performance test results.
           content:
             application/json:
@@ -84,14 +84,14 @@ paths:
         the drone. Use the /logcsv/{filename} endpoint to get the full log.
 
       responses:
-        '200':
+        "200":
           description: Array of logs
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Log'
+                  $ref: "#/components/schemas/Log"
       x-code-samples:
         - lang: "curl"
           source: |
@@ -134,7 +134,7 @@ paths:
             default: 10
 
       responses:
-        '200':
+        "200":
           description: Comma-separated-value file with log data
           content:
             text/csv:
@@ -177,7 +177,7 @@ paths:
             type: integer
             example: "20"
       responses:
-        '200':
+        "200":
           description: Comma-separated-value file with log data
           content:
             text/csv:
@@ -241,7 +241,7 @@ paths:
             maximum: 360
             example: 180
       responses:
-        '200':
+        "200":
           description: Comma-separated-value file with log data
           content:
             text/csv:
@@ -394,7 +394,7 @@ paths:
               - "vtt"
 
       responses:
-        '200':
+        "200":
           description: Subtitle file for the requested video file
           content:
             text/srt:
@@ -450,7 +450,6 @@ paths:
             type: integer
             example: "-180"
       responses:
-        '200':
             description: Picture
             content:
               application/json:
@@ -461,6 +460,7 @@ paths:
               image/jpeg:
                 schema:
                   type: object
+        "200":
       x-code-samples:
         - lang: "curl"
           source: |
@@ -515,12 +515,12 @@ paths:
             type: integer
             default: 85
       responses:
-        '200':
             description: Picture thumbnail
             content:
               image/jpeg:
                 schema:
                   type: object
+        "200":
       x-code-samples:
         - lang: "curl"
           source: |
@@ -727,7 +727,7 @@ paths:
             enum: [0, 1]
 
       responses:
-        '200':
+        "200":
           description: Picture with overlay metadata
           content:
             image/jpeg:
@@ -768,15 +768,14 @@ paths:
                 type: object
 
       responses:
-        '200':
             description: Upload sucessful
             content:
               text/html:
                 schema:
                   type: string
                   description: Image upload successful!
+        "200":
 
-        '400':
             description: Upload failed
             content:
               text/html:
@@ -787,6 +786,7 @@ paths:
                     - $ref: "#/components/schemas/ImageIsCorrupt"
                     - $ref: "#/components/schemas/ImageIsInvalid"
                     - $ref: "#/components/schemas/ImageResolutionTooHigh"
+        "400":
 
       x-code-samples:
         - lang: "curl"
@@ -810,7 +810,6 @@ paths:
         Download the original user uploaded logo (PNG or JPG)
 
       responses:
-        '200':
             description: Logo as an image file PNG/JPG
             content:
               image/png:
@@ -819,14 +818,15 @@ paths:
               image/jpeg:
                 schema:
                   type: object
+        "200":
 
-        '404':
             description: No logo found
             content:
               text/html:
                 schema:
                   type: string
                   description: No custom logo found!
+        "404":
 
       x-code-samples:
         - lang: "curl"
@@ -847,7 +847,6 @@ paths:
       description: |
         Delete the uploaded logo
       responses:
-        '200':
             description: Deletes the uploaded logo file
             content:
               text/html:
@@ -855,6 +854,7 @@ paths:
                   oneOf:
                     - $ref: "#/components/schemas/LogoDeleted"
                     - $ref: "#/components/schemas/NoLogoToDelete"
+        "200":
 
       x-code-samples:
         - lang: "curl"
@@ -875,14 +875,14 @@ paths:
       description: |
         Returns uploaded logo md5sum
       responses:
-        '200':
+        "200":
           description: A JSON with the user defined logo MD5 checksum
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Md5"
 
-        '404':
+        "404":
           description: No custom logo found!
           content:
             text/html:
