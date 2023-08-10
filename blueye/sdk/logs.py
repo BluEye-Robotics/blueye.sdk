@@ -102,6 +102,7 @@ class LogFile:
         self.start_time: datetime = datetime.fromtimestamp(start_time, tz=timezone.utc)
         self.max_depth_magnitude = max_depth_magnitude
         self.download_url = f"http://{ip}/logs/{self.name}/binlog"
+        self.content = None
         self._formatted_values = [
             self.name,
             self.start_time.strftime("%d. %b %Y %H:%M"),
@@ -114,6 +115,7 @@ class LogFile:
         output_path: Optional[Path | str] = None,
         write_to_file: bool = True,
         timeout: float = 1,
+        overwrite_cache: bool = False,
     ) -> bytes:
         """Download a log file from the drone
 
@@ -129,12 +131,15 @@ class LogFile:
             log will only be returned as a bytes object.
         * `timeout`:
             Seconds to wait for response
+        * `overwrite_cache`:
+            If True, the log will be downloaded even if it is already been downloaded.
 
         *Returns*:
 
         The compressed log file as a bytes object.
         """
-        log = requests.get(self.download_url, timeout=timeout).content
+        if self.content is None or overwrite_cache:
+            self.content = requests.get(self.download_url, timeout=timeout).content
         if write_to_file:
             if output_path is None:
                 output_path = Path(f"{self.name}.bez")
@@ -144,8 +149,8 @@ class LogFile:
                 if output_path.is_dir():
                     output_path = output_path.joinpath(f"{self.name}.bez")
             with open(output_path, "wb") as f:
-                f.write(log)
-        return log
+                f.write(self.content)
+        return self.content
 
     def __format__(self, format_specifier):
         if format_specifier == "with_header":
