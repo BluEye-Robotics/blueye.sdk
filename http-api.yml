@@ -450,17 +450,17 @@ paths:
             type: integer
             example: "-180"
       responses:
-            description: Picture
-            content:
-              application/json:
-                schema:
-                  type: array
-                  items:
-                    $ref: '#/components/schemas/Picture'
-              image/jpeg:
-                schema:
-                  type: object
         "200":
+          description: Picture
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Picture"
+            image/jpeg:
+              schema:
+                type: object
       x-code-samples:
         - lang: "curl"
           source: |
@@ -515,12 +515,12 @@ paths:
             type: integer
             default: 85
       responses:
-            description: Picture thumbnail
-            content:
-              image/jpeg:
-                schema:
-                  type: object
         "200":
+          description: Picture thumbnail
+          content:
+            image/jpeg:
+              schema:
+                type: object
       x-code-samples:
         - lang: "curl"
           source: |
@@ -569,7 +569,7 @@ paths:
             default: ""
         - name: length-units
           in: query
-          description: | 
+          description: |
             Unit to use for all distance/length measurements such as depth, altitude, distance etc.
             For shorter lengths `mm` or `inches` will be used accordingly.
             * `meter` - Metric unit
@@ -673,7 +673,7 @@ paths:
           schema:
             type: integer
             default: 0
-            example:  "60"
+            example: "60"
             format: int32
         - name: logo
           in: query
@@ -768,25 +768,25 @@ paths:
                 type: object
 
       responses:
-            description: Upload sucessful
-            content:
-              text/html:
-                schema:
-                  type: string
-                  description: Image upload successful!
         "200":
+          description: Upload sucessful
+          content:
+            text/html:
+              schema:
+                type: string
+                description: Image upload successful!
 
-            description: Upload failed
-            content:
-              text/html:
-                schema:
-                  oneOf:
-                    - $ref: "#/components/schemas/FileNotPresent"
-                    - $ref: "#/components/schemas/FileSizeTooLarge"
-                    - $ref: "#/components/schemas/ImageIsCorrupt"
-                    - $ref: "#/components/schemas/ImageIsInvalid"
-                    - $ref: "#/components/schemas/ImageResolutionTooHigh"
         "400":
+          description: Upload failed
+          content:
+            text/html:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/FileNotPresent"
+                  - $ref: "#/components/schemas/FileSizeTooLarge"
+                  - $ref: "#/components/schemas/ImageIsCorrupt"
+                  - $ref: "#/components/schemas/ImageIsInvalid"
+                  - $ref: "#/components/schemas/ImageResolutionTooHigh"
 
       x-code-samples:
         - lang: "curl"
@@ -810,23 +810,23 @@ paths:
         Download the original user uploaded logo (PNG or JPG)
 
       responses:
-            description: Logo as an image file PNG/JPG
-            content:
-              image/png:
-                schema:
-                  type: object
-              image/jpeg:
-                schema:
-                  type: object
         "200":
+          description: Logo as an image file PNG/JPG
+          content:
+            image/png:
+              schema:
+                type: object
+            image/jpeg:
+              schema:
+                type: object
 
-            description: No logo found
-            content:
-              text/html:
-                schema:
-                  type: string
-                  description: No custom logo found!
         "404":
+          description: No logo found
+          content:
+            text/html:
+              schema:
+                type: string
+                description: No custom logo found!
 
       x-code-samples:
         - lang: "curl"
@@ -847,14 +847,14 @@ paths:
       description: |
         Delete the uploaded logo
       responses:
-            description: Deletes the uploaded logo file
-            content:
-              text/html:
-                schema:
-                  oneOf:
-                    - $ref: "#/components/schemas/LogoDeleted"
-                    - $ref: "#/components/schemas/NoLogoToDelete"
         "200":
+          description: Deletes the uploaded logo file
+          content:
+            text/html:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/LogoDeleted"
+                  - $ref: "#/components/schemas/NoLogoToDelete"
 
       x-code-samples:
         - lang: "curl"
