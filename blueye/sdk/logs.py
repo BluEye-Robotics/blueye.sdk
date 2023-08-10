@@ -182,6 +182,7 @@ class Logs:
                 "The connection to the drone is not established, try calling the connect method "
                 "before retrying"
             )
+        logger.debug("Refreshing log index")
         logs_endpoint = f"http://{self._parent_drone._ip}/logs"
         logs: List[dict] = requests.get(logs_endpoint).json()
 
@@ -189,6 +190,7 @@ class Logs:
             # Extend index with dive info, sends a request for each log file so can be quite slow
             # for drones with many logs. Not necessary for Blunux >= 3.3 as dive info is included in
             # the index.
+            logger.debug(f"Getting dive info for {len(logs)} logs")
             for index, log in enumerate(logs):
                 dive_info = requests.get(f"{logs_endpoint}/{log['name']}/dive_info").json()
                 logs[index].update(dive_info)
