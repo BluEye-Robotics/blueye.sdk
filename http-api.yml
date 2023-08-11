@@ -166,6 +166,31 @@ paths:
             with open(logname, "wb") as f:
               f.write(response.content)
 
+  /logcsv/binary_logs.zip:
+    get:
+      tags:
+        - "Dive data"
+      summary: "Zipped CSV log files"
+      description: "Download all CSV log files as a zlib compressed zip file"
+      responses:
+        "200":
+          description:
+          content:
+            application/zip:
+              schema:
+                type: file
+      x-code-samples:
+        - lang: "curl"
+          source: |
+            curl -X GET "http://192.168.1.101/logcsv/binary_logs.zip"
+
+        - lang: "Python"
+          source: |
+            import requests
+            response = requests.get(f"http://192.168.1.101/logcsv/binary_logs.zip")
+            with open(logname, "wb") as f:
+              f.write(response.content)
+
   /agisoft:
     get:
       tags:
