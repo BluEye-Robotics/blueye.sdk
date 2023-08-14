@@ -74,6 +74,34 @@ paths:
                                       data={"duration": 5})
             print(response.json())
 
+  /logs:
+    get:
+      tags:
+        - "Dive data"
+      summary: Array of binary logs
+      description: |
+        Returns an array of binary logs from the drone. Each array item represents an available log
+        file on the drone. Use the /logs/{filename}/binlog endpoint to get the full log.
+      responses:
+        "200":
+          description: Array of binary logs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BinLog"
+      x-code-samples:
+        - lang: "curl"
+          source: |
+            curl -X GET "http://192.168.1.101/logs"
+        - lang: "Python"
+          source: |
+            import requests
+            response = requests.get("http://192.168.1.101/logs")
+            print(response.json())
+
+
   /logcsv:
     get:
       tags:
