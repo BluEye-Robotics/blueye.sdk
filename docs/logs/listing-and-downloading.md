@@ -57,6 +57,45 @@ you should see something like the following lines be printed
     myDrone.legacy_logs.refresh_log_index(get_all_logs=True)
     ```
 
+## Selecting a log file
+There are multiple ways to select a log file from the logs index, here are some examples showing how to select by index, by name, and by slice.
+
+!!! example "By index"
+    === "Binary logs"
+        ```python
+        first_log: LogFile = myDrone.logs[0]
+        last_log: LogFile = myDrone.logs[-1]
+        ```
+
+    === "Legacy logs"
+        ```python
+        first_log: LegacyLogFile = myDrone.legacy_logs[0]
+        last_log: LegacyLogFile = myDrone.legacy_logs[-1]
+        ```
+
+!!! example "By name"
+    === "Binary logs"
+        ```python
+        log: LogFile = myDrone.logs["BYEDP000000_ea9ac92e1817a1d4_00000"]
+        ```
+
+    === "Legacy logs"
+        ```python
+        log: LegacyLogFile = myDrone.legacy_logs["ea9add4d40f69d4-00000.csv"]
+        ```
+
+!!! example "By slice"
+    === "Binary logs"
+        ```python
+        first_three_logs: Logs = myDrone.logs[:3]
+        every_other_log: Logs = myDrone.logs[::2]
+        ```
+
+    === "Legacy logs"
+        ```python
+        first_three_logs: List[LegacyLogFile] = myDrone.legacy_logs[:3]
+        every_other_log: List[LegacyLogFile] = myDrone.legacy_logs[::2]
+        ```
 ## Downloading a log file to your computer
 When you want to download a log file all you have to do is to call the `download()`
 method on the desired log and the file will be downloaded to your current folder.
