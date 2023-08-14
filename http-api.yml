@@ -960,6 +960,78 @@ components:
             - false
           example: true
 
+    BinLog:
+      type: object
+      properties:
+        binlog_size:
+          type: integer
+          description: Size of the log file. Unit is bytes.
+          example: 1099448
+        blunux_version:
+          type: string
+          description: |
+            Version of the Blunux operating system running on the drone.
+            Format is $(Major).$(Minor).$(Build)-$(Yocto version)-$(Branch)
+          example: "3.0.47-honister-master"
+        has_binlog:
+          type: boolean
+          description: |
+            If this log has a binlog or not. Unless something unexpected has occured this should be
+            True.
+        has_dive_info:
+          type: boolean
+          description: |
+            If this log has dive info or not. Unless something unexpected has occured this should be
+            True.
+        is_dive:
+          type: boolean
+          description: |
+            If this log is a dive or not. If maximum depth has exceeded 0.25m or if any of the auto
+            function have been used the log will be classified as a dive.
+        is_open:
+          type: boolean
+          description: If this is the log currently being written to.
+        log_number:
+          type: integer
+          description: |
+            Number of the log. This is the same as the number in the filename.
+        max_depth_magnitude:
+          type: integer
+          description: |
+            Maximum depth of the dive,  rounded down to the nearest meter for dives up to 10 meters,
+            rounded down to the nearest 10 meters for dives up to 100 meters, and rounded down to
+            the nearest 100 meters for deeper dives.
+        model_name:
+          type: string
+          description: |
+            Name of the drone model.
+          enum:
+            - Blueye Pioneer
+            - Blueye Pro
+            - Blueye X3
+        name:
+          type: string
+          description: |
+            Name of the logfile. First part is the drones serial number, seconds is the unique
+            hardware ID, and the last part is the dive number.
+            Note: Unlike the csv logs there is no extension in this name.
+          example: BYEDP070018_ea9add4d0c1961d4_00386
+        start_time:
+          type: integer
+          description: Unix timestamp of the start of the dive.
+          example: 1692002908
+        videos:
+          description: |
+            List of paths to videos recorded during the dive.
+          type: array
+          items:
+            type: string
+          example:
+            [
+              "/videos/video_BYEDP070018_2023-07-31_125743.mp4",
+              "/videos/video_BYEDP070018_2023-07-31_125743_cam2.mp4",
+            ]
+
     Log:
       type: object
       properties:
