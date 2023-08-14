@@ -136,6 +136,42 @@ paths:
             with open(f"{logname}.bez", "wb") as f:
               f.write(response.content)
 
+  /logs/{logname}/dive_info:
+    get:
+      tags:
+        - "Dive data"
+      summary: Get dive info for binlog
+      description: |
+        Returns extended meta data for the requested log. This endpoint is mostly useful for Blunux
+        < 3.3, as the dive info is included with the output of the /logs endpoint from 3.3 and
+        onwards.
+      parameters:
+        - name: logname
+          in: path
+          description: Name of the log to download info for
+          required: true
+          schema:
+            type: string
+          example: BYEDP070018_ea9add4d0c1961d4_00388
+      responses:
+        "200":
+          description: Dive info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DiveInfo"
+      x-code-samples:
+        - lang: "curl"
+          source: |
+            # To get info for log with name BYEDP070018_ea9add4d0c1961d4_00388
+            curl -X GET "http://192.168.1.101/logs/BYEDP070018_ea9add4d0c1961d4_00388/dive_info"
+        - lang: "Python"
+          source: |
+            import requests
+            logname = "BYEDP070018_ea9add4d0c1961d4_00388"
+            response = requests.get(f"http://192.168.1.101/logs/{logname}/dive_info")
+            print(response.json())
+
   /logcsv:
     get:
       tags:
