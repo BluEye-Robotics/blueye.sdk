@@ -16,6 +16,7 @@ from .battery import Battery
 from .camera import Camera
 from .connection import CtrlClient, ReqRepClient, TelemetryClient, WatchdogPublisher
 from .constants import WaterDensities
+from .guestport import Peripheral, device_to_peripheral
 from .logs import LegacyLogs, Logs
 from .motion import Motion
 
@@ -186,6 +187,11 @@ class Drone:
         self._telemetry_watcher = _NoConnectionClient()
         self._req_rep_client = _NoConnectionClient()
         self._ctrl_client = _NoConnectionClient()
+
+        self.peripherals: Optional[List[Peripheral]] = None
+        """This list holds the peripherals connected to the drone. If it is `None`, then no
+        Guestport telemetry message has been recieved yet."""
+
         if auto_connect is True:
             self.connect(timeout=timeout, disconnect_other_clients=disconnect_other_clients)
 
@@ -225,6 +231,21 @@ class Drone:
         self.software_version_short = self.software_version.split("-")[0]
         self.serial_number = response["serial_number"]
         self.uuid = response["hardware_id"]
+
+    @staticmethod
+    def _drone_info_callback(msg_type: str, msg: blueye.protocol.DroneInfoTel, drone: Drone):
+        # Check if the GuestPortInfo has been initialized
+        if msg.drone_info.gp._pb.ByteSize() != 0:
+            drone._create_peripherals_from_drone_info(msg.drone_info.gp)
+
+        # Remove the callback after the first message has been received
+        drone.telemetry.remove_msg_callback(drone._drone_info_cb_id)
+
+    def _create_peripherals_from_drone_info(self, gp_info: blueye.protocol.GuestPortInfo):
+        self.peripherals = []
+        for port in (gp_info.gp1, gp_info.gp2, gp_info.gp3):
+            for device in port.device_list.devices:
+                self.peripherals.append(device_to_peripheral(self, port.guest_port_number, device))
 
     def connect(
         self,
@@ -277,6 +298,13 @@ class Drone:
         self.connected = True
         if disconnect_other_clients and not self.in_control:
             self.take_control()
+        self._drone_info_cb_id = self.telemetry.add_msg_callback(
+            [blueye.protocol.DroneInfoTel],
+            Drone._drone_info_callback,
+            False,
+            drone=self,
+        )
+
         if self.in_control:
             # The drone runs from a read-only filesystem, and as such does not keep any state,
             # therefore when we connect to it we should send the current time
