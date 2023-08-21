@@ -163,6 +163,10 @@ class CtrlClient(threading.Thread):
         msg = blueye.protocol.LightsCtrl(lights={"value": value})
         self._messages_to_send.put(msg)
 
+    def set_guest_port_lights(self, value: float):
+        msg = blueye.protocol.GuestportLightsCtrl(lights={"value": value})
+        self._messages_to_send.put(msg)
+
     def set_water_density(self, value: float):
         msg = blueye.protocol.WaterDensityCtrl(density={"value": value})
         self._messages_to_send.put(msg)

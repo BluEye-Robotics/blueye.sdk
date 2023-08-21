@@ -1,5 +1,5 @@
 import logging
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 import blueye.protocol as bp
 from packaging import version
@@ -42,12 +42,31 @@ class GuestportCamera(Camera, Peripheral):
         Peripheral.__init__(self, parent_drone, port_number, device)
 
 
+class GuestPortLight(Peripheral):
+    def __init__(
+        self, parent_drone: "Drone", port_number: bp.GuestPortNumber, device: bp.GuestPortDevice
+    ):
+        Peripheral.__init__(self, parent_drone, port_number, device)
+
+    def set_intensity(self, intensity: float):
+        self.parent_drone._ctrl_client.set_guest_port_lights(intensity)
+
+    def get_intensity(self) -> Optional[float]:
+        return self.parent_drone.telemetry.get(bp.GuestPortLightsTel).lights.value
+
+
 def device_to_peripheral(
     parent_drone: "Drone", port_number: bp.GuestPortNumber, device: bp.GuestPortDevice
 ) -> Peripheral:
     logger.debug(f"Found a {device.name} at port {port_number}")
     if device.device_id == bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_CAM:
         peripheral = GuestportCamera(parent_drone, port_number, device)
+    elif (
+        device.device_id == bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_LIGHT
+        or device.device_id == bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_LIGHT_PAIR
+        or device.device_id == bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUE_ROBOTICS_LUMEN
+    ):
+        peripheral = GuestPortLight(parent_drone, port_number, device)
     else:
         peripheral = Peripheral(parent_drone, port_number, device)
     return peripheral
