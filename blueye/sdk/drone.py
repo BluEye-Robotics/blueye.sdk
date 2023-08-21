@@ -94,6 +94,7 @@ class Telemetry:
         msg_filter: List[proto.message.Message],
         callback: Callable[[str, proto.message.Message], None],
         raw: bool = False,
+        **kwargs,
     ) -> str:
         """Register a telemetry message callback
 
@@ -108,13 +109,15 @@ class Telemetry:
                     not block the telemetry communication. It is called with two arguments, the
                     message type name and the message object
         * raw: Pass the raw data instead of the deserialized message to the callback function
+        * kwargs: Additional keyword arguments to pass to the callback function
 
         *Returns*:
 
         * uuid: Callback id. Can be used to remove callback in the future
-
         """
-        uuid_hex = self._parent_drone._telemetry_watcher.add_callback(msg_filter, callback, raw=raw)
+        uuid_hex = self._parent_drone._telemetry_watcher.add_callback(
+            msg_filter, callback, raw, **kwargs
+        )
         return uuid_hex
 
     def remove_msg_callback(self, callback_id: str) -> Optional[str]:
