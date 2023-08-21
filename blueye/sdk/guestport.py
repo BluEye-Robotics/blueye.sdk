@@ -4,6 +4,8 @@ from typing import TYPE_CHECKING
 import blueye.protocol as bp
 from packaging import version
 
+from .camera import Camera
+
 if TYPE_CHECKING:
     from .drone import Drone
 
@@ -32,9 +34,20 @@ class Peripheral:
                 )
 
 
+class GuestportCamera(Camera, Peripheral):
+    def __init__(
+        self, parent_drone: "Drone", port_number: bp.GuestPortNumber, device: bp.GuestPortDevice
+    ):
+        Camera.__init__(self, parent_drone, is_guestport_camera=True)
+        Peripheral.__init__(self, parent_drone, port_number, device)
+
+
 def device_to_peripheral(
     parent_drone: "Drone", port_number: bp.GuestPortNumber, device: bp.GuestPortDevice
 ) -> Peripheral:
     logger.debug(f"Found a {device.name} at port {port_number}")
-    peripheral = Peripheral(parent_drone, port_number, device)
+    if device.device_id == bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_CAM:
+        peripheral = GuestportCamera(parent_drone, port_number, device)
+    else:
+        peripheral = Peripheral(parent_drone, port_number, device)
     return peripheral
