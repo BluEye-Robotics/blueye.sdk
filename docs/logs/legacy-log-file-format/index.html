@@ -13,7 +13,7 @@
     
     
       
-        <title>Log file format - Blueye SDK</title>
+        <title>Legacy log file format - Blueye SDK</title>
       
     
     
@@ -66,7 +66,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#log-file-format" class="md-skip">
+        <a href="#legacy-log-file-format" class="md-skip">
           Skip to content
         </a>
       
@@ -98,7 +98,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Log file format
+              Legacy log file format
             
           </span>
         </div>
@@ -401,6 +401,34 @@
               
   
   
+  
+    <li class="md-nav__item">
+      <a href="../plotting/" class="md-nav__link">
+        Plotting log files
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../runtime-logs/" class="md-nav__link">
+        Runtime logs
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
     
   
   
@@ -413,12 +441,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          Log file format
+          Legacy log file format
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        Log file format
+        Legacy log file format
       </a>
       
         
@@ -510,34 +538,6 @@
   
 </nav>
       
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../plotting/" class="md-nav__link">
-        Plotting log files
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../runtime-logs/" class="md-nav__link">
-        Runtime logs
-      </a>
     </li>
   
 
@@ -960,13 +960,14 @@
                 
                   
 
-  <a href="https://github.com/BluEye-Robotics/blueye.sdk/edit/main/docs/logs/log-file-format.md" title="Edit this page" class="md-content__button md-icon">
+  <a href="https://github.com/BluEye-Robotics/blueye.sdk/edit/main/docs/logs/legacy-log-file-format.md" title="Edit this page" class="md-content__button md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
   </a>
 
 
-<h1 id="log-file-format">Log file format</h1>
+<h1 id="legacy-log-file-format">Legacy log file format</h1>
+<p>This page describes the legacy log file format. Blunux v3.0 introduced a new logfile format, and no longer logs telemetry in this format. See <a href="../plotting">Plotting</a> for an example on how to use the new format.</p>
 <p>The log files from the Blueye drones are in essence a recording of the data that is
 published over UDP stored as a comma-separated-value (CSV) file.</p>
 <p>The rest of this page documents the most useful fields of the log files. The column
@@ -1262,6 +1263,8 @@ supply the requested information.</p>
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var tab,labels=set.querySelector(".tabbed-labels");for(tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
         </div>
         
       </main>
@@ -1272,8 +1275,8 @@ supply the requested information.</p>
   <nav class="md-footer__inner md-grid" aria-label="Footer">
     
     
-    <a href="../listing-and-downloading/" class="md-footer__link md-footer__link--prev"
-      aria-label="Previous: Listing and downloading log files" rel="prev">
+    <a href="../runtime-logs/" class="md-footer__link md-footer__link--prev"
+      aria-label="Previous: Runtime logs" rel="prev">
       <div class="md-footer__button md-icon">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
       </div>
@@ -1282,21 +1285,21 @@ supply the requested information.</p>
           <span class="md-footer__direction">
             Previous
           </span>
-          Listing and downloading log files
+          Runtime logs
         </div>
       </div>
     </a>
     
     
     
-    <a href="../plotting/" class="md-footer__link md-footer__link--next"
-      aria-label="Next: Plotting log files" rel="next">
+    <a href="../../configuration/" class="md-footer__link md-footer__link--next"
+      aria-label="Next: Configure drone parameters" rel="next">
       <div class="md-footer__title">
         <div class="md-ellipsis">
           <span class="md-footer__direction">
             Next
           </span>
-          Plotting log files
+          Configure drone parameters
         </div>
       </div>
       <div class="md-footer__button md-icon">
@@ -1313,7 +1316,7 @@ supply the requested information.</p>
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "../../..", "features": [], "search": "../../../assets/javascripts/workers/search.5bf1dace.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["content.tabs.link"], "search": "../../../assets/javascripts/workers/search.5bf1dace.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
       <script src="../../../assets/javascripts/bundle.078830c0.min.js"></script>

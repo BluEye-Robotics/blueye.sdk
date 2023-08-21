@@ -401,20 +401,6 @@
               
   
   
-  
-    <li class="md-nav__item">
-      <a href="../log-file-format/" class="md-nav__link">
-        Log file format
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
     
   
   
@@ -443,6 +429,20 @@
     <li class="md-nav__item">
       <a href="../runtime-logs/" class="md-nav__link">
         Runtime logs
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../legacy-log-file-format/" class="md-nav__link">
+        Legacy log file format
       </a>
     </li>
   
@@ -798,29 +798,62 @@
 <p>This example shows how one can pull a log file from the drone and use
 <a href="https://pandas.pydata.org/">pandas</a> and <a href="https://matplotlib.org/">matplotlib</a> to plot
 it.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Binary logs</label><label for="__tabbed_1_2">Legacy Logs</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
 <p>We'll start by downloading a log file from the drone</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">blueye.sdk</span> <span class="kn">import</span> <span class="n">Drone</span>
 
 <span class="n">myDrone</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">()</span>
+<span class="n">log</span> <span class="o">=</span> <span class="n">myDrone</span><span class="o">.</span><span class="n">logs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</code></pre></div>
+<p>Next we'll parse the log to a stream and create a pandas dataframe from the records. We'll also specify the column names to make it easier to work with the dataframe later.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">blueye.protocol</span> <span class="k">as</span> <span class="nn">bp</span>
 
-<span class="n">myDrone</span><span class="o">.</span><span class="n">logs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="n">output_name</span><span class="o">=</span><span class="s2">&quot;log0.csv&quot;</span><span class="p">)</span>
+<span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;rt&quot;</span><span class="p">,</span> <span class="s2">&quot;delta&quot;</span><span class="p">,</span> <span class="s2">&quot;meta&quot;</span><span class="p">,</span> <span class="s2">&quot;message&quot;</span><span class="p">]</span>
+<span class="n">log_stream</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">parse_to_stream</span><span class="p">()</span>
+<span class="n">divelog</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_records</span><span class="p">(</span><span class="n">log_stream</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
+</code></pre></div>
+<p>We'll now filter out all entries that are not depth telemetry messages and messages that were logged before the start of the dive.</p>
+<div class="highlight"><pre><span></span><code><span class="n">depth_log</span> <span class="o">=</span> <span class="n">divelog</span><span class="p">[</span><span class="n">divelog</span><span class="o">.</span><span class="n">meta</span> <span class="o">==</span> <span class="n">bp</span><span class="o">.</span><span class="n">DepthTel</span><span class="p">]</span>
+<span class="n">depth_log</span> <span class="o">=</span> <span class="n">depth_log</span><span class="p">[</span><span class="n">depth_log</span><span class="o">.</span><span class="n">rt</span> <span class="o">&gt;</span> <span class="n">log</span><span class="o">.</span><span class="n">start_time</span><span class="p">]</span>
+</code></pre></div>
+<p>We can now extract the depth value from the remaining entries</p>
+<div class="highlight"><pre><span></span><code><span class="n">depth_log</span><span class="p">[</span><span class="s2">&quot;depth&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">depth_log</span><span class="p">[</span><span class="s2">&quot;message&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">depth</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+</code></pre></div>
+<p>We'll prepare our axes for plotting</p>
+<div class="highlight"><pre><span></span><code><span class="n">x</span> <span class="o">=</span> <span class="n">depth_log</span><span class="p">[</span><span class="s2">&quot;rt&quot;</span><span class="p">]</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">depth_log</span><span class="p">[</span><span class="s2">&quot;depth&quot;</span><span class="p">]</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<p>We'll start by downloading a log file from the drone</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">blueye.sdk</span> <span class="kn">import</span> <span class="n">Drone</span>
+
+<span class="n">myDrone</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">()</span>
+<span class="n">myDrone</span><span class="o">.</span><span class="n">legacy_logs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="n">output_name</span><span class="o">=</span><span class="s2">&quot;log0.csv&quot;</span><span class="p">)</span>
 </code></pre></div>
 <p>We can now read the csv-file into a pandas object for easy manipulation</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">pandas</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
-<span class="n">divelog</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;log0.csv&quot;</span><span class="p">)</span>
+<span class="n">divelog</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;log0.csv&quot;</span><span class="p">)</span>
 </code></pre></div>
 <p>and then we'll convert the unix timestamp in <code>rt_clock</code> into a more readable format:</p>
 <div class="highlight"><pre><span></span><code><span class="n">divelog</span><span class="p">[</span><span class="s2">&quot;rt_clock&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">divelog</span><span class="p">[</span><span class="s2">&quot;rt_clock&quot;</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;s&quot;</span><span class="p">)</span>
 </code></pre></div>
-<p>Next we will plot depth vs time with matplotlib:</p>
+<p>We'll prepare our axes for plotting</p>
+<div class="highlight"><pre><span></span><code><span class="n">x</span> <span class="o">=</span> <span class="n">divelog</span><span class="p">[</span><span class="s2">&quot;rt_clock&quot;</span><span class="p">]</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">divelog</span><span class="p">[</span><span class="s2">&quot;depth&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="mi">1000</span>  <span class="c1"># Dividing by 1000 to get depth in meters</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>Next we will plot depth vs time with matplotlib:
 <div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
 <span class="c1"># Instantiate our figure and axes to plot on</span>
 <span class="n">figure</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
-
-<span class="n">x</span> <span class="o">=</span> <span class="n">divelog</span><span class="p">[</span><span class="s2">&quot;rt_clock&quot;</span><span class="p">]</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">divelog</span><span class="p">[</span><span class="s2">&quot;depth&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="mi">1000</span>  <span class="c1"># Dividing by 1000 to get depth in meters</span>
 
 <span class="c1"># Plot the depth values against time</span>
 <span class="n">axes</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;depth&quot;</span><span class="p">)</span>
@@ -833,7 +866,7 @@ it.</p>
 
 <span class="c1"># Save the figure</span>
 <span class="n">figure</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;depth_plot.svg&quot;</span><span class="p">)</span>
-</code></pre></div>
+</code></pre></div></p>
 <p>This should yield us a plot that looks something like this:
 <img alt="plot" src="../../media/depth_plot.svg" /></p>
 <p>See the <a href="https://matplotlib.org/contents.html">matplotlib documentation</a> for more ways
@@ -848,6 +881,8 @@ to plot your data.</p>
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var tab,labels=set.querySelector(".tabbed-labels");for(tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
         </div>
         
       </main>
@@ -858,8 +893,8 @@ to plot your data.</p>
   <nav class="md-footer__inner md-grid" aria-label="Footer">
     
     
-    <a href="../log-file-format/" class="md-footer__link md-footer__link--prev"
-      aria-label="Previous: Log file format" rel="prev">
+    <a href="../listing-and-downloading/" class="md-footer__link md-footer__link--prev"
+      aria-label="Previous: Listing and downloading log files" rel="prev">
       <div class="md-footer__button md-icon">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
       </div>
@@ -868,7 +903,7 @@ to plot your data.</p>
           <span class="md-footer__direction">
             Previous
           </span>
-          Log file format
+          Listing and downloading log files
         </div>
       </div>
     </a>
@@ -899,7 +934,7 @@ to plot your data.</p>
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "../../..", "features": [], "search": "../../../assets/javascripts/workers/search.5bf1dace.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["content.tabs.link"], "search": "../../../assets/javascripts/workers/search.5bf1dace.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
       <script src="../../../assets/javascripts/bundle.078830c0.min.js"></script>
