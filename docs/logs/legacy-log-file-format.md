@@ -1,4 +1,6 @@
-# Log file format
+# Legacy log file format
+This page describes the legacy log file format. Blunux v3.0 introduced a new logfile format, and no longer logs telemetry in this format. See [Plotting](../plotting) for an example on how to use the new format.
+
 The log files from the Blueye drones are in essence a recording of the data that is
 published over UDP stored as a comma-separated-value (CSV) file.
 

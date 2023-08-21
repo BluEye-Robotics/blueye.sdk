@@ -1,7 +1,7 @@
-openapi: '3.0.2'
+openapi: "3.0.2"
 info:
   title: Blueye HTTP API
-  version: '1.0.1'
+  version: "1.0.1"
 servers:
   - url: http://192.168.1.101/
 
@@ -21,13 +21,13 @@ paths:
         Returns a JSON string of drone information. Using this endpoint is the easiest way to check
         if there is a drone connected to your network.
       responses:
-        '200':
+        "200":
           description: A JSON string of drone information.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DroneInfo'
-      x-code-samples:
+                $ref: "#/components/schemas/DroneInfo"
+      x-codeSamples:
         - lang: "curl"
           source: |
             curl -X GET "http://192.168.1.101/diagnostics/drone_info"
@@ -56,13 +56,13 @@ paths:
             type: integer
             default: 10
       responses:
-        '200':
+        "200":
           description: A JSON string with the performance test results.
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/IperfResult"
-      x-code-samples:
+      x-codeSamples:
         - lang: "curl"
           source: |
             curl -X POST "http://192.168.1.101/diagnostics/iperf" -d duration=5
@@ -74,6 +74,104 @@ paths:
                                       data={"duration": 5})
             print(response.json())
 
+  /logs:
+    get:
+      tags:
+        - "Dive data"
+      summary: Array of binary logs
+      description: |
+        Returns an array of binary logs from the drone. Each array item represents an available log
+        file on the drone. Use the /logs/{filename}/binlog endpoint to get the full log.
+      responses:
+        "200":
+          description: Array of binary logs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BinLog"
+      x-codeSamples:
+        - lang: "curl"
+          source: |
+            curl -X GET "http://192.168.1.101/logs"
+        - lang: "Python"
+          source: |
+            import requests
+            response = requests.get("http://192.168.1.101/logs")
+            print(response.json())
+
+  /logs/{logname}/binlog:
+    get:
+      tags:
+        - "Dive data"
+      summary: Download a binary log file
+      description: Returns the binary content of the requested log
+      parameters:
+        - name: logname
+          in: path
+          description: Name of the log to download
+          required: true
+          schema:
+            type: string
+          example: BYEDP070018_ea9add4d0c1961d4_00388
+      responses:
+        "200":
+          description: Binary log file
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+      x-codeSamples:
+        - lang: "curl"
+          source: |
+            # To get log with name BYEDP070018_ea9add4d0c1961d4_00388
+            curl -X GET "http://192.168.1.101/logs/BYEDP070018_ea9add4d0c1961d4_00388/binlog"
+        - lang: "Python"
+          source: |
+            import requests
+            logname = "BYEDP070018_ea9add4d0c1961d4_00388"
+            response = requests.get(f"http://192.168.1.101/logs/{logname}/binlog")
+            with open(f"{logname}.bez", "wb") as f:
+              f.write(response.content)
+
+  /logs/{logname}/dive_info:
+    get:
+      tags:
+        - "Dive data"
+      summary: Get dive info for binlog
+      description: |
+        Returns extended meta data for the requested log. This endpoint is mostly useful for Blunux
+        < 3.3, as the dive info is included with the output of the /logs endpoint from 3.3 and
+        onwards.
+      parameters:
+        - name: logname
+          in: path
+          description: Name of the log to download info for
+          required: true
+          schema:
+            type: string
+          example: BYEDP070018_ea9add4d0c1961d4_00388
+      responses:
+        "200":
+          description: Dive info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DiveInfo"
+      x-codeSamples:
+        - lang: "curl"
+          source: |
+            # To get info for log with name BYEDP070018_ea9add4d0c1961d4_00388
+            curl -X GET "http://192.168.1.101/logs/BYEDP070018_ea9add4d0c1961d4_00388/dive_info"
+        - lang: "Python"
+          source: |
+            import requests
+            logname = "BYEDP070018_ea9add4d0c1961d4_00388"
+            response = requests.get(f"http://192.168.1.101/logs/{logname}/dive_info")
+            print(response.json())
+
   /logcsv:
     get:
       tags:
@@ -82,17 +180,37 @@ paths:
       description: |
         Returns an array of logs from the drone. Each array item represents an available log file on
         the drone. Use the /logcsv/{filename} endpoint to get the full log.
+      parameters:
+        - name: all
+          in: query
+          description: |
+            Add `all` to the parameter list to show logs that are not classified as dives (no auto
+            functions enabled, and max depth < 0.25m). All logs will be shown regardless of the
+            content of the all parameter (even false, 0, etc).
+          required: false
+          schema:
+            type: any
+        - name: filter_depth_min_mm
+          in: query
+          description: |
+            Filter the minimum depth of the listed logs. Will be ignored if `all` is included in
+            parameter list.
+          required: false
+          schema:
+            type: integer
+            example: 1000
+            default: 250
 
       responses:
-        '200':
+        "200":
           description: Array of logs
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Log'
-      x-code-samples:
+                  $ref: "#/components/schemas/Log"
+      x-codeSamples:
         - lang: "curl"
           source: |
             curl -X GET "http://192.168.1.101/logcsv"
@@ -116,14 +234,6 @@ paths:
           required: true
           schema:
             type: string
-        - name: format
-          in: query
-          description: Add format=dashware to get a CSV file customized for use in Dashware to create video overlays
-          required: false
-          schema:
-            type: string
-            example: "dashware"
-            default: ""
         - name: divisor
           in: query
           description: Divisor to use when downsampling CSV before downloading. Set to 1 to get max resolution.
@@ -134,13 +244,13 @@ paths:
             default: 10
 
       responses:
-        '200':
+        "200":
           description: Comma-separated-value file with log data
           content:
             text/csv:
               schema:
                 type: string
-      x-code-samples:
+      x-codeSamples:
         - lang: "curl"
           source: |
             # To get log with filename ea9ac92e1817a1d4-00090.csv
@@ -154,52 +264,29 @@ paths:
             with open(logname, "wb") as f:
               f.write(response.content)
 
-  /pix4d:
+  /logcsv/binary_logs.zip:
     get:
       tags:
         - "Dive data"
-      summary: Download CSV file with data for creating scaled 3D models
-      description: |
-        Download CSV file with data for creating scaled 3D models in Pix4d
-      parameters:
-        - name: file
-          in: query
-          description: "Name of the video file to download data for"
-          required: true
-          schema:
-            type: string
-            example: "video_BYEDP123456_2019-01-01_000001.mp4"
-        - name: frame-step
-          in: query
-          description: "Amout of steps between each frame grab"
-          required: false
-          schema:
-            type: integer
-            example: "20"
+      summary: "Zipped CSV log files"
+      description: "Download all CSV log files as a zlib compressed zip file"
       responses:
-        '200':
-          description: Comma-separated-value file with log data
+        "200":
+          description:
           content:
-            text/csv:
+            application/zip:
               schema:
-                type: string
-      x-code-samples:
+                type: file
+      x-codeSamples:
         - lang: "curl"
           source: |
-            # To get CSV logfile for filename video_BYEDP123456_2019-01-01_000001.mp4
-            curl -X GET "http://192.168.1.101/pix4d/" \
-              -d "file=video_BYEDP123456_2019-01-01_000001.mp4"
+            curl -X GET "http://192.168.1.101/logcsv/binary_logs.zip"
 
         - lang: "Python"
           source: |
             import requests
-            fileName = "video_BYEDP123456_2019-01-01_000001"
-            parameters =  {
-                            "file": f"{fileName}.mp4",
-                            "frame-step": 20
-                          }
-            response = requests.get(f"http://192.168.1.101/pix4d" params=parameters)
-            with open(f"{fileName".csv}, "wb") as f:
+            response = requests.get(f"http://192.168.1.101/logcsv/binary_logs.zip")
+            with open(logname, "wb") as f:
               f.write(response.content)
 
   /agisoft:
@@ -241,13 +328,13 @@ paths:
             maximum: 360
             example: 180
       responses:
-        '200':
+        "200":
           description: Comma-separated-value file with log data
           content:
             text/csv:
               schema:
                 type: string
-      x-code-samples:
+      x-codeSamples:
         - lang: "curl"
           source: |
             # To get log CSV for videofile video_BYEDP123456_2019-01-01_000001.mp4
@@ -394,13 +481,13 @@ paths:
               - "vtt"
 
       responses:
-        '200':
+        "200":
           description: Subtitle file for the requested video file
           content:
             text/srt:
               schema:
                 type: object
-      x-code-samples:
+      x-codeSamples:
         - lang: "curl"
           source: |
             curl -X GET -G "http://192.168.1.101/srt" \
@@ -443,25 +530,26 @@ paths:
             example: "2"
         - name: tz-offset
           in: query
-          description: "Add timezone offset to the picture EXIF data in minutes, can also be negative number.
-          For example in Norway during summer time the correct value would be 60, while it would be -180 in Chile"
+          description: |
+            Add timezone offset to the picture EXIF data in minutes, can also be negative number.
+            For example in Norway during summer time the correct value would be 60, while it would be -180 in Chile
           required: false
           schema:
             type: integer
             example: "-180"
       responses:
-        '200':
-            description: Picture
-            content:
-              application/json:
-                schema:
-                  type: array
-                  items:
-                    $ref: '#/components/schemas/Picture'
-              image/jpeg:
-                schema:
-                  type: object
-      x-code-samples:
+        "200":
+          description: Picture
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Picture"
+            image/jpeg:
+              schema:
+                type: object
+      x-codeSamples:
         - lang: "curl"
           source: |
             curl -X GET -G "http://192.168.1.101/picture" \
@@ -515,13 +603,13 @@ paths:
             type: integer
             default: 85
       responses:
-        '200':
-            description: Picture thumbnail
-            content:
-              image/jpeg:
-                schema:
-                  type: object
-      x-code-samples:
+        "200":
+          description: Picture thumbnail
+          content:
+            image/jpeg:
+              schema:
+                type: object
+      x-codeSamples:
         - lang: "curl"
           source: |
             curl -X GET -G "http://192.168.1.101/picture/thumbnail" \
@@ -569,7 +657,7 @@ paths:
             default: ""
         - name: length-units
           in: query
-          description: | 
+          description: |
             Unit to use for all distance/length measurements such as depth, altitude, distance etc.
             For shorter lengths `mm` or `inches` will be used accordingly.
             * `meter` - Metric unit
@@ -673,7 +761,7 @@ paths:
           schema:
             type: integer
             default: 0
-            example:  "60"
+            example: "60"
             format: int32
         - name: logo
           in: query
@@ -727,13 +815,13 @@ paths:
             enum: [0, 1]
 
       responses:
-        '200':
+        "200":
           description: Picture with overlay metadata
           content:
             image/jpeg:
               schema:
                 type: object
-      x-code-samples:
+      x-codeSamples:
         - lang: "curl"
           source: |
             curl -X GET -G "http://192.168.1.101/picture/overlay" \
@@ -768,27 +856,27 @@ paths:
                 type: object
 
       responses:
-        '200':
-            description: Upload sucessful
-            content:
-              text/html:
-                schema:
-                  type: string
-                  description: Image upload successful!
+        "200":
+          description: Upload sucessful
+          content:
+            text/html:
+              schema:
+                type: string
+                description: Image upload successful!
 
-        '400':
-            description: Upload failed
-            content:
-              text/html:
-                schema:
-                  oneOf:
-                    - $ref: "#/components/schemas/FileNotPresent"
-                    - $ref: "#/components/schemas/FileSizeTooLarge"
-                    - $ref: "#/components/schemas/ImageIsCorrupt"
-                    - $ref: "#/components/schemas/ImageIsInvalid"
-                    - $ref: "#/components/schemas/ImageResolutionTooHigh"
+        "400":
+          description: Upload failed
+          content:
+            text/html:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/FileNotPresent"
+                  - $ref: "#/components/schemas/FileSizeTooLarge"
+                  - $ref: "#/components/schemas/ImageIsCorrupt"
+                  - $ref: "#/components/schemas/ImageIsInvalid"
+                  - $ref: "#/components/schemas/ImageResolutionTooHigh"
 
-      x-code-samples:
+      x-codeSamples:
         - lang: "curl"
           source: |
             curl -X POST "http://192.168.1.101/asset/logo" --form 'image=@"logo.png"'
@@ -810,25 +898,25 @@ paths:
         Download the original user uploaded logo (PNG or JPG)
 
       responses:
-        '200':
-            description: Logo as an image file PNG/JPG
-            content:
-              image/png:
-                schema:
-                  type: object
-              image/jpeg:
-                schema:
-                  type: object
+        "200":
+          description: Logo as an image file PNG/JPG
+          content:
+            image/png:
+              schema:
+                type: object
+            image/jpeg:
+              schema:
+                type: object
 
-        '404':
-            description: No logo found
-            content:
-              text/html:
-                schema:
-                  type: string
-                  description: No custom logo found!
+        "404":
+          description: No logo found
+          content:
+            text/html:
+              schema:
+                type: string
+                description: No custom logo found!
 
-      x-code-samples:
+      x-codeSamples:
         - lang: "curl"
           source: |
             curl -X GET "http://192.168.1.101/asset/logo"
@@ -847,16 +935,16 @@ paths:
       description: |
         Delete the uploaded logo
       responses:
-        '200':
-            description: Deletes the uploaded logo file
-            content:
-              text/html:
-                schema:
-                  oneOf:
-                    - $ref: "#/components/schemas/LogoDeleted"
-                    - $ref: "#/components/schemas/NoLogoToDelete"
+        "200":
+          description: Deletes the uploaded logo file
+          content:
+            text/html:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/LogoDeleted"
+                  - $ref: "#/components/schemas/NoLogoToDelete"
 
-      x-code-samples:
+      x-codeSamples:
         - lang: "curl"
           source: |
             curl -X DELETE "http://192.168.1.101/asset/logo"
@@ -875,21 +963,21 @@ paths:
       description: |
         Returns uploaded logo md5sum
       responses:
-        '200':
+        "200":
           description: A JSON with the user defined logo MD5 checksum
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Md5"
 
-        '404':
+        "404":
           description: No custom logo found!
           content:
             text/html:
               schema:
                 type: string
                 description: No custom logo found!
-      x-code-samples:
+      x-codeSamples:
         - lang: "curl"
           source: |
             curl -X GET "http://192.168.1.101/asset/logo/md5"
@@ -969,6 +1057,134 @@ components:
             - true
             - false
           example: true
+
+    BinLog:
+      type: object
+      properties:
+        binlog_size:
+          type: integer
+          description: Size of the log file. Unit is bytes.
+          example: 1099448
+        blunux_version:
+          type: string
+          description: |
+            Version of the Blunux operating system running on the drone.
+            Format is $(Major).$(Minor).$(Build)-$(Yocto version)-$(Branch)
+          example: "3.0.47-honister-master"
+        has_binlog:
+          type: boolean
+          description: |
+            If this log has a binlog or not. Unless something unexpected has occured this should be
+            True.
+        has_dive_info:
+          type: boolean
+          description: |
+            If this log has dive info or not. Unless something unexpected has occured this should be
+            True.
+        is_dive:
+          type: boolean
+          description: |
+            If this log is a dive or not. If maximum depth has exceeded 0.25m or if any of the auto
+            function have been used the log will be classified as a dive.
+        is_open:
+          type: boolean
+          description: If this is the log currently being written to.
+        log_number:
+          type: integer
+          description: |
+            Number of the log. This is the same as the number in the filename.
+        max_depth_magnitude:
+          type: integer
+          description: |
+            Maximum depth of the dive,  rounded down to the nearest meter for dives up to 10 meters,
+            rounded down to the nearest 10 meters for dives up to 100 meters, and rounded down to
+            the nearest 100 meters for deeper dives.
+        model_name:
+          type: string
+          description: |
+            Name of the drone model.
+          enum:
+            - Blueye Pioneer
+            - Blueye Pro
+            - Blueye X3
+        name:
+          type: string
+          description: |
+            Name of the logfile. First part is the drones serial number, seconds is the unique
+            hardware ID, and the last part is the dive number.
+            Note: Unlike the csv logs there is no extension in this name.
+          example: BYEDP070018_ea9add4d0c1961d4_00386
+        start_time:
+          type: integer
+          description: Unix timestamp of the start of the dive.
+          example: 1692002908
+        videos:
+          description: |
+            List of paths to videos recorded during the dive.
+          type: array
+          items:
+            type: string
+          example:
+            [
+              "/videos/video_BYEDP070018_2023-07-31_125743.mp4",
+              "/videos/video_BYEDP070018_2023-07-31_125743_cam2.mp4",
+            ]
+
+    DiveInfo:
+      type: object
+      properties:
+        blunux_version:
+          type: string
+          description: |
+            Version of the Blunux operating system running on the drone.
+            Format is $(Major).$(Minor).$(Build)-$(Yocto version)-$(Branch)
+          example: "3.0.47-honister-master"
+        is_dive:
+          type: boolean
+          description: |
+            If this log is a dive or not. If maximum depth has exceeded 0.25m or if any of the auto
+            function have been used the log will be classified as a dive.
+        is_valid:
+          type: boolean
+          description: |
+            If this log is valid or not. Unless something unexpected has occured this should be
+            True.
+        log_name:
+          type: string
+          description: |
+            Name of the logfile. First part is the drones serial number, seconds is the unique
+            hardware ID, and the last part is the dive number.
+            Note: Unlike the csv logs there is no extension in this name.
+          example: BYEDP070018_ea9add4d0c1961d4_00386
+        max_depth_magnitude:
+          type: integer
+          description: |
+            Maximum depth of the dive,  rounded down to the nearest meter for dives up to 10 meters,
+            rounded down to the nearest 10 meters for dives up to 100 meters, and rounded down to
+            the nearest 100 meters for deeper dives.
+        model_name:
+          type: string
+          description: |
+            Name of the drone model.
+          enum:
+            - Blueye Pioneer
+            - Blueye Pro
+            - Blueye X3
+        start_time:
+          type: integer
+          description: Unix timestamp of the start of the dive.
+          example: 1692002908
+        videos:
+          description: |
+            List of paths to videos recorded during the dive.
+          type: array
+          items:
+            type: string
+          example:
+            [
+              "/videos/video_BYEDP070018_2023-07-31_125743.mp4",
+              "/videos/video_BYEDP070018_2023-07-31_125743_cam2.mp4",
+            ]
 
     Log:
       type: object
