@@ -1,4 +1,531 @@
 # Protocol Documentation
+## aquatroll.proto
+Aquatroll
+
+These messages are emitted by the In-Situ AquaTroll 500 probe.
+
+
+<a name="blueye-protocol-AquaTrollParameterBlock"></a>
+
+### AquaTrollParameterBlock
+In-Situ Parameter Block
+
+Up to NUMBER_OF_SENSOR_PARAMETERS blocks may be part of a sensor
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| measured_value | [float](#float) |  |  |
+| parameter_id | [AquaTrollParameter](#blueye-protocol-AquaTrollParameter) |  |  |
+| units_id | [AquaTrollUnit](#blueye-protocol-AquaTrollUnit) |  |  |
+| data_quality_ids | [AquaTrollQuality](#blueye-protocol-AquaTrollQuality) | repeated |  |
+| off_line_sentinel_value | [float](#float) |  |  |
+| available_units | [AquaTrollUnit](#blueye-protocol-AquaTrollUnit) | repeated |  |
+
+
+
+
+
+
+<a name="blueye-protocol-AquaTrollProbeMetadata"></a>
+
+### AquaTrollProbeMetadata
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| timestamp | [google.protobuf.Timestamp](#google-protobuf-Timestamp) |  |  |
+| status | [bool](#bool) |  |  |
+| register_map_template_version | [uint32](#uint32) |  |  |
+| device_id | [AquaTrollDevice](#blueye-protocol-AquaTrollDevice) |  |  |
+| device_serial_number | [uint32](#uint32) |  |  |
+| manufacture_date | [google.protobuf.Timestamp](#google-protobuf-Timestamp) |  |  |
+| firmware_version | [uint32](#uint32) |  |  |
+| boot_code_version | [uint32](#uint32) |  |  |
+| hardware_version | [uint32](#uint32) |  |  |
+| max_data_logs | [uint32](#uint32) |  |  |
+| total_data_log_memory | [uint32](#uint32) |  |  |
+| total_battery_ticks | [uint32](#uint32) |  |  |
+| last_battery_change | [google.protobuf.Timestamp](#google-protobuf-Timestamp) |  |  |
+| device_name | [string](#string) |  |  |
+| site_name | [string](#string) |  |  |
+| latitude_coordinate | [double](#double) |  |  |
+| longitude_coordinate | [double](#double) |  |  |
+| altitude_coordinate | [double](#double) |  |  |
+| current_time_utc | [google.protobuf.Timestamp](#google-protobuf-Timestamp) |  |  |
+| device_status_flags | [AquaTrollDeviceStatus](#blueye-protocol-AquaTrollDeviceStatus) | repeated |  |
+| used_battery_ticks | [uint32](#uint32) |  |  |
+| used_data_log_memory | [uint32](#uint32) |  |  |
+| sensors | [AquaTrollSensor](#blueye-protocol-AquaTrollSensor) | repeated |  |
+
+
+
+
+
+
+<a name="blueye-protocol-AquaTrollSensorMetadata"></a>
+
+### AquaTrollSensorMetadata
+In-Situ AquaTroll 500 sensor metadata
+
+(Mostly) static information about a connected sensor.
+
+Refer to Section 7 Sensor Common Registers in the In-Situ Modbus
+Communication Protocol
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| timestamp | [google.protobuf.Timestamp](#google-protobuf-Timestamp) |  |  |
+| sensor_id | [AquaTrollSensor](#blueye-protocol-AquaTrollSensor) |  |  |
+| sensor_serial_number | [uint32](#uint32) |  |  |
+| sensor_status_flags | [AquaTrollSensorStatus](#blueye-protocol-AquaTrollSensorStatus) | repeated |  |
+| last_factory_calibration | [google.protobuf.Timestamp](#google-protobuf-Timestamp) |  |  |
+| next_factory_calibration | [google.protobuf.Timestamp](#google-protobuf-Timestamp) |  |  |
+| last_user_calibration | [google.protobuf.Timestamp](#google-protobuf-Timestamp) |  |  |
+| next_user_calibration | [google.protobuf.Timestamp](#google-protobuf-Timestamp) |  |  |
+| warm_up_time_in_milliseconds | [uint32](#uint32) |  |  |
+| fast_sample_rate_in_milliseconds | [uint32](#uint32) |  |  |
+| number_of_sensor_parameters | [uint32](#uint32) |  |  |
+| alarm_and_warning_parameter_number | [uint32](#uint32) |  |  |
+| alarm_and_warning_enable_bits | [uint32](#uint32) |  |  |
+| high_alarm_set_value | [float](#float) |  |  |
+| high_alarm_clear_value | [float](#float) |  |  |
+| high_warning_set_value | [float](#float) |  |  |
+| high_warning_clear_value | [float](#float) |  |  |
+| low_warning_clear_value | [float](#float) |  |  |
+| low_warning_set_value | [float](#float) |  |  |
+| low_alarm_clear_value | [float](#float) |  |  |
+| low_alarm_set_value | [float](#float) |  |  |
+| parameter_blocks | [AquaTrollParameterBlock](#blueye-protocol-AquaTrollParameterBlock) | repeated |  |
+
+
+
+
+
+
+<a name="blueye-protocol-AquaTrollSensorMetadataArray"></a>
+
+### AquaTrollSensorMetadataArray
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| timestamp | [google.protobuf.Timestamp](#google-protobuf-Timestamp) |  |  |
+| sensors | [AquaTrollSensorMetadata](#blueye-protocol-AquaTrollSensorMetadata) | repeated |  |
+
+
+
+
+
+
+<a name="blueye-protocol-AquaTrollSensorParameters"></a>
+
+### AquaTrollSensorParameters
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| sensor_id | [AquaTrollSensor](#blueye-protocol-AquaTrollSensor) |  |  |
+| parameter_blocks | [AquaTrollParameterBlock](#blueye-protocol-AquaTrollParameterBlock) | repeated |  |
+
+
+
+
+
+
+<a name="blueye-protocol-AquaTrollSensorParametersArray"></a>
+
+### AquaTrollSensorParametersArray
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| timestamp | [google.protobuf.Timestamp](#google-protobuf-Timestamp) |  |  |
+| sensors | [AquaTrollSensorParameters](#blueye-protocol-AquaTrollSensorParameters) | repeated |  |
+
+
+
+
+
+
+<a name="blueye-protocol-SetAquaTrollConnectionStatus"></a>
+
+### SetAquaTrollConnectionStatus
+Request to change the In-Situ Aqua Troll connection status
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| connected | [bool](#bool) |  | True to connect, false to disconnect |
+
+
+
+
+
+
+<a name="blueye-protocol-SetAquaTrollParameterUnit"></a>
+
+### SetAquaTrollParameterUnit
+Request to set an In-Situ Aqua Troll parameter unit
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| sensor_id | [AquaTrollSensor](#blueye-protocol-AquaTrollSensor) |  | Sensor id, f. ex. &#34;SENSOR_CONDUCTIVITY_SENSOR&#34; |
+| parameter_id | [AquaTrollParameter](#blueye-protocol-AquaTrollParameter) |  | Parameter name, f. ex. &#34;PARAMETER_TEMPERATURE&#34; |
+| unit_id | [AquaTrollUnit](#blueye-protocol-AquaTrollUnit) |  | Unit, f. ex. &#34;UNIT_TEMP_CELSIUS&#34; |
+
+
+
+
+
+
+
+
+<a name="blueye-protocol-AquaTrollDevice"></a>
+
+### AquaTrollDevice
+Aqua Troll Device IDs
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| AQUA_TROLL_DEVICE_UNSPECIFIED | 0 |  |
+| AQUA_TROLL_DEVICE_LEVEL_TROLL_500 | 1 |  |
+| AQUA_TROLL_DEVICE_LEVEL_TROLL_700 | 2 |  |
+| AQUA_TROLL_DEVICE_BAROTROLL_500 | 3 |  |
+| AQUA_TROLL_DEVICE_LEVEL_TROLL_300 | 4 |  |
+| AQUA_TROLL_DEVICE_AQUA_TROLL_200 | 5 |  |
+| AQUA_TROLL_DEVICE_AQUA_TROLL_600 | 7 |  |
+| AQUA_TROLL_DEVICE_AQUA_TROLL_100 | 10 |  |
+| AQUA_TROLL_DEVICE_FLOW_TROLL_500 | 11 |  |
+| AQUA_TROLL_DEVICE_RDO_PRO | 12 |  |
+| AQUA_TROLL_DEVICE_RUGGED_TROLL_200 | 16 |  |
+| AQUA_TROLL_DEVICE_RUGGED_BAROTROLL | 17 |  |
+| AQUA_TROLL_DEVICE_AQUA_TROLL_400 | 18 |  |
+| AQUA_TROLL_DEVICE_RDO_TITAN | 19 |  |
+| AQUA_TROLL_DEVICE_SMARTROLL | 21 |  |
+| AQUA_TROLL_DEVICE_AQUA_TROLL_600_VENTED | 26 |  |
+| AQUA_TROLL_DEVICE_LEVEL_TROLL_400 | 30 |  |
+| AQUA_TROLL_DEVICE_RDO_PRO_X | 31 |  |
+| AQUA_TROLL_DEVICE_AQUA_TROLL_500 | 33 |  |
+| AQUA_TROLL_DEVICE_AQUA_TROLL_500_VENTED | 34 |  |
+
+
+
+<a name="blueye-protocol-AquaTrollDeviceStatus"></a>
+
+### AquaTrollDeviceStatus
+Aqua Troll Device Status IDs
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| AQUA_TROLL_DEVICE_STATUS_SENSOR_HIGH_ALARM | 0 | protolint:disable:this ENUM_FIELD_NAMES_ZERO_VALUE_END_WITH |
+| AQUA_TROLL_DEVICE_STATUS_SENSOR_HIGH_WARNING | 1 |  |
+| AQUA_TROLL_DEVICE_STATUS_SENSOR_LOW_WARNING | 2 |  |
+| AQUA_TROLL_DEVICE_STATUS_SENSOR_LOW_ALARM | 3 |  |
+| AQUA_TROLL_DEVICE_STATUS_SENSOR_CALIBRATION_WARNING | 4 |  |
+| AQUA_TROLL_DEVICE_STATUS_SENSOR_MALFUNCTION | 5 |  |
+| AQUA_TROLL_DEVICE_STATUS_POWER_MANAGEMENT_DISABLED | 8 |  |
+| AQUA_TROLL_DEVICE_STATUS_DEVICE_OFF_LINE | 9 |  |
+| AQUA_TROLL_DEVICE_STATUS_DEVICE_HARDWARE_RESET_OCCURRED | 10 |  |
+| AQUA_TROLL_DEVICE_STATUS_DEVICE_MALFUNCTION | 11 |  |
+| AQUA_TROLL_DEVICE_STATUS_NO_EXTERNAL_POWER | 12 |  |
+| AQUA_TROLL_DEVICE_STATUS_LOW_BATTERY | 13 |  |
+| AQUA_TROLL_DEVICE_STATUS_LOW_MEMORY | 14 |  |
+
+
+
+<a name="blueye-protocol-AquaTrollParameter"></a>
+
+### AquaTrollParameter
+Aqua Troll Parameter IDs
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| AQUA_TROLL_PARAMETER_UNSPECIFIED | 0 |  |
+| AQUA_TROLL_PARAMETER_TEMPERATURE | 1 |  |
+| AQUA_TROLL_PARAMETER_PRESSURE | 2 |  |
+| AQUA_TROLL_PARAMETER_DEPTH | 3 |  |
+| AQUA_TROLL_PARAMETER_LEVEL_DEPTH_TO_WATER | 4 |  |
+| AQUA_TROLL_PARAMETER_LEVEL_SURFACE_ELEVATION | 5 |  |
+| AQUA_TROLL_PARAMETER_LATITUDE | 6 |  |
+| AQUA_TROLL_PARAMETER_LONGITUDE | 7 |  |
+| AQUA_TROLL_PARAMETER_ELEVATION | 8 |  |
+| AQUA_TROLL_PARAMETER_ACTUAL_CONDUCTIVITY | 9 |  |
+| AQUA_TROLL_PARAMETER_SPECIFIC_CONDUCTIVITY | 10 |  |
+| AQUA_TROLL_PARAMETER_RESISTIVITY | 11 |  |
+| AQUA_TROLL_PARAMETER_SALINITY | 12 |  |
+| AQUA_TROLL_PARAMETER_TOTAL_DISSOLVED_SOLIDS | 13 |  |
+| AQUA_TROLL_PARAMETER_DENSITY_OF_WATER | 14 |  |
+| AQUA_TROLL_PARAMETER_SPECIFIC_GRAVITY | 15 |  |
+| AQUA_TROLL_PARAMETER_BAROMETRIC_PRESSURE | 16 |  |
+| AQUA_TROLL_PARAMETER_PH | 17 |  |
+| AQUA_TROLL_PARAMETER_PH_MV | 18 |  |
+| AQUA_TROLL_PARAMETER_ORP | 19 |  |
+| AQUA_TROLL_PARAMETER_DISSOLVED_OXYGEN_CONCENTRATION | 20 |  |
+| AQUA_TROLL_PARAMETER_DISSOLVED_OXYGEN_SATURATION | 21 |  |
+| AQUA_TROLL_PARAMETER_NITRATE | 22 |  |
+| AQUA_TROLL_PARAMETER_AMMONIUM | 23 |  |
+| AQUA_TROLL_PARAMETER_CHLORIDE | 24 |  |
+| AQUA_TROLL_PARAMETER_TURBIDITY | 25 |  |
+| AQUA_TROLL_PARAMETER_BATTERY_VOLTAGE | 26 |  |
+| AQUA_TROLL_PARAMETER_HEAD | 27 |  |
+| AQUA_TROLL_PARAMETER_FLOW | 28 |  |
+| AQUA_TROLL_PARAMETER_TOTAL_FLOW | 29 |  |
+| AQUA_TROLL_PARAMETER_OXYGEN_PARTIAL_PRESSURE | 30 |  |
+| AQUA_TROLL_PARAMETER_TOTAL_SUSPENDED_SOLIDS | 31 |  |
+| AQUA_TROLL_PARAMETER_EXTERNAL_VOLTAGE | 32 |  |
+| AQUA_TROLL_PARAMETER_BATTERY_CAPACITY_REMAINING | 33 |  |
+| AQUA_TROLL_PARAMETER_RHODAMINE_WT_CONCENTRATION | 34 |  |
+| AQUA_TROLL_PARAMETER_RHODAMINE_WT_FLUORESCENCE_INTENSITY | 35 |  |
+| AQUA_TROLL_PARAMETER_CHLORIDE_CL_MV | 36 |  |
+| AQUA_TROLL_PARAMETER_NITRATE_AS_NITROGEN_NO3_N_CONCENTRATION | 37 |  |
+| AQUA_TROLL_PARAMETER_NITRATE_NO3_MV | 38 |  |
+| AQUA_TROLL_PARAMETER_AMMONIUM_AS_NITROGEN_NH4_PLUS_N_CONCENTRATION | 39 |  |
+| AQUA_TROLL_PARAMETER_AMMONIUM_NH4_MV | 40 |  |
+| AQUA_TROLL_PARAMETER_AMMONIA_AS_NITROGEN_NH3_N_CONCENTRATION | 41 |  |
+| AQUA_TROLL_PARAMETER_TOTAL_AMMONIA_AS_NITROGEN_NH3_N_CONCENTRATION | 42 |  |
+| AQUA_TROLL_PARAMETER_EH | 48 |  |
+| AQUA_TROLL_PARAMETER_VELOCITY | 49 |  |
+| AQUA_TROLL_PARAMETER_CHLOROPHYLL_A_CONCENTRATION | 50 |  |
+| AQUA_TROLL_PARAMETER_CHLOROPHYLL_A_FLUORESCENCE_INTENSITY | 51 |  |
+| AQUA_TROLL_PARAMETER_BLUE_GREEN_ALGAE_PHYCOCYANIN_CONCENTRATION | 54 |  |
+| AQUA_TROLL_PARAMETER_BLUE_GREEN_ALGAE_PHYCOCYANIN_FLUORESCENCE_INTENSITY | 55 |  |
+| AQUA_TROLL_PARAMETER_BLUE_GREEN_ALGAE_PHYCOERYTHRIN_CONCENTRATION | 58 |  |
+| AQUA_TROLL_PARAMETER_BLUE_GREEN_ALGAE_PHYCOERYTHRIN_FLUORESCENCE_INTENSITY | 59 |  |
+| AQUA_TROLL_PARAMETER_FLUORESCEIN_WT_CONCENTRATION | 67 |  |
+| AQUA_TROLL_PARAMETER_FLUORESCEIN_WT_FLUORESCENCE_INTENSITY | 68 |  |
+| AQUA_TROLL_PARAMETER_FLUORESCENT_DISSOLVED_ORGANIC_MATTER_CONCENTRATION | 69 |  |
+| AQUA_TROLL_PARAMETER_FLUORESCENT_DISSOLVED_ORGANIC_MATTER_FLUORESCENCE_INTENSITY | 70 |  |
+| AQUA_TROLL_PARAMETER_CRUDE_OIL_CONCENTRATION | 80 |  |
+| AQUA_TROLL_PARAMETER_CRUDE_OIL_FLUORESCENCE_INTENSITY | 81 |  |
+| AQUA_TROLL_PARAMETER_COLORED_DISSOLVED_ORGANIC_MATTER_CONCENTRATION | 87 |  |
+
+
+
+<a name="blueye-protocol-AquaTrollQuality"></a>
+
+### AquaTrollQuality
+Aqua Troll Quality IDs
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| AQUA_TROLL_QUALITY_NORMAL | 0 | protolint:disable:this ENUM_FIELD_NAMES_ZERO_VALUE_END_WITH |
+| AQUA_TROLL_QUALITY_USER_CAL_EXPIRED | 1 |  |
+| AQUA_TROLL_QUALITY_FACTORY_CAL_EXPIRED | 2 |  |
+| AQUA_TROLL_QUALITY_ERROR | 3 |  |
+| AQUA_TROLL_QUALITY_WARM_UP | 4 |  |
+| AQUA_TROLL_QUALITY_SENSOR_WARNING | 5 |  |
+| AQUA_TROLL_QUALITY_CALIBRATING | 6 |  |
+| AQUA_TROLL_QUALITY_OFF_LINE | 7 |  |
+
+
+
+<a name="blueye-protocol-AquaTrollSensor"></a>
+
+### AquaTrollSensor
+Aqua Troll Sensor IDs
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| AQUA_TROLL_SENSOR_UNSPECIFIED | 0 |  |
+| AQUA_TROLL_SENSOR_TEMPERATURE | 1 |  |
+| AQUA_TROLL_SENSOR_S5_PSI_FULL_SCALE_GAUGE_PRESSURE_WITH_LEVEL_AND_TEMPERATURE | 2 |  |
+| AQUA_TROLL_SENSOR_S15_PSI_FULL_SCALE_GAUGE_PRESSURE_WITH_LEVEL_AND_TEMPERATURE | 3 |  |
+| AQUA_TROLL_SENSOR_S30_PSI_FULL_SCALE_GAUGE_PRESSURE_WITH_LEVEL_AND_TEMPERATURE | 4 |  |
+| AQUA_TROLL_SENSOR_S100_PSI_FULL_SCALE_GAUGE_PRESSURE_WITH_LEVEL_AND_TEMPERATURE | 5 |  |
+| AQUA_TROLL_SENSOR_S300_PSI_FULL_SCALE_GAUGE_PRESSURE_WITH_LEVEL_AND_TEMPERATURE | 6 |  |
+| AQUA_TROLL_SENSOR_S500_PSI_FULL_SCALE_GAUGE_PRESSURE_WITH_LEVEL_AND_TEMPERATURE | 7 |  |
+| AQUA_TROLL_SENSOR_S1000_PSI_FULL_SCALE_ABSOLUTE_PRESSURE_WITH_LEVEL_AND_TEMPERATURE | 8 |  |
+| AQUA_TROLL_SENSOR_S30_PSI_FULL_SCALE_ABSOLUTE_PRESSURE_WITH_LEVEL_AND_TEMPERATURE | 9 |  |
+| AQUA_TROLL_SENSOR_S100_PSI_FULL_SCALE_ABSOLUTE_PRESSURE_WITH_LEVEL_AND_TEMPERATURE | 10 |  |
+| AQUA_TROLL_SENSOR_S300_PSI_FULL_SCALE_ABSOLUTE_PRESSURE_WITH_LEVEL_AND_TEMPERATURE | 11 |  |
+| AQUA_TROLL_SENSOR_S500_PSI_FULL_SCALE_ABSOLUTE_PRESSURE_WITH_LEVEL_AND_TEMPERATURE | 12 |  |
+| AQUA_TROLL_SENSOR_S30_PSI_FULL_SCALE_ABSOLUTE_PRESSURE_WITH_TEMPERATURE | 13 |  |
+| AQUA_TROLL_SENSOR_S5_PSI_FULL_SCALE_GAUGE_PRESSURE_WITH_LEVEL_TEMPERATURE_AND_CONDUCTIVITY | 14 |  |
+| AQUA_TROLL_SENSOR_S15_PSI_FULL_SCALE_GAUGE_PRESSURE_WITH_LEVEL_TEMPERATURE_AND_CONDUCTIVITY | 15 |  |
+| AQUA_TROLL_SENSOR_S30_PSI_FULL_SCALE_GAUGE_PRESSURE_WITH_LEVEL_TEMPERATURE_AND_CONDUCTIVITY | 16 |  |
+| AQUA_TROLL_SENSOR_S100_PSI_FULL_SCALE_GAUGE_PRESSURE_WITH_LEVEL_TEMPERATURE_AND_CONDUCTIVITY | 17 |  |
+| AQUA_TROLL_SENSOR_S300_PSI_FULL_SCALE_GAUGE_PRESSURE_WITH_LEVEL_TEMPERATURE_AND_CONDUCTIVITY | 18 |  |
+| AQUA_TROLL_SENSOR_S500_PSI_FULL_SCALE_GAUGE_PRESSURE_WITH_LEVEL_TEMPERATURE_AND_CONDUCTIVITY | 19 |  |
+| AQUA_TROLL_SENSOR_NOT_USED | 20 |  |
+| AQUA_TROLL_SENSOR_S30_PSI_FULL_SCALE_ABSOLUTE_PRESSURE_WITH_LEVEL_TEMPERATURE_AND_CONDUCTIVITY | 21 |  |
+| AQUA_TROLL_SENSOR_S100_PSI_FULL_SCALE_ABSOLUTE_PRESSURE_WITH_LEVEL_TEMPERATURE_AND_CONDUCTIVITY | 22 |  |
+| AQUA_TROLL_SENSOR_S300_PSI_FULL_SCALE_ABSOLUTE_PRESSURE_WITH_LEVEL_TEMPERATURE_AND_CONDUCTIVITY | 23 |  |
+| AQUA_TROLL_SENSOR_S500_PSI_FULL_SCALE_ABSOLUTE_PRESSURE_WITH_LEVEL_TEMPERATURE_AND_CONDUCTIVITY | 24 |  |
+| AQUA_TROLL_SENSOR_S165_PSI_FULL_SCALE_ABSOLUTE_PRESSURE | 25 |  |
+| AQUA_TROLL_SENSOR_PH_ANALOG_SENSOR | 26 |  |
+| AQUA_TROLL_SENSOR_PH_ORP_ANALOG_SENSOR | 27 |  |
+| AQUA_TROLL_SENSOR_DISSOLVED_OXYGEN_CLARK_CELL_ANALOG_SENSOR | 28 |  |
+| AQUA_TROLL_SENSOR_NITRATE_ANALOG_SENSOR | 29 |  |
+| AQUA_TROLL_SENSOR_AMMONIUM_ANALOG_SENSOR | 30 |  |
+| AQUA_TROLL_SENSOR_CHLORIDE_ANALOG_SENSOR | 31 |  |
+| AQUA_TROLL_SENSOR_S100_FOOT_FULL_SCALE_LEVEL_WITH_ABSOLUTE_PRESSURE_AND_TEMPERATURE | 32 |  |
+| AQUA_TROLL_SENSOR_S250_FOOT_FULL_SCALE_LEVEL_WITH_ABSOLUTE_PRESSURE_AND_TEMPERATURE | 33 |  |
+| AQUA_TROLL_SENSOR_S30_FOOT_FULL_SCALE_LEVEL_WITH_ABSOLUTE_PRESSURE_AND_TEMPERATURE | 34 |  |
+| AQUA_TROLL_SENSOR_CONDUCTIVITY_AND_TEMPERATURE | 35 |  |
+| AQUA_TROLL_SENSOR_S5_PSI_FULL_SCALE_GAUGE_PRESSURE_WITH_TEMPERATURE_HEAD_AND_FLOW | 36 |  |
+| AQUA_TROLL_SENSOR_S15_PSI_FULL_SCALE_GAUGE_PRESSURE_WITH_TEMPERATURE_HEAD_AND_FLOW | 37 |  |
+| AQUA_TROLL_SENSOR_S30_PSI_FULL_SCALE_GAUGE_PRESSURE_WITH_TEMPERATURE_HEAD_AND_FLOW | 38 |  |
+| AQUA_TROLL_SENSOR_S100_PSI_FULL_SCALE_GAUGE_PRESSURE_WITH_TEMPERATURE_HEAD_AND_FLOW | 39 |  |
+| AQUA_TROLL_SENSOR_S300_PSI_FULL_SCALE_GAUGE_PRESSURE_WITH_TEMPERATURE_HEAD_AND_FLOW | 40 |  |
+| AQUA_TROLL_SENSOR_S500_PSI_FULL_SCALE_GAUGE_PRESSURE_WITH_TEMPERATURE_HEAD_AND_FLOW | 41 |  |
+| AQUA_TROLL_SENSOR_OPTICAL_DISSOLVED_OXYGEN_WITH_TEMPERATURE | 42 |  |
+| AQUA_TROLL_SENSOR_S1_BAR | 43 |  |
+| AQUA_TROLL_SENSOR_S2_BAR | 44 |  |
+| AQUA_TROLL_SENSOR_S5_BAR | 45 |  |
+| AQUA_TROLL_SENSOR_TURBIDITY_SENSOR | 50 |  |
+| AQUA_TROLL_SENSOR_TEMPERATURE_SENSOR | 55 |  |
+| AQUA_TROLL_SENSOR_CONDUCTIVITY_SENSOR | 56 |  |
+| AQUA_TROLL_SENSOR_RDO_SENSOR | 57 |  |
+| AQUA_TROLL_SENSOR_PH_ORP_SENSOR | 58 |  |
+| AQUA_TROLL_SENSOR_RHODAMINE_WT_SENSOR | 60 |  |
+| AQUA_TROLL_SENSOR_CHLOROPHYLL_A_SENSOR | 62 |  |
+| AQUA_TROLL_SENSOR_BLUE_GREEN_ALGAE_PHYCOCYANIN_SENSOR | 64 |  |
+| AQUA_TROLL_SENSOR_BLUE_GREEN_ALGAE_PHYCOERYTHRIN_SENSOR | 65 |  |
+| AQUA_TROLL_SENSOR_NITRATE_ISE_SENSOR | 70 |  |
+| AQUA_TROLL_SENSOR_AMMONIUM_ISE_SENSOR | 71 |  |
+| AQUA_TROLL_SENSOR_CHLORIDE_ISE_SENSOR | 72 |  |
+| AQUA_TROLL_SENSOR_PROBE_PARAMETERS | 79 |  |
+
+
+
+<a name="blueye-protocol-AquaTrollSensorStatus"></a>
+
+### AquaTrollSensorStatus
+Aqua Troll Sensor Status IDs
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| AQUA_TROLL_SENSOR_STATUS_SENSOR_HIGH_ALARM | 0 | protolint:disable:this ENUM_FIELD_NAMES_ZERO_VALUE_END_WITH |
+| AQUA_TROLL_SENSOR_STATUS_SENSOR_HIGH_WARNING | 1 |  |
+| AQUA_TROLL_SENSOR_STATUS_SENSOR_LOW_WARNING | 2 |  |
+| AQUA_TROLL_SENSOR_STATUS_SENSOR_LOW_ALARM | 3 |  |
+| AQUA_TROLL_SENSOR_STATUS_SENSOR_CALIBRATION_WARNING | 4 |  |
+| AQUA_TROLL_SENSOR_STATUS_SENSOR_MALFUNCTION | 5 |  |
+| AQUA_TROLL_SENSOR_STATUS_SENSOR_MODE_BIT_1 | 8 |  |
+| AQUA_TROLL_SENSOR_STATUS_SENSOR_MODE_BIT_2 | 9 |  |
+
+
+
+<a name="blueye-protocol-AquaTrollUnit"></a>
+
+### AquaTrollUnit
+Aqua Troll Unit IDs
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| AQUA_TROLL_UNIT_UNSPECIFIED | 0 |  |
+| AQUA_TROLL_UNIT_TEMP_CELSIUS | 1 |  |
+| AQUA_TROLL_UNIT_TEMP_FARENHEIT | 2 |  |
+| AQUA_TROLL_UNIT_TEMP_KELVIN | 3 |  |
+| AQUA_TROLL_UNIT_POUNDS_PER_SQUARE_INCH | 17 |  |
+| AQUA_TROLL_UNIT_PASCALS | 18 |  |
+| AQUA_TROLL_UNIT_KILOPASCALS | 19 |  |
+| AQUA_TROLL_UNIT_BARS | 20 |  |
+| AQUA_TROLL_UNIT_MILLIBARS | 21 |  |
+| AQUA_TROLL_UNIT_MILLIMETERS_OF_MERCURY | 22 |  |
+| AQUA_TROLL_UNIT_INCHES_OF_MERCURY | 23 |  |
+| AQUA_TROLL_UNIT_CENTIMETERS_OF_WATER | 24 |  |
+| AQUA_TROLL_UNIT_INCHES_OF_WATER | 25 |  |
+| AQUA_TROLL_UNIT_TORR | 26 |  |
+| AQUA_TROLL_UNIT_STANDARD_ATMOSPHERE | 27 |  |
+| AQUA_TROLL_UNIT_MILLIMETERS | 33 |  |
+| AQUA_TROLL_UNIT_CENTIMETERS | 34 |  |
+| AQUA_TROLL_UNIT_METERS | 35 |  |
+| AQUA_TROLL_UNIT_KILOMETER | 36 |  |
+| AQUA_TROLL_UNIT_INCHES | 37 |  |
+| AQUA_TROLL_UNIT_FEET | 38 |  |
+| AQUA_TROLL_UNIT_DEGREES | 49 |  |
+| AQUA_TROLL_UNIT_MINUTES | 50 |  |
+| AQUA_TROLL_UNIT_SECONDS | 51 |  |
+| AQUA_TROLL_UNIT_MICROSIEMENS_PER_CENTIMETER | 65 |  |
+| AQUA_TROLL_UNIT_MILLISIEMENS_PER_CENTIMETER | 66 |  |
+| AQUA_TROLL_UNIT_OHM_CENTIMETERS | 81 |  |
+| AQUA_TROLL_UNIT_PRACTICAL_SALINITY_UNITS | 97 |  |
+| AQUA_TROLL_UNIT_PARTS_PER_THOUSAND_SALINITY | 98 |  |
+| AQUA_TROLL_UNIT_PARTS_PER_MILLION | 113 |  |
+| AQUA_TROLL_UNIT_PARTS_PER_THOUSAND | 114 |  |
+| AQUA_TROLL_UNIT_PARTS_PER_MILLION_NITROGEN | 115 |  |
+| AQUA_TROLL_UNIT_PARTS_PER_MILLION_CHLORIDE | 116 |  |
+| AQUA_TROLL_UNIT_MILLIGRAMS_PER_LITER | 117 |  |
+| AQUA_TROLL_UNIT_MICROGRAMS_PER_LITER | 118 |  |
+| AQUA_TROLL_UNIT_MICROMOLES_PER_LITER_DEPRECATED | 119 |  |
+| AQUA_TROLL_UNIT_GRAMS_PER_LITER | 120 |  |
+| AQUA_TROLL_UNIT_PARTS_PER_BILLION | 121 |  |
+| AQUA_TROLL_UNIT_GRAMS_PER_CUBIC_CENTIMETER | 129 |  |
+| AQUA_TROLL_UNIT_PH | 145 |  |
+| AQUA_TROLL_UNIT_MICRO_VOLTS | 161 |  |
+| AQUA_TROLL_UNIT_MILLI_VOLTS | 162 |  |
+| AQUA_TROLL_UNIT_VOLTS | 163 |  |
+| AQUA_TROLL_UNIT_PERCENT_SATURATION | 177 |  |
+| AQUA_TROLL_UNIT_FORMAZIN_NEPHELOMETRIC_UNITS | 193 |  |
+| AQUA_TROLL_UNIT_NEPHELOMETRIC_TURBIDITY_UNITS | 194 |  |
+| AQUA_TROLL_UNIT_FORMAZIN_TURBIDITY_UNITS | 195 |  |
+| AQUA_TROLL_UNIT_CUBIC_FEET_PER_SECOND | 209 |  |
+| AQUA_TROLL_UNIT_CUBIC_FEET_PER_MINUTE | 210 |  |
+| AQUA_TROLL_UNIT_CUBIC_FEET_PER_HOUR | 211 |  |
+| AQUA_TROLL_UNIT_CUBIC_FEET_PER_DAY | 212 |  |
+| AQUA_TROLL_UNIT_GALLONS_PER_SECOND | 213 |  |
+| AQUA_TROLL_UNIT_GALLONS_PER_MINUTE | 214 |  |
+| AQUA_TROLL_UNIT_GALLONS_PER_HOUR | 215 |  |
+| AQUA_TROLL_UNIT_MILLIONS_OF_GALLONS_PER_DAY | 216 |  |
+| AQUA_TROLL_UNIT_CUBIC_METERS_PER_SECOND | 217 |  |
+| AQUA_TROLL_UNIT_CUBIC_METERS_PER_MINUTE | 218 |  |
+| AQUA_TROLL_UNIT_CUBIC_METERS_PER_HOUR | 219 |  |
+| AQUA_TROLL_UNIT_CUBIC_METERS_PER_DAY | 220 |  |
+| AQUA_TROLL_UNIT_LITERS_PER_SECOND | 221 |  |
+| AQUA_TROLL_UNIT_MILLIONS_OF_LITERS_PER_DAY | 222 |  |
+| AQUA_TROLL_UNIT_MILLILITERS_PER_MINUTE | 223 |  |
+| AQUA_TROLL_UNIT_THOUSANDS_OF_LITERS_PER_DAY | 224 |  |
+| AQUA_TROLL_UNIT_CUBIC_FEET | 225 |  |
+| AQUA_TROLL_UNIT_GALLONS | 226 |  |
+| AQUA_TROLL_UNIT_MILLIONS_OF_GALLONS | 227 |  |
+| AQUA_TROLL_UNIT_CUBIC_METERS | 228 |  |
+| AQUA_TROLL_UNIT_LITERS | 229 |  |
+| AQUA_TROLL_UNIT_ACRE_FEET | 230 |  |
+| AQUA_TROLL_UNIT_MILLILITERS | 231 |  |
+| AQUA_TROLL_UNIT_MILLIONS_OF_LITERS | 232 |  |
+| AQUA_TROLL_UNIT_THOUSANDS_OF_LITERS | 233 |  |
+| AQUA_TROLL_UNIT_ACRE_INCHES | 234 |  |
+| AQUA_TROLL_UNIT_PERCENT | 241 |  |
+| AQUA_TROLL_UNIT_RELATIVE_FLUORESCENCE_UNITS | 257 |  |
+| AQUA_TROLL_UNIT_MILLILITERS_PER_SECOND | 273 |  |
+| AQUA_TROLL_UNIT_MILLILITERS_PER_HOUR | 274 |  |
+| AQUA_TROLL_UNIT_LITERS_PER_MINUTE | 275 |  |
+| AQUA_TROLL_UNIT_LITERS_PER_HOUR | 276 |  |
+| AQUA_TROLL_UNIT_MICROAMPS | 289 |  |
+| AQUA_TROLL_UNIT_MILLIAMPS | 290 |  |
+| AQUA_TROLL_UNIT_AMPS | 291 |  |
+| AQUA_TROLL_UNIT_FEET_PER_SECOND | 305 |  |
+| AQUA_TROLL_UNIT_METERS_PER_SECOND | 306 |  |
+
+
+
+<a name="blueye-protocol-Type"></a>
+
+### Type
+Type IDs
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| TYPE_UNSPECIFIED | 0 |  |
+| TYPE_SHORT | 1 |  |
+| TYPE_UNSIGNED_SHORT | 2 |  |
+| TYPE_LONG | 3 |  |
+| TYPE_UNSIGNED_LONG | 4 |  |
+| TYPE_FLOAT | 5 |  |
+| TYPE_DOUBLE | 6 |  |
+| TYPE_CHARACTER | 7 |  |
+| TYPE_STRING | 8 |  |
+| TYPE_TIME | 9 |  |
+
+
 ## control.proto
 Control
 
@@ -280,7 +807,48 @@ Restart the guest ports by turning power on and off
 
 
 
+<a name="blueye-protocol-SetAquaTrollConnectionStatusCtrl"></a>
+
+### SetAquaTrollConnectionStatusCtrl
+Request to change the In-Situ Aqua Troll connection status
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| connection_status | [SetAquaTrollConnectionStatus](#blueye-protocol-SetAquaTrollConnectionStatus) |  | Message with information about which parameter to set and the unit to set it to. |
+
+
+
+
+
+
+<a name="blueye-protocol-SetAquaTrollParameterUnitCtrl"></a>
+
+### SetAquaTrollParameterUnitCtrl
+Request to set an In-Situ Aqua Troll parameter unit
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| parameter_info | [SetAquaTrollParameterUnit](#blueye-protocol-SetAquaTrollParameterUnit) |  | Message with information about which parameter to set and the unit to set it to. |
+
+
+
+
+
+
 <a name="blueye-protocol-StartCalibrationCtrl"></a>
+
+
+
+
+
+
+
+
+
+<a name="control-proto"></a>
+<p align="right"><a href="#top">Top</a></p>
 
 ### StartCalibrationCtrl
 Issue a command to start compass calibration.
@@ -540,13 +1108,12 @@ using the BQ40Z50 BMS.
 | average_current | [float](#float) |  | Average current (A) |
 | relative_state_of_charge | [float](#float) |  | Relative state of charge (0..1) |
 | absolute_state_of_charge | [float](#float) |  | Absolute state of charge (0..1) |
+| calculated_state_of_charge | [float](#float) |  | Calculated state of charge (0..1) |
 | remaining_capacity | [float](#float) |  | Remaining capacity (Ah) |
 | full_charge_capacity | [float](#float) |  | Full charge capacity (Ah) |
 | runtime_to_empty | [uint32](#uint32) |  | Runtime to empty (s) |
 | average_time_to_empty | [uint32](#uint32) |  | Average time to empty (s) |
 | average_time_to_full | [uint32](#uint32) |  | Average time to full (s) |
-| time_to_full_at_current_rate | [uint32](#uint32) |  | Time to fully charged at current rate (s) |
-| time_to_empty_at_current_rate | [uint32](#uint32) |  | Time to empty at current rate (s) |
 | charging_current | [float](#float) |  | Charging current (A) |
 | charging_voltage | [float](#float) |  | Charging voltage (V) |
 | cycle_count | [uint32](#uint32) |  | Number of charging cycles |
@@ -900,7 +1467,7 @@ The drone starts incrementing this value when the depth is above 250 mm.
 ### DroneInfo
 Information about the drone.
 
-This message contains serial numbers and version informattion for
+This message contains serial numbers and version information for
 internal components in the drone. Primarily used for diagnostics, or to
 determine the origin of a logfile.
 
@@ -1850,6 +2417,7 @@ Drone models produced by Blueye
 | MODEL_UNSPECIFIED | 0 | ModelName not specified |
 | MODEL_PIONEER | 1 | Blueye Pioneer, the first model |
 | MODEL_PRO | 2 | Blueye Pro, features camera tilt |
+| MODEL_PRO2 | 4 | Blueye Pro, features camera tilt and one guest port |
 | MODEL_X3 | 3 | Blueye X3, features support for peripherals |
 
 
@@ -1864,6 +2432,7 @@ List of navigation sensors that can be used by the position observer
 | NAVIGATION_SENSOR_ID_UNSPECIFIED | 0 | Unspecified |
 | NAVIGATION_SENSOR_ID_WATERLINKED_DVL_A50 | 1 | Water Linked DVL A50 |
 | NAVIGATION_SENSOR_ID_WATERLINKED_UGPS_G2 | 2 | Water Linked UGPS G2 |
+| NAVIGATION_SENSOR_ID_NMEA | 3 | NMEA stream from external positioning system |
 
 
 
@@ -2118,6 +2687,36 @@ Request to get currently set video overlay parameters.
 
 
 
+<a name="blueye-protocol-GetTelemetryRep"></a>
+
+### GetTelemetryRep
+Response with latest telemetry
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| payload | [google.protobuf.Any](#google-protobuf-Any) |  | The latest telemetry data, empty if no data available. |
+
+
+
+
+
+
+<a name="blueye-protocol-GetTelemetryReq"></a>
+
+### GetTelemetryReq
+Request to get latest telemetry data
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| message_type | [string](#string) |  | Message name, f. ex. &#34;AttitudeTel&#34; |
+
+
+
+
+
+
 <a name="blueye-protocol-PingRep"></a>
 
 ### PingRep
@@ -2193,7 +2792,7 @@ Request to set video overlay parameters.
 <a name="blueye-protocol-SetPubFrequencyRep"></a>
 
 ### SetPubFrequencyRep
-Response aftrer updating publish frequency
+Response after updating publish frequency
 
 
 | Field | Type | Label | Description |
@@ -2305,6 +2904,51 @@ Receive the current altitude of the drone.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | altitude | [Altitude](#blueye-protocol-Altitude) |  | The altitude of the drone. |
+
+
+
+
+
+
+<a name="blueye-protocol-AquaTrollProbeMetadataTel"></a>
+
+### AquaTrollProbeMetadataTel
+Metadata from the In-Situ Aqua Troll probe&#39;s common registers
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| probe | [AquaTrollProbeMetadata](#blueye-protocol-AquaTrollProbeMetadata) |  | AquaTroll message containing sensor array. |
+
+
+
+
+
+
+<a name="blueye-protocol-AquaTrollSensorMetadataTel"></a>
+
+### AquaTrollSensorMetadataTel
+Metadata from a single sensor from In-Situ Aqua Troll probe
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| sensors | [AquaTrollSensorMetadataArray](#blueye-protocol-AquaTrollSensorMetadataArray) |  | AquaTroll message containing sensor array. |
+
+
+
+
+
+
+<a name="blueye-protocol-AquaTrollSensorParametersTel"></a>
+
+### AquaTrollSensorParametersTel
+Single sensor from In-Situ Aqua Troll probe
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| sensors | [AquaTrollSensorParametersArray](#blueye-protocol-AquaTrollSensorParametersArray) |  | AquaTroll message containing parameter array. |
 
 
 
