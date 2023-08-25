@@ -151,7 +151,11 @@ class Telemetry:
         try:
             msg = self._parent_drone._telemetry_watcher.get(msg_type)
         except KeyError:
-            return None
+            if version.parse(self._parent_drone.software_version_short) >= version.parse("3.3"):
+                response = self._parent_drone._req_rep_client.get_telemetry_msg(msg_type)
+                msg = response.payload.value if response.payload.value != b"" else None
+            else:
+                return None
         if deserialize:
             return msg_type.deserialize(msg)
         else:
