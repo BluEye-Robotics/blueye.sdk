@@ -14,6 +14,8 @@ import tabulate
 from google.protobuf.internal.decoder import _DecodeVarint as decodeVarint
 from packaging import version
 
+from .utils import deserialize_any_to_message
+
 logger = logging.getLogger(__name__)
 
 
@@ -69,11 +71,7 @@ class LogStream:
 
             self.pos = pos_msg_start + msg_size
             msg = bp.BinlogRecord.deserialize(msg_data)
-            payload_msg_name = msg.payload.type_url.replace(
-                "type.googleapis.com/blueye.protocol.", ""
-            )
-            payload_type = bp.__getattribute__(payload_msg_name)
-            payload_msg_deserialized = payload_type.deserialize(msg.payload.value)
+            payload_type, payload_msg_deserialized = deserialize_any_to_message(msg)
             if self.start_monotonic == 0:
                 self.start_monotonic = msg.clock_monotonic
             return (
