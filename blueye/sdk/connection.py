@@ -345,3 +345,12 @@ class ReqRepClient(threading.Thread):
             frequency=frequency,
         )
         return self._send_request_get_response(request, blueye.protocol.SetPubFrequencyRep, timeout)
+
+    def get_telemetry_msg(self, msg: proto.message.Message | str, timeout: float = 0.05):
+        message_type = (
+            msg.meta.full_name.replace("blueye.protocol.", "")
+            if type(msg) in [proto.message.Message, proto.message.MessageMeta]
+            else msg.replace("blueye.protocol.", "")
+        )
+        request = blueye.protocol.GetTelemetryReq(message_type=message_type)
+        return self._send_request_get_response(request, blueye.protocol.GetTelemetryRep, timeout)
