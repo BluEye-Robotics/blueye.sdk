@@ -235,6 +235,15 @@ class ReqRepClient(threading.Thread):
         )
         return client_info
 
+    @staticmethod
+    def _parse_type_to_string(msg: proto.message.MessageMeta | str) -> str:
+        message_type = (
+            msg.meta.full_name.replace("blueye.protocol.", "")
+            if type(msg) is proto.message.MessageMeta
+            else msg.replace("blueye.protocol.", "")
+        )
+        return message_type
+
     def run(self):
         while not self._exit_flag.is_set():
             try:
@@ -333,24 +342,16 @@ class ReqRepClient(threading.Thread):
         )
 
     def set_telemetry_msg_publish_frequency(
-        self, msg: proto.message.Message | str, frequency: float, timeout: float = 0.05
+        self, msg: proto.message.MessageMeta | str, frequency: float, timeout: float = 0.05
     ) -> blueye.protocol.SetPubFrequencyRep:
-        message_type = (
-            msg.meta.full_name.replace("blueye.protocol.", "")
-            if type(msg) in [proto.message.Message, proto.message.MessageMeta]
-            else msg.replace("blueye.protocol.", "")
-        )
+        message_type = self._parse_type_to_string(msg)
         request = blueye.protocol.SetPubFrequencyReq(
             message_type=message_type,
             frequency=frequency,
         )
         return self._send_request_get_response(request, blueye.protocol.SetPubFrequencyRep, timeout)
 
-    def get_telemetry_msg(self, msg: proto.message.Message | str, timeout: float = 0.05):
-        message_type = (
-            msg.meta.full_name.replace("blueye.protocol.", "")
-            if type(msg) in [proto.message.Message, proto.message.MessageMeta]
-            else msg.replace("blueye.protocol.", "")
-        )
+    def get_telemetry_msg(self, msg: proto.message.MessageMeta | str, timeout: float = 0.05):
+        message_type = self._parse_type_to_string(msg)
         request = blueye.protocol.GetTelemetryReq(message_type=message_type)
         return self._send_request_get_response(request, blueye.protocol.GetTelemetryRep, timeout)
