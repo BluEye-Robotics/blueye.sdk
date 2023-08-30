@@ -34,17 +34,6 @@ class TestPose:
         assert pose["yaw"] == new_angle
 
 
-def test_documentation_opener(mocker):
-    mocked_webbrowser_open = mocker.patch("webbrowser.open", autospec=True)
-    import os
-
-    blueye.sdk.__file__ = os.path.abspath("/root/blueye/sdk/__init__.py")
-
-    blueye.sdk.open_local_documentation()
-
-    mocked_webbrowser_open.assert_called_with(os.path.abspath("/root/blueye.sdk_docs/README.html"))
-
-
 def test_feature_list(mocked_drone):
     mocked_drone._update_drone_info()
     assert mocked_drone.features == ["lasers", "harpoon"]
