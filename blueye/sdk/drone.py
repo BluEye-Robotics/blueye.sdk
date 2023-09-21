@@ -16,7 +16,13 @@ from .battery import Battery
 from .camera import Camera
 from .connection import CtrlClient, ReqRepClient, TelemetryClient, WatchdogPublisher
 from .constants import WaterDensities
-from .guestport import GuestPortCamera, GuestPortLight, Peripheral, device_to_peripheral
+from .guestport import (
+    Gripper,
+    GuestPortCamera,
+    GuestPortLight,
+    Peripheral,
+    device_to_peripheral,
+)
 from .logs import LegacyLogs, Logs
 from .motion import Motion
 
@@ -256,6 +262,8 @@ class Drone:
                     self.external_light = peripheral
                 elif isinstance(peripheral, GuestPortCamera):
                     self.external_camera = peripheral
+                elif isinstance(peripheral, Gripper):
+                    self.gripper = peripheral
 
     def connect(
         self,
