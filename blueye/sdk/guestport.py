@@ -23,6 +23,7 @@ class Peripheral:
         self.serial_number: str = device.serial_number
         self.depth_rating: float = device.depth_rating
         self.required_blunux_version: str = device.required_blunux_version
+        self.device_id: bp.GuestPortDeviceID = device.device_id
         if self.required_blunux_version != "":
             if version.parse(self.required_blunux_version) > version.parse(
                 parent_drone.software_version_short
