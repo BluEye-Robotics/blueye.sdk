@@ -56,6 +56,33 @@ class GuestPortLight(Peripheral):
         return self.parent_drone.telemetry.get(bp.GuestPortLightsTel).lights.value
 
 
+class Gripper(Peripheral):
+    def __init__(
+        self, parent_drone: "Drone", port_number: bp.GuestPortNumber, device: bp.GuestPortDevice
+    ):
+        Peripheral.__init__(self, parent_drone, port_number, device)
+        self.grip_velocity = 0
+        self.rotation_velocity = 0
+
+    @property
+    def grip_velocity(self) -> float:
+        return self.grip_velocity
+
+    @grip_velocity.setter
+    def grip_velocity(self, value: float):
+        self.grip_velocity = value
+        self.parent_drone._ctrl_client.set_gripper_velocities(value, self.rotation_velocity)
+
+    @property
+    def rotation_velocity(self) -> float:
+        return self.rotation_velocity
+
+    @rotation_velocity.setter
+    def rotation_velocity(self, value: float):
+        self.rotation_velocity = value
+        self.parent_drone._ctrl_client.set_gripper_velocities(self.grip_velocity, value)
+
+
 def device_to_peripheral(
     parent_drone: "Drone", port_number: bp.GuestPortNumber, device: bp.GuestPortDevice
 ) -> Peripheral:
@@ -68,6 +95,13 @@ def device_to_peripheral(
         or device.device_id == bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUE_ROBOTICS_LUMEN
     ):
         peripheral = GuestPortLight(parent_drone, port_number, device)
+    elif (
+        device.device_id == bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUE_ROBOTICS_NEWTON
+        or device.device_id
+        == bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUE_ROBOTICS_DETACHABLE_NEWTON
+        or device.device_id == bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEPRINT_LAB_REACH_ALPHA
+    ):
+        peripheral = Gripper(parent_drone, port_number, device)
     else:
         peripheral = Peripheral(parent_drone, port_number, device)
     return peripheral
