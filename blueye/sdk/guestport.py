@@ -34,7 +34,7 @@ class Peripheral:
                 )
 
 
-class GuestportCamera(Camera, Peripheral):
+class GuestPortCamera(Camera, Peripheral):
     def __init__(
         self, parent_drone: "Drone", port_number: bp.GuestPortNumber, device: bp.GuestPortDevice
     ):
@@ -60,7 +60,7 @@ def device_to_peripheral(
 ) -> Peripheral:
     logger.debug(f"Found a {device.name} at port {port_number}")
     if device.device_id == bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_CAM:
-        peripheral = GuestportCamera(parent_drone, port_number, device)
+        peripheral = GuestPortCamera(parent_drone, port_number, device)
     elif (
         device.device_id == bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_LIGHT
         or device.device_id == bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_LIGHT_PAIR
