@@ -16,7 +16,7 @@ from .battery import Battery
 from .camera import Camera
 from .connection import CtrlClient, ReqRepClient, TelemetryClient, WatchdogPublisher
 from .constants import WaterDensities
-from .guestport import Peripheral, device_to_peripheral
+from .guestport import GuestPortCamera, GuestPortLight, Peripheral, device_to_peripheral
 from .logs import LegacyLogs, Logs
 from .motion import Motion
 
@@ -245,7 +245,12 @@ class Drone:
         self.peripherals = []
         for port in (gp_info.gp1, gp_info.gp2, gp_info.gp3):
             for device in port.device_list.devices:
-                self.peripherals.append(device_to_peripheral(self, port.guest_port_number, device))
+                peripheral = device_to_peripheral(self, port.guest_port_number, device)
+                self.peripherals.append(peripheral)
+                if isinstance(peripheral, GuestPortLight):
+                    self.external_light = peripheral
+                elif isinstance(peripheral, GuestPortCamera):
+                    self.external_camera = peripheral
 
     def connect(
         self,
