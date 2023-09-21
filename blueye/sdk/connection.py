@@ -212,6 +212,12 @@ class CtrlClient(threading.Thread):
         msg = blueye.protocol.TakePictureCtrl()
         self._messages_to_send.put(msg)
 
+    def set_gripper_velocities(self, grip: float, rotation: float):
+        msg = blueye.protocol.GripperCtrl(
+            gripper_velocities={"grip_velocity": grip, "rotate_velocity": rotation}
+        )
+        self._messages_to_send.put(msg)
+
 
 class ReqRepClient(threading.Thread):
     def __init__(self, parent_drone: "blueye.sdk.Drone", context: zmq.Context = None):
