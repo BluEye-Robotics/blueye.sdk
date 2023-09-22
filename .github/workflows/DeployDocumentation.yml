@@ -20,8 +20,12 @@ jobs:
         run: poetry install
       - name: Build HTTP documentation
         run: npx redoc-cli bundle http-api.yml --output docs/http-api.html
+      - name: Build python reference
+        run: |
+          poetry run pdocs as_markdown blueye.sdk -o docs/reference
+          rm docs/reference/blueye/sdk/index.md
       - name: Build documentation
-        run: poetry run portray as_html --overwrite
+        run: poetry run mkdocs build
 
       - name: Deploy documentation
         uses: JamesIves/github-pages-deploy-action@4.1.1

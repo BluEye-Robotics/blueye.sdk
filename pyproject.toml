@@ -33,93 +33,19 @@ proto-plus = "^1.22.2"
 [tool.poetry.dev-dependencies]
 pytest = "^7.4"
 pytest-mock = "^3.11"
-portray = "^1.8"
+mkdocs = "^1.5"
+mkdocs-material = "^9.4"
+mkdocs-macros-plugin = "^1.0"
+pdocs = "^1.2"
+pymdown-extensions = "^10.1"
 pre-commit = "^3.3"
 black = "^23.7"
-mkdocs-macros-plugin = "^1.0"
 pytest-cov = "^4.1"
 requests-mock = "^1.11"
 freezegun = "^1.2"
 
 [tool.poetry.extras]
 examples = ["inputs", "asciimatics", "pandas", "matplotlib", "webdavclient3"]
-
-[tool.portray.mkdocs]
-repo_url = "https://github.com/BluEye-Robotics/blueye.sdk"
-repo_name = ""
-site_name = "Blueye SDK"
-markdown_extensions = ["admonition",
-                       "pymdownx.arithmatex",
-                       "pymdownx.caret",
-                       "pymdownx.critic",
-                       "pymdownx.details",
-                       "pymdownx.inlinehilite",
-                       "pymdownx.magiclink",
-                       "pymdownx.mark",
-                       "pymdownx.smartsymbols",
-                       "pymdownx.superfences",
-                       "pymdownx.tilde",
-                       ]
-
-[tool.portray.mkdocs.plugins]
-[tool.portray.mkdocs.plugins.search]
-[tool.portray.mkdocs.plugins.macros]
-    module_name = "blueye.sdk/doc_utils"
-
-[[tool.portray.extra_markdown_extensions]]
-[tool.portray.extra_markdown_extensions."pymdownx.tabbed"]
-alternate_style = true
-
-[tool.portray.mkdocs.theme]
-favicon = "docs/media/blueye_b.svg"
-logo = "docs/media/blueye_b.svg"
-name = "material"
-palette = {primary = "white", accent = "blue"}
-custom_dir = "docs/mkdocs_templates"
-features = ["content.tabs.link"]
-
-[[tool.portray.mkdocs.nav]]
-"About the Blueye Drones" = "README.md"
-
-[[tool.portray.mkdocs.nav]]
-"Quick Start" = "docs/quick_start.md"
-
-[[tool.portray.mkdocs.nav]]
-    [[tool.portray.mkdocs.nav.Movement]]
-    "Control from the CLI" = "docs/movement/from-the-CLI.md"
-    [[tool.portray.mkdocs.nav.Movement]]
-    "Control with a gamepad" = "docs/movement/with-a-gamepad.md"
-
-[[tool.portray.mkdocs.nav]]
-    [[tool.portray.mkdocs.nav.Video]]
-    "GStreamer for video streaming" = "docs/video/gstreamer-for-video-streaming.md"
-    [[tool.portray.mkdocs.nav.Video]]
-    "Downloading videos and images" = "docs/video/downloading.md"
-
-[[tool.portray.mkdocs.nav]]
-    [[tool.portray.mkdocs.nav.Logs]]
-    "Listing and downloading log files" = "docs/logs/listing-and-downloading.md"
-    [[tool.portray.mkdocs.nav.Logs]]
-    "Plotting log files" = "docs/logs/plotting.md"
-    [[tool.portray.mkdocs.nav.Logs]]
-    "Runtime logs" = "docs/logs/runtime-logs.md"
-    [[tool.portray.mkdocs.nav.Logs]]
-    "Legacy log file format" = "docs/logs/legacy-log-file-format.md"
-
-[[tool.portray.mkdocs.nav]]
-"Configure drone parameters" = "docs/configuration.md"
-
-[[tool.portray.mkdocs.nav]]
-"Subscribing to a telemetry message" = "docs/telemetry-callback.md"
-
-[[tool.portray.mkdocs.nav]]
-"Updating from v1 to v2" = "docs/migrating-to-v2.md"
-
-[[tool.portray.mkdocs.nav]]
-"Protobuf protocol" = "docs/protobuf-protocol.md"
-
-[[tool.portray.mkdocs.nav]]
-"HTTP API" = "docs/http-api.html"
 
 [tool.black]
 line-length = 100

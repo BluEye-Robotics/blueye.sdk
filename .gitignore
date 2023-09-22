@@ -109,6 +109,7 @@ venv.bak/
 /site
 blueye.sdk_docs
 docs/http-api.html
+docs/reference
 
 # mypy
 .mypy_cache/
