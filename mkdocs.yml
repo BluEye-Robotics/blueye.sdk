@@ -1,0 +1,68 @@
+site_name: Blueye SDK
+repo_url: "https://github.com/BluEye-Robotics/blueye.sdk"
+repo_name: ""
+plugins:
+  - search
+  - macros:
+      module_name: doc_utils
+
+markdown_extensions:
+  - admonition
+  - pymdownx.arithmatex
+  - pymdownx.caret
+  - pymdownx.critic
+  - pymdownx.details
+  - pymdownx.inlinehilite
+  - pymdownx.magiclink
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences
+  - pymdownx.tilde
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+
+theme:
+  name: material
+  favicon: "media/blueye_b.svg"
+  logo: "media/blueye_b.svg"
+  palette:
+    primary: "white"
+    accent: "blue"
+  custom_dir: "docs/mkdocs_templates"
+  features:
+    - content.tabs.link
+
+extra:
+  version:
+    provider: mike
+
+nav:
+  - "About the Blueye Drones": "index.md"
+  - "Quick Start": "quick_start.md"
+  - Movement:
+      - "Control from the CLI": "movement/from-the-CLI.md"
+      - "Control with a gamepad": "movement/with-a-gamepad.md"
+  - Video:
+      - "GStreamer for video streaming": "video/gstreamer-for-video-streaming.md"
+      - "Downloading videos and images": "video/downloading.md"
+  - Logs:
+      - "Listing and downloading log files": "logs/listing-and-downloading.md"
+      - "Plotting log files": "logs/plotting.md"
+      - "Runtime logs": "logs/runtime-logs.md"
+      - "Legacy log file format": "logs/legacy-log-file-format.md"
+  - "Configure drone parameters": "configuration.md"
+  - "Subscribing to a telemetry message": "telemetry-callback.md"
+  - "Updating from v1 to v2": "migrating-to-v2.md"
+  - "Protobuf protocol": "protobuf-protocol.md"
+  - "HTTP API": "http-api.html"
+  - Reference:
+      - blueye.sdk.battery: "reference/blueye/sdk/battery.md"
+      - blueye.sdk.camera: "reference/blueye/sdk/camera.md"
+      - blueye.sdk.connection: "reference/blueye/sdk/connection.md"
+      - blueye.sdk.constants: "reference/blueye/sdk/constants.md"
+      - blueye.sdk.drone: "reference/blueye/sdk/drone.md"
+      - blueye.sdk.guestport: "reference/blueye/sdk/guestport.md"
+      - blueye.sdk.logs: "reference/blueye/sdk/logs.md"
+      - blueye.sdk.motion: "reference/blueye/sdk/motion.md"
+      - blueye.sdk.utils: "reference/blueye/sdk/utils.md"

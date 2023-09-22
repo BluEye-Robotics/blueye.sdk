@@ -24,7 +24,7 @@ my_drone.lights = 0.25
 ```
 
 ## Error flags are a dictionary of bools
-Error flags are now represented as a dictionary of bools instead of bitflags in an `int`. See the [ErrorFlags message in blueye.protocol](https://github.com/BluEye-Robotics/blueye.protocol/blob/bec6c11dfbe51457fd58646111d8e9ce9ba8a043/blueye/protocol/types/message_formats.py#L1511) for an overview of the possible error states.
+Error flags are now represented as a dictionary of bools instead of bitflags in an `int`. See the [ErrorFlags message](protobuf-protocol.md#blueye-protocol-ErrorFlags) for an overview of the possible error states.
 
 ```python
 # Previously
