@@ -6,7 +6,7 @@ import platform
 import queue
 import threading
 import uuid
-from typing import Callable, Dict, List, NamedTuple, Tuple
+from typing import Any, Callable, Dict, List, NamedTuple, Tuple
 
 import blueye.protocol
 import proto
@@ -54,6 +54,7 @@ class Callback(NamedTuple):
     function: Callable[[str, proto.message.Message], None]
     pass_raw_data: bool
     uuid_hex: str
+    kwargs: Dict[str, Any]
 
 
 class TelemetryClient(threading.Thread):
@@ -87,10 +88,10 @@ class TelemetryClient(threading.Thread):
         for callback in self._callbacks:
             if msg_type in callback.message_filter or callback.message_filter == []:
                 if callback.pass_raw_data:
-                    callback.function(msg_type_name, msg_payload)
+                    callback.function(msg_type_name, msg_payload, **callback.kwargs)
                 else:
                     msg_deserialized = msg_type.deserialize(msg_payload)
-                    callback.function(msg_type_name, msg_deserialized)
+                    callback.function(msg_type_name, msg_deserialized, **callback.kwargs)
 
     def run(self):
         poller = zmq.Poller()
@@ -107,9 +108,10 @@ class TelemetryClient(threading.Thread):
         msg_filter: List[proto.message.Message],
         callback_function: Callable[[str, proto.message.Message], None],
         raw: bool,
+        **kwargs,
     ):
         uuid_hex = uuid.uuid1().hex
-        self._callbacks.append(Callback(msg_filter, callback_function, raw, uuid_hex))
+        self._callbacks.append(Callback(msg_filter, callback_function, raw, uuid_hex, kwargs))
         return uuid_hex
 
     def remove_callback(self, callback_id):
@@ -159,6 +161,10 @@ class CtrlClient(threading.Thread):
 
     def set_lights(self, value: float):
         msg = blueye.protocol.LightsCtrl(lights={"value": value})
+        self._messages_to_send.put(msg)
+
+    def set_guest_port_lights(self, value: float):
+        msg = blueye.protocol.GuestportLightsCtrl(lights={"value": value})
         self._messages_to_send.put(msg)
 
     def set_water_density(self, value: float):
