@@ -2,7 +2,7 @@
 
 The `blueye.sdk` package uses the standard Python logging module to log information about the SDK's operation. The log statements are useful for debugging and troubleshooting, and can be used to get a better understanding of what is happening inside the SDK.
 
-**Note**: These logs must not be confused with the divelogs that are generated and stored on the drone. See [Listing and downloading logfiles](../listing-and-downloading) for instructions on how to get the divelogs.
+**Note**: These logs must not be confused with the divelogs that are generated and stored on the drone. See [Listing and downloading logfiles](listing-and-downloading.md) for instructions on how to get the divelogs.
 
 Events with severity `WARNING` or greater are printed to `sys.stderr` by default, but can be configured to be written to a file or sent to a remote server. See the [Python logging documentation](https://docs.python.org/3/library/logging.html) for more information about how to configure the logging module.
 

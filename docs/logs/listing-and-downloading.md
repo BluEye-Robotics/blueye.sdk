@@ -4,7 +4,7 @@ When the drone is powered on a new log file is created, where it stores telemetr
 
  Blunux v3.0 introduced a a modern binary log format to replace the older CSV-based logs. This updated format employs gzip compression and Google's Protocol Buffers (Protobuf) for serialization. Gzip compression reduces log file sizes, optimizing storage and data transfer. The integration of Protobuf streamlines log parsing and analysis, offering more efficient data handling.
 
- Every entry in the binary log is a [BinlogRecord](../../protobuf-protocol/#binlogrecord) Protobuf message, which in turn contains a unix timestamp in UTC, the monotonic timestamp (time since boot), and an Any message wrapping the Blueye telemetry message. The telemetry messages are documented in the [telemtry proto](../../docs/protobuf-protocol/#telemetryproto).
+ Every entry in the binary log is a [BinlogRecord](../protobuf-protocol.md#binlogrecord) Protobuf message, which in turn contains a unix timestamp in UTC, the monotonic timestamp (time since boot), and an Any message wrapping the Blueye telemetry message. The telemetry messages are documented in the [telemetry proto](../protobuf-protocol.md#telemetryproto).
 
 ## Listing the log files
 If your drone has completed 5 dives and you do

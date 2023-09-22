@@ -202,7 +202,7 @@ myDrone.lights = 0
 print(f"Current depth in meters: {myDrone.depth}")
 ```
 For an overview of the properties that are available for controlling and reading data from the drone, go to the
-[`Reference section`](../../reference/blueye/sdk/drone) of the documentation.
+[`Reference section`](reference/blueye/sdk/drone.md) of the documentation.
 The valid input ranges and descriptions of the different properties can also be found there.
 
 
@@ -224,7 +224,7 @@ Once VLC is downloaded you can start the stream like this, the RTSP URL is: `rts
 
 
 For lower latency streaming (on a PC) you can see the instructions on using
-[`Gstreamer`](./video/gstreamer-for-video-streaming.md), or if you just want to watch a low
+[`Gstreamer`](video/gstreamer-for-video-streaming.md), or if you just want to watch a low
 latency stream you can download the Blueye Observer app.
 ([iOS](https://apps.apple.com/us/app/blueye-dive-buddy/id1453884806?ls=1) /
 [Android](https://play.google.com/store/apps/details?id=no.blueye.divebuddy))
@@ -235,7 +235,7 @@ spectator and can be used together with the SDK.
 
 ### Explore the examples
 For further examples on how to use the SDK to control the drone have a look at the
-[motion examples](../movement/from-the-CLI/).
+[motion examples](movement/from-the-CLI.md).
 
 Remember to install the example dependencies before running the examples.
 
