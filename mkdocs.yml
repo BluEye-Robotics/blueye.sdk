@@ -32,6 +32,11 @@ theme:
   custom_dir: "docs/mkdocs_templates"
   features:
     - content.tabs.link
+
+extra:
+  version:
+    provider: mike
+
 nav:
   - "About the Blueye Drones": "index.md"
   - "Quick Start": "quick_start.md"
