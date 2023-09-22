@@ -47,8 +47,6 @@ examples = ["inputs", "asciimatics", "pandas", "matplotlib", "webdavclient3"]
 [tool.portray.mkdocs]
 repo_url = "https://github.com/BluEye-Robotics/blueye.sdk"
 repo_name = ""
-plugins = ["search", "macros"]
-python_module = "doc_utils" # For macros plugin
 site_name = "Blueye SDK"
 markdown_extensions = ["admonition",
                        "pymdownx.arithmatex",
@@ -62,6 +60,11 @@ markdown_extensions = ["admonition",
                        "pymdownx.superfences",
                        "pymdownx.tilde",
                        ]
+
+[tool.portray.mkdocs.plugins]
+[tool.portray.mkdocs.plugins.search]
+[tool.portray.mkdocs.plugins.macros]
+    module_name = "blueye.sdk/doc_utils"
 
 [[tool.portray.extra_markdown_extensions]]
 [tool.portray.extra_markdown_extensions."pymdownx.tabbed"]
