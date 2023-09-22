@@ -1,6 +1,13 @@
 name: Build and deploy documentation
 
-on: [push]
+on:
+  push:
+    tags-ignore:
+      - "*"
+    branches:
+      - "*"
+  release:
+    types: [released]
 
 jobs:
   DeployDocumentation:
@@ -30,12 +37,29 @@ jobs:
         with:
           name: docs
           path: site
-
-      - name: Deploy documentation
-        uses: JamesIves/github-pages-deploy-action@4.1.1
-        with:
-          branch: gh-pages
-          folder: site
-        env:
-          ACCESS_TOKEN: ${{ secrets.GIT_TOKEN }}
+      - name: Setup git user
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+      - name: Fetch gh-pages
+        run: git fetch origin gh-pages --depth=1
+      - name: Set variables
+        run: |
+          full_version="v$(cut -d ' ' -f 2 <<< "$(poetry version)")"
+          major_minor="$(cut -d '.' -f 1 <<< "$full_version")"."$(cut -d '.' -f 2 <<< "$full_version")"
+          echo "full_version=$full_version" >> $GITHUB_ENV
+          echo "major_minor=$major_minor" >> $GITHUB_ENV
+      - name: Deploy master
         if: github.ref == 'refs/heads/master'
+        run: |
+          poetry run mike deploy dev
+      - name: Deploy release
+        if: ${{ github.event_name == 'release' }}
+        run: |
+          poetry run mike deploy --title ${{ env.full_version }} --update-aliases ${{ env.major_minor }} latest
+      - name: Push to gh-pages
+        if: github.ref == 'refs/heads/master' || github.event_name == 'release'
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ secrets.GIT_TOKEN }}
+          branch: gh-pages
