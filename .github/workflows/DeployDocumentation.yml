@@ -26,7 +26,7 @@ jobs:
       - name: Install dependencies
         run: poetry install
       - name: Build HTTP documentation
-        run: npx redoc-cli bundle http-api.yml --output docs/http-api.html
+        run: npx @redocly/cli build-docs http-api.yml --output docs/http-api.html
       - name: Build documentation
         run: poetry run portray as_html --overwrite
 
