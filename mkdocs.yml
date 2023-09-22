@@ -5,6 +5,7 @@ plugins:
   - search
   - macros:
       module_name: doc_utils
+
 markdown_extensions:
   - admonition
   - pymdownx.arithmatex
@@ -20,6 +21,7 @@ markdown_extensions:
   - pymdownx.snippets
   - pymdownx.tabbed:
       alternate_style: true
+
 theme:
   name: material
   favicon: "media/blueye_b.svg"
