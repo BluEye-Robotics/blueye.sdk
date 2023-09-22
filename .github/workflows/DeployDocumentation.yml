@@ -10,7 +10,7 @@ on:
     types: [released]
 
 jobs:
-  DeployDocumentation:
+  BuildDocumentation:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -29,7 +29,20 @@ jobs:
         run: npx @redocly/cli build-docs http-api.yml --output docs/http-api.html
       - name: Build documentation
         run: poetry run portray as_html --overwrite
+      - uses: actions/upload-artifact@v3
+        with:
+          name: docs
+          path: site
 
+  DeployDocumentation:
+    runs-on: ubuntu-latest
+    needs: BuildDocumentation
+    if: ${{ github.event_name == 'release' }}
+    steps:
+      - name: Download documentation
+        uses: actions/download-artifact@v3
+        with:
+          name: docs
       - name: Deploy documentation
         uses: JamesIves/github-pages-deploy-action@4.1.1
         with:
@@ -37,4 +50,3 @@ jobs:
           folder: site
         env:
           ACCESS_TOKEN: ${{ secrets.GIT_TOKEN }}
-        if: ${{ github.event_name == 'release' }}
