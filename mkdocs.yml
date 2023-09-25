@@ -5,6 +5,8 @@ plugins:
   - search
   - macros:
       module_name: doc_utils
+  - swagger-ui-tag:
+      supportedSubmitMethods: []
 
 markdown_extensions:
   - admonition
@@ -69,7 +71,7 @@ nav:
   - "Subscribing to a telemetry message": "telemetry-callback.md"
   - "Updating from v1 to v2": "migrating-to-v2.md"
   - "Protobuf protocol": "protobuf-protocol.md"
-  - "HTTP API": "http-api.html"
+  - "HTTP API": "http-api.md"
   - Reference:
       - blueye.sdk.battery: "reference/blueye/sdk/battery.md"
       - blueye.sdk.camera: "reference/blueye/sdk/camera.md"
