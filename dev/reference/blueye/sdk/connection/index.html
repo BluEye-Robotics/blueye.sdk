@@ -16,7 +16,7 @@
       
       
       <link rel="icon" href="../../../../media/blueye_b.svg">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.1">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.2">
     
     
       
@@ -24,7 +24,7 @@
       
     
     
-      <link rel="stylesheet" href="../../../../assets/stylesheets/main.72749a73.min.css">
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.d451bc0e.min.css">
       
         
         <link rel="stylesheet" href="../../../../assets/stylesheets/palette.a5377069.min.css">
@@ -292,14 +292,16 @@
     
     
     
+    
+    
     <li class="md-nav__item md-nav__item--nested">
       
         
         
         
-        
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
         
+          
           <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
             
   
@@ -373,14 +375,16 @@
     
     
     
+    
+    
     <li class="md-nav__item md-nav__item--nested">
       
         
         
         
-        
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
         
+          
           <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
             
   
@@ -454,14 +458,16 @@
     
     
     
+    
+    
     <li class="md-nav__item md-nav__item--nested">
       
         
         
         
-        
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
         
+          
           <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
             
   
@@ -672,14 +678,16 @@
     
     
     
+    
+    
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
         
-        
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11" checked>
         
+          
           <label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
             
   
@@ -1079,6 +1087,13 @@
           <li class="md-nav__item">
   <a href="#get_overlay_parameters" class="md-nav__link">
     get_overlay_parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_telemetry_msg" class="md-nav__link">
+    get_telemetry_msg
   </a>
   
 </li>
@@ -1863,6 +1878,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#get_telemetry_msg" class="md-nav__link">
+    get_telemetry_msg
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#isdaemon_1" class="md-nav__link">
     isDaemon
   </a>
@@ -2604,6 +2626,22 @@ class ReqRepClient(threading.Thread):
 
         return client_info
 
+    @staticmethod
+
+    def _parse_type_to_string(msg: proto.message.MessageMeta | str) -&gt; str:
+
+        message_type = (
+
+            msg.meta.full_name.replace("blueye.protocol.", "")
+
+            if type(msg) is proto.message.MessageMeta
+
+            else msg.replace("blueye.protocol.", "")
+
+        )
+
+        return message_type
+
     def run(self):
 
         while not self._exit_flag.is_set():
@@ -2778,19 +2816,11 @@ class ReqRepClient(threading.Thread):
 
     def set_telemetry_msg_publish_frequency(
 
-        self, msg: proto.message.Message | str, frequency: float, timeout: float = 0.05
+        self, msg: proto.message.MessageMeta | str, frequency: float, timeout: float = 0.05
 
     ) -&gt; blueye.protocol.SetPubFrequencyRep:
 
-        message_type = (
-
-            msg.meta.full_name.replace("blueye.protocol.", "")
-
-            if type(msg) in [proto.message.Message, proto.message.MessageMeta]
-
-            else msg.replace("blueye.protocol.", "")
-
-        )
+        message_type = self._parse_type_to_string(msg)
 
         request = blueye.protocol.SetPubFrequencyReq(
 
@@ -2801,6 +2831,14 @@ class ReqRepClient(threading.Thread):
         )
 
         return self._send_request_get_response(request, blueye.protocol.SetPubFrequencyRep, timeout)
+
+    def get_telemetry_msg(self, msg: proto.message.MessageMeta | str, timeout: float = 0.05):
+
+        message_type = self._parse_type_to_string(msg)
+
+        request = blueye.protocol.GetTelemetryReq(message_type=message_type)
+
+        return self._send_request_get_response(request, blueye.protocol.GetTelemetryRep, timeout)
 </code></pre>
 </details>
 <h2 id="variables">Variables</h2>
@@ -3616,6 +3654,22 @@ by overriding the run() method in a subclass.</p>
 
         return client_info
 
+    @staticmethod
+
+    def _parse_type_to_string(msg: proto.message.MessageMeta | str) -&gt; str:
+
+        message_type = (
+
+            msg.meta.full_name.replace("blueye.protocol.", "")
+
+            if type(msg) is proto.message.MessageMeta
+
+            else msg.replace("blueye.protocol.", "")
+
+        )
+
+        return message_type
+
     def run(self):
 
         while not self._exit_flag.is_set():
@@ -3790,19 +3844,11 @@ by overriding the run() method in a subclass.</p>
 
     def set_telemetry_msg_publish_frequency(
 
-        self, msg: proto.message.Message | str, frequency: float, timeout: float = 0.05
+        self, msg: proto.message.MessageMeta | str, frequency: float, timeout: float = 0.05
 
     ) -&gt; blueye.protocol.SetPubFrequencyRep:
 
-        message_type = (
-
-            msg.meta.full_name.replace("blueye.protocol.", "")
-
-            if type(msg) in [proto.message.Message, proto.message.MessageMeta]
-
-            else msg.replace("blueye.protocol.", "")
-
-        )
+        message_type = self._parse_type_to_string(msg)
 
         request = blueye.protocol.SetPubFrequencyReq(
 
@@ -3813,6 +3859,14 @@ by overriding the run() method in a subclass.</p>
         )
 
         return self._send_request_get_response(request, blueye.protocol.SetPubFrequencyRep, timeout)
+
+    def get_telemetry_msg(self, msg: proto.message.MessageMeta | str, timeout: float = 0.05):
+
+        message_type = self._parse_type_to_string(msg)
+
+        request = blueye.protocol.GetTelemetryReq(message_type=message_type)
+
+        return self._send_request_get_response(request, blueye.protocol.GetTelemetryRep, timeout)
 </code></pre>
 </details>
 <hr />
@@ -3963,6 +4017,24 @@ This represents the Thread ID as reported by the kernel.</p>
         )
 
         return response.overlay_parameters
+</code></pre>
+</details>
+<h4 id="get_telemetry_msg">get_telemetry_msg</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_telemetry_msg</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">msg</span><span class="p">:</span> <span class="s1">&#39;proto.message.MessageMeta | str&#39;</span><span class="p">,</span>
+    <span class="n">timeout</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span> <span class="o">=</span> <span class="mf">0.05</span>
+<span class="p">)</span>
+</code></pre></div>
+<details class="example">
+<summary>View Source</summary>
+<pre><code>    def get_telemetry_msg(self, msg: proto.message.MessageMeta | str, timeout: float = 0.05):
+
+        message_type = self._parse_type_to_string(msg)
+
+        request = blueye.protocol.GetTelemetryReq(message_type=message_type)
+
+        return self._send_request_get_response(request, blueye.protocol.GetTelemetryRep, timeout)
 </code></pre>
 </details>
 <h4 id="isdaemon_1">isDaemon</h4>
@@ -4285,7 +4357,7 @@ from the args and kwargs arguments, respectively.</p>
 <h4 id="set_telemetry_msg_publish_frequency">set_telemetry_msg_publish_frequency</h4>
 <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">set_telemetry_msg_publish_frequency</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
-    <span class="n">msg</span><span class="p">:</span> <span class="s1">&#39;proto.message.Message | str&#39;</span><span class="p">,</span>
+    <span class="n">msg</span><span class="p">:</span> <span class="s1">&#39;proto.message.MessageMeta | str&#39;</span><span class="p">,</span>
     <span class="n">frequency</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">,</span>
     <span class="n">timeout</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span> <span class="o">=</span> <span class="mf">0.05</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;blueye.protocol.SetPubFrequencyRep&#39;</span>
@@ -4294,19 +4366,11 @@ from the args and kwargs arguments, respectively.</p>
 <summary>View Source</summary>
 <pre><code>    def set_telemetry_msg_publish_frequency(
 
-        self, msg: proto.message.Message | str, frequency: float, timeout: float = 0.05
+        self, msg: proto.message.MessageMeta | str, frequency: float, timeout: float = 0.05
 
     ) -&gt; blueye.protocol.SetPubFrequencyRep:
 
-        message_type = (
-
-            msg.meta.full_name.replace("blueye.protocol.", "")
-
-            if type(msg) in [proto.message.Message, proto.message.MessageMeta]
-
-            else msg.replace("blueye.protocol.", "")
-
-        )
+        message_type = self._parse_type_to_string(msg)
 
         request = blueye.protocol.SetPubFrequencyReq(
 
@@ -5468,7 +5532,7 @@ same thread object.</p>
     <script id="__config" type="application/json">{"base": "../../../..", "features": ["content.tabs.link"], "search": "../../../../assets/javascripts/workers/search.a264c092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../../../assets/javascripts/bundle.4e0fa4ba.min.js"></script>
+      <script src="../../../../assets/javascripts/bundle.726fbb30.min.js"></script>
       
     
   </body>
