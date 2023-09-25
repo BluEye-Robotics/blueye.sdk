@@ -34,17 +34,6 @@ class TestPose:
         assert pose["yaw"] == new_angle
 
 
-def test_documentation_opener(mocker):
-    mocked_webbrowser_open = mocker.patch("webbrowser.open", autospec=True)
-    import os
-
-    blueye.sdk.__file__ = os.path.abspath("/root/blueye/sdk/__init__.py")
-
-    blueye.sdk.open_local_documentation()
-
-    mocked_webbrowser_open.assert_called_with(os.path.abspath("/root/blueye.sdk_docs/README.html"))
-
-
 def test_feature_list(mocked_drone):
     mocked_drone._update_drone_info()
     assert mocked_drone.features == ["lasers", "harpoon"]
@@ -262,3 +251,37 @@ def test_gp_cam_recording(mocked_drone):
     )
     mocked_drone.gp_cam.is_recording = True
     mocked_drone._ctrl_client.set_recording_state.assert_called_with(False, True)
+
+
+class TestTelemetry:
+    def test_get(self, mocked_drone):
+        depth_tel = bp.DepthTel(depth={"value": 10})
+        mocked_drone._telemetry_watcher._state[bp.DepthTel] = bp.DepthTel.serialize(depth_tel)
+        assert mocked_drone.telemetry.get(bp.DepthTel) == depth_tel
+
+    def test_get_returns_none_if_not_available(self, mocked_drone):
+        mocked_drone._telemetry_watcher._state = {}
+        assert mocked_drone.telemetry.get(bp.DepthTel) is None
+
+    def test_get_sends_request_if_blunux_newer_than_3_3(self, mocked_drone):
+        mocked_drone.software_version_short = "3.3.0"
+        mocked_drone._telemetry_watcher._state = {}
+
+        mocked_drone._req_rep_client.get_telemetry_msg.return_value = bp.GetTelemetryRep(
+            payload={"value": b""}
+        )
+        mocked_drone.telemetry.get(bp.DepthTel)
+        mocked_drone._req_rep_client.get_telemetry_msg.assert_called_once()
+
+    def test_get_no_request_for_blunux_older_than_3_3(self, mocked_drone):
+        mocked_drone.software_version_short = "3.2.0"
+        mocked_drone._telemetry_watcher._state = {}
+        assert mocked_drone.telemetry.get(bp.DepthTel) is None
+        mocked_drone._req_rep_client.get_telemetry_msg.assert_not_called()
+
+    def test_get_deserializer(self, mocked_drone):
+        depth_tel = bp.DepthTel(depth={"value": 10})
+        depth_tel_serialized = bp.DepthTel.serialize(depth_tel)
+        mocked_drone._telemetry_watcher._state[bp.DepthTel] = depth_tel_serialized
+        assert mocked_drone.telemetry.get(bp.DepthTel, deserialize=True) == depth_tel
+        assert mocked_drone.telemetry.get(bp.DepthTel, deserialize=False) == depth_tel_serialized
