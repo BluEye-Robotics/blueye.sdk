@@ -50,7 +50,7 @@ myDrone.config.water_density = 1234
 ```
 
 ### Configure camera parameters
-There are 6 different camera parameters that can be set. For a full list of camera parameters and their possible values see the [`camera reference`](../../reference/blueye/sdk/camera) section. For example you could set the bit rate like this
+There are 6 different camera parameters that can be set. For a full list of camera parameters and their possible values see the [`camera reference`](reference/blueye/sdk/camera.md) section. For example you could set the bit rate like this
 
 ```python
 from blueye.sdk import Drone

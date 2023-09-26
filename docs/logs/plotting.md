@@ -53,7 +53,7 @@ figure.savefig("depth_plot.svg")
 ```
 
 This should yield us a plot that looks something like this:
-![plot](../../media/depth_plot.svg)
+![plot](../media/depth_plot.svg)
 
 See the [matplotlib documentation](https://matplotlib.org/contents.html) for more ways
 to plot your data.

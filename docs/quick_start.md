@@ -202,7 +202,7 @@ myDrone.lights = 0
 print(f"Current depth in millimeters: {myDrone.depth}")
 ```
 For an overview of the properties that are available for controlling and reading data from the drone, go to the
-[`Reference section`](../../reference/blueye/sdk/drone) of the documentation.
+[`Reference section`](reference/blueye/sdk/drone.md) of the documentation.
 The valid input ranges and descriptions of the different properties can also be found there.
 
 
@@ -235,7 +235,7 @@ spectator and can be used together with the SDK.
 
 ### Explore the examples
 For further examples on how to use the SDK to control the drone have a look at the
-[motion examples](../movement/from-the-CLI/).
+[motion examples](movement/from-the-CLI.md).
 
 Remember to install the example dependencies before running the examples.
 
