@@ -97,7 +97,9 @@ class Gripper(Peripheral):
         if value < -1.0 or value > 1.0:
             raise ValueError("Grip velocity must be between -1.0 and 1.0.")
         self._grip_velocity = value
-        self.parent_drone._ctrl_client.set_gripper_velocities(value, self._rotation_velocity)
+        self.parent_drone._ctrl_client.set_gripper_velocities(
+            self._grip_velocity, self._rotation_velocity
+        )
 
     @property
     def rotation_velocity(self) -> float:
@@ -123,7 +125,9 @@ class Gripper(Peripheral):
         if value < -1.0 or value > 1.0:
             raise ValueError("Rotation velocity must be between -1.0 and 1.0.")
         self._rotation_velocity = value
-        self.parent_drone._ctrl_client.set_gripper_velocities(self._grip_velocity, value)
+        self.parent_drone._ctrl_client.set_gripper_velocities(
+            self._grip_velocity, self._rotation_velocity
+        )
 
 
 def device_to_peripheral(
