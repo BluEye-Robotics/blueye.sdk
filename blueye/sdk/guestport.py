@@ -70,8 +70,8 @@ class Gripper(Peripheral):
         * device (GuestPortDevice): The guest port device that this Gripper is attached to.
         """
         Peripheral.__init__(self, parent_drone, port_number, device)
-        self.grip_velocity = 0
-        self.rotation_velocity = 0
+        self._grip_velocity = 0
+        self._rotation_velocity = 0
 
     @property
     def grip_velocity(self) -> float:
@@ -90,14 +90,14 @@ class Gripper(Peripheral):
 
         * grip_velocity (float): The current grip velocity of the Gripper.
         """
-        return self.grip_velocity
+        return self._grip_velocity
 
     @grip_velocity.setter
     def grip_velocity(self, value: float):
         if value < -1.0 or value > 1.0:
             raise ValueError("Grip velocity must be between -1.0 and 1.0.")
-        self.grip_velocity = value
-        self.parent_drone._ctrl_client.set_gripper_velocities(value, self.rotation_velocity)
+        self._grip_velocity = value
+        self.parent_drone._ctrl_client.set_gripper_velocities(value, self._rotation_velocity)
 
     @property
     def rotation_velocity(self) -> float:
@@ -116,14 +116,14 @@ class Gripper(Peripheral):
 
         * rotation_velocity (float): The current rotation velocity of the Gripper.
         """
-        return self.rotation_velocity
+        return self._rotation_velocity
 
     @rotation_velocity.setter
     def rotation_velocity(self, value: float):
         if value < -1.0 or value > 1.0:
             raise ValueError("Rotation velocity must be between -1.0 and 1.0.")
-        self.rotation_velocity = value
-        self.parent_drone._ctrl_client.set_gripper_velocities(self.grip_velocity, value)
+        self._rotation_velocity = value
+        self.parent_drone._ctrl_client.set_gripper_velocities(self._grip_velocity, value)
 
 
 def device_to_peripheral(
