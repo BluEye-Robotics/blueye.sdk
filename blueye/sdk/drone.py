@@ -1,60 +1,86 @@
 #!/usr/bin/env python3
-from __future__ import annotations
-
-import logging
+import socket
+import threading
 import time
-from datetime import datetime
+import warnings
 from json import JSONDecodeError
-from typing import Callable, Dict, List, Optional
 
-import blueye.protocol
-import proto
 import requests
+from blueye.protocol import TcpClient, UdpClient
+from blueye.protocol.exceptions import (
+    MismatchedReply,
+    NoConnectionToDrone,
+    ResponseTimeout,
+)
 from packaging import version
 
-from .battery import Battery
 from .camera import Camera
-from .connection import CtrlClient, ReqRepClient, TelemetryClient, WatchdogPublisher
 from .constants import WaterDensities
-from .guestport import GuestPortCamera, GuestPortLight, Peripheral, device_to_peripheral
-from .logs import LegacyLogs, Logs
+from .logs import Logs
 from .motion import Motion
 
-logger = logging.getLogger(__name__)
 
+class _DroneStateWatcher(threading.Thread):
+    """Subscribes to UDP messages from the drone and stores the latest data"""
 
-class Config:
-    def __init__(self, parent_drone: "Drone"):
-        self._parent_drone = parent_drone
-        self._water_density = WaterDensities.salty
+    def __init__(self, ip: str = "192.168.1.101", udp_timeout: float = 3):
+        threading.Thread.__init__(self)
+        self._ip = ip
+        self._udp_timeout = udp_timeout
+        self._general_state = None
+        self._general_state_received = threading.Event()
+        self._calibration_state = None
+        self._calibration_state_received = threading.Event()
+        self._udp_client = UdpClient(drone_ip=self._ip)
+        self._exit_flag = threading.Event()
+        self.daemon = True
 
     @property
-    def water_density(self):
-        """Get or set the current water density for increased pressure sensor accuracy
+    def general_state(self) -> dict:
+        if not self._general_state_received.wait(timeout=self._udp_timeout):
+            raise TimeoutError("No state message received from drone")
+        return self._general_state
 
-        Older software versions will assume a water density of 1.025 kilograms per liter.
+    @property
+    def calibration_state(self) -> dict:
+        if not self._calibration_state_received.wait(timeout=self._udp_timeout):
+            raise TimeoutError("No state message received from drone")
+        return self._calibration_state
 
-        The WaterDensities class contains typical densities for salty-, brackish-, and fresh water
-        (these are the same values that the Blueye app uses).
-        """
-        return self._water_density
+    def run(self):
+        while not self._exit_flag.is_set():
+            data_packet = self._udp_client.get_data_dict()
+            if data_packet["command_type"] == 1:
+                self._general_state = data_packet
+                self._general_state_received.set()
+            elif data_packet["command_type"] == 2:
+                self._calibration_state = data_packet
+                self._calibration_state_received.set()
 
-    @water_density.setter
-    def water_density(self, density: float):
-        self._water_density = density
-        self._parent_drone._ctrl_client.set_water_density(density)
-
-    def set_drone_time(self, time: int):
-        """Set the system for the drone
-
-        This method is used to set the system time for the drone. The argument `time` is expected to
-        be a Unix timestamp (ie. the number of seconds since the epoch).
-        """
-        self._parent_drone._req_rep_client.sync_time(time)
+    def stop(self):
+        self._exit_flag.set()
 
 
-class _NoConnectionClient:
-    """A client that raises a ConnectionError if you use any of its functions"""
+class SlaveModeWarning(UserWarning):
+    """Raised when trying to perform action not possible in slave mode"""
+
+
+class _SlaveTcpClient:
+    """A dummy TCP client that warns you if you use any of its functions"""
+
+    def __getattr__(self, name):
+        def method(*args):
+            warnings.warn(
+                f"Unable to call {name}{args} with client in slave mode",
+                SlaveModeWarning,
+                stacklevel=2,
+            )
+
+        return method
+
+
+class _NoConnectionTcpClient:
+    """A TCP client that raises a ConnectionError if you use any of its functions"""
 
     def __getattr__(self, name):
         def method(*args, **kwargs):
@@ -66,139 +92,71 @@ class _NoConnectionClient:
         return method
 
 
-class Telemetry:
+class Config:
     def __init__(self, parent_drone: "Drone"):
         self._parent_drone = parent_drone
+        self._water_density = WaterDensities.salty
 
-    def set_msg_publish_frequency(self, msg: proto.message.Message, frequency: float):
-        """Set the publishing frequency of a specific telemetry message
+    @property
+    def water_density(self):
+        """Get or set the current water density for increased pressure sensor accuracy
 
-        Raises a RuntimeError if the drone fails to set the frequency. Possible causes could be a
-        frequency outside the valid range, or an incorrect message type.
+        Setting the water density is only supported on drones with software version 1.5 or higher.
+        Older software versions will assume a water density of 1025 grams per liter.
 
-        *Arguments*:
-
-        * msg (proto.message.Message): The message to set the frequency of. Needs to be one of the
-                                       messages in blueye.protocol that end in Tel, eg.
-                                       blueye.protocol.DepthTel
-        * frequency (float): The frequency in Hz. Valid range is (0 .. 100).
-
+        The WaterDensities class contains typical densities for salty-, brackish-, and fresh water
+        (these are the same values that the Blueye app uses).
         """
-        resp = self._parent_drone._req_rep_client.set_telemetry_msg_publish_frequency(
-            msg, frequency
-        )
-        if not resp.success:
-            raise RuntimeError("Could not set telemetry message frequency")
+        return self._water_density
 
-    def add_msg_callback(
-        self,
-        msg_filter: List[proto.message.Message],
-        callback: Callable[[str, proto.message.Message], None],
-        raw: bool = False,
-        **kwargs,
-    ) -> str:
-        """Register a telemetry message callback
+    @water_density.setter
+    def water_density(self, density: int):
+        self._parent_drone._verify_required_blunux_version("1.5")
+        self._water_density = density
+        self._parent_drone._tcp_client.set_water_density(density)
 
-        The callback is called each time a message of the type is received
+    def set_drone_time(self, time: int):
+        """Set the system for the drone
 
-        *Arguments*:
-
-        * msg_filter: A list of message types to register the callback for.
-                      Eg. `[blueye.protocol.DepthTel, blueye.protocol.Imu1Tel]`. If the list is
-                      empty the callback will be registered for all message types
-        * callback: The callback function. It should be minimal and return as fast as possible to
-                    not block the telemetry communication. It is called with two arguments, the
-                    message type name and the message object
-        * raw: Pass the raw data instead of the deserialized message to the callback function
-        * kwargs: Additional keyword arguments to pass to the callback function
-
-        *Returns*:
-
-        * uuid: Callback id. Can be used to remove callback in the future
+        This method is used to set the system time for the drone. The argument `time` is expected to
+        be a Unix timestamp (ie. the number of seconds since the epoch).
         """
-        uuid_hex = self._parent_drone._telemetry_watcher.add_callback(
-            msg_filter, callback, raw, **kwargs
-        )
-        return uuid_hex
-
-    def remove_msg_callback(self, callback_id: str) -> Optional[str]:
-        """Remove a telemetry message callback
-
-        *Arguments*:
-
-        * callback_id: The callback id
-
-        """
-        self._parent_drone._telemetry_watcher.remove_callback(callback_id)
-
-    def get(
-        self, msg_type: proto.message.Message, deserialize=True
-    ) -> Optional[proto.message.Message | bytes]:
-        """Get the latest telemetry message of the specified type
-
-        *Arguments*:
-
-
-        * msg_type: The message type to get. Eg. blueye.protocol.DepthTel
-        * deserialize: If True, the message will be deserialized before being returned. If False,
-                       the raw bytes will be returned.
-
-        *Returns*:
-
-        * The latest message of the specified type, or None if no message has been received yet
-
-        """
-        try:
-            msg = self._parent_drone._telemetry_watcher.get(msg_type)
-        except KeyError:
-            if version.parse(self._parent_drone.software_version_short) >= version.parse("3.3"):
-                msg = self._parent_drone._req_rep_client.get_telemetry_msg(msg_type).payload.value
-                if msg == b"":
-                    return None
-            else:
-                return None
-        if deserialize:
-            return msg_type.deserialize(msg)
-        else:
-            return msg
+        self._parent_drone._tcp_client.set_system_time(time)
 
 
 class Drone:
     """A class providing an interface to a Blueye drone's functions
 
-    Automatically connects to the drone using the default ip when instantiated, this behaviour can
-    be disabled by setting `auto_connect=False`.
+    Automatically connects to the drone using the default ip and port when instantiated, this
+    behaviour can be disabled by setting `autoConnect=False`.
+
+    The drone only supports one client controlling it at a time, but if you pass
+    `slaveModeEnabled=True` you will still be able to receive data from the drone.
     """
 
     def __init__(
         self,
         ip="192.168.1.101",
-        auto_connect=True,
-        timeout=3,
-        disconnect_other_clients=False,
+        tcpPort=2011,
+        autoConnect=True,
+        slaveModeEnabled=False,
+        udpTimeout=3,
     ):
         self._ip = ip
-        self.camera = Camera(self, is_guestport_camera=False)
+        self._port = tcpPort
+        self._slave_mode_enabled = slaveModeEnabled
+        if slaveModeEnabled:
+            self._tcp_client = _SlaveTcpClient()
+        else:
+            self._tcp_client = _NoConnectionTcpClient()
+        self._state_watcher = _DroneStateWatcher(ip=self._ip, udp_timeout=udpTimeout)
+        self.camera = Camera(self)
         self.motion = Motion(self)
         self.logs = Logs(self)
-        self.legacy_logs = LegacyLogs(self)
         self.config = Config(self)
-        self.battery = Battery(self)
-        self.telemetry = Telemetry(self)
-        self.connected = False
-        self.client_id: int = None
-        self.in_control: bool = False
-        self._watchdog_publisher = _NoConnectionClient()
-        self._telemetry_watcher = _NoConnectionClient()
-        self._req_rep_client = _NoConnectionClient()
-        self._ctrl_client = _NoConnectionClient()
 
-        self.peripherals: Optional[List[Peripheral]] = None
-        """This list holds the peripherals connected to the drone. If it is `None`, then no
-        Guestport telemetry message has been recieved yet."""
-
-        if auto_connect is True:
-            self.connect(timeout=timeout, disconnect_other_clients=disconnect_other_clients)
+        if autoConnect is True:
+            self.connect(timeout=3)
 
     def _verify_required_blunux_version(self, requirement: str):
         """Verify that Blunux version is higher than requirement
@@ -208,25 +166,36 @@ class Drone:
         Raises a RuntimeError if the Blunux version of the connected drone does not match or exceed
         the requirement.
         """
+
+        if not self.connection_established:
+            raise ConnectionError(
+                "The connection to the drone is not established, try calling the connect method "
+                "before retrying"
+            )
         if version.parse(self.software_version_short) < version.parse(requirement):
             raise RuntimeError(
                 f"Blunux version of connected drone is {self.software_version_short}. Version "
                 f"{requirement} or higher is required."
             )
 
-    def _update_drone_info(self, timeout: float = 3):
+    @property
+    def connection_established(self):
+        if isinstance(self._tcp_client, _NoConnectionTcpClient):
+            return False
+        else:
+            return True
+
+    def _update_drone_info(self):
         """Request and store information about the connected drone"""
         try:
-            response = requests.get(
-                f"http://{self._ip}/diagnostics/drone_info", timeout=timeout
-            ).json()
+            response = requests.get(f"http://{self._ip}/diagnostics/drone_info", timeout=3).json()
         except (
             requests.ConnectTimeout,
             requests.ReadTimeout,
             requests.ConnectionError,
             JSONDecodeError,
-        ) as e:
-            raise ConnectionError("Could not establish connection with drone") from e
+        ):
+            raise ConnectionError("Could not establish connection with drone")
         try:
             self.features = list(filter(None, response["features"].split(",")))
         except KeyError:
@@ -238,234 +207,190 @@ class Drone:
         self.uuid = response["hardware_id"]
 
     @staticmethod
-    def _drone_info_callback(msg_type: str, msg: blueye.protocol.DroneInfoTel, drone: Drone):
-        # Check if the GuestPortInfo has been initialized
-        if msg.drone_info.gp._pb.ByteSize() != 0:
-            drone._create_peripherals_from_drone_info(msg.drone_info.gp)
+    def _wait_for_udp_communication(timeout: float, ip: str = "192.168.1.101"):
+        """Simple helper for waiting for drone to come online
 
-        # Remove the callback after the first message has been received
-        drone.telemetry.remove_msg_callback(drone._drone_info_cb_id)
-
-    def _create_peripherals_from_drone_info(self, gp_info: blueye.protocol.GuestPortInfo):
-        self.peripherals = []
-        for port in (gp_info.gp1, gp_info.gp2, gp_info.gp3):
-            for device in port.device_list.devices:
-                peripheral = device_to_peripheral(self, port.guest_port_number, device)
-                self.peripherals.append(peripheral)
-                if isinstance(peripheral, GuestPortLight):
-                    self.external_light = peripheral
-                elif isinstance(peripheral, GuestPortCamera):
-                    self.external_camera = peripheral
-
-    def connect(
-        self,
-        client_info: blueye.protocol.ClientInfo = None,
-        timeout: float = 4,
-        disconnect_other_clients: bool = False,
-    ):
-        """Establish a connection to the drone
-
-        Spawns of several threads for receiving telemetry, sending control messages and publishing
-        watchdog messages.
-
-        When a watchdog message is receieved by the drone the thrusters are armed, so to stop the
-        drone from moving unexpectedly when connecting all thruster set points are set to zero when
-        connecting.
-
-        ** Arguments **
-        - *client_info*: Information about the client connecting, if None the SDK will attempt to
-                         read it from the environment
-        - *timeout*: Seconds to wait for connection. The first connection on boot can be a little
-                     slower than the following ones
-        - *disconnect_other_clients*: If True, disconnect clients until drone reports that we are in
-                                      control
-
-        ** Raises **
-        - *ConnectionError*: If the connection attempt fails
-        - *RuntimeError*: If the Blunux version of the connected drone is too old
+        Raises ConnectionError if no connection is established in the specified timeout.
         """
-        logger.info(f"Attempting to connect to drone at {self._ip}")
-        self._update_drone_info(timeout=timeout)
-        self._verify_required_blunux_version("3.2")
+        temp_udp_client = UdpClient(drone_ip=ip)
+        temp_udp_client._sock.settimeout(timeout)
+        try:
+            temp_udp_client.get_data_dict()
+        except socket.timeout as e:
+            raise ConnectionError("Could not establish connection with drone") from e
 
-        self._telemetry_watcher = TelemetryClient(self)
-        self._ctrl_client = CtrlClient(self)
-        self._watchdog_publisher = WatchdogPublisher(self)
-        self._req_rep_client = ReqRepClient(self)
+    def _connect_to_tcp_socket(self):
+        try:
+            self._tcp_client.connect()
+        except NoConnectionToDrone:
+            raise ConnectionError("Could not establish connection with drone")
 
-        self._telemetry_watcher.start()
-        self._req_rep_client.start()
-        self._ctrl_client.start()
-        self._watchdog_publisher.start()
+    def _start_watchdog(self):
+        """Starts the thread for petting the watchdog
 
-        self.ping()
-        connect_resp = self._req_rep_client.connect_client(client_info=client_info)
-        logger.info(f"Connection successful, client id: {connect_resp.client_id}")
-        logger.info(f"Client id in control: {connect_resp.client_id_in_control}")
-        logger.info(f"There are {len(connect_resp.connected_clients)-1} other clients connected")
-        self.client_id = connect_resp.client_id
-        self.in_control = connect_resp.client_id == connect_resp.client_id_in_control
-        self.connected = True
-        if disconnect_other_clients and not self.in_control:
-            self.take_control()
-        self._drone_info_cb_id = self.telemetry.add_msg_callback(
-            [blueye.protocol.DroneInfoTel],
-            Drone._drone_info_callback,
-            False,
-            drone=self,
-        )
+        _connect_to_tcp_socket() must be called first"""
+        try:
+            self._tcp_client.start()
+        except RuntimeError:
+            # Ignore multiple starts
+            pass
 
-        if self.in_control:
+    def _clean_up_tcp_client(self):
+        """Stops the watchdog thread and closes the TCP socket"""
+        self._tcp_client.stop()
+        self._tcp_client._sock.close()
+        self._tcp_client = _NoConnectionTcpClient()
+
+    def _start_state_watcher_thread(self):
+        try:
+            self._state_watcher.start()
+        except RuntimeError:
+            # Ignore multiple starts
+            pass
+
+    def _create_temporary_tcp_client(self):
+        temp_tcp_client = TcpClient()
+        temp_tcp_client.connect()
+        temp_tcp_client.stop()
+        temp_tcp_client._sock.close()
+
+    def connect(self, timeout: float = None):
+        """Start receiving telemetry info from the drone, and publishing watchdog messages
+
+        When watchdog message are published the thrusters are armed, to stop the drone from moving
+        unexpectedly when connecting all thruster set points are set to zero when connecting.
+
+        - *timeout* (float): Seconds to wait for connection
+        """
+
+        self._update_drone_info()
+        if version.parse(self.software_version_short) >= version.parse("3.0"):
+            # Blunux 3.0 requires a TCP message before enabling UDP communication
+            self._create_temporary_tcp_client()
+
+        self._wait_for_udp_communication(timeout, self._ip)
+        self._start_state_watcher_thread()
+        if self._slave_mode_enabled:
+            # No need to touch the TCP stuff if we're in slave mode so we return early
+            return
+
+        if not self.connection_established:
+            self._tcp_client = TcpClient(ip=self._ip, port=self._port, autoConnect=False)
+            self._connect_to_tcp_socket()
+
+        try:
             # The drone runs from a read-only filesystem, and as such does not keep any state,
             # therefore when we connect to it we should send the current time
-            current_time = int(time.time())
-            time_formatted = datetime.fromtimestamp(current_time).strftime("%d. %b %Y %H:%M")
-            logger.debug(f"Setting current time to {current_time} ({time_formatted})")
-            self.config.set_drone_time(current_time)
-            logger.debug(f"Disabling thrusters")
+            self.config.set_drone_time(int(time.time()))
+
+            self.ping()
             self.motion.send_thruster_setpoint(0, 0, 0, 0)
 
+            self._start_watchdog()
+        except ResponseTimeout as e:
+            self._clean_up_tcp_client()
+            raise ConnectionError(
+                f"Found drone at {self._ip} but was unable to take control of it. "
+                "Is there another client connected?"
+            ) from e
+        except MismatchedReply:
+            # The connection is out of sync, likely due to a previous connection being
+            # disconnected mid-transfer. Re-instantiating the connection should solve the issue
+            self._clean_up_tcp_client()
+            self.connect(timeout)
+        except BrokenPipeError:
+            # Have lost connection to drone, need to reestablish TCP client
+            self._clean_up_tcp_client()
+            self.connect(timeout)
+
     def disconnect(self):
-        """Disconnects the connection, allowing another client to take control of the drone"""
-        try:
-            self._req_rep_client.disconnect_client(self.client_id)
-        except blueye.protocol.exceptions.ResponseTimeout:
-            # If there's no response the connection is likely already closed, so we can just
-            # continue to stop threads and disconnect
-            pass
-        self._watchdog_publisher.stop()
-        self._telemetry_watcher.stop()
-        self._req_rep_client.stop()
-        self._ctrl_client.stop()
-
-        self._watchdog_publisher = _NoConnectionClient()
-        self._telemetry_watcher = _NoConnectionClient()
-        self._req_rep_client = _NoConnectionClient()
-        self._ctrl_client = _NoConnectionClient()
-
-        self.connected = False
+        """Disconnects the TCP connection, allowing another client to take control of the drone"""
+        if self.connection_established and not self._slave_mode_enabled:
+            self._clean_up_tcp_client()
 
     @property
-    def connected_clients(self) -> Optional[List[blueye.protocol.ConnectedClient]]:
-        """Get a list of connected clients"""
-        clients_tel = self.telemetry.get(blueye.protocol.ConnectedClientsTel)
-        if clients_tel is None:
-            return None
-        else:
-            return list(clients_tel.connected_clients)
-
-    @property
-    def client_in_control(self) -> Optional[int]:
-        """Get the client id of the client in control of the drone"""
-        clients_tel = self.telemetry.get(blueye.protocol.ConnectedClientsTel)
-        if clients_tel is None:
-            return None
-        else:
-            return clients_tel.client_id_in_control
-
-    def take_control(self, timeout=1):
-        """Take control of the drone, disconnecting other clients
-
-        Will disconnect other clients until the client is in control of the drone.
-        Raises a RuntimeError if the client could not take control of the drone in the given time.
-        """
-        start_time = time.time()
-        client_in_control = self.client_in_control
-        while self.client_id != client_in_control:
-            if time.time() - start_time > timeout:
-                raise RuntimeError("Could not take control of the drone in the given time")
-            resp = self._req_rep_client.disconnect_client(client_in_control)
-            client_in_control = resp.client_id_in_control
-        self.in_control = True
-
-    @property
-    def lights(self) -> Optional[float]:
-        """Get or set the intensity of the drone lights
+    def lights(self) -> int:
+        """Get or set the brightness of the bottom canister lights
 
         *Arguments*:
 
-        * brightness (float): Set the intensity of the drone light (0..1)
+        * brightness (int): Set the brightness of the bottom canister LED's in the range <0, 255>
 
         *Returns*:
 
-        * brightness (float): The intensity of the drone light (0..1)
+        * brightness (int): The brightness of the bottom canister LED's in the range <0, 255>
         """
-        return self.telemetry.get(blueye.protocol.LightsTel).lights.value
+        state = self._state_watcher.general_state
+        return state["lights_upper"]
 
     @lights.setter
-    def lights(self, brightness: float):
-        if not 0 <= brightness <= 1:
-            raise ValueError("Error occured while trying to set lights to: " f"{brightness}")
-        self._ctrl_client.set_lights(brightness)
+    def lights(self, brightness: int):
+        try:
+            self._tcp_client.set_lights(brightness, 0)
+        except ValueError as e:
+            raise ValueError("Error occured while trying to set lights to: " f"{brightness}") from e
 
     @property
-    def depth(self) -> Optional[float]:
-        """Get the current depth in meters
+    def depth(self) -> int:
+        """Get the current depth in millimeters
 
         *Returns*:
 
-        * depth (float): The depth in meters of water column.
+        * depth (int): The depth in millimeters of water column.
         """
-        depth_tel = self.telemetry.get(blueye.protocol.DepthTel)
-        if depth_tel is None:
-            return None
-        else:
-            return depth_tel.depth.value
+        return self._state_watcher.general_state["depth"]
 
     @property
-    def pose(self) -> Optional[dict]:
+    def pose(self) -> dict:
         """Get the current orientation of the drone
 
         *Returns*:
 
         * pose (dict): Dictionary with roll, pitch, and yaw in degrees, from 0 to 359.
         """
-        attitude_tel = self.telemetry.get(blueye.protocol.AttitudeTel)
-        if attitude_tel is None:
-            return None
-        attitude = attitude_tel.attitude
         pose = {
-            "roll": (attitude.roll + 360) % 360,
-            "pitch": (attitude.pitch + 360) % 360,
-            "yaw": (attitude.yaw + 360) % 360,
+            "roll": (self._state_watcher.general_state["roll"] + 360) % 360,
+            "pitch": (self._state_watcher.general_state["pitch"] + 360) % 360,
+            "yaw": (self._state_watcher.general_state["yaw"] + 360) % 360,
         }
         return pose
 
     @property
-    def error_flags(self) -> Optional[Dict[str, bool]]:
+    def battery_state_of_charge(self) -> int:
+        """Get the battery state of charge
+
+        *Returns*:
+
+        * state_of_charge (int): Current state of charge of the drone battery in percent, from 0 to 100
+        """
+        return self._state_watcher.general_state["battery_state_of_charge_rel"]
+
+    @property
+    def error_flags(self) -> int:
         """Get the error flags
 
         *Returns*:
 
-        * error_flags (dict): The error flags as bools in a dictionary
+        * error_flags (int): The error flags as int
         """
-        error_flags_tel = self.telemetry.get(blueye.protocol.ErrorFlagsTel)
-        if error_flags_tel is None:
-            return None
-        error_flags_msg = error_flags_tel.error_flags
-        error_flags = {}
-        possible_flags = [attr for attr in dir(error_flags_msg) if not attr.startswith("__")]
-        for flag in possible_flags:
-            error_flags[flag] = getattr(error_flags_msg, flag)
-        return error_flags
+        return self._state_watcher.general_state["error_flags"]
 
     @property
-    def active_video_streams(self) -> Optional[Dict[str, int]]:
+    def active_video_streams(self) -> int:
         """Get the number of currently active connections to the video stream
 
         Every client connected to the RTSP stream (does not matter if it's directly from GStreamer,
         or from the Blueye app) counts as one connection.
 
+        Requires Blunux version 1.5.33 or newer.
         """
-        n_streamers_msg_tel = self.telemetry.get(blueye.protocol.NStreamersTel)
-        if n_streamers_msg_tel is None:
-            return None
-        n_streamers_msg = n_streamers_msg_tel.n_streamers
-        return {"main": n_streamers_msg.main, "guestport": n_streamers_msg.guestport}
 
-    def ping(self, timeout: float = 1.0):
-        """Ping drone
+        self._verify_required_blunux_version("1.5.33")
+        SPECTATORS_MASK = 0x000000FF00000000
+        SPECTATORS_OFFSET = 32
+        debug_flags = self._state_watcher._general_state["debug_flags"]
+        return (debug_flags & SPECTATORS_MASK) >> SPECTATORS_OFFSET
 
-        Raises a ResponseTimeout exception if the drone does not respond within the timeout period.
-        """
-        self._req_rep_client.ping(timeout)
+    def ping(self):
+        """Ping drone, an exception is thrown by TcpClient if drone does not answer"""
+        self._tcp_client.ping()

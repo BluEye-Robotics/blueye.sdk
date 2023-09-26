@@ -37,20 +37,20 @@ from blueye.sdk import Drone, WaterDensities
 myDrone = Drone()
 
 # Salt water
-myDrone.config.water_density = WaterDensities.salty  # 1.025 kg/L
+myDrone.config.water_density = WaterDensities.salty  # 1025 g/L
 
 # Brackish water
-myDrone.config.water_density = WaterDensities.brackish  # 1.011 kg/L
+myDrone.config.water_density = WaterDensities.brackish  # 1011 g/L
 
 # Fresh water
-myDrone.config.water_density = WaterDensities.fresh  # 0.997 kg/L
+myDrone.config.water_density = WaterDensities.fresh  # 997 g/L
 
 # Can also be set to arbitrary values
-myDrone.config.water_density = 1.234
+myDrone.config.water_density = 1234
 ```
 
 ### Configure camera parameters
-There are 6 different camera parameters that can be set. For a full list of camera parameters and their possible values see the [`camera reference`](reference/blueye/sdk/camera.md) section. For example you could set the bit rate like this
+There are 6 different camera parameters that can be set. For a full list of camera parameters and their possible values see the [`camera reference`](../../reference/blueye/sdk/camera) section. For example you could set the bit rate like this
 
 ```python
 from blueye.sdk import Drone
@@ -59,5 +59,3 @@ myDrone = Drone()
 
 myDrone.camera.bitrate = 8_000_000 # 8 Mbit bitrate
 ```
-
-Due to a bug in the camera streaming on the drone a camera stream has to have been opened at least once before camera parameters can be set on the drone, see issue [#67](https://github.com/BluEye-Robotics/blueye.sdk/issues/67). For instructions on how to start a video stream see, the [`Quick Start Guide`](quick_start.md#watching-the-video-stream).
