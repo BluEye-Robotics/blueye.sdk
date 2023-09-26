@@ -617,6 +617,25 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../../peripherals/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Peripherals
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../../migrating-to-v2/" class="md-nav__link">
         
   
@@ -685,10 +704,10 @@
         
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_12" checked>
         
           
-          <label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -699,8 +718,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_11">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_12_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_12">
             <span class="md-nav__icon md-icon"></span>
             Reference
           </label>
@@ -893,11 +912,11 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#guestportcamera" class="md-nav__link">
-    GuestPortCamera
+  <a href="#gripper" class="md-nav__link">
+    Gripper
   </a>
   
-    <nav class="md-nav" aria-label="GuestPortCamera">
+    <nav class="md-nav" aria-label="Gripper">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -909,6 +928,33 @@
         
           <li class="md-nav__item">
   <a href="#instance-variables" class="md-nav__link">
+    Instance variables
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#guestportcamera" class="md-nav__link">
+    GuestPortCamera
+  </a>
+  
+    <nav class="md-nav" aria-label="GuestPortCamera">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_1" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instance-variables_1" class="md-nav__link">
     Instance variables
   </a>
   
@@ -942,7 +988,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#ancestors-in-mro_1" class="md-nav__link">
+  <a href="#ancestors-in-mro_2" class="md-nav__link">
     Ancestors (in MRO)
   </a>
   
@@ -1137,11 +1183,11 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#guestportcamera" class="md-nav__link">
-    GuestPortCamera
+  <a href="#gripper" class="md-nav__link">
+    Gripper
   </a>
   
-    <nav class="md-nav" aria-label="GuestPortCamera">
+    <nav class="md-nav" aria-label="Gripper">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1153,6 +1199,33 @@
         
           <li class="md-nav__item">
   <a href="#instance-variables" class="md-nav__link">
+    Instance variables
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#guestportcamera" class="md-nav__link">
+    GuestPortCamera
+  </a>
+  
+    <nav class="md-nav" aria-label="GuestPortCamera">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_1" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instance-variables_1" class="md-nav__link">
     Instance variables
   </a>
   
@@ -1186,7 +1259,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#ancestors-in-mro_1" class="md-nav__link">
+  <a href="#ancestors-in-mro_2" class="md-nav__link">
     Ancestors (in MRO)
   </a>
   
@@ -1352,6 +1425,114 @@ class GuestPortLight(Peripheral):
 
         return self.parent_drone.telemetry.get(bp.GuestPortLightsTel).lights.value
 
+class Gripper(Peripheral):
+
+    def __init__(
+
+        self, parent_drone: "Drone", port_number: bp.GuestPortNumber, device: bp.GuestPortDevice
+
+    ):
+
+        """
+
+        Initializes a new Gripper object.
+
+        *Arguments*:
+
+        * parent_drone (Drone): The parent Drone object that this Gripper is attached to.
+
+        * port_number (GuestPortNumber): The guest port number that this Gripper is attached to.
+
+        * device (GuestPortDevice): The guest port device that this Gripper is attached to.
+
+        """
+
+        Peripheral.__init__(self, parent_drone, port_number, device)
+
+        self._grip_velocity = 0
+
+        self._rotation_velocity = 0
+
+    @property
+
+    def grip_velocity(self) -&gt; float:
+
+        """
+
+        Gets or sets the current grip velocity of the Gripper.
+
+        When used as a getter, returns the current grip velocity of the Gripper.
+
+        When used as a setter, sets the grip velocity of the Gripper to the specified value.
+
+        *Arguments*:
+
+        * value (float): The new grip velocity to set. Must be a float between -1.0 and 1.0.
+
+        *Returns*:
+
+        * grip_velocity (float): The current grip velocity of the Gripper.
+
+        """
+
+        return self._grip_velocity
+
+    @grip_velocity.setter
+
+    def grip_velocity(self, value: float):
+
+        if value &lt; -1.0 or value &gt; 1.0:
+
+            raise ValueError("Grip velocity must be between -1.0 and 1.0.")
+
+        self._grip_velocity = value
+
+        self.parent_drone._ctrl_client.set_gripper_velocities(
+
+            self._grip_velocity, self._rotation_velocity
+
+        )
+
+    @property
+
+    def rotation_velocity(self) -&gt; float:
+
+        """
+
+        Gets or sets the current rotation velocity of the Gripper.
+
+        When used as a getter, returns the current rotation velocity of the Gripper.
+
+        When used as a setter, sets the rotation velocity of the Gripper to the specified value.
+
+        *Arguments*:
+
+        * value (float): The new rotation velocity to set. Must be a float between -1.0 and 1.0.
+
+        *Returns*:
+
+        * rotation_velocity (float): The current rotation velocity of the Gripper.
+
+        """
+
+        return self._rotation_velocity
+
+    @rotation_velocity.setter
+
+    def rotation_velocity(self, value: float):
+
+        if value &lt; -1.0 or value &gt; 1.0:
+
+            raise ValueError("Rotation velocity must be between -1.0 and 1.0.")
+
+        self._rotation_velocity = value
+
+        self.parent_drone._ctrl_client.set_gripper_velocities(
+
+            self._grip_velocity, self._rotation_velocity
+
+        )
+
 def device_to_peripheral(
 
     parent_drone: "Drone", port_number: bp.GuestPortNumber, device: bp.GuestPortDevice
@@ -1375,6 +1556,20 @@ def device_to_peripheral(
     ):
 
         peripheral = GuestPortLight(parent_drone, port_number, device)
+
+    elif (
+
+        device.device_id == bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUE_ROBOTICS_NEWTON
+
+        or device.device_id
+
+        == bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUE_ROBOTICS_DETACHABLE_NEWTON
+
+        or device.device_id == bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEPRINT_LAB_REACH_ALPHA
+
+    ):
+
+        peripheral = Gripper(parent_drone, port_number, device)
 
     else:
 
@@ -1422,6 +1617,20 @@ def device_to_peripheral(
 
         peripheral = GuestPortLight(parent_drone, port_number, device)
 
+    elif (
+
+        device.device_id == bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUE_ROBOTICS_NEWTON
+
+        or device.device_id
+
+        == bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUE_ROBOTICS_DETACHABLE_NEWTON
+
+        or device.device_id == bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEPRINT_LAB_REACH_ALPHA
+
+    ):
+
+        peripheral = Gripper(parent_drone, port_number, device)
+
     else:
 
         peripheral = Peripheral(parent_drone, port_number, device)
@@ -1430,6 +1639,156 @@ def device_to_peripheral(
 </code></pre>
 </details>
 <h2 id="classes">Classes</h2>
+<h3 id="gripper">Gripper</h3>
+<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Gripper</span><span class="p">(</span>
+    <span class="n">parent_drone</span><span class="p">:</span> <span class="s1">&#39;Drone&#39;</span><span class="p">,</span>
+    <span class="n">port_number</span><span class="p">:</span> <span class="n">blueye</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">message_formats</span><span class="o">.</span><span class="n">GuestPortNumber</span><span class="p">,</span>
+    <span class="n">device</span><span class="p">:</span> <span class="n">blueye</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">message_formats</span><span class="o">.</span><span class="n">GuestPortDevice</span>
+<span class="p">)</span>
+</code></pre></div>
+<details class="example">
+<summary>View Source</summary>
+<pre><code>class Gripper(Peripheral):
+
+    def __init__(
+
+        self, parent_drone: "Drone", port_number: bp.GuestPortNumber, device: bp.GuestPortDevice
+
+    ):
+
+        """
+
+        Initializes a new Gripper object.
+
+        *Arguments*:
+
+        * parent_drone (Drone): The parent Drone object that this Gripper is attached to.
+
+        * port_number (GuestPortNumber): The guest port number that this Gripper is attached to.
+
+        * device (GuestPortDevice): The guest port device that this Gripper is attached to.
+
+        """
+
+        Peripheral.__init__(self, parent_drone, port_number, device)
+
+        self._grip_velocity = 0
+
+        self._rotation_velocity = 0
+
+    @property
+
+    def grip_velocity(self) -&gt; float:
+
+        """
+
+        Gets or sets the current grip velocity of the Gripper.
+
+        When used as a getter, returns the current grip velocity of the Gripper.
+
+        When used as a setter, sets the grip velocity of the Gripper to the specified value.
+
+        *Arguments*:
+
+        * value (float): The new grip velocity to set. Must be a float between -1.0 and 1.0.
+
+        *Returns*:
+
+        * grip_velocity (float): The current grip velocity of the Gripper.
+
+        """
+
+        return self._grip_velocity
+
+    @grip_velocity.setter
+
+    def grip_velocity(self, value: float):
+
+        if value &lt; -1.0 or value &gt; 1.0:
+
+            raise ValueError("Grip velocity must be between -1.0 and 1.0.")
+
+        self._grip_velocity = value
+
+        self.parent_drone._ctrl_client.set_gripper_velocities(
+
+            self._grip_velocity, self._rotation_velocity
+
+        )
+
+    @property
+
+    def rotation_velocity(self) -&gt; float:
+
+        """
+
+        Gets or sets the current rotation velocity of the Gripper.
+
+        When used as a getter, returns the current rotation velocity of the Gripper.
+
+        When used as a setter, sets the rotation velocity of the Gripper to the specified value.
+
+        *Arguments*:
+
+        * value (float): The new rotation velocity to set. Must be a float between -1.0 and 1.0.
+
+        *Returns*:
+
+        * rotation_velocity (float): The current rotation velocity of the Gripper.
+
+        """
+
+        return self._rotation_velocity
+
+    @rotation_velocity.setter
+
+    def rotation_velocity(self, value: float):
+
+        if value &lt; -1.0 or value &gt; 1.0:
+
+            raise ValueError("Rotation velocity must be between -1.0 and 1.0.")
+
+        self._rotation_velocity = value
+
+        self.parent_drone._ctrl_client.set_gripper_velocities(
+
+            self._grip_velocity, self._rotation_velocity
+
+        )
+</code></pre>
+</details>
+<hr />
+<h4 id="ancestors-in-mro">Ancestors (in MRO)</h4>
+<ul>
+<li>blueye.sdk.guestport.Peripheral</li>
+</ul>
+<h4 id="instance-variables">Instance variables</h4>
+<div class="highlight"><pre><span></span><code><span class="n">grip_velocity</span>
+</code></pre></div>
+<p>Gets or sets the current grip velocity of the Gripper.</p>
+<p>When used as a getter, returns the current grip velocity of the Gripper.</p>
+<p>When used as a setter, sets the grip velocity of the Gripper to the specified value.</p>
+<p><em>Arguments</em>:</p>
+<ul>
+<li>value (float): The new grip velocity to set. Must be a float between -1.0 and 1.0.</li>
+</ul>
+<p><em>Returns</em>:</p>
+<ul>
+<li>grip_velocity (float): The current grip velocity of the Gripper.</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">rotation_velocity</span>
+</code></pre></div>
+<p>Gets or sets the current rotation velocity of the Gripper.</p>
+<p>When used as a getter, returns the current rotation velocity of the Gripper.</p>
+<p>When used as a setter, sets the rotation velocity of the Gripper to the specified value.</p>
+<p><em>Arguments</em>:</p>
+<ul>
+<li>value (float): The new rotation velocity to set. Must be a float between -1.0 and 1.0.</li>
+</ul>
+<p><em>Returns</em>:</p>
+<ul>
+<li>rotation_velocity (float): The current rotation velocity of the Gripper.</li>
+</ul>
 <h3 id="guestportcamera">GuestPortCamera</h3>
 <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">GuestPortCamera</span><span class="p">(</span>
     <span class="n">parent_drone</span><span class="p">:</span> <span class="s1">&#39;Drone&#39;</span><span class="p">,</span>
@@ -1453,12 +1812,12 @@ def device_to_peripheral(
 </code></pre>
 </details>
 <hr />
-<h4 id="ancestors-in-mro">Ancestors (in MRO)</h4>
+<h4 id="ancestors-in-mro_1">Ancestors (in MRO)</h4>
 <ul>
 <li>blueye.sdk.camera.Camera</li>
 <li>blueye.sdk.guestport.Peripheral</li>
 </ul>
-<h4 id="instance-variables">Instance variables</h4>
+<h4 id="instance-variables_1">Instance variables</h4>
 <div class="highlight"><pre><span></span><code><span class="n">bitrate</span>
 </code></pre></div>
 <p>Set or get the video stream bitrate</p>
@@ -1610,7 +1969,7 @@ def device_to_peripheral(
 </code></pre>
 </details>
 <hr />
-<h4 id="ancestors-in-mro_1">Ancestors (in MRO)</h4>
+<h4 id="ancestors-in-mro_2">Ancestors (in MRO)</h4>
 <ul>
 <li>blueye.sdk.guestport.Peripheral</li>
 </ul>
@@ -1697,6 +2056,7 @@ def device_to_peripheral(
 <ul>
 <li>blueye.sdk.guestport.GuestPortCamera</li>
 <li>blueye.sdk.guestport.GuestPortLight</li>
+<li>blueye.sdk.guestport.Gripper</li>
 </ul>
 
 

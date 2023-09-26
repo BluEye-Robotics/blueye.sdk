@@ -617,6 +617,25 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../../peripherals/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Peripherals
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../../migrating-to-v2/" class="md-nav__link">
         
   
@@ -685,10 +704,10 @@
         
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_12" checked>
         
           
-          <label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -699,8 +718,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_11">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_12_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_12">
             <span class="md-nav__icon md-icon"></span>
             Reference
           </label>
@@ -948,6 +967,13 @@
           <li class="md-nav__item">
   <a href="#set_auto_heading_state" class="md-nav__link">
     set_auto_heading_state
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#set_gripper_velocities" class="md-nav__link">
+    set_gripper_velocities
   </a>
   
 </li>
@@ -1734,6 +1760,13 @@
           <li class="md-nav__item">
   <a href="#set_auto_heading_state" class="md-nav__link">
     set_auto_heading_state
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#set_gripper_velocities" class="md-nav__link">
+    set_gripper_velocities
   </a>
   
 </li>
@@ -2586,6 +2619,16 @@ class CtrlClient(threading.Thread):
 
         self._messages_to_send.put(msg)
 
+    def set_gripper_velocities(self, grip: float, rotation: float):
+
+        msg = blueye.protocol.GripperCtrl(
+
+            gripper_velocities={"grip_velocity": grip, "rotate_velocity": rotation}
+
+        )
+
+        self._messages_to_send.put(msg)
+
 class ReqRepClient(threading.Thread):
 
     def __init__(self, parent_drone: "blueye.sdk.Drone", context: zmq.Context = None):
@@ -3059,6 +3102,16 @@ by overriding the run() method in a subclass.</p>
         msg = blueye.protocol.TakePictureCtrl()
 
         self._messages_to_send.put(msg)
+
+    def set_gripper_velocities(self, grip: float, rotation: float):
+
+        msg = blueye.protocol.GripperCtrl(
+
+            gripper_velocities={"grip_velocity": grip, "rotate_velocity": rotation}
+
+        )
+
+        self._messages_to_send.put(msg)
 </code></pre>
 </details>
 <hr />
@@ -3382,6 +3435,26 @@ from the args and kwargs arguments, respectively.</p>
 <pre><code>    def set_auto_heading_state(self, enabled: bool):
 
         msg = blueye.protocol.AutoHeadingCtrl(state={"enabled": enabled})
+
+        self._messages_to_send.put(msg)
+</code></pre>
+</details>
+<h4 id="set_gripper_velocities">set_gripper_velocities</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">set_gripper_velocities</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">grip</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">,</span>
+    <span class="n">rotation</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span>
+<span class="p">)</span>
+</code></pre></div>
+<details class="example">
+<summary>View Source</summary>
+<pre><code>    def set_gripper_velocities(self, grip: float, rotation: float):
+
+        msg = blueye.protocol.GripperCtrl(
+
+            gripper_velocities={"grip_velocity": grip, "rotate_velocity": rotation}
+
+        )
 
         self._messages_to_send.put(msg)
 </code></pre>
