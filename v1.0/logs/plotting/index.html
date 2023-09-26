@@ -9,25 +9,25 @@
       
       
       
-        <link rel="prev" href="../camera/">
+        <link rel="prev" href="../log-file-format/">
       
       
-        <link rel="next" href="../drone/">
+        <link rel="next" href="../../configuration/">
       
       
-      <link rel="icon" href="../../../../media/blueye_b.svg">
+      <link rel="icon" href="../../media/blueye_b.svg">
       <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.2">
     
     
       
-        <title>blueye.sdk.constants - Blueye SDK</title>
+        <title>Plotting log files - Blueye SDK</title>
       
     
     
-      <link rel="stylesheet" href="../../../../assets/stylesheets/main.d451bc0e.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.d451bc0e.min.css">
       
         
-        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.a5377069.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.a5377069.min.css">
       
       
 
@@ -46,7 +46,7 @@
       
     
     
-    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -75,7 +75,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#module-blueyesdkconstants" class="md-skip">
+        <a href="#plotting" class="md-skip">
           Skip to content
         </a>
       
@@ -95,9 +95,9 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../../../.." title="Blueye SDK" class="md-header__button md-logo" aria-label="Blueye SDK" data-md-component="logo">
+    <a href="../.." title="Blueye SDK" class="md-header__button md-logo" aria-label="Blueye SDK" data-md-component="logo">
       
-  <img src="../../../../media/blueye_b.svg" alt="logo">
+  <img src="../../media/blueye_b.svg" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -114,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              blueye.sdk.constants
+              Plotting log files
             
           </span>
         </div>
@@ -224,9 +224,9 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../../../.." title="Blueye SDK" class="md-nav__button md-logo" aria-label="Blueye SDK" data-md-component="logo">
+    <a href="../.." title="Blueye SDK" class="md-nav__button md-logo" aria-label="Blueye SDK" data-md-component="logo">
       
-  <img src="../../../../media/blueye_b.svg" alt="logo">
+  <img src="../../media/blueye_b.svg" alt="logo">
 
     </a>
     Blueye SDK
@@ -252,7 +252,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../.." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -271,7 +271,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../quick_start/" class="md-nav__link">
+      <a href="../../quick_start/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -326,7 +326,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../movement/from-the-CLI/" class="md-nav__link">
+      <a href="../../movement/from-the-CLI/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -346,7 +346,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../movement/with-a-gamepad/" class="md-nav__link">
+      <a href="../../movement/with-a-gamepad/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -409,7 +409,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../video/gstreamer-for-video-streaming/" class="md-nav__link">
+      <a href="../../video/gstreamer-for-video-streaming/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -429,7 +429,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../video/downloading/" class="md-nav__link">
+      <a href="../../video/downloading/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -454,18 +454,20 @@
       
   
   
+    
+  
   
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
         
           
           <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
@@ -479,7 +481,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             Logs
@@ -492,7 +494,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../logs/listing-and-downloading/" class="md-nav__link">
+      <a href="../listing-and-downloading/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -512,134 +514,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../logs/log-file-format/" class="md-nav__link">
+      <a href="../log-file-format/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
     Log file format
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../../logs/plotting/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Plotting log files
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../../configuration/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Configure drone parameters
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../../http-api.html" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    HTTP API
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-    
-  
-  
-    
-    
-    
-    
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
-      
-        
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" checked>
-        
-          
-          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
-            
-  
-  <span class="md-ellipsis">
-    Reference
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_8">
-            <span class="md-nav__icon md-icon"></span>
-            Reference
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../camera/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    blueye.sdk.camera
   </span>
   
 
@@ -664,79 +543,117 @@
         
       
       
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    blueye.sdk.constants
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
-    blueye.sdk.constants
+    Plotting log files
   </span>
   
 
       </a>
       
-        
+    </li>
+  
 
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Configure drone parameters
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../http-api.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    HTTP API
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
   
   
   
     
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
       
-        <li class="md-nav__item">
-  <a href="#classes" class="md-nav__link">
-    Classes
-  </a>
-  
-    <nav class="md-nav" aria-label="Classes">
-      <ul class="md-nav__list">
         
-          <li class="md-nav__item">
-  <a href="#waterdensities" class="md-nav__link">
-    WaterDensities
-  </a>
-  
-    <nav class="md-nav" aria-label="WaterDensities">
-      <ul class="md-nav__list">
         
-          <li class="md-nav__item">
-  <a href="#class-variables" class="md-nav__link">
-    Class variables
-  </a>
-  
-</li>
         
-      </ul>
-    </nav>
-  
-</li>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
         
-      </ul>
-    </nav>
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
   
-</li>
-      
-    </ul>
+  <span class="md-ellipsis">
+    Reference
+  </span>
   
-</nav>
-      
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/blueye/sdk/camera/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    blueye.sdk.camera
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -748,7 +665,27 @@
   
   
     <li class="md-nav__item">
-      <a href="../drone/" class="md-nav__link">
+      <a href="../../reference/blueye/sdk/constants/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    blueye.sdk.constants
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/blueye/sdk/drone/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -768,7 +705,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../logs/" class="md-nav__link">
+      <a href="../../reference/blueye/sdk/logs/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -788,7 +725,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../motion/" class="md-nav__link">
+      <a href="../../reference/blueye/sdk/motion/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -808,7 +745,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../utils/" class="md-nav__link">
+      <a href="../../reference/blueye/sdk/utils/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -849,47 +786,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#classes" class="md-nav__link">
-    Classes
-  </a>
-  
-    <nav class="md-nav" aria-label="Classes">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#waterdensities" class="md-nav__link">
-    WaterDensities
-  </a>
-  
-    <nav class="md-nav" aria-label="WaterDensities">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#class-variables" class="md-nav__link">
-    Class variables
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -906,65 +802,50 @@
   
 
 
-<h1 id="module-blueyesdkconstants">Module blueye.sdk.constants</h1>
-<p>This file contains constants used by the SDK.</p>
-<details class="example">
-<summary>View Source</summary>
-<pre><code>"""
+<h1 id="plotting">Plotting</h1>
+<p>This example shows how one can pull a log file from the drone and use
+<a href="https://pandas.pydata.org/">pandas</a> and <a href="https://matplotlib.org/">matplotlib</a> to plot
+it.</p>
+<p>We'll start by downloading a log file from the drone</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">blueye.sdk</span> <span class="kn">import</span> <span class="n">Drone</span>
 
-This file contains constants used by the SDK.
+<span class="n">myDrone</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">()</span>
 
-"""
-
-class WaterDensities:
-
-    """
-
-    Various typical densities for salt water (in grams/liter)
-
-    """
-
-    fresh = 997
-
-    brackish = 1011
-
-    salty = 1025
-</code></pre>
-</details>
-<h2 id="classes">Classes</h2>
-<h3 id="waterdensities">WaterDensities</h3>
-<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">WaterDensities</span><span class="p">(</span>
-    <span class="o">/</span><span class="p">,</span>
-    <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-    <span class="o">**</span><span class="n">kwargs</span>
-<span class="p">)</span>
+<span class="n">myDrone</span><span class="o">.</span><span class="n">logs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="n">output_name</span><span class="o">=</span><span class="s2">&quot;log0.csv&quot;</span><span class="p">)</span>
 </code></pre></div>
-<p>Various typical densities for salt water (in grams/liter)</p>
-<details class="example">
-<summary>View Source</summary>
-<pre><code>class WaterDensities:
+<p>We can now read the csv-file into a pandas object for easy manipulation</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">pandas</span>
 
-    """
-
-    Various typical densities for salt water (in grams/liter)
-
-    """
-
-    fresh = 997
-
-    brackish = 1011
-
-    salty = 1025
-</code></pre>
-</details>
-<hr />
-<h4 id="class-variables">Class variables</h4>
-<div class="highlight"><pre><span></span><code><span class="n">brackish</span>
+<span class="n">divelog</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;log0.csv&quot;</span><span class="p">)</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="n">fresh</span>
+<p>and then we'll convert the unix timestamp in <code>rt_clock</code> into a more readable format:</p>
+<div class="highlight"><pre><span></span><code><span class="n">divelog</span><span class="p">[</span><span class="s2">&quot;rt_clock&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">divelog</span><span class="p">[</span><span class="s2">&quot;rt_clock&quot;</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;s&quot;</span><span class="p">)</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="n">salty</span>
+<p>Next we will plot depth vs time with matplotlib:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1"># Instantiate our figure and axes to plot on</span>
+<span class="n">figure</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">divelog</span><span class="p">[</span><span class="s2">&quot;rt_clock&quot;</span><span class="p">]</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">divelog</span><span class="p">[</span><span class="s2">&quot;depth&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="mi">1000</span>  <span class="c1"># Dividing by 1000 to get depth in meters</span>
+
+<span class="c1"># Plot the depth values against time</span>
+<span class="n">axes</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;depth&quot;</span><span class="p">)</span>
+
+<span class="c1"># Set title, labels, and legend</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Depth chart&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Time&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Depth [m]&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+<span class="c1"># Save the figure</span>
+<span class="n">figure</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;depth_plot.svg&quot;</span><span class="p">)</span>
 </code></pre></div>
+<p>This should yield us a plot that looks something like this:
+<img alt="plot" src="../../media/depth_plot.svg" /></p>
+<p>See the <a href="https://matplotlib.org/contents.html">matplotlib documentation</a> for more ways
+to plot your data.</p>
 
 
 
@@ -987,8 +868,8 @@ class WaterDensities:
   <nav class="md-footer__inner md-grid" aria-label="footer.title">
     
     
-    <a href="../camera/" class="md-footer__link md-footer__link--prev"
-      aria-label="Previous: blueye.sdk.camera" rel="prev">
+    <a href="../log-file-format/" class="md-footer__link md-footer__link--prev"
+      aria-label="Previous: Log file format" rel="prev">
       <div class="md-footer__button md-icon">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
       </div>
@@ -997,21 +878,21 @@ class WaterDensities:
           <span class="md-footer__direction">
             Previous
           </span>
-          blueye.sdk.camera
+          Log file format
         </div>
       </div>
     </a>
     
     
     
-    <a href="../drone/" class="md-footer__link md-footer__link--next"
-      aria-label="Next: blueye.sdk.drone" rel="next">
+    <a href="../../configuration/" class="md-footer__link md-footer__link--next"
+      aria-label="Next: Configure drone parameters" rel="next">
       <div class="md-footer__title">
         <div class="md-ellipsis">
           <span class="md-footer__direction">
             Next
           </span>
-          blueye.sdk.drone
+          Configure drone parameters
         </div>
       </div>
       <div class="md-footer__button md-icon">
@@ -1028,10 +909,10 @@ class WaterDensities:
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "../../../..", "features": ["content.tabs.link"], "search": "../../../../assets/javascripts/workers/search.a264c092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.tabs.link"], "search": "../../assets/javascripts/workers/search.a264c092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../../../assets/javascripts/bundle.726fbb30.min.js"></script>
+      <script src="../../assets/javascripts/bundle.726fbb30.min.js"></script>
       
     
   </body>
