@@ -25,7 +25,7 @@ markdown_extensions:
 theme:
   name: material
   favicon: "media/blueye_b.svg"
-  logo: "media/blueye_b.svg"
+  logo: "media/blueye_sdk_logo_darkblue.svg"
   palette:
     # Palette toggle for light mode
     - media: "(prefers-color-scheme: light)"
