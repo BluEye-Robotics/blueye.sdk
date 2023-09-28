@@ -17,7 +17,7 @@ def open_local_documentation():
     sdk_path = os.path.dirname(blueye.sdk.__file__)
 
     # The documentation is located next to the top-level package so we move up a couple of levels
-    documentation_path = os.path.abspath(sdk_path + "/../../blueye.sdk_docs/README.html")
+    documentation_path = os.path.abspath(sdk_path + "/../../blueye.sdk_docs/index.html")
 
     webbrowser.open(documentation_path)
 
