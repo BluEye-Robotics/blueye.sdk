@@ -12,7 +12,7 @@ def test_documentation_opener(mocker):
 
     blueye.sdk.open_local_documentation()
 
-    mocked_webbrowser_open.assert_called_with(os.path.abspath("/root/blueye.sdk_docs/README.html"))
+    mocked_webbrowser_open.assert_called_with(os.path.abspath("/root/blueye.sdk_docs/index.html"))
 
 
 def test_deserialize_any_to_message():
