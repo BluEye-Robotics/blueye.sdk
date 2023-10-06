@@ -180,7 +180,7 @@ class Drone:
         self,
         ip="192.168.1.101",
         auto_connect=True,
-        timeout=3,
+        timeout=10,
         disconnect_other_clients=False,
     ):
         self._ip = ip
