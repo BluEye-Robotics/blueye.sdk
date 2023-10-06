@@ -50,7 +50,7 @@ examples = ["inputs", "asciimatics", "pandas", "matplotlib", "webdavclient3"]
 
 [tool.black]
 line-length = 100
-target-version = ['py38', 'py39', 'py310', 'py311']
+target-version = ['py38', 'py39', 'py310', 'py311', 'py312']
 
 [tool.pytest.ini_options]
 markers = "connected_to_drone: a mark for test that can only be run when connected to a drone, useful when developing"
