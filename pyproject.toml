@@ -24,8 +24,8 @@ matplotlib = {version = "^3.1.1", optional = true}
 webdavclient3 = {version = "^3.14.6", optional = true}
 requests = "^2.22.0"
 tabulate = "^0.8.5"
-"blueye.protocol" = "^2.3.0"
 packaging = ">=22.0"
+"blueye.protocol" = { git = "https://github.com/BluEye-Robotics/blueye.protocol.git", branch = "add-python-3.12-support" }
 python-dateutil = "^2.8.2"
 pyzmq = "^25.0.0"
 proto-plus = "^1.22.2"
