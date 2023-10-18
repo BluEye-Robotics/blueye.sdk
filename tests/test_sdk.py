@@ -7,7 +7,6 @@ import pytest
 import requests
 from freezegun import freeze_time
 
-import blueye.sdk
 from blueye.sdk import Drone
 from blueye.sdk.camera import Camera
 
