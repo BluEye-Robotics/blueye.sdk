@@ -79,20 +79,16 @@ name = "blueye-protocol"
 version = "2.4.0"
 description = "Python protocol definition for the Blueye drones"
 optional = false
-python-versions = "^3.9"
-files = []
-develop = false
+python-versions = ">=3.9,<4.0"
+files = [
+    {file = "blueye_protocol-2.4.0-py3-none-any.whl", hash = "sha256:634db21a5591d522586bd96ee72f5586f0e198213f283ad8c6feb2e42fa693ec"},
+    {file = "blueye_protocol-2.4.0.tar.gz", hash = "sha256:23b1a56c3617fa183148bdd5612c798e1a0a3c901830c5b32deb46d40b8e36fa"},
+]
 
 [package.dependencies]
-numpy = {version = "^1.26", markers = "python_version >= \"3.9\" and python_version < \"3.13\""}
-proto-plus = "^1.22.1"
+numpy = {version = ">=1.26,<2.0", markers = "python_version >= \"3.9\" and python_version < \"3.13\""}
+proto-plus = ">=1.22.1,<2.0.0"
 setuptools = ">=40"
-
-[package.source]
-type = "git"
-url = "https://github.com/BluEye-Robotics/blueye.protocol.git"
-reference = "add-python-3.12-support"
-resolved_reference = "95584535f80a79b70f72b2f4bcfbd93ca51a7b3b"
 
 [[package]]
 name = "certifi"
@@ -2267,4 +2263,4 @@ examples = ["asciimatics", "inputs", "matplotlib", "pandas", "webdavclient3"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "cdf59c6862d20e1270b76e5661823f66d7ea766c3a5d1f682df0b4bf8d9be19b"
+content-hash = "2dc4d8bced6093cb6d94c94abc1ea75e83ff83b32c76debb240707669989e446"
