@@ -2347,6 +2347,9 @@ GuestPort device ID.
 | GUEST_PORT_DEVICE_ID_SPOT_X_LASER_SCALERS | 28 | Spot X Laser Scalers |
 | GUEST_PORT_DEVICE_ID_BLUEPRINT_SUBSEA_OCULUS_M1200D | 29 | Blueprint Subsea Oculus M1200d |
 | GUEST_PORT_DEVICE_ID_BLUEPRINT_SUBSEA_OCULUS_M3000D | 30 | Blueprint Subsea Oculus M3000d |
+| GUEST_PORT_DEVICE_ID_INSITU_AQUA_TROLL_100 | 31 | In-Situ Aqua TROLL 100 |
+| GUEST_PORT_DEVICE_ID_INSITU_RDO_PRO_X | 32 | In-Situ RDO PRO-X |
+| GUEST_PORT_DEVICE_ID_INSITU_RDO_BLUE | 33 | In-Situ RDO Blue |
 
 
 
@@ -2417,8 +2420,9 @@ Drone models produced by Blueye
 | MODEL_UNSPECIFIED | 0 | ModelName not specified |
 | MODEL_PIONEER | 1 | Blueye Pioneer, the first model |
 | MODEL_PRO | 2 | Blueye Pro, features camera tilt |
-| MODEL_PRO2 | 4 | Blueye Pro, features camera tilt and one guest port |
+| MODEL_X1 | 4 | Blueye X1, features camera tilt and one guest port |
 | MODEL_X3 | 3 | Blueye X3, features support for peripherals |
+| MODEL_NEXT | 5 | Blueye ? |
 
 
 

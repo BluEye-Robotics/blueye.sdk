@@ -1,5 +1,5 @@
 ## Installation
-The SDK requires Python 3.8 or higher. Since many operating systems do not package the newest
+The SDK requires Python 3.9 or higher. Since many operating systems do not package the newest
 version of Python we recommend using [`pyenv`](https://github.com/pyenv/pyenv) or something similar
 for configuring multiple python versions on the same system. Pyenv also has the added benefit of
 managing your virtual environments for you, though you are of course free to use other tools for
@@ -10,7 +10,7 @@ The instructions below show the necessary steps to get started with the SDK on a
 ??? abstract "Windows"
     **Install Python**
 
-    Install Python 3.8 or higher, you can find the latest python versions [here](https://www.python.org/downloads/).
+    Install Python 3.9 or higher, you can find the latest python versions [here](https://www.python.org/downloads/).
     Remember to check the option "Add Python to path" when installing.
 
     **Install virtualenv for managing Python versions (optional)**
@@ -89,7 +89,7 @@ The instructions below show the necessary steps to get started with the SDK on a
     Then build Python with pyenv
 
     ```
-    pyenv install 3.10.1
+    pyenv install 3.12
     ```
 
     **Create a virtual environment**
@@ -100,7 +100,7 @@ The instructions below show the necessary steps to get started with the SDK on a
     Since we already have pyenv installed we'll use it to create a virtual environment,
 
     ```
-    pyenv virtualenv 3.10.1 blueye.sdk
+    pyenv virtualenv 3.12 blueye.sdk
     pyenv activate blueye.sdk
     ```
 
@@ -134,7 +134,7 @@ The instructions below show the necessary steps to get started with the SDK on a
     pyenv update
     ```
 
-    Install the needed dependencies for building python 3.10.1
+    Install the needed dependencies for building python 3.12
 
     ```
     apt install -y make build-essential libssl-dev zlib1g-dev libbz2-dev \
@@ -143,7 +143,7 @@ The instructions below show the necessary steps to get started with the SDK on a
     ```
     Then build python with pyenv
     ```
-    pyenv install 3.10.1
+    pyenv install 3.12
     ```
 
     **Create a virtual environment**
@@ -154,7 +154,7 @@ The instructions below show the necessary steps to get started with the SDK on a
     Since we already have pyenv installed we'll use it to create a virtual environment,
 
     ```
-    pyenv virtualenv 3.10.1 blueye.sdk
+    pyenv virtualenv 3.12 blueye.sdk
     pyenv activate blueye.sdk
     ```
 
