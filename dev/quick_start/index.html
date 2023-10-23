@@ -16,7 +16,7 @@
       
       
       <link rel="icon" href="../media/blueye_b.svg">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.2">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.6">
     
     
       
@@ -24,10 +24,10 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.d451bc0e.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.35e1ed30.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.a5377069.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.356b1318.min.css">
       
       
 
@@ -1160,7 +1160,7 @@
   <h1>Quick Start</h1>
 
 <h2 id="installation">Installation</h2>
-<p>The SDK requires Python 3.8 or higher. Since many operating systems do not package the newest
+<p>The SDK requires Python 3.9 or higher. Since many operating systems do not package the newest
 version of Python we recommend using <a href="https://github.com/pyenv/pyenv"><code>pyenv</code></a> or something similar
 for configuring multiple python versions on the same system. Pyenv also has the added benefit of
 managing your virtual environments for you, though you are of course free to use other tools for
@@ -1169,7 +1169,7 @@ that as well.</p>
 <details class="abstract">
 <summary>Windows</summary>
 <p><strong>Install Python</strong></p>
-<p>Install Python 3.8 or higher, you can find the latest python versions <a href="https://www.python.org/downloads/">here</a>.
+<p>Install Python 3.9 or higher, you can find the latest python versions <a href="https://www.python.org/downloads/">here</a>.
 Remember to check the option "Add Python to path" when installing.</p>
 <p><strong>Install virtualenv for managing Python versions (optional)</strong></p>
 <p>Using a virtual environment is not strictly necessary, but it greatly simplifies the
@@ -1221,13 +1221,13 @@ brew<span class="w"> </span>install<span class="w"> </span>openssl<span class="w
 <div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>installer<span class="w"> </span>-pkg<span class="w"> </span>/Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg<span class="w"> </span>-target<span class="w"> </span>/
 </code></pre></div>
 Then build Python with pyenv</p>
-<div class="highlight"><pre><span></span><code>pyenv install 3.10.1
+<div class="highlight"><pre><span></span><code>pyenv install 3.12
 </code></pre></div>
 <p><strong>Create a virtual environment</strong></p>
 <p>Using a virtual environment is not strictly necessary, but it greatly simplifies the
 development of Python packages.</p>
 <p>Since we already have pyenv installed we'll use it to create a virtual environment,</p>
-<div class="highlight"><pre><span></span><code>pyenv virtualenv 3.10.1 blueye.sdk
+<div class="highlight"><pre><span></span><code>pyenv virtualenv 3.12 blueye.sdk
 pyenv activate blueye.sdk
 </code></pre></div>
 <p><strong>Install the SDK</strong></p>
@@ -1248,19 +1248,19 @@ distributions.</p>
 <div class="highlight"><pre><span></span><code>curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
 pyenv update
 </code></pre></div>
-<p>Install the needed dependencies for building python 3.10.1</p>
+<p>Install the needed dependencies for building python 3.12</p>
 <p><div class="highlight"><pre><span></span><code>apt install -y make build-essential libssl-dev zlib1g-dev libbz2-dev \
 libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
 xz-utils tk-dev libffi-dev liblzma-dev python-openssl
 </code></pre></div>
 Then build python with pyenv
-<div class="highlight"><pre><span></span><code>pyenv install 3.10.1
+<div class="highlight"><pre><span></span><code>pyenv install 3.12
 </code></pre></div></p>
 <p><strong>Create a virtual environment</strong></p>
 <p>Using a virtual environment is not strictly necessary, but it greatly simplifies the
 development of Python packages.</p>
 <p>Since we already have pyenv installed we'll use it to create a virtual environment,</p>
-<div class="highlight"><pre><span></span><code>pyenv virtualenv 3.10.1 blueye.sdk
+<div class="highlight"><pre><span></span><code>pyenv virtualenv 3.12 blueye.sdk
 pyenv activate blueye.sdk
 </code></pre></div>
 <p><strong>Install the SDK</strong></p>
@@ -1400,10 +1400,11 @@ executing the following Python snippet:</p>
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "..", "features": ["content.tabs.link"], "search": "../assets/javascripts/workers/search.a264c092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["content.tabs.link"], "search": "../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.726fbb30.min.js"></script>
+      <script src="../assets/javascripts/bundle.aecac24b.min.js"></script>
       
     
   </body>
