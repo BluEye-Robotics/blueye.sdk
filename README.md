@@ -28,4 +28,4 @@ This python SDK exposes the functionality of the Blueye app through a Python obj
 To control the drone you connect your laptop to the surface unit Wi-Fi and run code that interfaces with the through the Python object.
 
 
-Check out the [`Quick Start Guide`](https://blueye-robotics.github.io/blueye.sdk/docs/quick_start/) to get started with using the SDK.
+Check out the [`Quick Start Guide`](https://blueye-robotics.github.io/blueye.sdk/latest/quick_start/) to get started with using the SDK.
