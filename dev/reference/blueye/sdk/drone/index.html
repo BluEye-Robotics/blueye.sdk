@@ -1880,9 +1880,15 @@ class Drone:
 
         self._watchdog_publisher.start()
 
-        self.ping()
+        try:
 
-        connect_resp = self._req_rep_client.connect_client(client_info=client_info)
+            self.ping()
+
+            connect_resp = self._req_rep_client.connect_client(client_info=client_info)
+
+        except blueye.protocol.exceptions.ResponseTimeout as e:
+
+            raise ConnectionError("Could not establish connection with drone") from e
 
         logger.info(f"Connection successful, client id: {connect_resp.client_id}")
 
@@ -2505,9 +2511,15 @@ be disabled by setting <code>auto_connect=False</code>.</p>
 
         self._watchdog_publisher.start()
 
-        self.ping()
+        try:
 
-        connect_resp = self._req_rep_client.connect_client(client_info=client_info)
+            self.ping()
+
+            connect_resp = self._req_rep_client.connect_client(client_info=client_info)
+
+        except blueye.protocol.exceptions.ResponseTimeout as e:
+
+            raise ConnectionError("Could not establish connection with drone") from e
 
         logger.info(f"Connection successful, client id: {connect_resp.client_id}")
 
@@ -2932,9 +2944,15 @@ connecting.</p>
 
         self._watchdog_publisher.start()
 
-        self.ping()
+        try:
 
-        connect_resp = self._req_rep_client.connect_client(client_info=client_info)
+            self.ping()
+
+            connect_resp = self._req_rep_client.connect_client(client_info=client_info)
+
+        except blueye.protocol.exceptions.ResponseTimeout as e:
+
+            raise ConnectionError("Could not establish connection with drone") from e
 
         logger.info(f"Connection successful, client id: {connect_resp.client_id}")
 
