@@ -33,6 +33,12 @@ class TestPose:
         assert pose["yaw"] == new_angle
 
 
+def test_zmq_connection_error(mocked_drone):
+    mocked_drone._req_rep_client.ping.side_effect = bp.exceptions.ResponseTimeout
+    with pytest.raises(ConnectionError):
+        mocked_drone.connect()
+
+
 def test_feature_list(mocked_drone):
     mocked_drone._update_drone_info()
     assert mocked_drone.features == ["lasers", "harpoon"]

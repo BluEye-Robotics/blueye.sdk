@@ -306,8 +306,11 @@ class Drone:
         self._ctrl_client.start()
         self._watchdog_publisher.start()
 
-        self.ping()
-        connect_resp = self._req_rep_client.connect_client(client_info=client_info)
+        try:
+            self.ping()
+            connect_resp = self._req_rep_client.connect_client(client_info=client_info)
+        except blueye.protocol.exceptions.ResponseTimeout as e:
+            raise ConnectionError("Could not establish connection with drone") from e
         logger.info(f"Connection successful, client id: {connect_resp.client_id}")
         logger.info(f"Client id in control: {connect_resp.client_id_in_control}")
         logger.info(f"There are {len(connect_resp.connected_clients)-1} other clients connected")
