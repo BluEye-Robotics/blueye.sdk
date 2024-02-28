@@ -38,7 +38,7 @@ class Config:
     def water_density(self):
         """Get or set the current water density for increased pressure sensor accuracy
 
-        Older software versions will assume a water density of 1.025 kilograms per liter.
+        Older software versions will assume a water density of 1025 grams per liter.
 
         The WaterDensities class contains typical densities for salty-, brackish-, and fresh water
         (these are the same values that the Blueye app uses).
