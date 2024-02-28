@@ -209,12 +209,12 @@ class TestTilt:
 
 class TestConfig:
     def test_water_density_property_returns_correct_value(self, mocked_drone: Drone):
-        mocked_drone.config._water_density = 1.0
-        assert mocked_drone.config.water_density == 1.0
+        mocked_drone.config._water_density = 1000.0
+        assert mocked_drone.config.water_density == 1000.0
 
     def test_setting_density(self, mocked_drone: Drone):
         old_value = mocked_drone.config.water_density
-        new_value = old_value + 0.010
+        new_value = old_value + 10
         mocked_drone.config.water_density = new_value
         assert mocked_drone.config.water_density == new_value
         mocked_drone._ctrl_client.set_water_density.assert_called_once()
