@@ -988,8 +988,77 @@ paths:
             response = requests.get("http://192.168.1.101/asset/logo/md5")
             print(response.json())
 
+  /surface_unit/version:
+    get:
+      tags:
+        - "Surface unit"
+      summary: Get version of update file stored on drone and the version installed on the surface unit
+    responses:
+      "200":
+        description: A JSON with the version of the update file stored on the drone and the version installed on the surface unit
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                version_on_drone:
+                  $ref: "#/components/schemas/SurfaceUnitVersion"
+                installed_version:
+                  $ref: "#/components/schemas/SurfaceUnitVersion"
+
+      x-codeSamples:
+        - lang: "curl"
+          source: |
+            curl -X GET "http://192.168.1.101/surface_unit/version"
+
+  /surface_unit/update:
+    post:
+      tags:
+        - "Surface unit"
+      summary: Update the surface unit firmware
+      description: |
+        Updates the surface unit firmware. If a binary image is included in the request, it will use that image for the update. If not, it will use the version stored on the drone.
+      requestBody:
+        content:
+          application/octet-stream:
+            schema:
+              name: update-file
+              type: string
+              format: binary
+              description: Binary image for the update
+        required: false
+      responses:
+        "200":
+          description: Update initialized
+        "400":
+          description: Invalid request type or unable to authorize with the surface unit
+      x-codeSamples:
+        - lang: "curl"
+          source: |
+            curl -X POST "http://192.168.1.101/surface_unit/update" --data-binary "@firmware.bin"
+        - lang: "Python"
+          source: |
+            import requests
+            with open("firmware.bin", "rb") as f:
+                response = requests.post("http://192.168.1.101/surface_unit/update", data=f)
+            print(response.status_code)
+
 components:
   schemas:
+    SurfaceUnitVersion:
+      type: object
+      properties:
+        version:
+          type: string
+          description: |
+            Version string for surface unit firmware. Format is
+            {major}.{minor}.{patch}-{branch}.{build}
+          example: "2.2.4-master.190"
+        commit:
+          type: string
+          description: |
+            Commit id of the surface unit firmware.
+          example: "815cce8a95ea0d448a85996bcf82a241109d575b"
     DroneInfo:
       type: object
       properties:
