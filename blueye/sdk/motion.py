@@ -252,3 +252,28 @@ class Motion:
     @auto_altitude_active.setter
     def auto_altitude_active(self, enable: bool):
         self._parent_drone._ctrl_client.set_auto_altitude_state(enable)
+
+    @property
+    def station_keeping_active(self) -> Optional[bool]:
+        """Enable or disable the station keeping control mode
+
+        When station keeping is active, the drone will attempt to maintain its current position
+        and orientation in the water as long as the mode is active.
+
+        *Arguments*:
+
+        * Enable (bool): Activate station keeping mode if true, de-activate if false
+
+        *Returns*:
+
+        * Station keeping state (bool): True if station keeping mode is active, false if not
+        """
+        control_mode_tel = self._parent_drone.telemetry.get(blueye.protocol.ControlModeTel)
+        if control_mode_tel is None:
+            return None
+        else:
+            return control_mode_tel.state.station_keeping
+
+    @station_keeping_active.setter
+    def station_keeping_active(self, enable: bool):
+        self._parent_drone._ctrl_client.set_station_keeping_state(enable)

@@ -69,3 +69,19 @@ def test_auto_altitude_returns_none_on_missing_telemetry(mocked_drone):
 def test_auto_altitude_produces_correct_control_message(mocked_drone):
     mocked_drone.motion.auto_altitude_active = True
     mocked_drone._ctrl_client.set_auto_altitude_state.assert_called_with(True)
+
+
+def test_station_keeping_returns_expected_value(mocked_drone):
+    mocked_drone._telemetry_watcher._state[bp.ControlModeTel] = bp.ControlModeTel.serialize(
+        bp.ControlModeTel(state=bp.ControlMode(station_keeping=True))
+    )
+    assert mocked_drone.motion.station_keeping_active is True
+
+
+def test_station_keeping_returns_none_on_missing_telemetry(mocked_drone):
+    assert mocked_drone.motion.station_keeping_active is None
+
+
+def test_station_keeping_produces_correct_control_message(mocked_drone):
+    mocked_drone.motion.station_keeping_active = True
+    mocked_drone._ctrl_client.set_station_keeping_state.assert_called_with(True)
