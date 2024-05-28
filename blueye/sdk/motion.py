@@ -225,3 +225,30 @@ class Motion:
     @auto_heading_active.setter
     def auto_heading_active(self, enable: bool):
         self._parent_drone._ctrl_client.set_auto_heading_state(enable)
+
+    @property
+    def auto_altitude_active(self) -> Optional[bool]:
+        """Enable or disable the auto altitude control mode
+
+        When auto altitude is active, the drone will attempt to maintain its current altitude above
+        the seabed. Input for the heave direction to the thruster_setpoint function specifies a
+        speed set point instead of a force set point. A control loop on the drone will then attempt
+        to maintain the wanted speed in the heave direction as long as auto altitude is active.
+
+        *Arguments*:
+        * Enable (bool): Activate auto altitude mode if true, de-activate if false. If the drone
+                         does not have a valid altitude reading this command will be ignored.
+
+        *Returns*:
+
+        * Auto altitude state (bool): True if auto altitude is active, false if not
+        """
+        control_mode_tel = self._parent_drone.telemetry.get(blueye.protocol.ControlModeTel)
+        if control_mode_tel is None:
+            return None
+        else:
+            return control_mode_tel.state.auto_altitude
+
+    @auto_altitude_active.setter
+    def auto_altitude_active(self, enable: bool):
+        self._parent_drone._ctrl_client.set_auto_altitude_state(enable)
