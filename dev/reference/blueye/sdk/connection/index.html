@@ -1031,6 +1031,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#set_auto_altitude_state" class="md-nav__link">
+    set_auto_altitude_state
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#set_auto_depth_state" class="md-nav__link">
     set_auto_depth_state
   </a>
@@ -1080,6 +1087,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#set_station_keeping_state" class="md-nav__link">
+    set_station_keeping_state
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#set_tilt_stabilization" class="md-nav__link">
     set_tilt_stabilization
   </a>
@@ -1096,6 +1110,13 @@
           <li class="md-nav__item">
   <a href="#set_water_density" class="md-nav__link">
     set_water_density
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#set_weather_vaning_state" class="md-nav__link">
+    set_weather_vaning_state
   </a>
   
 </li>
@@ -1824,6 +1845,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#set_auto_altitude_state" class="md-nav__link">
+    set_auto_altitude_state
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#set_auto_depth_state" class="md-nav__link">
     set_auto_depth_state
   </a>
@@ -1873,6 +1901,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#set_station_keeping_state" class="md-nav__link">
+    set_station_keeping_state
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#set_tilt_stabilization" class="md-nav__link">
     set_tilt_stabilization
   </a>
@@ -1889,6 +1924,13 @@
           <li class="md-nav__item">
   <a href="#set_water_density" class="md-nav__link">
     set_water_density
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#set_weather_vaning_state" class="md-nav__link">
+    set_weather_vaning_state
   </a>
   
 </li>
@@ -2676,6 +2718,24 @@ class CtrlClient(threading.Thread):
 
         self._messages_to_send.put(msg)
 
+    def set_auto_altitude_state(self, enabled: bool):
+
+        msg = blueye.protocol.AutoAltitudeCtrl(state={"enabled": enabled})
+
+        self._messages_to_send.put(msg)
+
+    def set_station_keeping_state(self, enabled: bool):
+
+        msg = blueye.protocol.StationKeepingCtrl(state={"enabled": enabled})
+
+        self._messages_to_send.put(msg)
+
+    def set_weather_vaning_state(self, enabled: bool):
+
+        msg = blueye.protocol.WeatherVaningCtrl(state={"enabled": enabled})
+
+        self._messages_to_send.put(msg)
+
     def set_recording_state(self, main_enabled: bool, guestport_enabled: bool):
 
         msg = blueye.protocol.RecordCtrl(
@@ -3160,6 +3220,24 @@ by overriding the run() method in a subclass.</p>
 
         self._messages_to_send.put(msg)
 
+    def set_auto_altitude_state(self, enabled: bool):
+
+        msg = blueye.protocol.AutoAltitudeCtrl(state={"enabled": enabled})
+
+        self._messages_to_send.put(msg)
+
+    def set_station_keeping_state(self, enabled: bool):
+
+        msg = blueye.protocol.StationKeepingCtrl(state={"enabled": enabled})
+
+        self._messages_to_send.put(msg)
+
+    def set_weather_vaning_state(self, enabled: bool):
+
+        msg = blueye.protocol.WeatherVaningCtrl(state={"enabled": enabled})
+
+        self._messages_to_send.put(msg)
+
     def set_recording_state(self, main_enabled: bool, guestport_enabled: bool):
 
         msg = blueye.protocol.RecordCtrl(
@@ -3482,6 +3560,21 @@ from the args and kwargs arguments, respectively.</p>
         self.name = name
 </code></pre>
 </details>
+<h4 id="set_auto_altitude_state">set_auto_altitude_state</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">set_auto_altitude_state</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">enabled</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span>
+<span class="p">)</span>
+</code></pre></div>
+<details class="example">
+<summary>View Source</summary>
+<pre><code>    def set_auto_altitude_state(self, enabled: bool):
+
+        msg = blueye.protocol.AutoAltitudeCtrl(state={"enabled": enabled})
+
+        self._messages_to_send.put(msg)
+</code></pre>
+</details>
 <h4 id="set_auto_depth_state">set_auto_depth_state</h4>
 <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">set_auto_depth_state</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
@@ -3624,6 +3717,21 @@ from the args and kwargs arguments, respectively.</p>
         self._messages_to_send.put(msg)
 </code></pre>
 </details>
+<h4 id="set_station_keeping_state">set_station_keeping_state</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">set_station_keeping_state</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">enabled</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span>
+<span class="p">)</span>
+</code></pre></div>
+<details class="example">
+<summary>View Source</summary>
+<pre><code>    def set_station_keeping_state(self, enabled: bool):
+
+        msg = blueye.protocol.StationKeepingCtrl(state={"enabled": enabled})
+
+        self._messages_to_send.put(msg)
+</code></pre>
+</details>
 <h4 id="set_tilt_stabilization">set_tilt_stabilization</h4>
 <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">set_tilt_stabilization</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
@@ -3665,6 +3773,21 @@ from the args and kwargs arguments, respectively.</p>
 <pre><code>    def set_water_density(self, value: float):
 
         msg = blueye.protocol.WaterDensityCtrl(density={"value": value})
+
+        self._messages_to_send.put(msg)
+</code></pre>
+</details>
+<h4 id="set_weather_vaning_state">set_weather_vaning_state</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">set_weather_vaning_state</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">enabled</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span>
+<span class="p">)</span>
+</code></pre></div>
+<details class="example">
+<summary>View Source</summary>
+<pre><code>    def set_weather_vaning_state(self, enabled: bool):
+
+        msg = blueye.protocol.WeatherVaningCtrl(state={"enabled": enabled})
 
         self._messages_to_send.put(msg)
 </code></pre>

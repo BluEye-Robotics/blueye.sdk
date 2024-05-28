@@ -2112,6 +2112,32 @@ class Drone:
 
     @property
 
+    def altitude(self) -&gt; Optional[float]:
+
+        """Get the current altitude in meters
+
+        If the drone has a DVL or a positioning system with a valid reading this property will
+
+        return the current altitude.
+
+        *Returns*:
+
+        * altitude (float): The altitude in meters above the bottom.
+
+        """
+
+        altitude_tel = self.telemetry.get(blueye.protocol.AltitudeTel)
+
+        if altitude_tel is None or altitude_tel.altitude.is_valid is False:
+
+            return None
+
+        else:
+
+            return altitude_tel.altitude.value
+
+    @property
+
     def error_flags(self) -&gt; Optional[Dict[str, bool]]:
 
         """Get the error flags
@@ -2743,6 +2769,32 @@ be disabled by setting <code>auto_connect=False</code>.</p>
 
     @property
 
+    def altitude(self) -&gt; Optional[float]:
+
+        """Get the current altitude in meters
+
+        If the drone has a DVL or a positioning system with a valid reading this property will
+
+        return the current altitude.
+
+        *Returns*:
+
+        * altitude (float): The altitude in meters above the bottom.
+
+        """
+
+        altitude_tel = self.telemetry.get(blueye.protocol.AltitudeTel)
+
+        if altitude_tel is None or altitude_tel.altitude.is_valid is False:
+
+            return None
+
+        else:
+
+            return altitude_tel.altitude.value
+
+    @property
+
     def error_flags(self) -&gt; Optional[Dict[str, bool]]:
 
         """Get the error flags
@@ -2811,6 +2863,15 @@ be disabled by setting <code>auto_connect=False</code>.</p>
 <p>Get the number of currently active connections to the video stream</p>
 <p>Every client connected to the RTSP stream (does not matter if it's directly from GStreamer,
 or from the Blueye app) counts as one connection.</p>
+<div class="highlight"><pre><span></span><code><span class="n">altitude</span>
+</code></pre></div>
+<p>Get the current altitude in meters</p>
+<p>If the drone has a DVL or a positioning system with a valid reading this property will
+return the current altitude.</p>
+<p><em>Returns</em>:</p>
+<ul>
+<li>altitude (float): The altitude in meters above the bottom.</li>
+</ul>
 <div class="highlight"><pre><span></span><code><span class="n">client_in_control</span>
 </code></pre></div>
 <p>Get the client id of the client in control of the drone</p>
