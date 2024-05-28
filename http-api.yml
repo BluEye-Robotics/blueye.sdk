@@ -1036,12 +1036,13 @@ paths:
       x-codeSamples:
         - lang: "curl"
           source: |
-            curl -X POST "http://192.168.1.101/surface_unit/update" --data-binary "@firmware.bin"
+            curl -X POST -F "update-file=@firmware.bin" "http://192.168.1.101/surface_unit/update"
         - lang: "Python"
           source: |
             import requests
             with open("firmware.bin", "rb") as f:
-                response = requests.post("http://192.168.1.101/surface_unit/update", data=f)
+              files = {'update-file': f}
+              response = requests.post("http://192.168.1.101/surface_unit/update", files=files)
             print(response.status_code)
 
 components:
