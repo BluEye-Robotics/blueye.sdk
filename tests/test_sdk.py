@@ -232,14 +232,17 @@ def test_altitude_is_none_on_invalid_readings(mocked_drone):
     )
     assert mocked_drone.altitude is None
 
+
 def test_altitude_is_none_on_missing_readings(mocked_drone):
     assert mocked_drone.altitude is None
+
 
 def test_altitude_is_correct_on_valid_readings(mocked_drone):
     mocked_drone._telemetry_watcher._state[bp.AltitudeTel] = bp.AltitudeTel.serialize(
         bp.AltitudeTel(altitude={"value": 10.5, "is_valid": True})
     )
     assert mocked_drone.altitude == 10.5
+
 
 def test_gp_cam_recording(mocked_drone):
     mocked_drone.gp_cam = Camera(mocked_drone, is_guestport_camera=True)
