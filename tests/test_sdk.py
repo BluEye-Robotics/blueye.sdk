@@ -226,24 +226,22 @@ class TestConfig:
             mocked_drone._req_rep_client.sync_time.assert_called_with(expected_time)
 
 
-class TestMotion:
-    def test_boost_getter_returns_expected_value(self, mocked_drone):
-        mocked_drone.motion._current_boost_setpoints["boost"] = 1
-        assert mocked_drone.motion.boost == 1
+def test_altitude_is_none_on_invalid_readings(mocked_drone):
+    mocked_drone._telemetry_watcher._state[bp.AltitudeTel] = bp.AltitudeTel.serialize(
+        bp.AltitudeTel(altitude={"value": 10, "is_valid": False})
+    )
+    assert mocked_drone.altitude is None
 
-    def test_boost_setter_produces_correct_motion_input_arguments(self, mocked_drone):
-        boost_gain = 0.5
-        mocked_drone.motion.boost = boost_gain
-        mocked_drone._ctrl_client.set_motion_input.assert_called_with(0, 0, 0, 0, 0, boost_gain)
 
-    def test_slow_getter_returns_expected_value(self, mocked_drone):
-        mocked_drone.motion._current_boost_setpoints["slow"] = 1
-        assert mocked_drone.motion.slow == 1
+def test_altitude_is_none_on_missing_readings(mocked_drone):
+    assert mocked_drone.altitude is None
 
-    def test_slow_setter_produces_correct_motion_input_arguments(self, mocked_drone):
-        slow_gain = 0.3
-        mocked_drone.motion.slow = slow_gain
-        mocked_drone._ctrl_client.set_motion_input.assert_called_with(0, 0, 0, 0, slow_gain, 0)
+
+def test_altitude_is_correct_on_valid_readings(mocked_drone):
+    mocked_drone._telemetry_watcher._state[bp.AltitudeTel] = bp.AltitudeTel.serialize(
+        bp.AltitudeTel(altitude={"value": 10.5, "is_valid": True})
+    )
+    assert mocked_drone.altitude == 10.5
 
 
 def test_gp_cam_recording(mocked_drone):

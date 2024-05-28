@@ -225,3 +225,81 @@ class Motion:
     @auto_heading_active.setter
     def auto_heading_active(self, enable: bool):
         self._parent_drone._ctrl_client.set_auto_heading_state(enable)
+
+    @property
+    def auto_altitude_active(self) -> Optional[bool]:
+        """Enable or disable the auto altitude control mode
+
+        When auto altitude is active, the drone will attempt to maintain its current altitude above
+        the seabed. Input for the heave direction to the thruster_setpoint function specifies a
+        speed set point instead of a force set point. A control loop on the drone will then attempt
+        to maintain the wanted speed in the heave direction as long as auto altitude is active.
+
+        *Arguments*:
+        * Enable (bool): Activate auto altitude mode if true, de-activate if false. If the drone
+                         does not have a valid altitude reading this command will be ignored.
+
+        *Returns*:
+
+        * Auto altitude state (bool): True if auto altitude is active, false if not
+        """
+        control_mode_tel = self._parent_drone.telemetry.get(blueye.protocol.ControlModeTel)
+        if control_mode_tel is None:
+            return None
+        else:
+            return control_mode_tel.state.auto_altitude
+
+    @auto_altitude_active.setter
+    def auto_altitude_active(self, enable: bool):
+        self._parent_drone._ctrl_client.set_auto_altitude_state(enable)
+
+    @property
+    def station_keeping_active(self) -> Optional[bool]:
+        """Enable or disable the station keeping control mode
+
+        When station keeping is active, the drone will attempt to maintain its current position
+        and orientation in the water as long as the mode is active.
+
+        *Arguments*:
+
+        * Enable (bool): Activate station keeping mode if true, de-activate if false
+
+        *Returns*:
+
+        * Station keeping state (bool): True if station keeping mode is active, false if not
+        """
+        control_mode_tel = self._parent_drone.telemetry.get(blueye.protocol.ControlModeTel)
+        if control_mode_tel is None:
+            return None
+        else:
+            return control_mode_tel.state.station_keeping
+
+    @station_keeping_active.setter
+    def station_keeping_active(self, enable: bool):
+        self._parent_drone._ctrl_client.set_station_keeping_state(enable)
+
+    @property
+    def weather_vaning_active(self) -> Optional[bool]:
+        """Enable or disable the weather vaning control mode
+
+        When weather vaning is active, the drone will attempt to maintain its current position
+        in the water and orient itself parallel to the current.
+
+        *Arguments*:
+
+        * Enable (bool): Activate weather vaning mode if true, de-activate if false. If the drone
+                         does not have a valid altitude reading this command will be ignored.
+
+        *Returns*:
+
+        * Weather vaning state (bool): True if weather vaning mode is active, false if not
+        """
+        control_mode_tel = self._parent_drone.telemetry.get(blueye.protocol.ControlModeTel)
+        if control_mode_tel is None:
+            return None
+        else:
+            return control_mode_tel.state.weather_vaning
+
+    @weather_vaning_active.setter
+    def weather_vaning_active(self, enable: bool):
+        self._parent_drone._ctrl_client.set_weather_vaning_state(enable)

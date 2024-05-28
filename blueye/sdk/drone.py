@@ -443,6 +443,23 @@ class Drone:
         return pose
 
     @property
+    def altitude(self) -> Optional[float]:
+        """Get the current altitude in meters
+
+        If the drone has a DVL or a positioning system with a valid reading this property will
+        return the current altitude.
+
+        *Returns*:
+
+        * altitude (float): The altitude in meters above the bottom.
+        """
+        altitude_tel = self.telemetry.get(blueye.protocol.AltitudeTel)
+        if altitude_tel is None or altitude_tel.altitude.is_valid is False:
+            return None
+        else:
+            return altitude_tel.altitude.value
+
+    @property
     def error_flags(self) -> Optional[Dict[str, bool]]:
         """Get the error flags
 
