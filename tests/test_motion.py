@@ -85,3 +85,19 @@ def test_station_keeping_returns_none_on_missing_telemetry(mocked_drone):
 def test_station_keeping_produces_correct_control_message(mocked_drone):
     mocked_drone.motion.station_keeping_active = True
     mocked_drone._ctrl_client.set_station_keeping_state.assert_called_with(True)
+
+
+def test_weather_vaning_returns_expected_value(mocked_drone):
+    mocked_drone._telemetry_watcher._state[bp.ControlModeTel] = bp.ControlModeTel.serialize(
+        bp.ControlModeTel(state=bp.ControlMode(weather_vaning=True))
+    )
+    assert mocked_drone.motion.weather_vaning_active is True
+
+
+def test_weather_vaning_returns_none_on_missing_telemetry(mocked_drone):
+    assert mocked_drone.motion.weather_vaning_active is None
+
+
+def test_weather_vaning_produces_correct_control_message(mocked_drone):
+    mocked_drone.motion.weather_vaning_active = True
+    mocked_drone._ctrl_client.set_weather_vaning_state.assert_called_with(True)

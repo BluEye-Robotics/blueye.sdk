@@ -210,6 +210,10 @@ class CtrlClient(threading.Thread):
         msg = blueye.protocol.StationKeepingCtrl(state={"enabled": enabled})
         self._messages_to_send.put(msg)
 
+    def set_weather_vaning_state(self, enabled: bool):
+        msg = blueye.protocol.WeatherVaningCtrl(state={"enabled": enabled})
+        self._messages_to_send.put(msg)
+
     def set_recording_state(self, main_enabled: bool, guestport_enabled: bool):
         msg = blueye.protocol.RecordCtrl(
             record_on={"main": main_enabled, "guestport": guestport_enabled}

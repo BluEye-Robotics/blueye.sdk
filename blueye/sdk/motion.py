@@ -277,3 +277,29 @@ class Motion:
     @station_keeping_active.setter
     def station_keeping_active(self, enable: bool):
         self._parent_drone._ctrl_client.set_station_keeping_state(enable)
+
+    @property
+    def weather_vaning_active(self) -> Optional[bool]:
+        """Enable or disable the weather vaning control mode
+
+        When weather vaning is active, the drone will attempt to maintain its current position
+        in the water and orient itself parallel to the current.
+
+        *Arguments*:
+
+        * Enable (bool): Activate weather vaning mode if true, de-activate if false. If the drone
+                         does not have a valid altitude reading this command will be ignored.
+
+        *Returns*:
+
+        * Weather vaning state (bool): True if weather vaning mode is active, false if not
+        """
+        control_mode_tel = self._parent_drone.telemetry.get(blueye.protocol.ControlModeTel)
+        if control_mode_tel is None:
+            return None
+        else:
+            return control_mode_tel.state.weather_vaning
+
+    @weather_vaning_active.setter
+    def weather_vaning_active(self, enable: bool):
+        self._parent_drone._ctrl_client.set_weather_vaning_state(enable)
