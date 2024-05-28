@@ -992,24 +992,25 @@ paths:
     get:
       tags:
         - "Surface unit"
-      summary: Get version of update file stored on drone and the version installed on the surface unit
-    responses:
-      "200":
-        description: A JSON with the version of the update file stored on the drone and the version installed on the surface unit
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                version_on_drone:
-                  $ref: "#/components/schemas/SurfaceUnitVersion"
-                installed_version:
-                  $ref: "#/components/schemas/SurfaceUnitVersion"
+      summary: Get current version(s)
+      description: Get version of update file stored on drone and the version installed on the surface unit
+      responses:
+        "200":
+          description: A JSON with the version of the update file stored on the drone and the version installed on the surface unit
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  version_on_drone:
+                    $ref: "#/components/schemas/SurfaceUnitVersion"
+                  installed_version:
+                    $ref: "#/components/schemas/SurfaceUnitVersion"
 
-      x-codeSamples:
-        - lang: "curl"
-          source: |
-            curl -X GET "http://192.168.1.101/surface_unit/version"
+        x-codeSamples:
+          - lang: "curl"
+            source: |
+              curl -X GET "http://192.168.1.101/surface_unit/version"
 
   /surface_unit/update:
     post:
