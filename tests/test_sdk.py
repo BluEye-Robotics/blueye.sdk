@@ -300,3 +300,14 @@ def test_water_temperature_returns_expected_value(mocked_drone):
 
 def test_water_temperature_returns_none_on_missing_telemetry(mocked_drone):
     assert mocked_drone.water_temperature is None
+
+
+def test_dive_time_returns_expected_value(mocked_drone):
+    dive_time_tel = bp.DiveTimeTel(dive_time={"value": 10})
+    dive_time_tel_serialized = bp.DiveTimeTel.serialize(dive_time_tel)
+    mocked_drone._telemetry_watcher._state[bp.DiveTimeTel] = dive_time_tel_serialized
+    assert mocked_drone.dive_time == 10
+
+
+def test_dive_time_returns_none_on_missing_telemetry(mocked_drone):
+    assert mocked_drone.dive_time is None

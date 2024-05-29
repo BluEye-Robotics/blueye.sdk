@@ -510,3 +510,19 @@ class Drone:
         if water_temperature_tel is None:
             return None
         return water_temperature_tel.temperature.value
+
+    @property
+    def dive_time(self) -> Optional[int]:
+        """Amount of time the drone has been submerged
+
+        The drone starts incrementing this value when the depth is above 250 mm.
+
+        *Returns*:
+
+        * dive_time (int): The time in seconds the drone has been submerged.
+        """
+        dive_time_tel = self.telemetry.get(blueye.protocol.DiveTimeTel)
+        if dive_time_tel is None:
+            return None
+        else:
+            return dive_time_tel.dive_time.value
