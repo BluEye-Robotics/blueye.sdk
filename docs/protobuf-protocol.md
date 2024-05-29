@@ -184,7 +184,7 @@ Request to set an In-Situ Aqua Troll parameter unit
 
 
 
-
+ 
 
 
 <a name="blueye-protocol-AquaTrollDevice"></a>
@@ -526,6 +526,17 @@ Type IDs
 | TYPE_TIME | 9 |  |
 
 
+ 
+
+ 
+
+ 
+
+
+
+<a name="control-proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
 ## control.proto
 Control
 
@@ -587,10 +598,60 @@ Issue a command to set auto heading to a desired state.
 
 
 
+<a name="blueye-protocol-AutoPilotHeaveCtrl"></a>
+
+### AutoPilotHeaveCtrl
+Issue a command to set Auto Pilot for vertiacl movement to a desired state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| state | [AutoPilotHeaveState](#blueye-protocol-AutoPilotHeaveState) |  | State of the auto pilot heave controller |
+
+
+
+
+
+
+<a name="blueye-protocol-AutoPilotSurgeYawCtrl"></a>
+
+### AutoPilotSurgeYawCtrl
+Issue a command to set Auto Pilot for cruising and turning to a desired state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| state | [AutoPilotSurgeYawState](#blueye-protocol-AutoPilotSurgeYawState) |  | State of the auto pilot surge yaw controller |
+
+
+
+
+
+
+<a name="blueye-protocol-CalibrateDvlGyroCtrl"></a>
+
+### CalibrateDvlGyroCtrl
+Issue a command to calibrate the DVL gyro.
+
+
+
+
+
+
 <a name="blueye-protocol-CancelCalibrationCtrl"></a>
 
 ### CancelCalibrationCtrl
 Issue a command to cancel compass calibration.
+
+
+
+
+
+
+<a name="blueye-protocol-ClearMissionCtrl"></a>
+
+### ClearMissionCtrl
+Clear the loaded mission.
 
 
 
@@ -722,6 +783,16 @@ Issue a command to set multibeam servo angle.
 
 
 
+<a name="blueye-protocol-PauseMissionCtrl"></a>
+
+### PauseMissionCtrl
+Issue a command to pause the loaded mission.
+
+
+
+
+
+
 <a name="blueye-protocol-PilotGPSPositionCtrl"></a>
 
 ### PilotGPSPositionCtrl
@@ -807,6 +878,16 @@ Restart the guest ports by turning power on and off
 
 
 
+<a name="blueye-protocol-RunMissionCtrl"></a>
+
+### RunMissionCtrl
+Issue a command to start and pause the loaded mission.
+
+
+
+
+
+
 <a name="blueye-protocol-SetAquaTrollConnectionStatusCtrl"></a>
 
 ### SetAquaTrollConnectionStatusCtrl
@@ -838,17 +919,6 @@ Request to set an In-Situ Aqua Troll parameter unit
 
 
 <a name="blueye-protocol-StartCalibrationCtrl"></a>
-
-
-
-
-
-
-
-
-
-<a name="control-proto"></a>
-<p align="right"><a href="#top">Top</a></p>
 
 ### StartCalibrationCtrl
 Issue a command to start compass calibration.
@@ -976,13 +1046,13 @@ Issue a command to set station keeping with weather vaning to a desired state.
 
 
 
+ 
 
+ 
 
+ 
 
-
-
-
-
+ 
 
 
 
@@ -1073,6 +1143,36 @@ Auto heading state.
 
 
 
+<a name="blueye-protocol-AutoPilotHeaveState"></a>
+
+### AutoPilotHeaveState
+Auto pilot heave state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| enabled | [bool](#bool) |  | If auto pilot heave is enabled |
+
+
+
+
+
+
+<a name="blueye-protocol-AutoPilotSurgeYawState"></a>
+
+### AutoPilotSurgeYawState
+Auto pilot surge yaw state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| enabled | [bool](#bool) |  | If auto pilot surge yaw is enabled |
+
+
+
+
+
+
 <a name="blueye-protocol-Battery"></a>
 
 ### Battery
@@ -1104,18 +1204,18 @@ using the BQ40Z50 BMS.
 | voltage | [BatteryBQ40Z50.Voltage](#blueye-protocol-BatteryBQ40Z50-Voltage) |  | Voltage of the battery cells |
 | temperature | [BatteryBQ40Z50.Temperature](#blueye-protocol-BatteryBQ40Z50-Temperature) |  | Temperature of the battery cells |
 | status | [BatteryBQ40Z50.BatteryStatus](#blueye-protocol-BatteryBQ40Z50-BatteryStatus) |  | Battery status flags |
-| current | [float](#float) |  | Current (A) |
+| current | [float](#float) |  | Measured current from the coulomb counter (A) |
 | average_current | [float](#float) |  | Average current (A) |
-| relative_state_of_charge | [float](#float) |  | Relative state of charge (0..1) |
-| absolute_state_of_charge | [float](#float) |  | Absolute state of charge (0..1) |
+| relative_state_of_charge | [float](#float) |  | Predicted remaining battery capacity as a factor of full_charge_capacity (0..1) |
+| absolute_state_of_charge | [float](#float) |  | Predicted remaining battery capacity (0..1) |
 | calculated_state_of_charge | [float](#float) |  | Calculated state of charge (0..1) |
-| remaining_capacity | [float](#float) |  | Remaining capacity (Ah) |
-| full_charge_capacity | [float](#float) |  | Full charge capacity (Ah) |
-| runtime_to_empty | [uint32](#uint32) |  | Runtime to empty (s) |
-| average_time_to_empty | [uint32](#uint32) |  | Average time to empty (s) |
-| average_time_to_full | [uint32](#uint32) |  | Average time to full (s) |
-| charging_current | [float](#float) |  | Charging current (A) |
-| charging_voltage | [float](#float) |  | Charging voltage (V) |
+| remaining_capacity | [float](#float) |  | Predicted remaining battery capacity (Ah) |
+| full_charge_capacity | [float](#float) |  | Predicted battery capacity when fully charged (Ah) |
+| runtime_to_empty | [uint32](#uint32) |  | Predicted remaining battery capacity based on the present rate of discharge (s) |
+| average_time_to_empty | [uint32](#uint32) |  | Predicted remaining battery capacity based on average_current (s) |
+| average_time_to_full | [uint32](#uint32) |  | Predicted time-to-full charge based on average_current (s) |
+| charging_current | [float](#float) |  | Desired charging current (A) |
+| charging_voltage | [float](#float) |  | Desired charging voltage (V) |
 | cycle_count | [uint32](#uint32) |  | Number of charging cycles |
 | design_capacity | [float](#float) |  | Design capacity (Ah) |
 | manufacture_date | [google.protobuf.Timestamp](#google-protobuf-Timestamp) |  | Manufacture date |
@@ -1123,6 +1223,108 @@ using the BQ40Z50 BMS.
 | manufacturer_name | [string](#string) |  | Manufacturer name |
 | device_name | [string](#string) |  | Device name |
 | device_chemistry | [string](#string) |  | Battery chemistry |
+| lifetimes | [BatteryBQ40Z50.BatteryLifetimes](#blueye-protocol-BatteryBQ40Z50-BatteryLifetimes) |  | Battery lifetimes |
+| safety_events | [BatteryBQ40Z50.BatterySafetyEvents](#blueye-protocol-BatteryBQ40Z50-BatterySafetyEvents) |  | Battery safety events |
+| charging_events | [BatteryBQ40Z50.BatteryChargingEvents](#blueye-protocol-BatteryBQ40Z50-BatteryChargingEvents) |  | Battery charging events |
+
+
+
+
+
+
+<a name="blueye-protocol-BatteryBQ40Z50-BatteryChargingEvents"></a>
+
+### BatteryBQ40Z50.BatteryChargingEvents
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| charge_termination_events_count | [uint32](#uint32) |  | Total number of valid charge termination events (events) |
+| charge_termination_last_event | [uint32](#uint32) |  | Last valid charge termination in cycle count cycles (cycles) |
+
+
+
+
+
+
+<a name="blueye-protocol-BatteryBQ40Z50-BatteryLifetimes"></a>
+
+### BatteryBQ40Z50.BatteryLifetimes
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| max_cell_voltages | [BatteryBQ40Z50.BatteryLifetimes.CellVoltages](#blueye-protocol-BatteryBQ40Z50-BatteryLifetimes-CellVoltages) |  | Maximum reported cell voltages |
+| min_cell_voltages | [BatteryBQ40Z50.BatteryLifetimes.CellVoltages](#blueye-protocol-BatteryBQ40Z50-BatteryLifetimes-CellVoltages) |  | Minimum reported cell voltages |
+| max_delta_cell_voltage | [float](#float) |  | Max delta between cells (V) |
+| max_charge_current | [float](#float) |  | Max reported current in the charge direction (A) |
+| max_discharge_current | [float](#float) |  | Max reported current in the discharge direction (A) |
+| max_avg_discharge_current | [float](#float) |  | Max reported average current in the discharge direction (A) |
+| max_avg_discharge_power | [float](#float) |  | Max reported power in discharge direction (W) |
+| max_cell_temperature | [float](#float) |  | Max reported cell temperature (°C) |
+| min_cell_temperature | [float](#float) |  | Min reported cell temperature (°C) |
+| max_delta_cell_temperature | [float](#float) |  | Max reported temperature delta for TSx inputs configured as cell temperature (°C) |
+| max_temperature_internal_sensor | [float](#float) |  | Max reported internal temperature sensor temperature (°C) |
+| min_temperature_internal_sensor | [float](#float) |  | Min reported internal temperature sensor temperature (°C) |
+| max_temperature_fet | [float](#float) |  | Max reported FET temperature (°C) |
+
+
+
+
+
+
+<a name="blueye-protocol-BatteryBQ40Z50-BatteryLifetimes-CellVoltages"></a>
+
+### BatteryBQ40Z50.BatteryLifetimes.CellVoltages
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| cell_1 | [float](#float) |  | Voltage for cell number 1 (V) |
+| cell_2 | [float](#float) |  | Voltage for cell number 2 (V) |
+| cell_3 | [float](#float) |  | Voltage for cell number 3 (V) |
+| cell_4 | [float](#float) |  | Voltage for cell number 4 (V) |
+
+
+
+
+
+
+<a name="blueye-protocol-BatteryBQ40Z50-BatterySafetyEvents"></a>
+
+### BatteryBQ40Z50.BatterySafetyEvents
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| cov_events_count | [uint32](#uint32) |  | Number of cell overvoltage (COV) events (events) |
+| cov_last_event | [uint32](#uint32) |  | Last COV event in cycle count cycles (cycles) |
+| cuv_events_count | [uint32](#uint32) |  | Number of cell undervoltage (CUV) events (events) |
+| cuv_last_event | [uint32](#uint32) |  | Last CUV event in cycle count cycles (cycles) |
+| ocd1_events_count | [uint32](#uint32) |  | Number of Overcurrent in Discharge 1 (OCD1) events (events) |
+| ocd1_last_event | [uint32](#uint32) |  | Last OCD1 event in cycle count cycles (cycles) |
+| ocd2_events_count | [uint32](#uint32) |  | Number of Overcurrent in Discharge 2 (OCD2) events (events) |
+| ocd2_last_event | [uint32](#uint32) |  | Last OCD2 event in cycle count cycles (cycles) |
+| occ1_events_count | [uint32](#uint32) |  | Number of Overcurrent in Charge 1 (OCC1) events (events) |
+| occ1_last_event | [uint32](#uint32) |  | Last OCC1 event in cycle count cycles (cycles) |
+| occ2_events_count | [uint32](#uint32) |  | Number of Overcurrent in Charge 2 (OCC2) events (events) |
+| occ2_last_event | [uint32](#uint32) |  | Last OCC2 event in cycle count cycles (cycles) |
+| aold_events_count | [uint32](#uint32) |  | Number of Overload in discharge (AOLD) events (events) |
+| aold_last_event | [uint32](#uint32) |  | Last AOLD event in cycle count cycles (cycles) |
+| ascd_events_count | [uint32](#uint32) |  | Number of Short Circuit in Discharge (ASCD) events (events) |
+| ascd_last_event | [uint32](#uint32) |  | Last ASCD event in cycle count cycles (cycles) |
+| ascc_events_count | [uint32](#uint32) |  | Number of Short Circuit in Charge (ASCC) events (events) |
+| ascc_last_event | [uint32](#uint32) |  | Last ASCC event in cycle count cycles (cycles) |
+| otc_events_count | [uint32](#uint32) |  | Number of Overtemperature in Charge (OTC) events (events) |
+| otc_last_event | [uint32](#uint32) |  | Last OTC event in cycle count cycles (cycles) |
+| otd_events_count | [uint32](#uint32) |  | Number of Overtemperature in Discharge (OTD) events (events) |
+| otd_last_event | [uint32](#uint32) |  | Last OTD event in cycle count cycles (cycles) |
+| otf_events_count | [uint32](#uint32) |  | Number of Overtemperature in FET (OTF) events (events) |
+| otf_last_event | [uint32](#uint32) |  | Last OTF event in cycle count cycles (cycles) |
 
 
 
@@ -1322,6 +1524,7 @@ Information about a remote client.
 | platform | [string](#string) |  | Platform, such as iOS, Android, Linux, etc |
 | platform_version | [string](#string) |  | Platform software version string |
 | name | [string](#string) |  | Name of the client |
+| is_observer | [bool](#bool) |  | If the client should be connected as an observer or not |
 
 
 
@@ -1390,6 +1593,8 @@ Control mode from drone supervisor
 | auto_altitude | [bool](#bool) |  | If auto altitude is enabled |
 | station_keeping | [bool](#bool) |  | If station keeping is enabled |
 | weather_vaning | [bool](#bool) |  | If weather vaning is enabled |
+| auto_pilot_surge_yaw | [bool](#bool) |  | If auto pilot surge yaw is enabled |
+| auto_pilot_heave | [bool](#bool) |  | If auto pilot heave is enabled |
 
 
 
@@ -1550,8 +1755,9 @@ Known error states for the drone.
 <a name="blueye-protocol-ForwardDistance"></a>
 
 ### ForwardDistance
-Distance to an object infront of the drone, typically obtained from an 1D
-pinger.
+Distance to an object infront of the drone
+
+Typically obtained from a 1D pinger.
 
 
 | Field | Type | Label | Description |
@@ -1605,7 +1811,7 @@ GuestPort connector information.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | device_list | [GuestPortDeviceList](#blueye-protocol-GuestPortDeviceList) |  | List of devices on this connector |
-| error | [GuestPortError](#blueye-protocol-GuestPortError) |  | Guest port error |
+| error | [GuestPortError](#blueye-protocol-GuestPortError) |  | Guest port connector error |
 | guest_port_number | [GuestPortNumber](#blueye-protocol-GuestPortNumber) |  | Guest port the connector is connected to |
 
 
@@ -1645,6 +1851,7 @@ GuestPort device.
 | serial_number | [string](#string) |  | Serial number |
 | depth_rating | [float](#float) |  | Depth rating (m) |
 | required_blunux_version | [string](#string) |  | Required Blunux version (x.y.z) |
+| detach_status | [GuestPortDetachStatus](#blueye-protocol-GuestPortDetachStatus) |  | Detach status based on detection pin |
 
 
 
@@ -1822,6 +2029,8 @@ and the left and right trigger for the slow and boost modifiers.
 | surge | [float](#float) |  | Forward (positive) and backwards (negative) movement. (-1..1) |
 | sway | [float](#float) |  | Right (positive) and left (negative) lateral movement (-1..1) |
 | heave | [float](#float) |  | Descend (positive) and ascend (negative) movement (-1..1) |
+| roll | [float](#float) |  | Roll left (negative) or right (positive). (-1..1) |
+| pitch | [float](#float) |  | Pitch down (negative) or up (positive). (-1..1) |
 | yaw | [float](#float) |  | Left (positive) and right (negative) movement (-1..1) |
 | slow | [float](#float) |  | Multiplier used to reduce the speed of the motion (0..1) |
 | boost | [float](#float) |  | Multiplier used to increase the speed of the motion (0..1) |
@@ -1872,6 +2081,24 @@ Navigation sensor used in the position observer with validity state
 | ----- | ---- | ----- | ----------- |
 | sensor_id | [NavigationSensorID](#blueye-protocol-NavigationSensorID) |  | Sensor id |
 | is_valid | [bool](#bool) |  | Sensor validity |
+
+
+
+
+
+
+<a name="blueye-protocol-Notification"></a>
+
+### Notification
+Notification is used for displaying info, warnings, and errors to the user.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| type | [NotificationType](#blueye-protocol-NotificationType) |  | Notification to be displayed to the user |
+| level | [NotificationLevel](#blueye-protocol-NotificationLevel) |  | Level of the notification, info, warning or error |
+| value | [google.protobuf.Any](#google-protobuf-Any) |  | Optional value to be displayed in the message |
+| timestamp | [google.protobuf.Timestamp](#google-protobuf-Timestamp) |  | Timestamp of the notification |
 
 
 
@@ -1996,8 +2223,9 @@ Camera recording state.
 <a name="blueye-protocol-Reference"></a>
 
 ### Reference
-Reference for the control system. Note that the internal heading referece is not relative to North.
-Use (ControlHealth.heading_error &#43; pose.yaw) instead.
+Reference for the control system.
+Note that the internal heading reference is not relative to North, use
+(ControlHealth.heading_error &#43; pose.yaw) instead.
 
 
 | Field | Type | Label | Description |
@@ -2145,6 +2373,23 @@ Relative velocity of tilt
 
 
 
+<a name="blueye-protocol-TimeLapseState"></a>
+
+### TimeLapseState
+Time-lapse state published if time-lapse mission is running.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| interval | [float](#float) |  | Interval between photos |
+| photos_taken | [int32](#int32) |  | Number of photos taken |
+| interval_type | [IntervalType](#blueye-protocol-IntervalType) |  | Interval type for photos, distance or time |
+
+
+
+
+
+
 <a name="blueye-protocol-Vector3"></a>
 
 ### Vector3
@@ -2168,12 +2413,12 @@ Vector with 3 elements
 Water density.
 
 Used to specify the water density the drone is operating in,
-to achieve more accruate depth measurements.
+to achieve more accurate depth measurements, f. ex. influenced by salinity.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| value | [float](#float) |  | Salinity (kg/l) |
+| value | [float](#float) |  | Water density (g/l) |
 
 
 
@@ -2209,7 +2454,7 @@ Weather vaning state.
 
 
 
-
+ 
 
 
 <a name="blueye-protocol-BatteryBQ40Z50-BatteryStatus-BatteryError"></a>
@@ -2309,6 +2554,19 @@ Available camera framerates.
 
 
 
+<a name="blueye-protocol-GuestPortDetachStatus"></a>
+
+### GuestPortDetachStatus
+GuestPort detach status.
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| GUEST_PORT_DETACH_STATUS_UNSPECIFIED | 0 | Unspecified (Default for non-detachable devices) |
+| GUEST_PORT_DETACH_STATUS_ATTACHED | 1 | Detachable device attached |
+| GUEST_PORT_DETACH_STATUS_DETACHED | 2 | Detachable device detached |
+
+
+
 <a name="blueye-protocol-GuestPortDeviceID"></a>
 
 ### GuestPortDeviceID
@@ -2339,7 +2597,7 @@ GuestPort device ID.
 | GUEST_PORT_DEVICE_ID_TRITECH_GEMINI_720IK | 20 | Tritech Gemini 720ik Multibeam Sonar |
 | GUEST_PORT_DEVICE_ID_NORTEK_NUCLEUS_1000 | 21 | Nortek Nucleus 1000 DVL |
 | GUEST_PORT_DEVICE_ID_BLUEYE_GENERIC_SERVO | 22 | Blueye Generic Servo |
-| GUEST_PORT_DEVICE_ID_BLUEYE_MULTIBEAM_SERVO | 23 | Blueye Multibeam Servo |
+| GUEST_PORT_DEVICE_ID_BLUEYE_MULTIBEAM_SERVO | 23 | Blueye Multibeam Skid Servo |
 | GUEST_PORT_DEVICE_ID_BLUE_ROBOTICS_DETACHABLE_NEWTON | 24 | Detachable Blue Robotics Newton |
 | GUEST_PORT_DEVICE_ID_INSITU_AQUA_TROLL_500 | 25 | In-Situ Aqua TROLL 500 |
 | GUEST_PORT_DEVICE_ID_MEDUSA_RADIOMETRICS_MS100 | 26 | Medusa Radiometrics Gamma Ray Sensor |
@@ -2350,13 +2608,17 @@ GuestPort device ID.
 | GUEST_PORT_DEVICE_ID_INSITU_AQUA_TROLL_100 | 31 | In-Situ Aqua TROLL 100 |
 | GUEST_PORT_DEVICE_ID_INSITU_RDO_PRO_X | 32 | In-Situ RDO PRO-X |
 | GUEST_PORT_DEVICE_ID_INSITU_RDO_BLUE | 33 | In-Situ RDO Blue |
+| GUEST_PORT_DEVICE_ID_BLUEYE_CAMERA_SERVO | 34 | Blueye Camera Servo |
+| GUEST_PORT_DEVICE_ID_BLUEYE_MULTIBEAM_HEAD_SERVO | 35 | Blueye Multibeam Head Servo |
+| GUEST_PORT_DEVICE_ID_CERULEAN_OMNISCAN_450FS | 36 | Cerulean Omniscan 450 FS |
+| GUEST_PORT_DEVICE_ID_CERULEAN_OMNISCAN_450SS | 37 | Cerulean Omniscan 450 SS |
 
 
 
 <a name="blueye-protocol-GuestPortError"></a>
 
 ### GuestPortError
-GuestPort error.
+GuestPort error. Only indicated errors on the guest port connector itself.
 
 | Name | Number | Description |
 | ---- | ------ | ----------- |
@@ -2396,6 +2658,19 @@ Heading source used during reset of the position estimate.
 
 
 
+<a name="blueye-protocol-IntervalType"></a>
+
+### IntervalType
+Interval type for time-lapse photos.
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| INTERVAL_TYPE_UNSPECIFIED | 0 | Unspecified |
+| INTERVAL_TYPE_TIME | 1 | Time interval |
+| INTERVAL_TYPE_DISTANCE | 2 | Distance interval |
+
+
+
 <a name="blueye-protocol-LogoType"></a>
 
 ### LogoType
@@ -2422,6 +2697,7 @@ Drone models produced by Blueye
 | MODEL_PRO | 2 | Blueye Pro, features camera tilt |
 | MODEL_X1 | 4 | Blueye X1, features camera tilt and one guest port |
 | MODEL_X3 | 3 | Blueye X3, features support for peripherals |
+| MODEL_X3_ULTRA | 6 | Blueye X3 Ultra |
 | MODEL_NEXT | 5 | Blueye ? |
 
 
@@ -2437,6 +2713,61 @@ List of navigation sensors that can be used by the position observer
 | NAVIGATION_SENSOR_ID_WATERLINKED_DVL_A50 | 1 | Water Linked DVL A50 |
 | NAVIGATION_SENSOR_ID_WATERLINKED_UGPS_G2 | 2 | Water Linked UGPS G2 |
 | NAVIGATION_SENSOR_ID_NMEA | 3 | NMEA stream from external positioning system |
+
+
+
+<a name="blueye-protocol-NotificationLevel"></a>
+
+### NotificationLevel
+List of available notification levels.
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| NOTIFICATION_LEVEL_UNSPECIFIED | 0 | Unspecified |
+| NOTIFICATION_LEVEL_INFO | 1 | Info |
+| NOTIFICATION_LEVEL_WARNING | 2 | Warning |
+| NOTIFICATION_LEVEL_ERROR | 3 | Error |
+
+
+
+<a name="blueye-protocol-NotificationType"></a>
+
+### NotificationType
+Notification is used for displaying info, warnings, and errors to the user.
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| NOTIFICATION_TYPE_UNSPECIFIED | 0 | Unspecified |
+| NOTIFICATION_TYPE_POSITION_ESTIMATE_IS_INACCURATE | 1 | Position estimate is inaccurate |
+| NOTIFICATION_TYPE_DRONE_POSITION_IS_UNKNOWN | 2 | Drone position is unknown |
+| NOTIFICATION_TYPE_USER_POSITION_IS_UNKNOWN | 3 | User position is unknown |
+| NOTIFICATION_TYPE_NO_MISSION_LOADED | 4 | No mission is loaded |
+| NOTIFICATION_TYPE_MISSION_LOADED | 5 | Mission is loaded |
+| NOTIFICATION_TYPE_FAILED_TO_LOAD_MISSION | 6 | Failed to load mission |
+| NOTIFICATION_TYPE_MISSION_COMPLETE | 7 | Mission is complete |
+| NOTIFICATION_TYPE_INSTRUCTION_COMPLETE | 8 | Instruction is complete |
+| NOTIFICATION_TYPE_WAYPOINT_REACHED | 9 | Waypoint reached |
+| NOTIFICATION_TYPE_DEPTH_TARGET_REACHED | 10 | Depth set point is reached |
+| NOTIFICATION_TYPE_ALTITUDE_TARGET_REACHED | 11 | Altitude set point is reached |
+| NOTIFICATION_TYPE_WAYPOINT_IS_TOO_FAR_AWAY | 12 | The waypoint is too far away |
+| NOTIFICATION_TYPE_DEPTH_SET_POINT_IS_TOO_FAR_AWAY | 13 | The depth set point is too far away |
+| NOTIFICATION_TYPE_TIME_TO_COMPLETE_IS_TOO_LONG | 14 | The time to complete the mission is too long |
+| NOTIFICATION_TYPE_RETURNING_TO_HOME | 15 | Returning to home |
+| NOTIFICATION_TYPE_GO_TO_SURFACE | 16 | Go to surface |
+| NOTIFICATION_TYPE_GO_TO_SEABED | 17 | Go to seabed with an altimeter |
+| NOTIFICATION_TYPE_GO_TO_WAYPOINT | 18 | Go to waypoint |
+| NOTIFICATION_TYPE_GO_TO_DEPTH_SET_POINT | 19 | Go to depth set point |
+| NOTIFICATION_TYPE_GO_TO_WAYPOINT_WITH_DEPTH_SET_POINT | 20 | Go to waypoint with depth set point |
+| NOTIFICATION_TYPE_MISSION_STARTED | 21 | Mission is started |
+| NOTIFICATION_TYPE_MISSION_PAUSED | 22 | Mission is paused |
+| NOTIFICATION_TYPE_MISSION_RESUMED | 23 | Mission is resumed |
+| NOTIFICATION_TYPE_MISSION_ABORTED | 24 | Mission is aborted |
+| NOTIFICATION_TYPE_DRONE_IS_STUCK | 25 | Drone is stuck during a mission |
+| NOTIFICATION_TYPE_WAIT_FOR | 26 | Wait for instruction running |
+| NOTIFICATION_TYPE_CAMERA_ACTION | 27 | Camera action initiated |
+| NOTIFICATION_TYPE_SET_TILT_MAIN_CAMERA | 28 | Set tilt for main camera |
+| NOTIFICATION_TYPE_SET_TILT_MULTIBEAM | 29 | Set tilt for multibeam |
+| NOTIFICATION_TYPE_INSTRUCTION_SKIPPED | 30 | When an instruction is not available in the ROV |
 
 
 
@@ -2519,11 +2850,440 @@ Available thickness units.
 | THICKNESS_UNIT_INCHES | 2 | Thickness should be displayed as inches |
 
 
+ 
+
+ 
+
+ 
+
+
+
+<a name="mission_planning-proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## mission_planning.proto
+Mission Planning Protocol
+
+These messages are used to start a mission and to monitor the status of the mission.
+
+
+<a name="blueye-protocol-CameraCommand"></a>
+
+### CameraCommand
+CameraCommands are used to control the camera from a mission.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| camera_action | [CameraAction](#blueye-protocol-CameraAction) |  | Camera command |
+| action_param | [float](#float) |  | Used for taking photos based on a time or distance interval |
 
 
 
 
 
+
+<a name="blueye-protocol-ControlModeCommand"></a>
+
+### ControlModeCommand
+A ControlModeCommand is used to set vertical and horizontal control mode during a mission.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| control_mode_vertical | [ControlModeVertical](#blueye-protocol-ControlModeVertical) |  | Desired control mode in heave |
+| control_mode_horizontal | [ControlModeHorizontal](#blueye-protocol-ControlModeHorizontal) |  | Desired control mode in surge and yaw |
+
+
+
+
+
+
+<a name="blueye-protocol-DepthSetPoint"></a>
+
+### DepthSetPoint
+Depth set point is used to describe a depth setpoint relative to the surface or the seabed.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| depth | [float](#float) |  | Desired depth at the wp (m) |
+| speed_to_depth | [float](#float) |  | Desired speed to desired depth set point (m/s) |
+| depth_zero_reference | [DepthZeroReference](#blueye-protocol-DepthZeroReference) |  | Used to destinguish desired altitude or depth |
+
+
+
+
+
+
+<a name="blueye-protocol-DepthSetPointCommand"></a>
+
+### DepthSetPointCommand
+A DepthSetPointCommand is used to go to a desired depth or altitude.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| depth_set_point | [DepthSetPoint](#blueye-protocol-DepthSetPoint) |  | Depth set point to go to |
+
+
+
+
+
+
+<a name="blueye-protocol-GoToHomeCommand"></a>
+
+### GoToHomeCommand
+GoToHomeCommand is used to go to the home position.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| desired_speed | [float](#float) |  | Desired speed to home (m/s) |
+
+
+
+
+
+
+<a name="blueye-protocol-GoToSeabedCommand"></a>
+
+### GoToSeabedCommand
+GoToSeabedCommand is used to go to the seabed.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| desired_speed | [float](#float) |  | Desired speed to seabed (m/s) |
+
+
+
+
+
+
+<a name="blueye-protocol-GoToSurfaceCommand"></a>
+
+### GoToSurfaceCommand
+GoToSurfaceCommand is used to go to the surface.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| desired_speed | [float](#float) |  | Desired speed to surface (m/s) |
+
+
+
+
+
+
+<a name="blueye-protocol-Instruction"></a>
+
+### Instruction
+A mission consitst of one or multiple instructions. One instruction can be of different types.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| id | [uint32](#uint32) |  |  |
+| group_id | [uint32](#uint32) |  | Group id used for polygoons |
+| auto_continue | [bool](#bool) |  | False will pause the mission after this instruction |
+| waypoint_command | [WaypointCommand](#blueye-protocol-WaypointCommand) |  | Go to waypoint |
+| depth_set_point_command | [DepthSetPointCommand](#blueye-protocol-DepthSetPointCommand) |  | Go to depth |
+| camera_command | [CameraCommand](#blueye-protocol-CameraCommand) |  | Camera commands |
+| control_mode_command | [ControlModeCommand](#blueye-protocol-ControlModeCommand) |  | Set control modes |
+| tilt_main_camera_command | [TiltMainCameraCommand](#blueye-protocol-TiltMainCameraCommand) |  | Set camera to angle x |
+| tilt_multibeam_command | [TiltMultibeamCommand](#blueye-protocol-TiltMultibeamCommand) |  | Set multibeam tilt angle |
+| wait_for_command | [WaitForCommand](#blueye-protocol-WaitForCommand) |  | Wait for x seconds |
+| go_to_surface_command | [GoToSurfaceCommand](#blueye-protocol-GoToSurfaceCommand) |  | Go to surface |
+| go_to_seabed_command | [GoToSeabedCommand](#blueye-protocol-GoToSeabedCommand) |  | Go to seabed |
+| go_to_home_command | [GoToHomeCommand](#blueye-protocol-GoToHomeCommand) |  | Go to home position |
+
+
+
+
+
+
+<a name="blueye-protocol-Mission"></a>
+
+### Mission
+A list of waypoints describes a mission that the auto pilot can execute.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| id | [uint32](#uint32) |  | Mission id |
+| name | [string](#string) |  | Mission name provided from the app |
+| instructions | [Instruction](#blueye-protocol-Instruction) | repeated | List of instructions in the mission |
+| path_segments | [PathSegment](#blueye-protocol-PathSegment) | repeated | Calculated path segments from the reference generator (optinal) |
+| total_distance | [uint32](#uint32) |  | Total distance of the mission (m) (optinal) |
+| total_duration_time | [uint32](#uint32) |  | Total duration time of the mission (s) (optinal) |
+| default_surge_speed | [float](#float) |  | Default cruise speed of the mission (m/s) (optinal) |
+| default_heave_speed | [float](#float) |  | Default heave speed of the mission (m/s) (optinal) |
+| default_circle_of_acceptance | [float](#float) |  | Default circle of acceptance for waypoints (m) (optinal) |
+
+
+
+
+
+
+<a name="blueye-protocol-MissionStatus"></a>
+
+### MissionStatus
+Mission Status is used for showing the status of the mission.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| state | [MissionState](#blueye-protocol-MissionState) |  | State of the mission supervisor |
+| time_elapsed | [uint32](#uint32) |  | Time elapsed since mission started (s) |
+| estimated_time_to_complete | [uint32](#uint32) |  | Estimated time to complete the mission (s) |
+| distance_to_complete | [uint32](#uint32) |  | Distance left of the mission (m) |
+| completed_instruction_ids | [uint32](#uint32) | repeated | Ids of the completed instructions |
+| total_number_of_instructions | [uint32](#uint32) |  | Total number of instructions in the mission |
+| completed_path_segment_ids | [uint32](#uint32) | repeated | Ids of the completed path segments |
+| total_number_of_path_segments | [uint32](#uint32) |  | Total number of path segments in the mission |
+| id | [uint32](#uint32) |  | Mission id of the active mission |
+
+
+
+
+
+
+<a name="blueye-protocol-PathSegment"></a>
+
+### PathSegment
+Path segment used to describe segments of a mission as a line between to waypoints.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| id | [uint32](#uint32) |  | Path segment id starting at 0, -1 for inactive |
+| speed_to_target | [float](#float) |  | Desired speed over ground in (m/s) |
+| course_to_target | [float](#float) |  | Course to target relative to north (rad) [-pi, pi] |
+| depth_speed | [float](#float) |  | Desired speed in heave (m/s) |
+| horizontal_length | [float](#float) |  | Horizontal length of the path segment (m) |
+| vertical_length | [float](#float) |  | Vertical legth of the path segment (m) |
+| from_wp_id | [uint32](#uint32) |  | Id of the starting waypoint |
+| to_wp_id | [uint32](#uint32) |  | Id of the ending waypoint |
+| duration_time | [float](#float) |  | Estmated time it takes to complete given legth and desired speed (s) |
+
+
+
+
+
+
+<a name="blueye-protocol-ReferenceAutoPilot"></a>
+
+### ReferenceAutoPilot
+Reference for the auto pilot when a mission is active.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| instruction_type | [InstructionType](#blueye-protocol-InstructionType) |  | Instruction type |
+| active_instruction_id | [uint32](#uint32) |  | Id of the active instruction |
+| active_path_segment_id | [uint32](#uint32) |  | Id of the active path segment |
+| course_to_target | [float](#float) |  | Course to the next waypoint from north (rad) [-pi, pi] |
+| speed_over_ground | [float](#float) |  | Desired speed over ground (m/s) |
+| horizontal_distance_to_target | [float](#float) |  | Horizontal distance to the next waypoint (m) |
+| circle_of_acceptance | [float](#float) |  | Circle of acceptance to mark waypoint as visited (m) |
+| depth_set_point | [float](#float) |  | Desired depth set point (m) |
+| heave_velocity | [float](#float) |  | Desired heave velocity (m/s) |
+| vertical_distance_to_target | [float](#float) |  | Vertical distance to the next waypoint (m) |
+| depth_zero_reference | [DepthZeroReference](#blueye-protocol-DepthZeroReference) |  | Indicates if depth is measured from the surface or seabed |
+| time_to_complete | [float](#float) |  | Estimated time to complete the instruction (s) |
+
+
+
+
+
+
+<a name="blueye-protocol-TiltMainCameraCommand"></a>
+
+### TiltMainCameraCommand
+The TiltMainCameraCommand can set the desired camera tilt angle.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| tilt_angle | [TiltAngle](#blueye-protocol-TiltAngle) |  | Tilt angle of the camera (-30..30) |
+
+
+
+
+
+
+<a name="blueye-protocol-TiltMultibeamCommand"></a>
+
+### TiltMultibeamCommand
+The TiltMultibeamCommand is used to set the tilt angle of the servo.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| multibeam_servo | [MultibeamServo](#blueye-protocol-MultibeamServo) |  | Tilt angle for the multibeam servo |
+
+
+
+
+
+
+<a name="blueye-protocol-WaitForCommand"></a>
+
+### WaitForCommand
+WaitForCommand is used to wait duringing a mission.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| wait_for_seconds | [float](#float) |  | Wait for x seconds |
+
+
+
+
+
+
+<a name="blueye-protocol-Waypoint"></a>
+
+### Waypoint
+Waypoints used to describe a path for the auto pilot.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| id | [uint32](#uint32) |  | Waypoint id |
+| name | [string](#string) |  | Waypoint name provided from the app |
+| global_position | [LatLongPosition](#blueye-protocol-LatLongPosition) |  | Position if the waypoint (decimal degrees) |
+| circle_of_acceptance | [float](#float) |  | Radius of the accepance circle around the waypoint (m) |
+| speed_to_target | [float](#float) |  | Desired speed over ground to waypoint (m/s) |
+| depth_set_point | [DepthSetPoint](#blueye-protocol-DepthSetPoint) |  | Depth set point (optional) |
+
+
+
+
+
+
+<a name="blueye-protocol-WaypointCommand"></a>
+
+### WaypointCommand
+A WaypointCommand will request the drone to drive to a point automatically.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| waypoint | [Waypoint](#blueye-protocol-Waypoint) |  | Waypoint to go to |
+
+
+
+
+
+ 
+
+
+<a name="blueye-protocol-CameraAction"></a>
+
+### CameraAction
+List of available camera actions.
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| CAMERA_ACTION_UNSPECIFIED | 0 | Unspecified command |
+| CAMERA_ACTION_TAKE_PHOTO | 1 | Take one photo |
+| CAMERA_ACTION_TAKE_PHOTOS_TIME | 2 | Take a photo every x second |
+| CAMERA_ACTION_TAKE_PHOTOS_DISTANCE | 3 | Take a photo every x meter |
+| CAMERA_ACTION_STOP_TAKING_PHOTOS | 4 | Stop taking photos |
+| CAMERA_ACTION_START_RECORDING | 5 | Start recording |
+| CAMERA_ACTION_STOP_RECORDING | 6 | Stop recording |
+
+
+
+<a name="blueye-protocol-ControlModeHorizontal"></a>
+
+### ControlModeHorizontal
+
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| CONTROL_MODE_HORIZONTAL_UNSPECIFIED | 0 | Unspecified |
+| CONTROL_MODE_HORIZONTAL_MANUAL | 1 | Manual control mode |
+| CONTROL_MODE_HORIZONTAL_AUTO_HEADING | 2 | Auto heading control mode |
+| CONTROL_MODE_HORIZONTAL_STATION_KEEPING | 3 | Station keeping control mode |
+
+
+
+<a name="blueye-protocol-ControlModeVertical"></a>
+
+### ControlModeVertical
+
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| CONTROL_MODE_VERTICAL_UNSPECIFIED | 0 | Unspecified |
+| CONTROL_MODE_VERTICAL_MANUAL | 1 | Manual control mode |
+| CONTROL_MODE_VERTICAL_AUTO_DEPTH | 2 | Auto depth control mode |
+| CONTROL_MODE_VERTICAL_AUTO_ALTITUDE | 3 | Auto altitude control mode |
+
+
+
+<a name="blueye-protocol-DepthZeroReference"></a>
+
+### DepthZeroReference
+Depth zero reference from surface for depth, and seabed for altitude.
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| DEPTH_ZERO_REFERENCE_UNSPECIFIED | 0 |  |
+| DEPTH_ZERO_REFERENCE_SURFACE | 1 |  |
+| DEPTH_ZERO_REFERENCE_SEABED | 2 |  |
+
+
+
+<a name="blueye-protocol-InstructionType"></a>
+
+### InstructionType
+List of available instruction types.
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| INSTRUCTION_TYPE_UNSPECIFIED | 0 | Unspecified |
+| INSTRUCTION_TYPE_NONE | 1 | None |
+| INSTRUCTION_TYPE_GO_TO_WAYPOINT | 2 | Go to waypoint |
+| INSTRUCTION_TYPE_GO_TO_WAYPOINT_WITH_DEPTH_SET_POINT | 3 | Go to waypoint with depth set point |
+| INSTRUCTION_TYPE_GO_TO_DEPTH_SET_POINT | 4 | Go to depth set point |
+| INSTRUCTION_TYPE_SET_CAMERA_ACTION | 5 | Command used to take photo repeatedly or start, stop recording |
+| INSTRUCTION_TYPE_SET_CONTROL_MODE | 6 | Sets a new control mode |
+| INSTRUCTION_TYPE_SET_TILT_MAIN_CAMERA | 7 | Sets a new angle for the tilt servo |
+| INSTRUCTION_TYPE_SET_TILT_SERVO | 8 | Sets a new angle for the tilt servo |
+| INSTRUCTION_TYPE_WAIT_FOR_SEC | 9 | Waiting for requested time in seconds |
+| INSTRUCTION_TYPE_GO_TO_SURFACE | 10 | Go to the surface |
+| INSTRUCTION_TYPE_GO_TO_SEABED | 11 | Go to the seabed |
+| INSTRUCTION_TYPE_GO_TO_HOME | 12 | Returning to home |
+
+
+
+<a name="blueye-protocol-MissionState"></a>
+
+### MissionState
+List of mission supervisor states.
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| MISSION_STATE_UNSPECIFIED | 0 | Unspecified |
+| MISSION_STATE_INACTIVE | 1 | Mission supervisor is inactive |
+| MISSION_STATE_READY | 2 | Ready to start mission |
+| MISSION_STATE_RUNNING | 3 | Mission is running |
+| MISSION_STATE_PAUSED | 4 | Mission is paused |
+| MISSION_STATE_COMPLETED | 5 | Mission is completed |
+| MISSION_STATE_ABORTED | 6 | Mission is aborted by the mission supervisor |
+| MISSION_STATE_FAILED_TO_LOAD_MISSION | 7 | Mission has failed to load |
+| MISSION_STATE_FAILED_TO_START_MISSION | 8 | Mission has failed to start |
+
+
+ 
+
+ 
+
+ 
 
 
 
@@ -2666,6 +3426,31 @@ Request to get the currently set camera parameters.
 
 
 
+<a name="blueye-protocol-GetMissionRep"></a>
+
+### GetMissionRep
+Get active mission response.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| mission | [Mission](#blueye-protocol-Mission) |  | active mission with waypoints |
+
+
+
+
+
+
+<a name="blueye-protocol-GetMissionReq"></a>
+
+### GetMissionReq
+Service request to the reference_generator to get the active mission.
+
+
+
+
+
+
 <a name="blueye-protocol-GetOverlayParametersRep"></a>
 
 ### GetOverlayParametersRep
@@ -2762,6 +3547,56 @@ Request to set camera parameters.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | camera_parameters | [CameraParameters](#blueye-protocol-CameraParameters) |  | The camera parameters to apply. |
+
+
+
+
+
+
+<a name="blueye-protocol-SetInstructionUpdateRep"></a>
+
+### SetInstructionUpdateRep
+Response after updating an instruction in the current mission.
+
+
+
+
+
+
+<a name="blueye-protocol-SetInstructionUpdateReq"></a>
+
+### SetInstructionUpdateReq
+Updates an instruction in current mission with a new instruction payload.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| instruction | [Instruction](#blueye-protocol-Instruction) |  | instruction that will replace the desired instruction |
+
+
+
+
+
+
+<a name="blueye-protocol-SetMissionRep"></a>
+
+### SetMissionRep
+Response after setting a new mission.
+
+
+
+
+
+
+<a name="blueye-protocol-SetMissionReq"></a>
+
+### SetMissionReq
+Issue a desired mission to the reference_generator.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| mission | [Mission](#blueye-protocol-Mission) |  | requested mission isseued to the reference generator |
 
 
 
@@ -2880,13 +3715,13 @@ Request to set the system time on the drone.
 
 
 
+ 
 
+ 
 
+ 
 
-
-
-
-
+ 
 
 
 
@@ -3008,7 +3843,7 @@ Receive essential information about the battery status.
 <a name="blueye-protocol-CPUTemperatureTel"></a>
 
 ### CPUTemperatureTel
-
+Drone CPU temperature
 
 
 | Field | Type | Label | Description |
@@ -3038,7 +3873,7 @@ Calibrated IMU data
 <a name="blueye-protocol-CalibrationStateTel"></a>
 
 ### CalibrationStateTel
-
+Calibration state used for calibration rotine.
 
 
 | Field | Type | Label | Description |
@@ -3129,7 +3964,7 @@ List of connected clients telemetry message.
 <a name="blueye-protocol-ControlForceTel"></a>
 
 ### ControlForceTel
-
+Control force in all directions.
 
 
 | Field | Type | Label | Description |
@@ -3159,7 +3994,7 @@ Receive the current state of the control system.
 <a name="blueye-protocol-ControllerHealthTel"></a>
 
 ### ControllerHealthTel
-
+Controller health indicating the load of the controller, used to set a color in the heading and depth bar.
 
 
 | Field | Type | Label | Description |
@@ -3189,7 +4024,7 @@ Cathodic Protection Potential probe telemetry message
 <a name="blueye-protocol-DataStorageSpaceTel"></a>
 
 ### DataStorageSpaceTel
-
+Data storage info.
 
 
 | Field | Type | Label | Description |
@@ -3204,7 +4039,7 @@ Cathodic Protection Potential probe telemetry message
 <a name="blueye-protocol-DepthTel"></a>
 
 ### DepthTel
-
+Measurement of the drones position relative to the sea surface.
 
 
 | Field | Type | Label | Description |
@@ -3280,7 +4115,7 @@ Receive currently set error flags.
 <a name="blueye-protocol-ForwardDistanceTel"></a>
 
 ### ForwardDistanceTel
-
+Distance to an object in front of the drone when a 1D pinger is mounted forwards.
 
 
 | Field | Type | Label | Description |
@@ -3370,7 +4205,7 @@ Raw IMU data from IMU 2
 <a name="blueye-protocol-IperfTel"></a>
 
 ### IperfTel
-
+Iperf indicates the available bandwidth on the tether from drone to surface unit.
 
 
 | Field | Type | Label | Description |
@@ -3427,6 +4262,21 @@ Medusa gamma ray sensor spectrometer data
 
 
 
+<a name="blueye-protocol-MissionStatusTel"></a>
+
+### MissionStatusTel
+Mission status from the mission supervisor.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| mission_status | [MissionStatus](#blueye-protocol-MissionStatus) |  |  |
+
+
+
+
+
+
 <a name="blueye-protocol-MultibeamServoTel"></a>
 
 ### MultibeamServoTel
@@ -3445,7 +4295,7 @@ State of the servo installed in the multibeam
 <a name="blueye-protocol-NStreamersTel"></a>
 
 ### NStreamersTel
-
+Number of connected clients streaming video.
 
 
 | Field | Type | Label | Description |
@@ -3457,10 +4307,25 @@ State of the servo installed in the multibeam
 
 
 
+<a name="blueye-protocol-NotificationTel"></a>
+
+### NotificationTel
+Notification from the control system.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| notification | [Notification](#blueye-protocol-Notification) |  |  |
+
+
+
+
+
+
 <a name="blueye-protocol-PilotGPSPositionTel"></a>
 
 ### PilotGPSPositionTel
-
+Pilot position (originating from device GPS) for logging.
 
 
 | Field | Type | Label | Description |
@@ -3475,7 +4340,7 @@ State of the servo installed in the multibeam
 <a name="blueye-protocol-PositionEstimateTel"></a>
 
 ### PositionEstimateTel
-
+Position estimate of the drone if a DVL or a positioning system is available.
 
 
 | Field | Type | Label | Description |
@@ -3490,7 +4355,7 @@ State of the servo installed in the multibeam
 <a name="blueye-protocol-RecordStateTel"></a>
 
 ### RecordStateTel
-
+Record state from the drone.
 
 
 | Field | Type | Label | Description |
@@ -3502,10 +4367,25 @@ State of the servo installed in the multibeam
 
 
 
+<a name="blueye-protocol-ReferenceAutoPilotTel"></a>
+
+### ReferenceAutoPilotTel
+Reference for the auto pilot when a mission is active.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| reference_auto_pilot | [ReferenceAutoPilot](#blueye-protocol-ReferenceAutoPilot) |  |  |
+
+
+
+
+
+
 <a name="blueye-protocol-ReferenceTel"></a>
 
 ### ReferenceTel
-
+Reference signals indicating desired states.
 
 
 | Field | Type | Label | Description |
@@ -3535,7 +4415,7 @@ Thickness gauge measurement telemetry message.
 <a name="blueye-protocol-TiltAngleTel"></a>
 
 ### TiltAngleTel
-
+Tilt angle state on main camera.
 
 
 | Field | Type | Label | Description |
@@ -3550,7 +4430,7 @@ Thickness gauge measurement telemetry message.
 <a name="blueye-protocol-TiltStabilizationTel"></a>
 
 ### TiltStabilizationTel
-
+Tilt stabilization state.
 
 
 | Field | Type | Label | Description |
@@ -3562,10 +4442,25 @@ Thickness gauge measurement telemetry message.
 
 
 
+<a name="blueye-protocol-TimeLapseStateTel"></a>
+
+### TimeLapseStateTel
+Time-lapse state from the drone.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| time_lapse_state | [TimeLapseState](#blueye-protocol-TimeLapseState) |  |  |
+
+
+
+
+
+
 <a name="blueye-protocol-VideoStorageSpaceTel"></a>
 
 ### VideoStorageSpaceTel
-
+Video storage info.
 
 
 | Field | Type | Label | Description |
@@ -3580,7 +4475,7 @@ Thickness gauge measurement telemetry message.
 <a name="blueye-protocol-WaterTemperatureTel"></a>
 
 ### WaterTemperatureTel
-
+Water temerature from the depth sensor.
 
 
 | Field | Type | Label | Description |
@@ -3591,13 +4486,13 @@ Thickness gauge measurement telemetry message.
 
 
 
+ 
 
+ 
 
+ 
 
-
-
-
-
+ 
 
 
 
@@ -3620,3 +4515,4 @@ Thickness gauge measurement telemetry message.
 | <a name="bool" /> bool |  | bool | boolean | boolean | bool | bool | boolean | TrueClass/FalseClass |
 | <a name="string" /> string | A string must always contain UTF-8 encoded or 7-bit ASCII text. | string | String | str/unicode | string | string | string | String (UTF-8) |
 | <a name="bytes" /> bytes | May contain any arbitrary sequence of bytes. | string | ByteString | str | []byte | ByteString | string | String (ASCII-8BIT) |
+
