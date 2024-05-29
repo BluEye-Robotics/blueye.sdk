@@ -288,3 +288,15 @@ class TestTelemetry:
         mocked_drone._telemetry_watcher._state[bp.DepthTel] = depth_tel_serialized
         assert mocked_drone.telemetry.get(bp.DepthTel, deserialize=True) == depth_tel
         assert mocked_drone.telemetry.get(bp.DepthTel, deserialize=False) == depth_tel_serialized
+
+
+def test_water_temperature_returns_expected_value(mocked_drone):
+    water_temp = 10.5
+    water_temp_tel = bp.WaterTemperatureTel(temperature={"value": water_temp})
+    water_temp_tel_serialized = bp.WaterTemperatureTel.serialize(water_temp_tel)
+    mocked_drone._telemetry_watcher._state[bp.WaterTemperatureTel] = water_temp_tel_serialized
+    assert mocked_drone.water_temperature == water_temp
+
+
+def test_water_temperature_returns_none_on_missing_telemetry(mocked_drone):
+    assert mocked_drone.water_temperature is None
