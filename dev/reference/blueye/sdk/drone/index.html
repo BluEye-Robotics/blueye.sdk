@@ -2291,6 +2291,26 @@ class Drone:
         """
 
         self._req_rep_client.ping(timeout)
+
+    @property
+
+    def water_temperature(self) -&gt; Optional[float]:
+
+        """Get the water temperature in degrees Celsius
+
+        *Returns*:
+
+        * temperature (float): The water temperature in degrees Celsius
+
+        """
+
+        water_temperature_tel = self.telemetry.get(blueye.protocol.WaterTemperatureTel)
+
+        if water_temperature_tel is None:
+
+            return None
+
+        return water_temperature_tel.temperature.value
 </code></pre>
 </details>
 <h2 id="variables">Variables</h2>
@@ -2948,6 +2968,26 @@ be disabled by setting <code>auto_connect=False</code>.</p>
         """
 
         self._req_rep_client.ping(timeout)
+
+    @property
+
+    def water_temperature(self) -&gt; Optional[float]:
+
+        """Get the water temperature in degrees Celsius
+
+        *Returns*:
+
+        * temperature (float): The water temperature in degrees Celsius
+
+        """
+
+        water_temperature_tel = self.telemetry.get(blueye.protocol.WaterTemperatureTel)
+
+        if water_temperature_tel is None:
+
+            return None
+
+        return water_temperature_tel.temperature.value
 </code></pre>
 </details>
 <hr />
@@ -3003,6 +3043,13 @@ return the current altitude.</p>
 <p><em>Returns</em>:</p>
 <ul>
 <li>pose (dict): Dictionary with roll, pitch, and yaw in degrees, from 0 to 359.</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">water_temperature</span>
+</code></pre></div>
+<p>Get the water temperature in degrees Celsius</p>
+<p><em>Returns</em>:</p>
+<ul>
+<li>temperature (float): The water temperature in degrees Celsius</li>
 </ul>
 <h4 id="methods_1">Methods</h4>
 <h4 id="connect">connect</h4>
