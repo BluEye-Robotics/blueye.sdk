@@ -497,3 +497,16 @@ class Drone:
         Raises a ResponseTimeout exception if the drone does not respond within the timeout period.
         """
         self._req_rep_client.ping(timeout)
+
+    @property
+    def water_temperature(self) -> Optional[float]:
+        """Get the water temperature in degrees Celsius
+
+        *Returns*:
+
+        * temperature (float): The water temperature in degrees Celsius
+        """
+        water_temperature_tel = self.telemetry.get(blueye.protocol.WaterTemperatureTel)
+        if water_temperature_tel is None:
+            return None
+        return water_temperature_tel.temperature.value
