@@ -23,18 +23,19 @@ def parse_message(payload_msg_name, data):
 
     if payload_msg_name in channel_ids:
         try:
-            asyncio.run(global_server.send_message(channel_ids[payload_msg_name], time.time_ns(), data))
+            asyncio.run(
+                global_server.send_message(channel_ids[payload_msg_name], time.time_ns(), data)
+            )
         except TypeError as e:
-            print(f"Error sending message for {payload_msg_name}: {e}")
+            logger.info(f"Error sending message for {payload_msg_name}: {e}")
     else:
-        print(f"Warning: Channel ID not found for message type: {payload_msg_name}")
+        logger.info(f"Warning: Channel ID not found for message type: {payload_msg_name}")
 
 
 def add_file_descriptor_and_dependencies(file_descriptor, file_descriptor_set):
-    """ Recursively add descriptors and their dependencies to the FileDescriptorSet """
+    """Recursively add descriptors and their dependencies to the FileDescriptorSet"""
     # Check if the descriptor is already in the FileDescriptorSet
     if file_descriptor.name not in [fd.name for fd in file_descriptor_set.file]:
-        print(f"Adding file descriptor: {file_descriptor.name}")
 
         # Add the descriptor to the FileDescriptorSet
         file_descriptor.CopyToProto(file_descriptor_set.file.add())
@@ -42,8 +43,7 @@ def add_file_descriptor_and_dependencies(file_descriptor, file_descriptor_set):
         # Recursively add dependencies
         for file_descriptor_dep in file_descriptor.dependencies:
             add_file_descriptor_and_dependencies(file_descriptor_dep, file_descriptor_set)
-    else:
-        print(f"File descriptor already present: {file_descriptor.name}")
+
 
 def get_protobuf_descriptors(namespace):
     descriptors = {}
@@ -54,11 +54,15 @@ def get_protobuf_descriptors(namespace):
     # Iterate through all the attributes of the module
     for name, obj in inspect.getmembers(module):
         # Check if the object is a class, ends with 'Tel', and has a _meta attribute with pb
-        if inspect.isclass(obj) and name.endswith('Tel') and hasattr(obj, '_meta') and hasattr(obj._meta, 'pb'):
+        if (
+            inspect.isclass(obj)
+            and name.endswith("Tel")
+            and hasattr(obj, "_meta")
+            and hasattr(obj._meta, "pb")
+        ):
             try:
                 # Access the DESCRIPTOR
                 descriptor = obj._meta.pb.DESCRIPTOR
-                print (f"Processing {name}")
 
                 # Create a FileDescriptorSet
                 file_descriptor_set = descriptor_pb2.FileDescriptorSet()
@@ -70,16 +74,17 @@ def get_protobuf_descriptors(namespace):
                 serialized_data = file_descriptor_set.SerializeToString()
 
                 # Base64 encode the serialized data
-                schema_base64 = base64.b64encode(serialized_data).decode('utf-8')
+                schema_base64 = base64.b64encode(serialized_data).decode("utf-8")
 
                 # Store the serialized data in the dictionary
                 descriptors[name] = schema_base64
             except AttributeError as e:
-                print(f"Skipping message: {name}: {e}")
+                logger.info(f"Skipping message: {name}: {e}")
                 # Skip non-message types
                 raise e
 
     return descriptors
+
 
 async def main():
     # Initialize the drone
@@ -90,8 +95,9 @@ async def main():
     async with FoxgloveServer("0.0.0.0", 8765, "Blueye SDK bridge") as server:
         global global_server
         global_server = server
+
         # Get Protobuf descriptors for all relevant message types
-        namespace = 'blueye.protocol'
+        namespace = "blueye.protocol"
         descriptors = get_protobuf_descriptors(namespace)
 
         # Register each message type as a channel
@@ -108,11 +114,12 @@ async def main():
             channel_ids[message_name] = chan_id
 
         for name, chan_id in channel_ids.items():
-            print(f"Registered channel for {name}: {chan_id}")
+            logger.info(f"Registered topic: blueye.protocol.{name}")
 
         # Keep the server running
         while True:
             await asyncio.sleep(1)
+
 
 if __name__ == "__main__":
     asyncio.run(main())
