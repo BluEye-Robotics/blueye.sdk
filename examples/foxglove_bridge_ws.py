@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import time
+import logging
 
 from blueye.sdk import Drone
 
@@ -16,6 +17,18 @@ import blueye.protocol
 # Declare the global variable
 channel_ids = {}
 global_server = None
+
+logger = logging.getLogger("FoxgloveBridge")
+logger.setLevel(logging.DEBUG)
+handler = logging.StreamHandler()
+handler.setFormatter(logging.Formatter("%(asctime)s: [%(levelname)s] <%(name)s> %(message)s"))
+logger.addHandler(handler)
+logger.info("Starting Foxglove bridge")
+
+logger_sdk = logging.getLogger(blueye.sdk.__name__)
+logger_sdk.setLevel(logging.DEBUG)
+logger_sdk.addHandler(handler)
+
 
 def parse_message(payload_msg_name, data):
     global global_server
