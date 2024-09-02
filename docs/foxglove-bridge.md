@@ -10,10 +10,9 @@ With some simple steps you can visualize live sensor data from the drone in Foxg
 
 ### Alternative with Docker
 We have also provided a docker container that you can use to automatically starts the blueye-foxglove server.
-1. Pull the image:
-- `docker pull blueyerobotics/foxglove-bridge`
-2. Run the image in a container with port 8765 open:
-- `docker run --rm -p 8765:8765 blueyerobotics/foxglove-bridge`
+
+1. Pull the image: `docker pull blueyerobotics/foxglove-bridge`.
+2. Run the image in a container with port 8765 open: `docker run --rm -p 8765:8765 blueyerobotics/foxglove-bridge`.
 3. Connect as above in step 5.
 
 ### How it works
