@@ -49,7 +49,6 @@ def add_file_descriptor_and_dependencies(file_descriptor, file_descriptor_set):
     """Recursively add descriptors and their dependencies to the FileDescriptorSet"""
     # Check if the descriptor is already in the FileDescriptorSet
     if file_descriptor.name not in [fd.name for fd in file_descriptor_set.file]:
-
         # Add the descriptor to the FileDescriptorSet
         file_descriptor.CopyToProto(file_descriptor_set.file.add())
 
