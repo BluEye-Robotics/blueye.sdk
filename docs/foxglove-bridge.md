@@ -8,6 +8,14 @@ With some simple steps you can visualize live sensor data from the drone in Foxg
 5. Open foxglove and open a new `Foxglove WebSocket` connection and leave it on default (`ws://localhost:8765`).
 6. Add panel, Raw message, or Plot and select the topic you want to display.
 
+### Alternative with Docker
+We have also provided a docker container that you can use to automatically starts the blueye-foxglove server.
+1. Pull the image:
+- `docker pull blueyerobotics/foxglove-bridge`
+2. Run the image in a container with port 8765 open:
+- `docker run --rm -p 8765:8765 blueyerobotics/foxglove-bridge`
+3. Connect as above in step 5.
+
 ### How it works
  The script below uses the Blueye SDK to subscribe to the drone telemetry messages with `ZeroMQ`. Then the foxglove websocket server is forwarding the protobuf messages so they can be subscribed to in the `Foxglove GUI`.
 

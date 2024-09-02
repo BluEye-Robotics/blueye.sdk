@@ -67,6 +67,7 @@ nav:
       - "Legacy log file format": "logs/legacy-log-file-format.md"
   - "Configure drone parameters": "configuration.md"
   - "Subscribing to a telemetry message": "telemetry-callback.md"
+  - "Live plotting with Foxglove": "foxglove-bridge.md"
   - "Peripherals": "peripherals.md"
   - "Visualizing with Foxglove": "foxglove-bridge.md"
   - "Updating from v1 to v2": "migrating-to-v2.md"
