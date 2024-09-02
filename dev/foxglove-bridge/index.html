@@ -20,7 +20,7 @@
     
     
       
-        <title>Live plotting with Foxglove - Blueye SDK</title>
+        <title>Visualizing with Foxglove - Blueye SDK</title>
       
     
     
@@ -140,7 +140,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-            Live plotting with Foxglove
+            Visualizing with Foxglove
             
           </span>
         </div>
@@ -694,93 +694,6 @@
     
   
   
-    
-  
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Live plotting with Foxglove
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        
-  
-  <span class="md-ellipsis">
-    Live plotting with Foxglove
-  </span>
-  
-
-      </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#alternative-with-docker" class="md-nav__link">
-    <span class="md-ellipsis">
-      Alternative with Docker
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#how-it-works" class="md-nav__link">
-    <span class="md-ellipsis">
-      How it works
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#example-of-a-websocket-bridge" class="md-nav__link">
-    <span class="md-ellipsis">
-      Example of a websocket bridge
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
-    </li>
-  
-
-    
-    
-    
-  
-  
   
   
     <li class="md-nav__item">
@@ -817,7 +730,7 @@
           
   
   <span class="md-ellipsis">
-    Live plotting with Foxglove
+    Visualizing with Foxglove
   </span>
   
 
@@ -828,7 +741,7 @@
         
   
   <span class="md-ellipsis">
-    Live plotting with Foxglove
+    Visualizing with Foxglove
   </span>
   
 
@@ -958,10 +871,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_14" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_13" >
         
           
-          <label class="md-nav__link" for="__nav_14" id="__nav_14_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_13" id="__nav_13_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -972,8 +885,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_14_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_14">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13">
             <span class="md-nav__icon md-icon"></span>
             Reference
           </label>
@@ -1257,12 +1170,12 @@
 <li>Add panel, Raw message, or Plot and select the topic you want to display.</li>
 </ol>
 <h3 id="alternative-with-docker">Alternative with Docker</h3>
-<p>We have also provided a docker container that you can use to automatically starts the blueye-foxglove server.
-1. Pull the image:
-- <code>docker pull blueyerobotics/foxglove-bridge</code>
-2. Run the image in a container with port 8765 open:
-- <code>docker run --rm -p 8765:8765 blueyerobotics/foxglove-bridge</code>
-3. Connect as above in step 5.</p>
+<p>We have also provided a docker container that you can use to automatically starts the blueye-foxglove server.</p>
+<ol>
+<li>Pull the image: <code>docker pull blueyerobotics/foxglove-bridge</code>.</li>
+<li>Run the image in a container with port 8765 open: <code>docker run --rm -p 8765:8765 blueyerobotics/foxglove-bridge</code>.</li>
+<li>Connect as above in step 5.</li>
+</ol>
 <h3 id="how-it-works">How it works</h3>
 <p>The script below uses the Blueye SDK to subscribe to the drone telemetry messages with <code>ZeroMQ</code>. Then the foxglove websocket server is forwarding the protobuf messages so they can be subscribed to in the <code>Foxglove GUI</code>.</p>
 <h3 id="example-of-a-websocket-bridge">Example of a websocket bridge</h3>
