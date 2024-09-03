@@ -41,9 +41,7 @@ class LogStream:
     Creates a stream from a downloaded log file. Iterate over the object to get the next log record.
     """
 
-    def __init__(
-        self, log: bytes, decompress: bool = True
-    ) -> Iterator[
+    def __init__(self, log: bytes, decompress: bool = True) -> Iterator[
         Tuple[
             proto.datetime_helpers.DatetimeWithNanoseconds,  # Real time clock
             timedelta,  # Time since first message

@@ -196,9 +196,9 @@ class TestTilt:
         mocked_drone.features = ["tilt"]
         TiltStabilizationTel = bp.TiltStabilizationTel(state={"enabled": expected_state})
         TiltStabilizationTel_serialized = bp.TiltStabilizationTel.serialize(TiltStabilizationTel)
-        mocked_drone._telemetry_watcher._state[
-            bp.TiltStabilizationTel
-        ] = TiltStabilizationTel_serialized
+        mocked_drone._telemetry_watcher._state[bp.TiltStabilizationTel] = (
+            TiltStabilizationTel_serialized
+        )
         assert mocked_drone.camera.tilt.stabilization_enabled == expected_state
 
     def test_set_tilt_stabilization(self, mocked_drone: Drone):
