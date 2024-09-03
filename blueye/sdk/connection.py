@@ -345,9 +345,13 @@ class ReqRepClient(threading.Thread):
         return self._send_request_get_response(request, blueye.protocol.SyncTimeRep, timeout)
 
     def connect_client(
-        self, client_info: blueye.protocol.ClientInfo = None, timeout: float = 0.05
+        self,
+        client_info: blueye.protocol.ClientInfo = None,
+        is_observer: bool = False,
+        timeout: float = 0.05,
     ) -> blueye.protocol.ConnectClientRep:
         client = client_info or self._get_client_info()
+        client.is_observer = is_observer
         request = blueye.protocol.ConnectClientReq(client_info=client)
         return self._send_request_get_response(request, blueye.protocol.ConnectClientRep, timeout)
 

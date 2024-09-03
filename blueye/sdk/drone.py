@@ -182,6 +182,7 @@ class Drone:
         auto_connect=True,
         timeout=10,
         disconnect_other_clients=False,
+        connect_as_observer=False,
     ):
         self._ip = ip
         self.camera = Camera(self, is_guestport_camera=False)
@@ -204,7 +205,11 @@ class Drone:
         Guestport telemetry message has been recieved yet."""
 
         if auto_connect is True:
-            self.connect(timeout=timeout, disconnect_other_clients=disconnect_other_clients)
+            self.connect(
+                timeout=timeout,
+                disconnect_other_clients=disconnect_other_clients,
+                connect_as_observer=connect_as_observer,
+            )
 
     def _verify_required_blunux_version(self, requirement: str):
         """Verify that Blunux version is higher than requirement
@@ -270,6 +275,7 @@ class Drone:
         client_info: blueye.protocol.ClientInfo = None,
         timeout: float = 4,
         disconnect_other_clients: bool = False,
+        connect_as_observer: bool = False,
     ):
         """Establish a connection to the drone
 
@@ -286,7 +292,9 @@ class Drone:
         - *timeout*: Seconds to wait for connection. The first connection on boot can be a little
                      slower than the following ones
         - *disconnect_other_clients*: If True, disconnect clients until drone reports that we are in
-                                      control
+                                      control. If the connect_as_observer field is set to true, this
+                                      argument is ignored
+        - *connect_as_observer*: If True, the client will not be promoted to in control of the drone
 
         ** Raises **
         - *ConnectionError*: If the connection attempt fails
@@ -308,7 +316,9 @@ class Drone:
 
         try:
             self.ping()
-            connect_resp = self._req_rep_client.connect_client(client_info=client_info)
+            connect_resp = self._req_rep_client.connect_client(
+                client_info=client_info, is_observer=connect_as_observer
+            )
         except blueye.protocol.exceptions.ResponseTimeout as e:
             raise ConnectionError("Could not establish connection with drone") from e
         logger.info(f"Connection successful, client id: {connect_resp.client_id}")
@@ -317,7 +327,7 @@ class Drone:
         self.client_id = connect_resp.client_id
         self.in_control = connect_resp.client_id == connect_resp.client_id_in_control
         self.connected = True
-        if disconnect_other_clients and not self.in_control:
+        if disconnect_other_clients and not self.in_control and not connect_as_observer:
             self.take_control()
         self._drone_info_cb_id = self.telemetry.add_msg_callback(
             [blueye.protocol.DroneInfoTel],

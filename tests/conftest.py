@@ -112,3 +112,14 @@ def mocked_drone(
     if hasattr(request, "param"):
         drone.software_version_short = request.param
     return drone
+
+
+@pytest.fixture
+def mocked_drone_not_connected(
+    mocker,
+    mocked_requests,
+    mocked_ctrl_client,
+    mocked_watchdog_publisher,
+    mocked_req_rep_client,
+):
+    return blueye.sdk.Drone(auto_connect=False)
