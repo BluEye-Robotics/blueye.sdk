@@ -3,6 +3,7 @@
 This example program demonstrates how one can add a callback function to a telemetry message, as
 well as how to adjust the frequency of that telemetry message, and how to remove the callback.
 """
+
 import time
 
 import blueye.protocol as bp
