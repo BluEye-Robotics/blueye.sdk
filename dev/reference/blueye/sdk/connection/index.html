@@ -3356,11 +3356,19 @@ class ReqRepClient(threading.Thread):
 
     def connect_client(
 
-        self, client_info: blueye.protocol.ClientInfo = None, timeout: float = 0.05
+        self,
+
+        client_info: blueye.protocol.ClientInfo = None,
+
+        is_observer: bool = False,
+
+        timeout: float = 0.05,
 
     ) -&gt; blueye.protocol.ConnectClientRep:
 
         client = client_info or self._get_client_info()
+
+        client.is_observer = is_observer
 
         request = blueye.protocol.ConnectClientReq(client_info=client)
 
@@ -4477,11 +4485,19 @@ by overriding the run() method in a subclass.</p>
 
     def connect_client(
 
-        self, client_info: blueye.protocol.ClientInfo = None, timeout: float = 0.05
+        self,
+
+        client_info: blueye.protocol.ClientInfo = None,
+
+        is_observer: bool = False,
+
+        timeout: float = 0.05,
 
     ) -&gt; blueye.protocol.ConnectClientRep:
 
         client = client_info or self._get_client_info()
+
+        client.is_observer = is_observer
 
         request = blueye.protocol.ConnectClientReq(client_info=client)
 
@@ -4563,6 +4579,7 @@ This represents the Thread ID as reported by the kernel.</p>
 <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">connect_client</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">client_info</span><span class="p">:</span> <span class="s1">&#39;blueye.protocol.ClientInfo&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">is_observer</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">timeout</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span> <span class="o">=</span> <span class="mf">0.05</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;blueye.protocol.ConnectClientRep&#39;</span>
 </code></pre></div>
@@ -4570,11 +4587,19 @@ This represents the Thread ID as reported by the kernel.</p>
 <summary>View Source</summary>
 <pre><code>    def connect_client(
 
-        self, client_info: blueye.protocol.ClientInfo = None, timeout: float = 0.05
+        self,
+
+        client_info: blueye.protocol.ClientInfo = None,
+
+        is_observer: bool = False,
+
+        timeout: float = 0.05,
 
     ) -&gt; blueye.protocol.ConnectClientRep:
 
         client = client_info or self._get_client_info()
+
+        client.is_observer = is_observer
 
         request = blueye.protocol.ConnectClientReq(client_info=client)
 
