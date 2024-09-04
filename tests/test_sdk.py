@@ -311,3 +311,15 @@ def test_dive_time_returns_expected_value(mocked_drone):
 
 def test_dive_time_returns_none_on_missing_telemetry(mocked_drone):
     assert mocked_drone.dive_time is None
+
+
+def test_connect_as_observer(mocked_drone_not_connected):
+    mocked_drone_not_connected.connect(connect_as_observer=True)
+    mocked_drone_not_connected._req_rep_client.connect_client.assert_called_with(
+        client_info=None, is_observer=True
+    )
+
+
+def test_connect_as_observer_ignores_diconnect_other_clients(mocked_drone_not_connected):
+    mocked_drone_not_connected.connect(disconnect_other_clients=True, connect_as_observer=True)
+    mocked_drone_not_connected._req_rep_client.disconnect_client.assert_not_called()
