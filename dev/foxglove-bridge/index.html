@@ -1281,7 +1281,7 @@
 
 <span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
     <span class="c1"># Initialize the drone</span>
-    <span class="n">myDrone</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">()</span>
+    <span class="n">myDrone</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">(</span><span class="n">connect_as_observer</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">myDrone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">add_msg_callback</span><span class="p">([],</span> <span class="n">parse_message</span><span class="p">,</span> <span class="n">raw</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="c1"># Specify the server&#39;s host, port, and a human-readable name</span>
