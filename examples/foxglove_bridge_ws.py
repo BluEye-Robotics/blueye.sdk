@@ -100,7 +100,7 @@ def get_protobuf_descriptors(namespace):
 
 async def main():
     # Initialize the drone
-    myDrone = Drone()
+    myDrone = Drone(connect_as_observer=True)
     myDrone.telemetry.add_msg_callback([], parse_message, raw=True)
 
     # Specify the server's host, port, and a human-readable name
