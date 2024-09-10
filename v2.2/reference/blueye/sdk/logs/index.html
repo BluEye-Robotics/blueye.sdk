@@ -1652,7 +1652,7 @@ class LogStream:
 
             msg = bp.BinlogRecord.deserialize(msg_data)
 
-            payload_type, payload_msg_deserialized = deserialize_any_to_message(msg)
+            payload_type, payload_msg_deserialized = deserialize_any_to_message(msg.payload)
 
             if self.start_monotonic == 0:
 
@@ -3103,7 +3103,7 @@ for new log files it can be called at any time.</p>
 
             msg = bp.BinlogRecord.deserialize(msg_data)
 
-            payload_type, payload_msg_deserialized = deserialize_any_to_message(msg)
+            payload_type, payload_msg_deserialized = deserialize_any_to_message(msg.payload)
 
             if self.start_monotonic == 0:
 
