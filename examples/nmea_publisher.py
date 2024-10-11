@@ -20,7 +20,11 @@ def nmea_sentence(lat: float, lon: float, valid: bool) -> str:
     now = datetime.datetime.now(datetime.timezone.utc)
     utc_time = now.strftime("%H%M%S") + f".{now.microsecond // 10000:02d}"
 
-    return f"GPGLL,{lat_deg:02d}{lat_min:07.4f},{lat_hemisphere},{lon_deg:03d}{lon_min:07.4f},{lon_hemisphere},{utc_time},{is_valid}"
+    return (
+        f"GPGLL,{lat_deg:02d}{lat_min:07.4f},{lat_hemisphere},"
+        f"{lon_deg:03d}{lon_min:07.4f},{lon_hemisphere},"
+        f"{utc_time},{is_valid}"
+    )
 
 
 def callback_position_estimate(
