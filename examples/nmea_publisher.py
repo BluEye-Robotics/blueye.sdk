@@ -32,9 +32,11 @@ def callback_position_estimate(
 
 if __name__ == "__main__":
     # UDP configuration
-    UDP_IP = "127.0.0.1"
+    # This IP will broadcast to all devices in the 192.168.1 subnet
+    UDP_IP = "192.168.1.255"
     UDP_PORT = 10110
     udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    udp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)  # Enable broadcasting
 
     # Instantiate a drone object
     my_drone = Drone(connect_as_observer=True)
