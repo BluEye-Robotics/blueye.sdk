@@ -1,3 +1,4 @@
+import datetime
 import socket
 import time
 import blueye.protocol as bp
@@ -14,7 +15,12 @@ def nmea_sentence(lat: float, lon: float, valid: bool) -> str:
     lat_hemisphere = "N" if lat >= 0 else "S"
     lon_hemisphere = "E" if lon >= 0 else "W"
     is_valid = "A" if valid else "V"
-    return f"GPGLL,{lat_deg:02d}{lat_min:07.4f},{lat_hemisphere},{lon_deg:03d}{lon_min:07.4f},{lon_hemisphere},{is_valid}"
+
+    # Get current UTC time with fractional seconds
+    now = datetime.datetime.now(datetime.timezone.utc)
+    utc_time = now.strftime("%H%M%S") + f".{now.microsecond // 10000:02d}"
+
+    return f"GPGLL,{lat_deg:02d}{lat_min:07.4f},{lat_hemisphere},{lon_deg:03d}{lon_min:07.4f},{lon_hemisphere},{utc_time},{is_valid}"
 
 
 def callback_position_estimate(
