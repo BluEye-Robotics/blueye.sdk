@@ -34,7 +34,10 @@ if __name__ == "__main__":
     # UDP configuration
     # This IP will broadcast to all devices in the 192.168.1 subnet
     UDP_IP = "192.168.1.255"
-    UDP_PORT = 10110
+    # 10110 is the most commonly used port for NMEA, but the drone expects to receive its own
+    # position on this port, so if we reuse it the position will be sent in a loop.
+    UDP_PORT = 10111
+
     udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     udp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)  # Enable broadcasting
 
