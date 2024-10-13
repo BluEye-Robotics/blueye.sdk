@@ -9,10 +9,10 @@
       
       
       
-        <link rel="prev" href="../logs/legacy-log-file-format/">
+        <link rel="prev" href="../foxglove-bridge/">
       
       
-        <link rel="next" href="../telemetry-callback/">
+        <link rel="next" href="../migrating-to-v2/">
       
       
       <link rel="icon" href="../media/blueye_b.svg">
@@ -20,7 +20,7 @@
     
     
       
-        <title>Configure drone parameters - Blueye SDK</title>
+        <title>Forwarding positioning to NMEA - Blueye SDK</title>
       
     
     
@@ -72,7 +72,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#configure-time-and-date" class="md-skip">
+        <a href="#nmea-position-publisher" class="md-skip">
           Skip to content
         </a>
       
@@ -140,7 +140,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-            Configure drone parameters
+            Forwarding positioning to NMEA
             
           </span>
         </div>
@@ -654,28 +654,10 @@
     
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Configure drone parameters
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -684,51 +666,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#configure-time-and-date" class="md-nav__link">
-    <span class="md-ellipsis">
-      Configure time and date
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#calibrate-pressure-sensor-for-water-density" class="md-nav__link">
-    <span class="md-ellipsis">
-      Calibrate pressure sensor for water density
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#configure-camera-parameters" class="md-nav__link">
-    <span class="md-ellipsis">
-      Configure camera parameters
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -797,10 +734,19 @@
     
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../nmea-publisher/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -809,6 +755,7 @@
   
 
       </a>
+      
     </li>
   
 
@@ -1121,41 +1068,8 @@
   
   
   
+    
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#configure-time-and-date" class="md-nav__link">
-    <span class="md-ellipsis">
-      Configure time and date
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#calibrate-pressure-sensor-for-water-density" class="md-nav__link">
-    <span class="md-ellipsis">
-      Calibrate pressure sensor for water density
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#configure-camera-parameters" class="md-nav__link">
-    <span class="md-ellipsis">
-      Configure camera parameters
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
   
 </nav>
                   </div>
@@ -1173,58 +1087,87 @@
   
 
 
-  <h1>Configure drone parameters</h1>
-
-<p>There are settings on the drone that are remotely configurable from the Blueye mobile app. These can also be set directly from the SDK.</p>
-<h3 id="configure-time-and-date">Configure time and date</h3>
-<p>The drone does not keep track of time internally. The SDK sets the time on the drone automatically when you connect initially. But you can also configure time and date manually like this</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">time</span>
+<h1 id="nmea-position-publisher">NMEA Position Publisher</h1>
+<p>This example shows how one can use the blueye.sdk to forward position messages from the drone as NMEA 0183 messages, eg. to use in a chart plotter on a boat, etc.</p>
+<p>The script performs the following steps:</p>
+<ol>
+<li><strong>UDP Configuration</strong>: Sets up the UDP IP and port for sending NMEA messages. If your receiver expects to receive data on a different port you need to change it here</li>
+<li><strong>Drone Connection</strong>: Establishes a connection to the Blueye drone.</li>
+<li><strong>Callback Registration</strong>: Registers a callback function to handle position estimate telemetry messages.</li>
+<li><strong>Main Loop</strong>: Keeps the script running to continuously receive and send messages.</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">blueye.protocol</span> <span class="k">as</span> <span class="nn">bp</span>
 <span class="kn">from</span> <span class="nn">blueye.sdk</span> <span class="kn">import</span> <span class="n">Drone</span>
 
-<span class="n">myDrone</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">()</span>
 
-<span class="n">time_to_set_on_drone</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span> <span class="c1"># Unix Timestamp</span>
-<span class="n">myDrone</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">set_drone_time</span><span class="p">(</span><span class="n">time_to_set_on_drone</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">nmea_sentence</span><span class="p">(</span><span class="n">lat</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">lon</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">valid</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate an NMEA 0183 sentence for the given latitude and longitude.&quot;&quot;&quot;</span>
+    <span class="n">lat_deg</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span>
+    <span class="n">lat_min</span> <span class="o">=</span> <span class="p">(</span><span class="n">lat</span> <span class="o">-</span> <span class="n">lat_deg</span><span class="p">)</span> <span class="o">*</span> <span class="mi">60</span>
+    <span class="n">lon_deg</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">lon</span><span class="p">)</span>
+    <span class="n">lon_min</span> <span class="o">=</span> <span class="p">(</span><span class="n">lon</span> <span class="o">-</span> <span class="n">lon_deg</span><span class="p">)</span> <span class="o">*</span> <span class="mi">60</span>
+
+    <span class="n">lat_hemisphere</span> <span class="o">=</span> <span class="s2">&quot;N&quot;</span> <span class="k">if</span> <span class="n">lat</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="k">else</span> <span class="s2">&quot;S&quot;</span>
+    <span class="n">lon_hemisphere</span> <span class="o">=</span> <span class="s2">&quot;E&quot;</span> <span class="k">if</span> <span class="n">lon</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="k">else</span> <span class="s2">&quot;W&quot;</span>
+    <span class="n">is_valid</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span> <span class="k">if</span> <span class="n">valid</span> <span class="k">else</span> <span class="s2">&quot;V&quot;</span>
+
+    <span class="c1"># Get current UTC time with fractional seconds</span>
+    <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+    <span class="n">utc_time</span> <span class="o">=</span> <span class="n">now</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%H%M%S&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;.</span><span class="si">{</span><span class="n">now</span><span class="o">.</span><span class="n">microsecond</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="mi">10000</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;GPGLL,</span><span class="si">{</span><span class="n">lat_deg</span><span class="si">:</span><span class="s2">02d</span><span class="si">}{</span><span class="n">lat_min</span><span class="si">:</span><span class="s2">07.4f</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">lat_hemisphere</span><span class="si">}</span><span class="s2">,&quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">lon_deg</span><span class="si">:</span><span class="s2">03d</span><span class="si">}{</span><span class="n">lon_min</span><span class="si">:</span><span class="s2">07.4f</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">lon_hemisphere</span><span class="si">}</span><span class="s2">,&quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">utc_time</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">is_valid</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">callback_position_estimate</span><span class="p">(</span>
+    <span class="n">msg_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="n">bp</span><span class="o">.</span><span class="n">PositionEstimateTel</span><span class="p">,</span> <span class="n">udp_socket</span><span class="p">:</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Callback for the PositionEstimateTel message.&quot;&quot;&quot;</span>
+    <span class="n">position_estimate</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">position_estimate</span>
+    <span class="n">lat</span> <span class="o">=</span> <span class="n">position_estimate</span><span class="o">.</span><span class="n">global_position</span><span class="o">.</span><span class="n">latitude</span>
+    <span class="n">lon</span> <span class="o">=</span> <span class="n">position_estimate</span><span class="o">.</span><span class="n">global_position</span><span class="o">.</span><span class="n">longitude</span>
+    <span class="n">is_valid</span> <span class="o">=</span> <span class="n">position_estimate</span><span class="o">.</span><span class="n">is_valid</span>
+    <span class="n">nmea_msg</span> <span class="o">=</span> <span class="n">nmea_sentence</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">is_valid</span><span class="p">)</span>
+    <span class="n">udp_socket</span><span class="o">.</span><span class="n">sendto</span><span class="p">(</span><span class="n">nmea_msg</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">),</span> <span class="p">(</span><span class="n">UDP_IP</span><span class="p">,</span> <span class="n">UDP_PORT</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sent NMEA message: </span><span class="si">{</span><span class="n">nmea_msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="c1"># UDP configuration</span>
+    <span class="c1"># This IP will broadcast to all devices in the 192.168.1 subnet</span>
+    <span class="n">UDP_IP</span> <span class="o">=</span> <span class="s2">&quot;192.168.1.255&quot;</span>
+    <span class="c1"># 10110 is the most commonly used port for NMEA, but the drone expects to receive its own</span>
+    <span class="c1"># position on this port, so if we reuse it the position will be sent in a loop.</span>
+    <span class="n">UDP_PORT</span> <span class="o">=</span> <span class="mi">10111</span>
+
+    <span class="n">udp_socket</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_DGRAM</span><span class="p">)</span>
+    <span class="n">udp_socket</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">SOL_SOCKET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SO_BROADCAST</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># Enable broadcasting</span>
+
+    <span class="c1"># Instantiate a drone object</span>
+    <span class="n">my_drone</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">(</span><span class="n">connect_as_observer</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Add a callback for the PositionEstimateTel message</span>
+    <span class="n">callback_id</span> <span class="o">=</span> <span class="n">my_drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">add_msg_callback</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">bp</span><span class="o">.</span><span class="n">PositionEstimateTel</span><span class="p">],</span> <span class="n">callback_position_estimate</span><span class="p">,</span> <span class="n">udp_socket</span><span class="o">=</span><span class="n">udp_socket</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Keep the script running to receive and send messages</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Exiting...&quot;</span><span class="p">)</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="c1"># Cleanup</span>
+        <span class="n">my_drone</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
+        <span class="n">udp_socket</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </code></pre></div>
-<p>or if we for example want to offset the drone time 5 hours relative to our current system time we can do something like this:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">blueye.sdk</span> <span class="kn">import</span> <span class="n">Drone</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">timezone</span><span class="p">,</span> <span class="n">timedelta</span><span class="p">,</span> <span class="n">datetime</span>
-
-<span class="n">myDrone</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">()</span>
-
-<span class="n">offset_in_hours</span> <span class="o">=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-<span class="n">equivalent_timezone</span> <span class="o">=</span> <span class="n">timezone</span><span class="p">(</span><span class="n">offset_in_hours</span><span class="p">)</span>
-<span class="n">unix_timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">tz</span><span class="o">=</span><span class="n">equivalent_timezone</span><span class="p">)</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span>
-
-<span class="n">myDrone</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">set_drone_time</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">unix_timestamp</span><span class="p">))</span>
-</code></pre></div>
-<h3 id="calibrate-pressure-sensor-for-water-density">Calibrate pressure sensor for water density</h3>
-<p>The water density on the drone default to a reasonable density for salt water: 1025 grams per liter. For more accurate depth readings, the water density can be configured manually to suit your local conditions</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">blueye.sdk</span> <span class="kn">import</span> <span class="n">Drone</span><span class="p">,</span> <span class="n">WaterDensities</span>
-
-<span class="n">myDrone</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">()</span>
-
-<span class="c1"># Salt water</span>
-<span class="n">myDrone</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">water_density</span> <span class="o">=</span> <span class="n">WaterDensities</span><span class="o">.</span><span class="n">salty</span>  <span class="c1"># 1025 g/L</span>
-
-<span class="c1"># Brackish water</span>
-<span class="n">myDrone</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">water_density</span> <span class="o">=</span> <span class="n">WaterDensities</span><span class="o">.</span><span class="n">brackish</span>  <span class="c1"># 1011 g/L</span>
-
-<span class="c1"># Fresh water</span>
-<span class="n">myDrone</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">water_density</span> <span class="o">=</span> <span class="n">WaterDensities</span><span class="o">.</span><span class="n">fresh</span>  <span class="c1"># 997 g/L</span>
-
-<span class="c1"># Can also be set to arbitrary values</span>
-<span class="n">myDrone</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">water_density</span> <span class="o">=</span> <span class="mi">1234</span>
-</code></pre></div>
-<h3 id="configure-camera-parameters">Configure camera parameters</h3>
-<p>There are 6 different camera parameters that can be set. For a full list of camera parameters and their possible values see the <a href="../reference/blueye/sdk/camera/"><code>camera reference</code></a> section. For example you could set the bit rate like this</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">blueye.sdk</span> <span class="kn">import</span> <span class="n">Drone</span>
-
-<span class="n">myDrone</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">()</span>
-
-<span class="n">myDrone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">bitrate</span> <span class="o">=</span> <span class="mi">8_000_000</span> <span class="c1"># 8 Mbit bitrate</span>
-</code></pre></div>
-<p>Due to a bug in the camera streaming on the drone a camera stream has to have been opened at least once before camera parameters can be set on the drone, see issue <a href="https://github.com/BluEye-Robotics/blueye.sdk/issues/67">#67</a>. For instructions on how to start a video stream see, the <a href="../quick_start/#watching-the-video-stream"><code>Quick Start Guide</code></a>.</p>
 
 
 
@@ -1255,8 +1198,8 @@
   <nav class="md-footer__inner md-grid" aria-label="footer.title">
     
     
-    <a href="../logs/legacy-log-file-format/" class="md-footer__link md-footer__link--prev"
-      aria-label="Previous: Legacy log file format" rel="prev">
+    <a href="../foxglove-bridge/" class="md-footer__link md-footer__link--prev"
+      aria-label="Previous: Visualizing with Foxglove" rel="prev">
       <div class="md-footer__button md-icon">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
       </div>
@@ -1265,21 +1208,21 @@
           <span class="md-footer__direction">
             Previous
           </span>
-          Legacy log file format
+          Visualizing with Foxglove
         </div>
       </div>
     </a>
     
     
     
-    <a href="../telemetry-callback/" class="md-footer__link md-footer__link--next"
-      aria-label="Next: Subscribing to a telemetry message" rel="next">
+    <a href="../migrating-to-v2/" class="md-footer__link md-footer__link--next"
+      aria-label="Next: Updating from v1 to v2" rel="next">
       <div class="md-footer__title">
         <div class="md-ellipsis">
           <span class="md-footer__direction">
             Next
           </span>
-          Subscribing to a telemetry message
+          Updating from v1 to v2
         </div>
       </div>
       <div class="md-footer__button md-icon">
