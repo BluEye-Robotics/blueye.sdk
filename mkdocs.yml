@@ -69,6 +69,7 @@ nav:
   - "Subscribing to a telemetry message": "telemetry-callback.md"
   - "Peripherals": "peripherals.md"
   - "Visualizing with Foxglove": "foxglove-bridge.md"
+  - "Forwarding positioning to NMEA": "nmea-publisher.md"
   - "Updating from v1 to v2": "migrating-to-v2.md"
   - "Protobuf protocol": "protobuf-protocol.md"
   - "HTTP API": "http-api.html"
