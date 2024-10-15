@@ -257,6 +257,39 @@ class Overlay:
         self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
 
     @property
+    def thickness_enabled(self) -> bool:
+        """Get or set the state of the thickness overlay"""
+        self._update_overlay_parameters()
+        return self._overlay_parametres.thickness_enabled
+
+    @thickness_enabled.setter
+    def thickness_enabled(self, enable_thickness: bool):
+        if self._overlay_parametres is None:
+            self._update_overlay_parameters()
+        self._overlay_parametres.thickness_enabled = enable_thickness
+        self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
+
+    @property
+    def thickness_unit(self) -> blueye.protocol.ThicknessUnit:
+        """Get or set the thickness unit for the overlay
+
+        Needs to be set to an instance of the `blueye.protocol.ThicknessUnit` enum, if not a
+        RuntimeWarning is raised.
+        """
+        self._update_overlay_parameters()
+        return self._overlay_parametres.thickness_unit
+
+    @thickness_unit.setter
+    def thickness_unit(self, unit: blueye.protocol.ThicknessUnit):
+        if not isinstance(unit, blueye.protocol.ThicknessUnit):
+            warnings.warn("Invalid thickness unit, ignoring", RuntimeWarning)
+        else:
+            if self._overlay_parametres is None:
+                self._update_overlay_parameters()
+            self._overlay_parametres.thickness_unit = unit
+            self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
+
+    @property
     def timezone_offset(self) -> int:
         """Get or set the timezone offset for the overlay
 

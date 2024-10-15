@@ -90,6 +90,29 @@ class TestOverlay:
         assert mocked_drone.camera.overlay.altitude_enabled
         mocked_drone._req_rep_client.set_overlay_parameters.assert_called_once()
 
+    def test_enable_thickness(self, mocked_drone: Drone):
+        mocked_drone.camera.overlay.thickness_enabled = True
+        assert mocked_drone.camera.overlay.thickness_enabled
+        mocked_drone._req_rep_client.set_overlay_parameters.assert_called_once()
+
+    def test_get_thickness_state(self, mocked_drone: Drone):
+        assert mocked_drone.camera.overlay.thickness_enabled is False
+
+    def test_select_thickness_unit(self, mocked_drone: Drone):
+        mocked_drone.camera.overlay.thickness_unit = bp.ThicknessUnit.THICKNESS_UNIT_MILLIMETERS
+        mocked_drone._req_rep_client.set_overlay_parameters.assert_called_once()
+
+    def test_select_thickness_unit_warns_and_ignores_for_wrong_type(self, mocked_drone: Drone):
+        with pytest.warns(RuntimeWarning):
+            mocked_drone.camera.overlay.thickness_unit = "wrong type"
+        assert mocked_drone._req_rep_client.set_overlay_parameters.called is False
+
+    def test_get_thickness_unit(self, mocked_drone: Drone):
+        assert (
+            mocked_drone.camera.overlay.thickness_unit
+            == bp.ThicknessUnit.THICKNESS_UNIT_MILLIMETERS
+        )
+
         mocked_drone._req_rep_client.set_overlay_parameters.assert_called_once()
 
     def test_set_timezone_offset(self, mocked_drone: Drone):
