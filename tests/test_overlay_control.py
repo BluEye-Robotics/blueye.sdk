@@ -67,6 +67,13 @@ class TestOverlay:
             == bp.TemperatureUnit.TEMPERATURE_UNIT_CELSIUS
         )
 
+    def test_enable_cp_probe(self, mocked_drone: Drone):
+        mocked_drone.camera.overlay.cp_probe_enabled = True
+        mocked_drone._req_rep_client.set_overlay_parameters.assert_called_once()
+
+    def test_get_cp_probe_state(self, mocked_drone: Drone):
+        assert mocked_drone.camera.overlay.cp_probe_enabled is False
+
     def test_set_timezone_offset(self, mocked_drone: Drone):
         mocked_drone.camera.overlay.timezone_offset = 120
         mocked_drone._req_rep_client.set_overlay_parameters.assert_called_once()

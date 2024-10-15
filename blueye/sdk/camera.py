@@ -218,6 +218,19 @@ class Overlay:
             self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
 
     @property
+    def cp_probe_enabled(self) -> bool:
+        """Get or set the state of the CP probe overlay"""
+        self._update_overlay_parameters()
+        return self._overlay_parametres.cp_probe_enabled
+
+    @cp_probe_enabled.setter
+    def cp_probe_enabled(self, enable_cp_probe: bool):
+        if self._overlay_parametres is None:
+            self._update_overlay_parameters()
+        self._overlay_parametres.cp_probe_enabled = enable_cp_probe
+        self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
+
+    @property
     def timezone_offset(self) -> int:
         """Get or set the timezone offset for the overlay
 
