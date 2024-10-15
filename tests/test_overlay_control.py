@@ -121,6 +121,20 @@ class TestOverlay:
         assert mocked_drone.camera.overlay.drone_location_enabled is True
         mocked_drone._req_rep_client.set_overlay_parameters.assert_called_once()
 
+    def test_get_shading(self, mocked_drone: Drone):
+        assert mocked_drone.camera.overlay.shading == 0
+
+    def test_set_valid_shading(self, mocked_drone: Drone):
+        mocked_drone.camera.overlay.shading = 0
+        assert mocked_drone.camera.overlay.shading == 0
+        mocked_drone._req_rep_client.set_overlay_parameters.assert_called_once()
+
+    def test_set_invalid_shading_warns_and_ignores(self, mocked_drone: Drone):
+        with pytest.warns(RuntimeWarning):
+            mocked_drone.camera.overlay.shading = 1.5
+            mocked_drone.camera.overlay.shading = -0.5
+        assert mocked_drone._req_rep_client.set_overlay_parameters.called is False
+
         mocked_drone._req_rep_client.set_overlay_parameters.assert_called_once()
 
     def test_set_timezone_offset(self, mocked_drone: Drone):

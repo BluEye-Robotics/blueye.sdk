@@ -303,6 +303,26 @@ class Overlay:
         self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
 
     @property
+    def shading(self) -> float:
+        """Get or set the pixel intensity to subtract from text background
+
+        0 is transparent, 1 is black.
+        Needs to be a float between 0.0 and 1.0, if not a RuntimeWarning is raised.
+        """
+        self._update_overlay_parameters()
+        return self._overlay_parametres.shading
+
+    @shading.setter
+    def shading(self, intensity: float):
+        if intensity < 0.0 or intensity > 1.0:
+            warnings.warn("Invalid shading intensity, ignoring", RuntimeWarning)
+        else:
+            if self._overlay_parametres is None:
+                self._update_overlay_parameters()
+            self._overlay_parametres.shading = intensity
+            self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
+
+    @property
     def timezone_offset(self) -> int:
         """Get or set the timezone offset for the overlay
 
