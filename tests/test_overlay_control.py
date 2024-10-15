@@ -135,6 +135,12 @@ class TestOverlay:
             mocked_drone.camera.overlay.shading = -0.5
         assert mocked_drone._req_rep_client.set_overlay_parameters.called is False
 
+    def test_get_gamma_ray_measurement_state(self, mocked_drone: Drone):
+        assert mocked_drone.camera.overlay.gamma_ray_measurement_enabled is False
+
+    def test_enable_gamma_ray_measurement(self, mocked_drone: Drone):
+        mocked_drone.camera.overlay.gamma_ray_measurement_enabled = True
+        assert mocked_drone.camera.overlay.gamma_ray_measurement_enabled
         mocked_drone._req_rep_client.set_overlay_parameters.assert_called_once()
 
     def test_set_timezone_offset(self, mocked_drone: Drone):
