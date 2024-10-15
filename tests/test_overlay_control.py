@@ -74,6 +74,16 @@ class TestOverlay:
     def test_get_cp_probe_state(self, mocked_drone: Drone):
         assert mocked_drone.camera.overlay.cp_probe_enabled is False
 
+    def test_distance_enabled(self, mocked_drone):
+        mocked_drone.camera.overlay.distance_enabled = True
+        assert mocked_drone.camera.overlay.distance_enabled
+        mocked_drone._req_rep_client.set_overlay_parameters.assert_called_once()
+
+    def test_get_distance_enabled(self, mocked_drone):
+        assert mocked_drone.camera.overlay.distance_enabled is False
+
+        mocked_drone._req_rep_client.set_overlay_parameters.assert_called_once()
+
     def test_set_timezone_offset(self, mocked_drone: Drone):
         mocked_drone.camera.overlay.timezone_offset = 120
         mocked_drone._req_rep_client.set_overlay_parameters.assert_called_once()
