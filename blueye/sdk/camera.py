@@ -290,6 +290,19 @@ class Overlay:
             self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
 
     @property
+    def drone_location_enabled(self) -> bool:
+        """Get or set the state of the drone location overlay"""
+        self._update_overlay_parameters()
+        return self._overlay_parametres.drone_location_enabled
+
+    @drone_location_enabled.setter
+    def drone_location_enabled(self, enable_drone_location: bool):
+        if self._overlay_parametres is None:
+            self._update_overlay_parameters()
+        self._overlay_parametres.drone_location_enabled = enable_drone_location
+        self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
+
+    @property
     def timezone_offset(self) -> int:
         """Get or set the timezone offset for the overlay
 

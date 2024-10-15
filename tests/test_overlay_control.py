@@ -113,6 +113,14 @@ class TestOverlay:
             == bp.ThicknessUnit.THICKNESS_UNIT_MILLIMETERS
         )
 
+    def test_get_drone_location_state(self, mocked_drone: Drone):
+        assert mocked_drone.camera.overlay.drone_location_enabled is False
+
+    def test_enable_drone_location(self, mocked_drone: Drone):
+        mocked_drone.camera.overlay.drone_location_enabled = True
+        assert mocked_drone.camera.overlay.drone_location_enabled is True
+        mocked_drone._req_rep_client.set_overlay_parameters.assert_called_once()
+
         mocked_drone._req_rep_client.set_overlay_parameters.assert_called_once()
 
     def test_set_timezone_offset(self, mocked_drone: Drone):
