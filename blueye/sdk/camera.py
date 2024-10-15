@@ -244,6 +244,19 @@ class Overlay:
         self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
 
     @property
+    def altitude_enabled(self) -> bool:
+        """Get or set the state of the altitude overlay"""
+        self._update_overlay_parameters()
+        return self._overlay_parametres.altitude_enabled
+
+    @altitude_enabled.setter
+    def altitude_enabled(self, enable_altitude: bool):
+        if self._overlay_parametres is None:
+            self._update_overlay_parameters()
+        self._overlay_parametres.altitude_enabled = enable_altitude
+        self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
+
+    @property
     def timezone_offset(self) -> int:
         """Get or set the timezone offset for the overlay
 
