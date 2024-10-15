@@ -218,6 +218,124 @@ class Overlay:
             self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
 
     @property
+    def cp_probe_enabled(self) -> bool:
+        """Get or set the state of the CP probe overlay"""
+        self._update_overlay_parameters()
+        return self._overlay_parametres.cp_probe_enabled
+
+    @cp_probe_enabled.setter
+    def cp_probe_enabled(self, enable_cp_probe: bool):
+        if self._overlay_parametres is None:
+            self._update_overlay_parameters()
+        self._overlay_parametres.cp_probe_enabled = enable_cp_probe
+        self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
+
+    @property
+    def distance_enabled(self) -> bool:
+        """Get or set the state of the distance overlay"""
+        self._update_overlay_parameters()
+        return self._overlay_parametres.distance_enabled
+
+    @distance_enabled.setter
+    def distance_enabled(self, enable_distance: bool):
+        if self._overlay_parametres is None:
+            self._update_overlay_parameters()
+        self._overlay_parametres.distance_enabled = enable_distance
+        self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
+
+    @property
+    def altitude_enabled(self) -> bool:
+        """Get or set the state of the altitude overlay"""
+        self._update_overlay_parameters()
+        return self._overlay_parametres.altitude_enabled
+
+    @altitude_enabled.setter
+    def altitude_enabled(self, enable_altitude: bool):
+        if self._overlay_parametres is None:
+            self._update_overlay_parameters()
+        self._overlay_parametres.altitude_enabled = enable_altitude
+        self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
+
+    @property
+    def thickness_enabled(self) -> bool:
+        """Get or set the state of the thickness overlay"""
+        self._update_overlay_parameters()
+        return self._overlay_parametres.thickness_enabled
+
+    @thickness_enabled.setter
+    def thickness_enabled(self, enable_thickness: bool):
+        if self._overlay_parametres is None:
+            self._update_overlay_parameters()
+        self._overlay_parametres.thickness_enabled = enable_thickness
+        self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
+
+    @property
+    def thickness_unit(self) -> blueye.protocol.ThicknessUnit:
+        """Get or set the thickness unit for the overlay
+
+        Needs to be set to an instance of the `blueye.protocol.ThicknessUnit` enum, if not a
+        RuntimeWarning is raised.
+        """
+        self._update_overlay_parameters()
+        return self._overlay_parametres.thickness_unit
+
+    @thickness_unit.setter
+    def thickness_unit(self, unit: blueye.protocol.ThicknessUnit):
+        if not isinstance(unit, blueye.protocol.ThicknessUnit):
+            warnings.warn("Invalid thickness unit, ignoring", RuntimeWarning)
+        else:
+            if self._overlay_parametres is None:
+                self._update_overlay_parameters()
+            self._overlay_parametres.thickness_unit = unit
+            self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
+
+    @property
+    def drone_location_enabled(self) -> bool:
+        """Get or set the state of the drone location overlay"""
+        self._update_overlay_parameters()
+        return self._overlay_parametres.drone_location_enabled
+
+    @drone_location_enabled.setter
+    def drone_location_enabled(self, enable_drone_location: bool):
+        if self._overlay_parametres is None:
+            self._update_overlay_parameters()
+        self._overlay_parametres.drone_location_enabled = enable_drone_location
+        self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
+
+    @property
+    def shading(self) -> float:
+        """Get or set the pixel intensity to subtract from text background
+
+        0 is transparent, 1 is black.
+        Needs to be a float between 0.0 and 1.0, if not a RuntimeWarning is raised.
+        """
+        self._update_overlay_parameters()
+        return self._overlay_parametres.shading
+
+    @shading.setter
+    def shading(self, intensity: float):
+        if intensity < 0.0 or intensity > 1.0:
+            warnings.warn("Invalid shading intensity, ignoring", RuntimeWarning)
+        else:
+            if self._overlay_parametres is None:
+                self._update_overlay_parameters()
+            self._overlay_parametres.shading = intensity
+            self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
+
+    @property
+    def gamma_ray_measurement_enabled(self) -> bool:
+        """Get or set the state of the gamma-ray measurement overlay"""
+        self._update_overlay_parameters()
+        return self._overlay_parametres.medusa_enabled
+
+    @gamma_ray_measurement_enabled.setter
+    def gamma_ray_measurement_enabled(self, enable_gamma_ray_measurement: bool):
+        if self._overlay_parametres is None:
+            self._update_overlay_parameters()
+        self._overlay_parametres.medusa_enabled = enable_gamma_ray_measurement
+        self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
+
+    @property
     def timezone_offset(self) -> int:
         """Get or set the timezone offset for the overlay
 

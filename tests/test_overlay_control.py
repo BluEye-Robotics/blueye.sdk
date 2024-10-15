@@ -67,6 +67,82 @@ class TestOverlay:
             == bp.TemperatureUnit.TEMPERATURE_UNIT_CELSIUS
         )
 
+    def test_enable_cp_probe(self, mocked_drone: Drone):
+        mocked_drone.camera.overlay.cp_probe_enabled = True
+        mocked_drone._req_rep_client.set_overlay_parameters.assert_called_once()
+
+    def test_get_cp_probe_state(self, mocked_drone: Drone):
+        assert mocked_drone.camera.overlay.cp_probe_enabled is False
+
+    def test_distance_enabled(self, mocked_drone):
+        mocked_drone.camera.overlay.distance_enabled = True
+        assert mocked_drone.camera.overlay.distance_enabled
+        mocked_drone._req_rep_client.set_overlay_parameters.assert_called_once()
+
+    def test_get_distance_enabled(self, mocked_drone):
+        assert mocked_drone.camera.overlay.distance_enabled is False
+
+    def test_get_altitude_state(self, mocked_drone: Drone):
+        assert mocked_drone.camera.overlay.altitude_enabled is False
+
+    def test_enable_altitude(self, mocked_drone: Drone):
+        mocked_drone.camera.overlay.altitude_enabled = True
+        assert mocked_drone.camera.overlay.altitude_enabled
+        mocked_drone._req_rep_client.set_overlay_parameters.assert_called_once()
+
+    def test_enable_thickness(self, mocked_drone: Drone):
+        mocked_drone.camera.overlay.thickness_enabled = True
+        assert mocked_drone.camera.overlay.thickness_enabled
+        mocked_drone._req_rep_client.set_overlay_parameters.assert_called_once()
+
+    def test_get_thickness_state(self, mocked_drone: Drone):
+        assert mocked_drone.camera.overlay.thickness_enabled is False
+
+    def test_select_thickness_unit(self, mocked_drone: Drone):
+        mocked_drone.camera.overlay.thickness_unit = bp.ThicknessUnit.THICKNESS_UNIT_MILLIMETERS
+        mocked_drone._req_rep_client.set_overlay_parameters.assert_called_once()
+
+    def test_select_thickness_unit_warns_and_ignores_for_wrong_type(self, mocked_drone: Drone):
+        with pytest.warns(RuntimeWarning):
+            mocked_drone.camera.overlay.thickness_unit = "wrong type"
+        assert mocked_drone._req_rep_client.set_overlay_parameters.called is False
+
+    def test_get_thickness_unit(self, mocked_drone: Drone):
+        assert (
+            mocked_drone.camera.overlay.thickness_unit
+            == bp.ThicknessUnit.THICKNESS_UNIT_MILLIMETERS
+        )
+
+    def test_get_drone_location_state(self, mocked_drone: Drone):
+        assert mocked_drone.camera.overlay.drone_location_enabled is False
+
+    def test_enable_drone_location(self, mocked_drone: Drone):
+        mocked_drone.camera.overlay.drone_location_enabled = True
+        assert mocked_drone.camera.overlay.drone_location_enabled is True
+        mocked_drone._req_rep_client.set_overlay_parameters.assert_called_once()
+
+    def test_get_shading(self, mocked_drone: Drone):
+        assert mocked_drone.camera.overlay.shading == 0
+
+    def test_set_valid_shading(self, mocked_drone: Drone):
+        mocked_drone.camera.overlay.shading = 0
+        assert mocked_drone.camera.overlay.shading == 0
+        mocked_drone._req_rep_client.set_overlay_parameters.assert_called_once()
+
+    def test_set_invalid_shading_warns_and_ignores(self, mocked_drone: Drone):
+        with pytest.warns(RuntimeWarning):
+            mocked_drone.camera.overlay.shading = 1.5
+            mocked_drone.camera.overlay.shading = -0.5
+        assert mocked_drone._req_rep_client.set_overlay_parameters.called is False
+
+    def test_get_gamma_ray_measurement_state(self, mocked_drone: Drone):
+        assert mocked_drone.camera.overlay.gamma_ray_measurement_enabled is False
+
+    def test_enable_gamma_ray_measurement(self, mocked_drone: Drone):
+        mocked_drone.camera.overlay.gamma_ray_measurement_enabled = True
+        assert mocked_drone.camera.overlay.gamma_ray_measurement_enabled
+        mocked_drone._req_rep_client.set_overlay_parameters.assert_called_once()
+
     def test_set_timezone_offset(self, mocked_drone: Drone):
         mocked_drone.camera.overlay.timezone_offset = 120
         mocked_drone._req_rep_client.set_overlay_parameters.assert_called_once()
