@@ -31,6 +31,17 @@ intensity: float = drone.external_light.get_intensity()
 drone.external_light.set_intensity(0.5)
 ```
 
+## Scaling laser
+If the drone has a scaling laser attached, the `Drone` class will have a `laser` attribute that is a [`Laser`](reference/blueye/sdk/guestport.md#laser) object. This object can be used to control the scaling laser.
+
+```python
+# Get the current intensity of the scaling laser
+intensity: float = drone.laser.get_intensity()
+
+# Set the intensity of the scaling laser to 0.5
+drone.laser.set_intensity(0.5)
+```
+
 ## Gripper
 If the drone has a gripper attached, the `Drone` class will have a `gripper` attribute that is a [`Gripper`](reference/blueye/sdk/guestport.md#gripper) object. This object can be used to control the grip and rotation of the gripper.
 
