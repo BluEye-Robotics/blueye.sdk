@@ -20,6 +20,7 @@ from .guestport import (
     Gripper,
     GuestPortCamera,
     GuestPortLight,
+    Laser,
     Peripheral,
     device_to_peripheral,
 )
@@ -269,6 +270,8 @@ class Drone:
                     self.external_camera = peripheral
                 elif isinstance(peripheral, Gripper):
                     self.gripper = peripheral
+                elif isinstance(peripheral, Laser):
+                    self.laser = peripheral
 
     def connect(
         self,

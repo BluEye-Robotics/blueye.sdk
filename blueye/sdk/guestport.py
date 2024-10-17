@@ -130,6 +130,33 @@ class Gripper(Peripheral):
         )
 
 
+class Laser(Peripheral):
+    def __init__(
+        self, parent_drone: "Drone", port_number: bp.GuestPortNumber, device: bp.GuestPortDevice
+    ):
+        Peripheral.__init__(self, parent_drone, port_number, device)
+
+    def set_intensity(self, intensity: float):
+        """
+        Sets the intensity of the laser
+
+        If the laser does not support dimming but only on and off, a
+        value of 0 turns the laser off, and any value above 0 turns the
+        laser on.
+        """
+        if intensity < 0 or intensity > 1:
+            raise ValueError("Laser intensity must be between 0 and 1.")
+        self.parent_drone._ctrl_client.set_laser_intensity(intensity)
+
+    def get_intensity(self) -> Optional[float]:
+        """Returns the current intensity of the laser (0..1)"""
+        telemetry_msg = self.parent_drone.telemetry.get(bp.LaserTel)
+        if telemetry_msg is None:
+            return None
+        else:
+            return telemetry_msg.laser.value
+
+
 def device_to_peripheral(
     parent_drone: "Drone", port_number: bp.GuestPortNumber, device: bp.GuestPortDevice
 ) -> Peripheral:
@@ -149,6 +176,11 @@ def device_to_peripheral(
         or device.device_id == bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEPRINT_LAB_REACH_ALPHA
     ):
         peripheral = Gripper(parent_drone, port_number, device)
+    elif (
+        device.device_id == bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_LASER_TOOLS_SEA_BEAM
+        or device.device_id == bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_SPOT_X_LASER_SCALERS
+    ):
+        peripheral = Laser(parent_drone, port_number, device)
     else:
         peripheral = Peripheral(parent_drone, port_number, device)
     return peripheral

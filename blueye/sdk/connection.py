@@ -230,6 +230,10 @@ class CtrlClient(threading.Thread):
         )
         self._messages_to_send.put(msg)
 
+    def set_laser_intensity(self, intensity: float):
+        msg = blueye.protocol.LaserCtrl(laser={"value": intensity})
+        self._messages_to_send.put(msg)
+
 
 class ReqRepClient(threading.Thread):
     def __init__(self, parent_drone: "blueye.sdk.Drone", context: zmq.Context = None):
