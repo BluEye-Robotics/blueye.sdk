@@ -761,6 +761,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#scaling-laser" class="md-nav__link">
+    <span class="md-ellipsis">
+      Scaling laser
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#gripper" class="md-nav__link">
     <span class="md-ellipsis">
       Gripper
@@ -1153,6 +1162,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#scaling-laser" class="md-nav__link">
+    <span class="md-ellipsis">
+      Scaling laser
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#gripper" class="md-nav__link">
     <span class="md-ellipsis">
       Gripper
@@ -1201,6 +1219,14 @@
 
 <span class="c1"># Set the intensity of the external light to 0.5</span>
 <span class="n">drone</span><span class="o">.</span><span class="n">external_light</span><span class="o">.</span><span class="n">set_intensity</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="scaling-laser">Scaling laser</h2>
+<p>If the drone has a scaling laser attached, the <code>Drone</code> class will have a <code>laser</code> attribute that is a <a href="../reference/blueye/sdk/guestport/#laser"><code>Laser</code></a> object. This object can be used to control the scaling laser.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Get the current intensity of the scaling laser</span>
+<span class="n">intensity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">drone</span><span class="o">.</span><span class="n">laser</span><span class="o">.</span><span class="n">get_intensity</span><span class="p">()</span>
+
+<span class="c1"># Set the intensity of the scaling laser to 0.5</span>
+<span class="n">drone</span><span class="o">.</span><span class="n">laser</span><span class="o">.</span><span class="n">set_intensity</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
 </code></pre></div>
 <h2 id="gripper">Gripper</h2>
 <p>If the drone has a gripper attached, the <code>Drone</code> class will have a <code>gripper</code> attribute that is a <a href="../reference/blueye/sdk/guestport/#gripper"><code>Gripper</code></a> object. This object can be used to control the grip and rotation of the gripper.</p>

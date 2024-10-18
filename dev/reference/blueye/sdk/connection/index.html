@@ -1166,6 +1166,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#set_laser_intensity" class="md-nav__link">
+    <span class="md-ellipsis">
+      set_laser_intensity
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#set_lights" class="md-nav__link">
     <span class="md-ellipsis">
       set_lights
@@ -2156,6 +2165,15 @@
   <a href="#set_guest_port_lights" class="md-nav__link">
     <span class="md-ellipsis">
       set_guest_port_lights
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#set_laser_intensity" class="md-nav__link">
+    <span class="md-ellipsis">
+      set_laser_intensity
     </span>
   </a>
   
@@ -3172,6 +3190,12 @@ class CtrlClient(threading.Thread):
 
         self._messages_to_send.put(msg)
 
+    def set_laser_intensity(self, intensity: float):
+
+        msg = blueye.protocol.LaserCtrl(laser={"value": intensity})
+
+        self._messages_to_send.put(msg)
+
 class ReqRepClient(threading.Thread):
 
     def __init__(self, parent_drone: "blueye.sdk.Drone", context: zmq.Context = None):
@@ -3681,6 +3705,12 @@ by overriding the run() method in a subclass.</p>
         )
 
         self._messages_to_send.put(msg)
+
+    def set_laser_intensity(self, intensity: float):
+
+        msg = blueye.protocol.LaserCtrl(laser={"value": intensity})
+
+        self._messages_to_send.put(msg)
 </code></pre>
 </details>
 <hr />
@@ -4054,6 +4084,21 @@ from the args and kwargs arguments, respectively.</p>
 <pre><code>    def set_guest_port_lights(self, value: float):
 
         msg = blueye.protocol.GuestportLightsCtrl(lights={"value": value})
+
+        self._messages_to_send.put(msg)
+</code></pre>
+</details>
+<h4 id="set_laser_intensity">set_laser_intensity</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">set_laser_intensity</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">intensity</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span>
+<span class="p">)</span>
+</code></pre></div>
+<details class="example">
+<summary>View Source</summary>
+<pre><code>    def set_laser_intensity(self, intensity: float):
+
+        msg = blueye.protocol.LaserCtrl(laser={"value": intensity})
 
         self._messages_to_send.put(msg)
 </code></pre>
