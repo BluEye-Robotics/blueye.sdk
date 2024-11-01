@@ -383,6 +383,18 @@ class CtrlClient(threading.Thread):
         msg = blueye.protocol.LaserCtrl(laser={"value": intensity})
         self._messages_to_send.put(msg)
 
+    def run_mission(self):
+        msg = blueye.protocol.RunMissionCtrl()
+        self._messages_to_send.put(msg)
+
+    def pause_mission(self):
+        msg = blueye.protocol.PauseMissionCtrl()
+        self._messages_to_send.put(msg)
+
+    def clear_mission(self):
+        msg = blueye.protocol.ClearMissionCtrl()
+        self._messages_to_send.put(msg)
+
 
 class ReqRepClient(threading.Thread):
     """A thread that handles request-reply messages to and from the drone."""
