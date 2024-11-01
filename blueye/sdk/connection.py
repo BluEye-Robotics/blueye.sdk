@@ -234,6 +234,18 @@ class CtrlClient(threading.Thread):
         msg = blueye.protocol.LaserCtrl(laser={"value": intensity})
         self._messages_to_send.put(msg)
 
+    def run_mission(self):
+        msg = blueye.protocol.RunMissionCtrl()
+        self._messages_to_send.put(msg)
+
+    def pause_mission(self):
+        msg = blueye.protocol.PauseMissionCtrl()
+        self._messages_to_send.put(msg)
+
+    def clear_mission(self):
+        msg = blueye.protocol.ClearMissionCtrl()
+        self._messages_to_send.put(msg)
+
 
 class ReqRepClient(threading.Thread):
     def __init__(self, parent_drone: "blueye.sdk.Drone", context: zmq.Context = None):
