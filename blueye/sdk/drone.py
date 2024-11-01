@@ -26,6 +26,7 @@ from .guestport import (
 )
 from .logs import LegacyLogs, Logs
 from .motion import Motion
+from .mission import Mission
 
 logger = logging.getLogger(__name__)
 
@@ -225,6 +226,7 @@ class Drone:
         self.config = Config(self)
         self.battery = Battery(self)
         self.telemetry = Telemetry(self)
+        self.mission = Mission(self)
         self.connected = False
         self.client_id: int = None
         self.in_control: bool = False
