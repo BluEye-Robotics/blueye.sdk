@@ -1,8 +1,8 @@
 import os
 
 
-def declare_variables(variables, macro):
-    @macro
+def define_env(env):
+    @env.macro
     def code_from_file(fn: str, flavor: str = ""):
         """
         Load code from a file and save as a markdown code block.
@@ -14,7 +14,7 @@ def declare_variables(variables, macro):
             {{code_from_file("code/myfile.py", "python")}}
 
         """
-        docs_dir = variables.get("docs_dir", "docs")
+        docs_dir = env.variables.get("docs_dir", "docs")
         fn = os.path.abspath(os.path.join(docs_dir, fn))
         if not os.path.exists(fn):
             return f"""<b>File not found: {fn}</b>"""
@@ -23,16 +23,16 @@ def declare_variables(variables, macro):
 {f.read()}
 ```"""
 
-    @macro
+    @env.macro
     def external_markdown(fn: str):
         """
-        Load markdown from files external to the mkdocs root path.
+        Load markdown from files external to the mkdoGcs root path.
         Example usage in markdown:
 
             {{external_markdown("../../README.md")}}
 
         """
-        docs_dir = variables.get("docs_dir", "docs")
+        docs_dir = env.variables.get("docs_dir", "docs")
         fn = os.path.abspath(os.path.join(docs_dir, fn))
         if not os.path.exists(fn):
             return f"""<b>File not found: {fn}</b>"""
