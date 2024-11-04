@@ -1,0 +1,2460 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../logs/">
+      
+      
+        <link rel="next" href="../utils/">
+      
+      
+      <link rel="icon" href="../../../../media/blueye_b.svg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.43">
+    
+    
+      
+        <title>blueye.sdk.motion - Blueye SDK</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.0253249f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#module-blueyesdkmotion" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      <!--
+  Copyright (c) 2016-2023 Martin Donath <martin.donath@squidfunk.com>
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to
+  deal in the Software without restriction, including without limitation the
+  rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+  sell copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+  IN THE SOFTWARE.
+-->
+
+<!-- Determine classes -->
+
+
+
+
+
+<!-- Header -->
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+
+    <!-- Link to home -->
+    <a href="../../../.." title="Blueye SDK"
+      class="md-header__button md-logo" aria-label="Blueye SDK" data-md-component="logo">
+      
+  <img src="../../../../media/blueye_sdk_logo_darkblue.svg" alt="logo">
+
+    </a>
+
+    <!-- Button to open drawer -->
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+
+    <!-- Header title -->
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+            blueye.sdk.motion
+            
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Color palette toggle -->
+    
+    
+    <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="blue"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="blue"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+    
+    
+
+    <!-- Site language selector -->
+    
+
+    <!-- Button to open search modal -->
+    
+    <label class="md-header__button md-icon" for="__search">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+    </label>
+
+    <!-- Search interface -->
+    <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    <!-- Repository information -->
+    
+    <div class="md-header__source">
+      <a href="https://github.com/BluEye-Robotics/blueye.sdk" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    
+  </div>
+</a>
+    </div>
+    
+  </nav>
+
+  <!-- Navigation tabs (sticky) -->
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <!--
+  Copyright (c) 2016-2023 Martin Donath <martin.donath@squidfunk.com>
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to
+  deal in the Software without restriction, including without limitation the
+  rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+  sell copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+  IN THE SOFTWARE.
+-->
+
+
+
+<!-- Determine classes -->
+
+
+
+
+<!-- Navigation -->
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+
+  <!-- Site title -->
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Blueye SDK"
+      class="md-nav__button md-logo" aria-label="Blueye SDK" data-md-component="logo">
+      
+  <img src="../../../../media/blueye_sdk_logo_darkblue.svg" alt="logo">
+
+    </a>
+  </label>
+
+  <!-- Repository information -->
+  
+  <div class="md-nav__source">
+    <a href="https://github.com/BluEye-Robotics/blueye.sdk" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    
+  </div>
+</a>
+  </div>
+  
+
+  <!-- Navigation list -->
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    About the Blueye Drones
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../quick_start/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Quick Start
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Movement
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Movement
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../movement/from-the-CLI/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Control from the CLI
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../movement/with-a-gamepad/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Control with a gamepad
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Video
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Video
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../video/gstreamer-for-video-streaming/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    GStreamer for video streaming
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../video/downloading/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Downloading videos and images
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Logs
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Logs
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../logs/listing-and-downloading/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Listing and downloading log files
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../logs/plotting/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Plotting log files
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../logs/runtime-logs/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Runtime logs
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../logs/legacy-log-file-format/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Legacy log file format
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../configuration/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Configure drone parameters
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../telemetry-callback/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Subscribing to a telemetry message
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../peripherals/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Peripherals
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../foxglove-bridge/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Visualizing with Foxglove
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../nmea-publisher/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Forwarding positioning to NMEA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../migrating-to-v2/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Updating from v1 to v2
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../protobuf-protocol/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Protobuf protocol
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../http-api.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    HTTP API
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_14" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_14" id="__nav_14_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Reference
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_14_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_14">
+            <span class="md-nav__icon md-icon"></span>
+            Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../battery/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    blueye.sdk.battery
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../camera/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    blueye.sdk.camera
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../connection/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    blueye.sdk.connection
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../constants/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    blueye.sdk.constants
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../drone/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    blueye.sdk.drone
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guestport/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    blueye.sdk.guestport
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../logs/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    blueye.sdk.logs
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    blueye.sdk.motion
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    blueye.sdk.motion
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#classes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Classes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Classes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#motion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Motion
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Motion">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#instance-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instance variables
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Methods
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#send_thruster_setpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      send_thruster_setpoint
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utils/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    blueye.sdk.utils
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#classes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Classes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Classes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#motion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Motion
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Motion">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#instance-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instance variables
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Methods
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#send_thruster_setpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      send_thruster_setpoint
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="module-blueyesdkmotion">Module blueye.sdk.motion</h1>
+<details class="example">
+<summary>View Source</summary>
+<pre><code>import threading
+
+from typing import Optional
+
+import blueye.protocol
+
+class Motion:
+
+    """Control the motion of the drone, and set automatic control modes
+
+    Motion can be set one degree of freedom at a time by using the 4 motion properties
+
+    (surge, sway, heave and yaw) or for all 4 degrees of freedom in one go through the
+
+    `send_thruster_setpoint` method.
+
+    """
+
+    def __init__(self, parent_drone):
+
+        self._parent_drone = parent_drone
+
+        self.thruster_lock = threading.Lock()
+
+        self._current_thruster_setpoints = {"surge": 0, "sway": 0, "heave": 0, "yaw": 0}
+
+        self._current_boost_setpoints = {"slow": 0, "boost": 0}
+
+    @property
+
+    def current_thruster_setpoints(self):
+
+        """Returns the current setpoints for the thrusters
+
+        We maintain this state in the SDK since the drone expects to receive all of the setpoints at
+
+        once.
+
+        For setting the setpoints you should use the dedicated properties/functions for that, trying
+
+        to set them directly with this property will raise an AttributeError.
+
+        """
+
+        return self._current_thruster_setpoints
+
+    @current_thruster_setpoints.setter
+
+    def current_thruster_setpoints(self, *args, **kwargs):
+
+        raise AttributeError(
+
+            "Do not set the setpoints directly, use the surge, sway, heave, yaw properties or the "
+
+            "send_thruster_setpoint function for that."
+
+        )
+
+    def _send_motion_input_message(self):
+
+        """Small helper function for building argument list to motion_input command"""
+
+        thruster_setpoints = self.current_thruster_setpoints.values()
+
+        boost_setpoints = self._current_boost_setpoints.values()
+
+        self._parent_drone._ctrl_client.set_motion_input(*thruster_setpoints, *boost_setpoints)
+
+    @property
+
+    def surge(self) -&gt; float:
+
+        """Set force reference for the surge direction
+
+        Arguments:
+
+        * **surge** (float): Force set point in the surge direction in range &lt;-1, 1&gt;,
+
+                             a positive set point makes the drone move forward
+
+        """
+
+        return self.current_thruster_setpoints["surge"]
+
+    @surge.setter
+
+    def surge(self, surge_value: float):
+
+        with self.thruster_lock:
+
+            self._current_thruster_setpoints["surge"] = surge_value
+
+            self._send_motion_input_message()
+
+    @property
+
+    def sway(self) -&gt; float:
+
+        """Set force reference for the sway direction
+
+        Arguments:
+
+        * **sway** (float): Force set point in the sway direction in range &lt;-1, 1&gt;,
+
+                            a positive set point makes the drone move to the right
+
+        """
+
+        return self.current_thruster_setpoints["sway"]
+
+    @sway.setter
+
+    def sway(self, sway_value: float):
+
+        with self.thruster_lock:
+
+            self._current_thruster_setpoints["sway"] = sway_value
+
+            self._send_motion_input_message()
+
+    @property
+
+    def heave(self) -&gt; float:
+
+        """Set force reference for the heave direction
+
+        Arguments:
+
+        * **heave** (float): Force set point in the heave direction in range &lt;-1, 1&gt;,
+
+                             a positive set point makes the drone move downwards
+
+        """
+
+        return self.current_thruster_setpoints["heave"]
+
+    @heave.setter
+
+    def heave(self, heave_value: float):
+
+        with self.thruster_lock:
+
+            self._current_thruster_setpoints["heave"] = heave_value
+
+            self._send_motion_input_message()
+
+    @property
+
+    def yaw(self) -&gt; float:
+
+        """Set force reference for the yaw direction
+
+        Arguments:
+
+        * **yaw** (float): Moment set point in the sway direction in range &lt;-1, 1&gt;,
+
+                           a positive set point makes the drone rotate clockwise.
+
+        """
+
+        return self.current_thruster_setpoints["yaw"]
+
+    @yaw.setter
+
+    def yaw(self, yaw_value: float):
+
+        with self.thruster_lock:
+
+            self._current_thruster_setpoints["yaw"] = yaw_value
+
+            self._send_motion_input_message()
+
+    def send_thruster_setpoint(self, surge, sway, heave, yaw):
+
+        """Control the thrusters of the drone
+
+        Set reference values between -1 and 1 for each controllable degree of freedom on the drone.
+
+        The reference values are mapped linearly to a thruster force, a set point of -1 correspons
+
+        to maximum negative force and a set point of 1 corresponds to maximum positive force. For
+
+        the yaw direction the reference is a moment not a force, as the yaw direction is rotational
+
+        not translational.
+
+        Arguments:
+
+        * **surge** (float): Force set point in the surge direction in range &lt;-1, 1&gt;,
+
+                             a positive set point makes the drone move forward
+
+        * **sway** (float): Force set point in the sway direction in range &lt;-1, 1&gt;,
+
+                             a positive set point makes the drone move to the right
+
+        * **heave** (float): Force set point in the heave direction in range &lt;-1, 1&gt;,
+
+                             a positive set point makes the drone move down.
+
+        * **yaw** (float): Moment set point in the yaw direction in range &lt;-1, 1&gt;,
+
+                             a positive set point makes the drone rotate clockwise.
+
+        """
+
+        with self.thruster_lock:
+
+            self._current_thruster_setpoints["surge"] = surge
+
+            self._current_thruster_setpoints["sway"] = sway
+
+            self._current_thruster_setpoints["heave"] = heave
+
+            self._current_thruster_setpoints["yaw"] = yaw
+
+            self._send_motion_input_message()
+
+    @property
+
+    def boost(self) -&gt; float:
+
+        """Get or set the boost gain
+
+        Arguments:
+
+        * **boost_gain** (float): Range from 0 to 1.
+
+        """
+
+        return self._current_boost_setpoints["boost"]
+
+    @boost.setter
+
+    def boost(self, boost_gain: float):
+
+        with self.thruster_lock:
+
+            self._current_boost_setpoints["boost"] = boost_gain
+
+            self._send_motion_input_message()
+
+    @property
+
+    def slow(self) -&gt; float:
+
+        """Get or set the "slow gain" (inverse of boost)
+
+        Arguments:
+
+        * **slow_gain** (float): Range from 0 to 1.
+
+        """
+
+        return self._current_boost_setpoints["slow"]
+
+    @slow.setter
+
+    def slow(self, slow_gain: float):
+
+        with self.thruster_lock:
+
+            self._current_boost_setpoints["slow"] = slow_gain
+
+            self._send_motion_input_message()
+
+    @property
+
+    def auto_depth_active(self) -&gt; Optional[bool]:
+
+        """Enable or disable the auto depth control mode
+
+        When auto depth is active, input for the heave direction to the thruster_setpoint function
+
+        specifies a speed set point instead of a force set point. A control loop on the drone will
+
+        then attempt to maintain the wanted speed in the heave direction as long as auto depth is
+
+        active.
+
+        *Arguments*:
+
+        * Enable (bool): Activate auto depth mode if true, de-activate if false
+
+        *Returns*:
+
+        * Auto depth state (bool): True if auto depth is active, false if not
+
+        """
+
+        control_mode_tel = self._parent_drone.telemetry.get(blueye.protocol.ControlModeTel)
+
+        if control_mode_tel is None:
+
+            return None
+
+        else:
+
+            return control_mode_tel.state.auto_depth
+
+    @auto_depth_active.setter
+
+    def auto_depth_active(self, enable: bool):
+
+        self._parent_drone._ctrl_client.set_auto_depth_state(enable)
+
+    @property
+
+    def auto_heading_active(self) -&gt; Optional[bool]:
+
+        """Enable or disable the auto heading control mode
+
+        When auto heading is active, input for the yaw direction to the thruster_setpoint function
+
+        specifies a angular speed set point instead of a moment set point. A control loop on the
+
+        drone will then attempt to maintain the wanted angular velocity in the yaw direction as
+
+        long as auto heading is active.
+
+        *Arguments*:
+
+        * Enable (bool): Activate auto heading mode if true, de-activate if false
+
+        *Returns*:
+
+        * Auto heading state (bool): True if auto heading mode is active, false if not
+
+        """
+
+        control_mode_tel = self._parent_drone.telemetry.get(blueye.protocol.ControlModeTel)
+
+        if control_mode_tel is None:
+
+            return None
+
+        else:
+
+            return control_mode_tel.state.auto_heading
+
+    @auto_heading_active.setter
+
+    def auto_heading_active(self, enable: bool):
+
+        self._parent_drone._ctrl_client.set_auto_heading_state(enable)
+
+    @property
+
+    def auto_altitude_active(self) -&gt; Optional[bool]:
+
+        """Enable or disable the auto altitude control mode
+
+        When auto altitude is active, the drone will attempt to maintain its current altitude above
+
+        the seabed. Input for the heave direction to the thruster_setpoint function specifies a
+
+        speed set point instead of a force set point. A control loop on the drone will then attempt
+
+        to maintain the wanted speed in the heave direction as long as auto altitude is active.
+
+        *Arguments*:
+
+        * Enable (bool): Activate auto altitude mode if true, de-activate if false. If the drone
+
+                         does not have a valid altitude reading this command will be ignored.
+
+        *Returns*:
+
+        * Auto altitude state (bool): True if auto altitude is active, false if not
+
+        """
+
+        control_mode_tel = self._parent_drone.telemetry.get(blueye.protocol.ControlModeTel)
+
+        if control_mode_tel is None:
+
+            return None
+
+        else:
+
+            return control_mode_tel.state.auto_altitude
+
+    @auto_altitude_active.setter
+
+    def auto_altitude_active(self, enable: bool):
+
+        self._parent_drone._ctrl_client.set_auto_altitude_state(enable)
+
+    @property
+
+    def station_keeping_active(self) -&gt; Optional[bool]:
+
+        """Enable or disable the station keeping control mode
+
+        When station keeping is active, the drone will attempt to maintain its current position
+
+        and orientation in the water as long as the mode is active.
+
+        *Arguments*:
+
+        * Enable (bool): Activate station keeping mode if true, de-activate if false
+
+        *Returns*:
+
+        * Station keeping state (bool): True if station keeping mode is active, false if not
+
+        """
+
+        control_mode_tel = self._parent_drone.telemetry.get(blueye.protocol.ControlModeTel)
+
+        if control_mode_tel is None:
+
+            return None
+
+        else:
+
+            return control_mode_tel.state.station_keeping
+
+    @station_keeping_active.setter
+
+    def station_keeping_active(self, enable: bool):
+
+        self._parent_drone._ctrl_client.set_station_keeping_state(enable)
+
+    @property
+
+    def weather_vaning_active(self) -&gt; Optional[bool]:
+
+        """Enable or disable the weather vaning control mode
+
+        When weather vaning is active, the drone will attempt to maintain its current position
+
+        in the water and orient itself parallel to the current.
+
+        *Arguments*:
+
+        * Enable (bool): Activate weather vaning mode if true, de-activate if false. If the drone
+
+                         does not have a valid altitude reading this command will be ignored.
+
+        *Returns*:
+
+        * Weather vaning state (bool): True if weather vaning mode is active, false if not
+
+        """
+
+        control_mode_tel = self._parent_drone.telemetry.get(blueye.protocol.ControlModeTel)
+
+        if control_mode_tel is None:
+
+            return None
+
+        else:
+
+            return control_mode_tel.state.weather_vaning
+
+    @weather_vaning_active.setter
+
+    def weather_vaning_active(self, enable: bool):
+
+        self._parent_drone._ctrl_client.set_weather_vaning_state(enable)
+</code></pre>
+</details>
+<h2 id="classes">Classes</h2>
+<h3 id="motion">Motion</h3>
+<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Motion</span><span class="p">(</span>
+    <span class="n">parent_drone</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Control the motion of the drone, and set automatic control modes</p>
+<p>Motion can be set one degree of freedom at a time by using the 4 motion properties
+(surge, sway, heave and yaw) or for all 4 degrees of freedom in one go through the
+<code>send_thruster_setpoint</code> method.</p>
+<details class="example">
+<summary>View Source</summary>
+<pre><code>class Motion:
+
+    """Control the motion of the drone, and set automatic control modes
+
+    Motion can be set one degree of freedom at a time by using the 4 motion properties
+
+    (surge, sway, heave and yaw) or for all 4 degrees of freedom in one go through the
+
+    `send_thruster_setpoint` method.
+
+    """
+
+    def __init__(self, parent_drone):
+
+        self._parent_drone = parent_drone
+
+        self.thruster_lock = threading.Lock()
+
+        self._current_thruster_setpoints = {"surge": 0, "sway": 0, "heave": 0, "yaw": 0}
+
+        self._current_boost_setpoints = {"slow": 0, "boost": 0}
+
+    @property
+
+    def current_thruster_setpoints(self):
+
+        """Returns the current setpoints for the thrusters
+
+        We maintain this state in the SDK since the drone expects to receive all of the setpoints at
+
+        once.
+
+        For setting the setpoints you should use the dedicated properties/functions for that, trying
+
+        to set them directly with this property will raise an AttributeError.
+
+        """
+
+        return self._current_thruster_setpoints
+
+    @current_thruster_setpoints.setter
+
+    def current_thruster_setpoints(self, *args, **kwargs):
+
+        raise AttributeError(
+
+            "Do not set the setpoints directly, use the surge, sway, heave, yaw properties or the "
+
+            "send_thruster_setpoint function for that."
+
+        )
+
+    def _send_motion_input_message(self):
+
+        """Small helper function for building argument list to motion_input command"""
+
+        thruster_setpoints = self.current_thruster_setpoints.values()
+
+        boost_setpoints = self._current_boost_setpoints.values()
+
+        self._parent_drone._ctrl_client.set_motion_input(*thruster_setpoints, *boost_setpoints)
+
+    @property
+
+    def surge(self) -&gt; float:
+
+        """Set force reference for the surge direction
+
+        Arguments:
+
+        * **surge** (float): Force set point in the surge direction in range &lt;-1, 1&gt;,
+
+                             a positive set point makes the drone move forward
+
+        """
+
+        return self.current_thruster_setpoints["surge"]
+
+    @surge.setter
+
+    def surge(self, surge_value: float):
+
+        with self.thruster_lock:
+
+            self._current_thruster_setpoints["surge"] = surge_value
+
+            self._send_motion_input_message()
+
+    @property
+
+    def sway(self) -&gt; float:
+
+        """Set force reference for the sway direction
+
+        Arguments:
+
+        * **sway** (float): Force set point in the sway direction in range &lt;-1, 1&gt;,
+
+                            a positive set point makes the drone move to the right
+
+        """
+
+        return self.current_thruster_setpoints["sway"]
+
+    @sway.setter
+
+    def sway(self, sway_value: float):
+
+        with self.thruster_lock:
+
+            self._current_thruster_setpoints["sway"] = sway_value
+
+            self._send_motion_input_message()
+
+    @property
+
+    def heave(self) -&gt; float:
+
+        """Set force reference for the heave direction
+
+        Arguments:
+
+        * **heave** (float): Force set point in the heave direction in range &lt;-1, 1&gt;,
+
+                             a positive set point makes the drone move downwards
+
+        """
+
+        return self.current_thruster_setpoints["heave"]
+
+    @heave.setter
+
+    def heave(self, heave_value: float):
+
+        with self.thruster_lock:
+
+            self._current_thruster_setpoints["heave"] = heave_value
+
+            self._send_motion_input_message()
+
+    @property
+
+    def yaw(self) -&gt; float:
+
+        """Set force reference for the yaw direction
+
+        Arguments:
+
+        * **yaw** (float): Moment set point in the sway direction in range &lt;-1, 1&gt;,
+
+                           a positive set point makes the drone rotate clockwise.
+
+        """
+
+        return self.current_thruster_setpoints["yaw"]
+
+    @yaw.setter
+
+    def yaw(self, yaw_value: float):
+
+        with self.thruster_lock:
+
+            self._current_thruster_setpoints["yaw"] = yaw_value
+
+            self._send_motion_input_message()
+
+    def send_thruster_setpoint(self, surge, sway, heave, yaw):
+
+        """Control the thrusters of the drone
+
+        Set reference values between -1 and 1 for each controllable degree of freedom on the drone.
+
+        The reference values are mapped linearly to a thruster force, a set point of -1 correspons
+
+        to maximum negative force and a set point of 1 corresponds to maximum positive force. For
+
+        the yaw direction the reference is a moment not a force, as the yaw direction is rotational
+
+        not translational.
+
+        Arguments:
+
+        * **surge** (float): Force set point in the surge direction in range &lt;-1, 1&gt;,
+
+                             a positive set point makes the drone move forward
+
+        * **sway** (float): Force set point in the sway direction in range &lt;-1, 1&gt;,
+
+                             a positive set point makes the drone move to the right
+
+        * **heave** (float): Force set point in the heave direction in range &lt;-1, 1&gt;,
+
+                             a positive set point makes the drone move down.
+
+        * **yaw** (float): Moment set point in the yaw direction in range &lt;-1, 1&gt;,
+
+                             a positive set point makes the drone rotate clockwise.
+
+        """
+
+        with self.thruster_lock:
+
+            self._current_thruster_setpoints["surge"] = surge
+
+            self._current_thruster_setpoints["sway"] = sway
+
+            self._current_thruster_setpoints["heave"] = heave
+
+            self._current_thruster_setpoints["yaw"] = yaw
+
+            self._send_motion_input_message()
+
+    @property
+
+    def boost(self) -&gt; float:
+
+        """Get or set the boost gain
+
+        Arguments:
+
+        * **boost_gain** (float): Range from 0 to 1.
+
+        """
+
+        return self._current_boost_setpoints["boost"]
+
+    @boost.setter
+
+    def boost(self, boost_gain: float):
+
+        with self.thruster_lock:
+
+            self._current_boost_setpoints["boost"] = boost_gain
+
+            self._send_motion_input_message()
+
+    @property
+
+    def slow(self) -&gt; float:
+
+        """Get or set the "slow gain" (inverse of boost)
+
+        Arguments:
+
+        * **slow_gain** (float): Range from 0 to 1.
+
+        """
+
+        return self._current_boost_setpoints["slow"]
+
+    @slow.setter
+
+    def slow(self, slow_gain: float):
+
+        with self.thruster_lock:
+
+            self._current_boost_setpoints["slow"] = slow_gain
+
+            self._send_motion_input_message()
+
+    @property
+
+    def auto_depth_active(self) -&gt; Optional[bool]:
+
+        """Enable or disable the auto depth control mode
+
+        When auto depth is active, input for the heave direction to the thruster_setpoint function
+
+        specifies a speed set point instead of a force set point. A control loop on the drone will
+
+        then attempt to maintain the wanted speed in the heave direction as long as auto depth is
+
+        active.
+
+        *Arguments*:
+
+        * Enable (bool): Activate auto depth mode if true, de-activate if false
+
+        *Returns*:
+
+        * Auto depth state (bool): True if auto depth is active, false if not
+
+        """
+
+        control_mode_tel = self._parent_drone.telemetry.get(blueye.protocol.ControlModeTel)
+
+        if control_mode_tel is None:
+
+            return None
+
+        else:
+
+            return control_mode_tel.state.auto_depth
+
+    @auto_depth_active.setter
+
+    def auto_depth_active(self, enable: bool):
+
+        self._parent_drone._ctrl_client.set_auto_depth_state(enable)
+
+    @property
+
+    def auto_heading_active(self) -&gt; Optional[bool]:
+
+        """Enable or disable the auto heading control mode
+
+        When auto heading is active, input for the yaw direction to the thruster_setpoint function
+
+        specifies a angular speed set point instead of a moment set point. A control loop on the
+
+        drone will then attempt to maintain the wanted angular velocity in the yaw direction as
+
+        long as auto heading is active.
+
+        *Arguments*:
+
+        * Enable (bool): Activate auto heading mode if true, de-activate if false
+
+        *Returns*:
+
+        * Auto heading state (bool): True if auto heading mode is active, false if not
+
+        """
+
+        control_mode_tel = self._parent_drone.telemetry.get(blueye.protocol.ControlModeTel)
+
+        if control_mode_tel is None:
+
+            return None
+
+        else:
+
+            return control_mode_tel.state.auto_heading
+
+    @auto_heading_active.setter
+
+    def auto_heading_active(self, enable: bool):
+
+        self._parent_drone._ctrl_client.set_auto_heading_state(enable)
+
+    @property
+
+    def auto_altitude_active(self) -&gt; Optional[bool]:
+
+        """Enable or disable the auto altitude control mode
+
+        When auto altitude is active, the drone will attempt to maintain its current altitude above
+
+        the seabed. Input for the heave direction to the thruster_setpoint function specifies a
+
+        speed set point instead of a force set point. A control loop on the drone will then attempt
+
+        to maintain the wanted speed in the heave direction as long as auto altitude is active.
+
+        *Arguments*:
+
+        * Enable (bool): Activate auto altitude mode if true, de-activate if false. If the drone
+
+                         does not have a valid altitude reading this command will be ignored.
+
+        *Returns*:
+
+        * Auto altitude state (bool): True if auto altitude is active, false if not
+
+        """
+
+        control_mode_tel = self._parent_drone.telemetry.get(blueye.protocol.ControlModeTel)
+
+        if control_mode_tel is None:
+
+            return None
+
+        else:
+
+            return control_mode_tel.state.auto_altitude
+
+    @auto_altitude_active.setter
+
+    def auto_altitude_active(self, enable: bool):
+
+        self._parent_drone._ctrl_client.set_auto_altitude_state(enable)
+
+    @property
+
+    def station_keeping_active(self) -&gt; Optional[bool]:
+
+        """Enable or disable the station keeping control mode
+
+        When station keeping is active, the drone will attempt to maintain its current position
+
+        and orientation in the water as long as the mode is active.
+
+        *Arguments*:
+
+        * Enable (bool): Activate station keeping mode if true, de-activate if false
+
+        *Returns*:
+
+        * Station keeping state (bool): True if station keeping mode is active, false if not
+
+        """
+
+        control_mode_tel = self._parent_drone.telemetry.get(blueye.protocol.ControlModeTel)
+
+        if control_mode_tel is None:
+
+            return None
+
+        else:
+
+            return control_mode_tel.state.station_keeping
+
+    @station_keeping_active.setter
+
+    def station_keeping_active(self, enable: bool):
+
+        self._parent_drone._ctrl_client.set_station_keeping_state(enable)
+
+    @property
+
+    def weather_vaning_active(self) -&gt; Optional[bool]:
+
+        """Enable or disable the weather vaning control mode
+
+        When weather vaning is active, the drone will attempt to maintain its current position
+
+        in the water and orient itself parallel to the current.
+
+        *Arguments*:
+
+        * Enable (bool): Activate weather vaning mode if true, de-activate if false. If the drone
+
+                         does not have a valid altitude reading this command will be ignored.
+
+        *Returns*:
+
+        * Weather vaning state (bool): True if weather vaning mode is active, false if not
+
+        """
+
+        control_mode_tel = self._parent_drone.telemetry.get(blueye.protocol.ControlModeTel)
+
+        if control_mode_tel is None:
+
+            return None
+
+        else:
+
+            return control_mode_tel.state.weather_vaning
+
+    @weather_vaning_active.setter
+
+    def weather_vaning_active(self, enable: bool):
+
+        self._parent_drone._ctrl_client.set_weather_vaning_state(enable)
+</code></pre>
+</details>
+<hr />
+<h4 id="instance-variables">Instance variables</h4>
+<div class="highlight"><pre><span></span><code><span class="n">auto_altitude_active</span>
+</code></pre></div>
+<p>Enable or disable the auto altitude control mode</p>
+<p>When auto altitude is active, the drone will attempt to maintain its current altitude above
+the seabed. Input for the heave direction to the thruster_setpoint function specifies a
+speed set point instead of a force set point. A control loop on the drone will then attempt
+to maintain the wanted speed in the heave direction as long as auto altitude is active.</p>
+<p><em>Arguments</em>:
+* Enable (bool): Activate auto altitude mode if true, de-activate if false. If the drone
+                 does not have a valid altitude reading this command will be ignored.</p>
+<p><em>Returns</em>:</p>
+<ul>
+<li>Auto altitude state (bool): True if auto altitude is active, false if not</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">auto_depth_active</span>
+</code></pre></div>
+<p>Enable or disable the auto depth control mode</p>
+<p>When auto depth is active, input for the heave direction to the thruster_setpoint function
+specifies a speed set point instead of a force set point. A control loop on the drone will
+then attempt to maintain the wanted speed in the heave direction as long as auto depth is
+active.</p>
+<p><em>Arguments</em>:</p>
+<ul>
+<li>Enable (bool): Activate auto depth mode if true, de-activate if false</li>
+</ul>
+<p><em>Returns</em>:</p>
+<ul>
+<li>Auto depth state (bool): True if auto depth is active, false if not</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">auto_heading_active</span>
+</code></pre></div>
+<p>Enable or disable the auto heading control mode</p>
+<p>When auto heading is active, input for the yaw direction to the thruster_setpoint function
+specifies a angular speed set point instead of a moment set point. A control loop on the
+drone will then attempt to maintain the wanted angular velocity in the yaw direction as
+long as auto heading is active.</p>
+<p><em>Arguments</em>:</p>
+<ul>
+<li>Enable (bool): Activate auto heading mode if true, de-activate if false</li>
+</ul>
+<p><em>Returns</em>:</p>
+<ul>
+<li>Auto heading state (bool): True if auto heading mode is active, false if not</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">boost</span>
+</code></pre></div>
+<p>Get or set the boost gain</p>
+<p>Arguments:</p>
+<ul>
+<li><strong>boost_gain</strong> (float): Range from 0 to 1.</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">current_thruster_setpoints</span>
+</code></pre></div>
+<p>Returns the current setpoints for the thrusters</p>
+<p>We maintain this state in the SDK since the drone expects to receive all of the setpoints at
+once.</p>
+<p>For setting the setpoints you should use the dedicated properties/functions for that, trying
+to set them directly with this property will raise an AttributeError.</p>
+<div class="highlight"><pre><span></span><code><span class="n">heave</span>
+</code></pre></div>
+<p>Set force reference for the heave direction</p>
+<p>Arguments:</p>
+<ul>
+<li><strong>heave</strong> (float): Force set point in the heave direction in range &lt;-1, 1&gt;,
+                     a positive set point makes the drone move downwards</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">slow</span>
+</code></pre></div>
+<p>Get or set the "slow gain" (inverse of boost)</p>
+<p>Arguments:</p>
+<ul>
+<li><strong>slow_gain</strong> (float): Range from 0 to 1.</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">station_keeping_active</span>
+</code></pre></div>
+<p>Enable or disable the station keeping control mode</p>
+<p>When station keeping is active, the drone will attempt to maintain its current position
+and orientation in the water as long as the mode is active.</p>
+<p><em>Arguments</em>:</p>
+<ul>
+<li>Enable (bool): Activate station keeping mode if true, de-activate if false</li>
+</ul>
+<p><em>Returns</em>:</p>
+<ul>
+<li>Station keeping state (bool): True if station keeping mode is active, false if not</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">surge</span>
+</code></pre></div>
+<p>Set force reference for the surge direction</p>
+<p>Arguments:</p>
+<ul>
+<li><strong>surge</strong> (float): Force set point in the surge direction in range &lt;-1, 1&gt;,
+                     a positive set point makes the drone move forward</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">sway</span>
+</code></pre></div>
+<p>Set force reference for the sway direction</p>
+<p>Arguments:</p>
+<ul>
+<li><strong>sway</strong> (float): Force set point in the sway direction in range &lt;-1, 1&gt;,
+                    a positive set point makes the drone move to the right</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">weather_vaning_active</span>
+</code></pre></div>
+<p>Enable or disable the weather vaning control mode</p>
+<p>When weather vaning is active, the drone will attempt to maintain its current position
+in the water and orient itself parallel to the current.</p>
+<p><em>Arguments</em>:</p>
+<ul>
+<li>Enable (bool): Activate weather vaning mode if true, de-activate if false. If the drone
+                 does not have a valid altitude reading this command will be ignored.</li>
+</ul>
+<p><em>Returns</em>:</p>
+<ul>
+<li>Weather vaning state (bool): True if weather vaning mode is active, false if not</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">yaw</span>
+</code></pre></div>
+<p>Set force reference for the yaw direction</p>
+<p>Arguments:</p>
+<ul>
+<li><strong>yaw</strong> (float): Moment set point in the sway direction in range &lt;-1, 1&gt;,
+                   a positive set point makes the drone rotate clockwise.</li>
+</ul>
+<h4 id="methods">Methods</h4>
+<h4 id="send_thruster_setpoint">send_thruster_setpoint</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">send_thruster_setpoint</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">surge</span><span class="p">,</span>
+    <span class="n">sway</span><span class="p">,</span>
+    <span class="n">heave</span><span class="p">,</span>
+    <span class="n">yaw</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Control the thrusters of the drone</p>
+<p>Set reference values between -1 and 1 for each controllable degree of freedom on the drone.
+The reference values are mapped linearly to a thruster force, a set point of -1 correspons
+to maximum negative force and a set point of 1 corresponds to maximum positive force. For
+the yaw direction the reference is a moment not a force, as the yaw direction is rotational
+not translational.</p>
+<p>Arguments:</p>
+<ul>
+<li><strong>surge</strong> (float): Force set point in the surge direction in range &lt;-1, 1&gt;,
+                     a positive set point makes the drone move forward</li>
+<li><strong>sway</strong> (float): Force set point in the sway direction in range &lt;-1, 1&gt;,
+                     a positive set point makes the drone move to the right</li>
+<li><strong>heave</strong> (float): Force set point in the heave direction in range &lt;-1, 1&gt;,
+                     a positive set point makes the drone move down.</li>
+<li><strong>yaw</strong> (float): Moment set point in the yaw direction in range &lt;-1, 1&gt;,
+                     a positive set point makes the drone rotate clockwise.</li>
+</ul>
+<details class="example">
+<summary>View Source</summary>
+<pre><code>    def send_thruster_setpoint(self, surge, sway, heave, yaw):
+
+        """Control the thrusters of the drone
+
+        Set reference values between -1 and 1 for each controllable degree of freedom on the drone.
+
+        The reference values are mapped linearly to a thruster force, a set point of -1 correspons
+
+        to maximum negative force and a set point of 1 corresponds to maximum positive force. For
+
+        the yaw direction the reference is a moment not a force, as the yaw direction is rotational
+
+        not translational.
+
+        Arguments:
+
+        * **surge** (float): Force set point in the surge direction in range &lt;-1, 1&gt;,
+
+                             a positive set point makes the drone move forward
+
+        * **sway** (float): Force set point in the sway direction in range &lt;-1, 1&gt;,
+
+                             a positive set point makes the drone move to the right
+
+        * **heave** (float): Force set point in the heave direction in range &lt;-1, 1&gt;,
+
+                             a positive set point makes the drone move down.
+
+        * **yaw** (float): Moment set point in the yaw direction in range &lt;-1, 1&gt;,
+
+                             a positive set point makes the drone rotate clockwise.
+
+        """
+
+        with self.thruster_lock:
+
+            self._current_thruster_setpoints["surge"] = surge
+
+            self._current_thruster_setpoints["sway"] = sway
+
+            self._current_thruster_setpoints["heave"] = heave
+
+            self._current_thruster_setpoints["yaw"] = yaw
+
+            self._send_motion_input_message()
+</code></pre>
+</details>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+  <nav class="md-footer__inner md-grid" aria-label="footer.title">
+    
+    
+    <a href="../logs/" class="md-footer__link md-footer__link--prev"
+      aria-label="Previous: blueye.sdk.logs" rel="prev">
+      <div class="md-footer__button md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </div>
+      <div class="md-footer__title">
+        <div class="md-ellipsis">
+          <span class="md-footer__direction">
+            Previous
+          </span>
+          blueye.sdk.logs
+        </div>
+      </div>
+    </a>
+    
+    
+    
+    <a href="../utils/" class="md-footer__link md-footer__link--next"
+      aria-label="Next: blueye.sdk.utils" rel="next">
+      <div class="md-footer__title">
+        <div class="md-ellipsis">
+          <span class="md-footer__direction">
+            Next
+          </span>
+          blueye.sdk.utils
+        </div>
+      </div>
+      <div class="md-footer__button md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+      </div>
+    </a>
+    
+  </nav>
+  
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../../..", "features": ["content.tabs.link"], "search": "../../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.83f73b43.min.js"></script>
+      
+    
+  </body>
+</html>
