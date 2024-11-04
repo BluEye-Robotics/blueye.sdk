@@ -234,6 +234,18 @@ class CtrlClient(threading.Thread):
         msg = blueye.protocol.LaserCtrl(laser={"value": intensity})
         self._messages_to_send.put(msg)
 
+    def run_mission(self):
+        msg = blueye.protocol.RunMissionCtrl()
+        self._messages_to_send.put(msg)
+
+    def pause_mission(self):
+        msg = blueye.protocol.PauseMissionCtrl()
+        self._messages_to_send.put(msg)
+
+    def clear_mission(self):
+        msg = blueye.protocol.ClearMissionCtrl()
+        self._messages_to_send.put(msg)
+
 
 class ReqRepClient(threading.Thread):
     def __init__(self, parent_drone: "blueye.sdk.Drone", context: zmq.Context = None):
@@ -381,3 +393,18 @@ class ReqRepClient(threading.Thread):
         message_type = self._parse_type_to_string(msg)
         request = blueye.protocol.GetTelemetryReq(message_type=message_type)
         return self._send_request_get_response(request, blueye.protocol.GetTelemetryRep, timeout)
+
+    def get_active_mission(self, timeout: float = 0.05) -> blueye.protocol.GetMissionRep:
+        """Get the active mission from the drone"""
+        request = blueye.protocol.GetMissionReq()
+        return self._send_request_get_response(request, blueye.protocol.GetMissionRep, timeout)
+
+    def set_mission(
+        self, mission: blueye.protocol.Mission, timeout: float = 0.05
+    ) -> blueye.protocol.SetMissionRep:
+        """Send a new mission to the drone
+
+        Requires that the drone is ready to receive a new mission.
+        """
+        request = blueye.protocol.SetMissionReq(mission=mission)
+        return self._send_request_get_response(request, blueye.protocol.SetMissionRep, timeout)
