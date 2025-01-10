@@ -21,14 +21,21 @@ class Mission:
     2. Create a mission with the instructions
         mission = bp.Mission(instructions=[go_to_seabed, take_picture, go_to_surface])
 
-    3. Check if the drone is ready receive a new mission
-        ready = drone.mission.get_status().state == bp.MissionState.MISSION_STATE_INACTIVE
+    3. Clear any previous missions
+        drone.mission.clear()
 
-    4. If ready, send the mission to the drone
-        if ready:
-            drone.mission.send_new(mission)
+    4. Wait for the drone to be ready to receive a new mission
+        while drone.mission.get_status().state != bp.MissionState.MISSION_STATE_INACTIVE:
+            time.sleep(0.1)
 
-    5. Run the mission
+    5. Send the mission to the drone
+        drone.mission.send_new(mission)
+
+    6. Wait for the drone to be ready to run the mission
+        while drone.mission.get_status().state != bp.MissionState.MISSION_STATE_READY:
+            time.sleep(0.1)
+
+    7. Run the mission
         drone.mission.run()
     """
 
