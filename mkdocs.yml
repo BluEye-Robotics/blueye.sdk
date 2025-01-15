@@ -72,6 +72,7 @@ theme:
   custom_dir: "docs/mkdocs_templates"
   features:
     - content.tabs.link
+    - navigation.top
 
 extra:
   version:
