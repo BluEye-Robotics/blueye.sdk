@@ -13,9 +13,9 @@ jobs:
       OS: ${{ matrix.os }}
       PYTHON: ${{ matrix.python }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
       - name: Install Poetry
@@ -27,7 +27,7 @@ jobs:
       - name: Run tests
         run: poetry run pytest -k "not connected_to_drone" --cov-report=xml --cov blueye
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           env_vars: OS,PYTHON
@@ -41,9 +41,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: "3.12"
       - name: Install Poetry
