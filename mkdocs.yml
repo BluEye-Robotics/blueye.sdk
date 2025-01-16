@@ -11,6 +11,7 @@ plugins:
           options:
             preload_modules:
               - threading
+              - blueye.protocol
             docstring_options:
               ignore_init_summary: true
               returns_multiple_items: False # To avoid having to indent continuation lines
@@ -108,3 +109,4 @@ nav:
       - blueye.sdk.logs: "reference/blueye/sdk/logs.md"
       - blueye.sdk.motion: "reference/blueye/sdk/motion.md"
       - blueye.sdk.utils: "reference/blueye/sdk/utils.md"
+      - blueye.protocol: "reference/blueye.protocol.md"
