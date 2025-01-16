@@ -1,0 +1,1 @@
+::: blueye.sdk.camera
