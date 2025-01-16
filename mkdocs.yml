@@ -109,4 +109,11 @@ nav:
       - blueye.sdk.logs: "reference/blueye/sdk/logs.md"
       - blueye.sdk.motion: "reference/blueye/sdk/motion.md"
       - blueye.sdk.utils: "reference/blueye/sdk/utils.md"
-      - blueye.protocol: "reference/blueye.protocol.md"
+      - blueye.protocol:
+        - Overview: "reference/blueye/protocol/overview.md"
+        - Telemetry: "reference/blueye/protocol/telemetry.md"
+        - Control: "reference/blueye/protocol/control.md"
+        - ReqRep: "reference/blueye/protocol/req_rep.md"
+        - Message Formats: "reference/blueye/protocol/message_formats.md"
+        - Mission Planning: "reference/blueye/protocol/mission_planning.md"
+        - Aquatroll: "reference/blueye/protocol/aquatroll.md"
