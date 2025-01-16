@@ -13,6 +13,7 @@ plugins:
               - threading
             docstring_options:
               ignore_init_summary: true
+              returns_multiple_items: False # To avoid having to indent continuation lines
             docstring_style: google
             docstring_section_style: list
             heading_level: 2
