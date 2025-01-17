@@ -1575,6 +1575,24 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#blueye.protocol.types.message_formats.DvlTransducer" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;DvlTransducer
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#blueye.protocol.types.message_formats.DvlVelocity" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;DvlVelocity
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#blueye.protocol.types.message_formats.ErrorFlags" class="md-nav__link">
     <span class="md-ellipsis">
       <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;ErrorFlags
@@ -2661,6 +2679,24 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#blueye.protocol.types.message_formats.DvlTransducer" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;DvlTransducer
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#blueye.protocol.types.message_formats.DvlVelocity" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;DvlVelocity
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#blueye.protocol.types.message_formats.ErrorFlags" class="md-nav__link">
     <span class="md-ellipsis">
       <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;ErrorFlags
@@ -3526,6 +3562,20 @@
           </div>
         </li>
         <li class="doc-section-item field-body">
+          <b><code><a class="autorefs autorefs-internal" title="blueye.protocol.types.message_formats.DvlTransducer" href="#blueye.protocol.types.message_formats.DvlTransducer">DvlTransducer</a></code></b>
+          –
+          <div class="doc-md-description">
+            <p>DVL raw transducer data.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><a class="autorefs autorefs-internal" title="blueye.protocol.types.message_formats.DvlVelocity" href="#blueye.protocol.types.message_formats.DvlVelocity">DvlVelocity</a></code></b>
+          –
+          <div class="doc-md-description">
+            <p>DVL raw velocity data.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
           <b><code><a class="autorefs autorefs-internal" title="blueye.protocol.types.message_formats.ErrorFlags" href="#blueye.protocol.types.message_formats.ErrorFlags">ErrorFlags</a></code></b>
           –
           <div class="doc-md-description">
@@ -3739,7 +3789,7 @@
           <b><code><a class="autorefs autorefs-internal" title="blueye.protocol.types.message_formats.MultibeamFrequencyMode" href="#blueye.protocol.types.message_formats.MultibeamFrequencyMode">MultibeamFrequencyMode</a></code></b>
           –
           <div class="doc-md-description">
-            
+            <p>Values:</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3865,7 +3915,7 @@
           <b><code><a class="autorefs autorefs-internal" title="blueye.protocol.types.message_formats.ResetCoordinateSource" href="#blueye.protocol.types.message_formats.ResetCoordinateSource">ResetCoordinateSource</a></code></b>
           –
           <div class="doc-md-description">
-            
+            <p>Values:</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -4523,8 +4573,8 @@
     <div class="doc doc-contents ">
 
 
-        <p>Battery information message.
-Detailed information about all aspects of the connected Blueye
+        <p>Battery information message.</p>
+<p>Detailed information about all aspects of the connected Blueye
 Smart Battery, using the BQ40Z50 BMS.</p>
 
 
@@ -5546,6 +5596,28 @@ events (events)</p>
         <p>Battery error code from BQ40Z50 BMS data sheet.</p>
 
 
+<details class="values" open>
+  <summary>Values</summary>
+  <p>BATTERY_ERROR_UNSPECIFIED (0):
+    No description available.
+BATTERY_ERROR_OK (1):
+    No description available.
+BATTERY_ERROR_BUSY (2):
+    No description available.
+BATTERY_ERROR_RESERVED_COMMAND (3):
+    No description available.
+BATTERY_ERROR_UNSUPPORTED_COMMAND (4):
+    No description available.
+BATTERY_ERROR_ACCESS_DENIED (5):
+    No description available.
+BATTERY_ERROR_OVERFLOW_UNDERFLOW (6):
+    No description available.
+BATTERY_ERROR_BAD_SIZE (7):
+    No description available.
+BATTERY_ERROR_UNKNOWN_ERROR (8):
+    No description available.</p>
+</details>
+
 
 
 
@@ -5793,8 +5865,8 @@ events (events)</p>
 logfile.
 Each entry contains the unix timestamp in UTC, the monotonic
 timestamp (time since boot), and an Any message wrapping the
-custom Blueye message.
-See separate documentation for the logfile format for more
+custom Blueye message.</p>
+<p>See separate documentation for the logfile format for more
 details.</p>
 
 
@@ -5870,8 +5942,8 @@ details.</p>
     <div class="doc doc-contents ">
 
 
-        <p>CPU information
-Contains information about the CPU load and memory usage of the
+        <p>CPU information</p>
+<p>Contains information about the CPU load and memory usage of the
 drone.</p>
 
 
@@ -5891,6 +5963,22 @@ drone.</p>
           –
           <div class="doc-md-description">
             <p>Memory bus load (0..1)</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><span title="blueye.protocol.types.message_formats.CPUInfo.main_queue_load">main_queue_load</span></code></b>
+              (<code>float</code>)
+          –
+          <div class="doc-md-description">
+            <p>Main queue load (0..1)</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><span title="blueye.protocol.types.message_formats.CPUInfo.guestport_queue_load">guestport_queue_load</span></code></b>
+              (<code>float</code>)
+          –
+          <div class="doc-md-description">
+            <p>Guestport queue load (0..1)</p>
           </div>
         </li>
     </ul>
@@ -6116,10 +6204,42 @@ drone.</p>
     <div class="doc doc-contents ">
 
 
-        <p>Status of the compass calibration procedure.
-When calibration is started, the status will indicate the active
+        <p>Status of the compass calibration procedure.</p>
+<p>When calibration is started, the status will indicate the active
 (upfacing) axis.</p>
 
+
+<details class="values" open>
+  <summary>Values</summary>
+  <p>STATUS_UNSPECIFIED (0):
+    Unspecified status
+STATUS_NOT_CALIBRATING (1):
+    Compass is not currently calibrating
+STATUS_CALIBRATING_NO_AXIS (2):
+    Compass is calibrating but active calibration
+    axis cannot be determined
+STATUS_CALIBRATING_X_POSITIVE (3):
+    Compass is calibrating and the positive X
+    axis is active
+STATUS_CALIBRATING_X_NEGATIVE (4):
+    Compass is calibrating and the negative X
+    axis is active
+STATUS_CALIBRATING_Y_POSITIVE (5):
+    Compass is calibrating and the positive Y
+    axis is active
+STATUS_CALIBRATING_Y_NEGATIVE (6):
+    Compass is calibrating and the negative Y
+    axis is active
+STATUS_CALIBRATING_Z_POSITIVE (7):
+    Compass is calibrating and the positive Z
+    axis is active
+STATUS_CALIBRATING_Z_NEGATIVE (8):
+    Compass is calibrating and the negative Z
+    axis is active
+STATUS_CALIBRATING_THRUSTER (9):
+    Compass is calibrating for thruster
+    interferance</p>
+</details>
 
 
 
@@ -6175,6 +6295,16 @@ When calibration is started, the status will indicate the active
 
         <p>Which camera to control.</p>
 
+
+<details class="values" open>
+  <summary>Values</summary>
+  <p>CAMERA_UNSPECIFIED (0):
+    Camera not specified
+CAMERA_MAIN (1):
+    Main camera
+CAMERA_GUESTPORT (2):
+    Guestport camera</p>
+</details>
 
 
 
@@ -6344,8 +6474,8 @@ for automatic white balance</p>
     <div class="doc doc-contents ">
 
 
-        <p>Canister humidity.
-Humidity measured in the top or bottom canister of the drone.</p>
+        <p>Canister humidity.</p>
+<p>Humidity measured in the top or bottom canister of the drone.</p>
 
 
 <p><span class="doc-section-title">Attributes:</span></p>
@@ -6404,8 +6534,8 @@ Humidity measured in the top or bottom canister of the drone.</p>
     <div class="doc doc-contents ">
 
 
-        <p>Canister temperature.
-Temperature measured in the top or bottom canister of the drone.</p>
+        <p>Canister temperature.</p>
+<p>Temperature measured in the top or bottom canister of the drone.</p>
 
 
 <p><span class="doc-section-title">Attributes:</span></p>
@@ -7105,6 +7235,16 @@ controller with an relative error and load from 0 to 1.</p>
         <p>Available depth units.</p>
 
 
+<details class="values" open>
+  <summary>Values</summary>
+  <p>DEPTH_UNIT_UNSPECIFIED (0):
+    Depth unit not specified
+DEPTH_UNIT_METERS (1):
+    Depth should be displayed as meters
+DEPTH_UNIT_FEET (2):
+    Depth should be displayed as feet</p>
+</details>
+
 
 
 
@@ -7148,8 +7288,8 @@ controller with an relative error and load from 0 to 1.</p>
     <div class="doc doc-contents ">
 
 
-        <p>Amount of time the drone has been submerged.
-The drone starts incrementing this value when the depth is above
+        <p>Amount of time the drone has been submerged.</p>
+<p>The drone starts incrementing this value when the depth is above
 250 mm.</p>
 
 
@@ -7210,8 +7350,8 @@ submerged</p>
     <div class="doc doc-contents ">
 
 
-        <p>Information about the drone.
-This message contains serial numbers and version information for
+        <p>Information about the drone.</p>
+<p>This message contains serial numbers and version information for
 internal components in the drone. Primarily used for
 diagnostics, or to determine the origin of a logfile.</p>
 
@@ -7305,6 +7445,217 @@ diagnostics, or to determine the origin of a logfile.</p>
           <div class="doc-md-description">
             <p>Type of depth sensor that is connected to the
 drone</p>
+          </div>
+        </li>
+    </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="blueye.protocol.types.message_formats.DvlTransducer" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <span class="doc doc-object-name doc-class-name">DvlTransducer</span>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>DVL raw transducer data.</p>
+
+
+<p><span class="doc-section-title">Attributes:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+          <b><code><span title="blueye.protocol.types.message_formats.DvlTransducer.id">id</span></code></b>
+              (<code>int</code>)
+          –
+          <div class="doc-md-description">
+            <p>Transducer ID, 3 beams for Nucleus DVL, 4
+beams for DVL A50</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><span title="blueye.protocol.types.message_formats.DvlTransducer.velocity">velocity</span></code></b>
+              (<code>float</code>)
+          –
+          <div class="doc-md-description">
+            <p>Velocity (m/s)</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><span title="blueye.protocol.types.message_formats.DvlTransducer.distance">distance</span></code></b>
+              (<code>float</code>)
+          –
+          <div class="doc-md-description">
+            <p>Distance (m)</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><span title="blueye.protocol.types.message_formats.DvlTransducer.beam_valid">beam_valid</span></code></b>
+              (<code>bool</code>)
+          –
+          <div class="doc-md-description">
+            <p>Beam validity</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><span title="blueye.protocol.types.message_formats.DvlTransducer.rssi">rssi</span></code></b>
+              (<code>float</code>)
+          –
+          <div class="doc-md-description">
+            <p>Received signal strength indicator: strength
+of the signal received by this transducer (dBm)</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><span title="blueye.protocol.types.message_formats.DvlTransducer.nsd">nsd</span></code></b>
+              (<code>float</code>)
+          –
+          <div class="doc-md-description">
+            <p>Noise spectral density: strength of the
+background noise received by this transducer
+(dBm)</p>
+          </div>
+        </li>
+    </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="blueye.protocol.types.message_formats.DvlVelocity" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <span class="doc doc-object-name doc-class-name">DvlVelocity</span>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>DVL raw velocity data.</p>
+
+
+<p><span class="doc-section-title">Attributes:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+          <b><code><span title="blueye.protocol.types.message_formats.DvlVelocity.sensor_id">sensor_id</span></code></b>
+              (<code><a class="autorefs autorefs-internal" title="blueye.protocol.types.NavigationSensorID" href="#blueye.protocol.types.message_formats.NavigationSensorID">NavigationSensorID</a></code>)
+          –
+          <div class="doc-md-description">
+            <p>Sensor id</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><span title="blueye.protocol.types.message_formats.DvlVelocity.status">status</span></code></b>
+              (<code>int</code>)
+          –
+          <div class="doc-md-description">
+            <p>Vendor-specific status of the DVL</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><span title="blueye.protocol.types.message_formats.DvlVelocity.delta_time">delta_time</span></code></b>
+              (<code>float</code>)
+          –
+          <div class="doc-md-description">
+            <p>Time since last velocity measurement (ms)</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><span title="blueye.protocol.types.message_formats.DvlVelocity.fom">fom</span></code></b>
+              (<code>float</code>)
+          –
+          <div class="doc-md-description">
+            <p>Figure of merit, a measure of the accuracy of
+the velocities (m/s)</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><span title="blueye.protocol.types.message_formats.DvlVelocity.velocity">velocity</span></code></b>
+              (<code><a class="autorefs autorefs-internal" title="blueye.protocol.types.Vector3" href="#blueye.protocol.types.message_formats.Vector3">Vector3</a></code>)
+          –
+          <div class="doc-md-description">
+            <p>Velocity, x forward, y left, z down (m/s)</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><span title="blueye.protocol.types.message_formats.DvlVelocity.is_water_tracking">is_water_tracking</span></code></b>
+              (<code>bool</code>)
+          –
+          <div class="doc-md-description">
+            <p>Water tracking status</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><span title="blueye.protocol.types.message_formats.DvlVelocity.transducers">transducers</span></code></b>
+              (<code><span title="typing.MutableSequence">MutableSequence</span>[<a class="autorefs autorefs-internal" title="blueye.protocol.types.DvlTransducer" href="#blueye.protocol.types.message_formats.DvlTransducer">DvlTransducer</a>]</code>)
+          –
+          <div class="doc-md-description">
+            <p>List of transducers</p>
           </div>
         </li>
     </ul>
@@ -7779,6 +8130,24 @@ faulty DVL</p>
         <p>Available font sizes for overlay text elements.</p>
 
 
+<details class="values" open>
+  <summary>Values</summary>
+  <p>FONT_SIZE_UNSPECIFIED (0):
+    Font size not specified
+FONT_SIZE_PX15 (1):
+    15 px
+FONT_SIZE_PX20 (2):
+    20 px
+FONT_SIZE_PX25 (3):
+    25 px
+FONT_SIZE_PX30 (4):
+    30 px
+FONT_SIZE_PX35 (5):
+    35 px
+FONT_SIZE_PX40 (6):
+    40 px</p>
+</details>
+
 
 
 
@@ -7822,8 +8191,8 @@ faulty DVL</p>
     <div class="doc doc-contents ">
 
 
-        <p>Distance to an object in front of the drone
-Typically obtained from a 1D pinger.</p>
+        <p>Distance to an object in front of the drone</p>
+<p>Typically obtained from a 1D pinger.</p>
 
 
 <p><span class="doc-section-title">Attributes:</span></p>
@@ -7892,6 +8261,16 @@ Typically obtained from a 1D pinger.</p>
 
         <p>Available camera frame rates.</p>
 
+
+<details class="values" open>
+  <summary>Values</summary>
+  <p>FRAMERATE_UNSPECIFIED (0):
+    Framerate not specified
+FRAMERATE_FPS_30 (1):
+    30 frames per second
+FRAMERATE_FPS_25 (2):
+    25 frames per second</p>
+</details>
 
 
 
@@ -8071,6 +8450,11 @@ Typically obtained from a 1D pinger.</p>
 
 
         <p>GuestPort connector information.</p>
+<p>This message has <code>oneof</code>_ fields (mutually exclusive fields).
+For each oneof, at most one member field can be set at the same time.
+Setting any member of the oneof automatically clears all other
+members.</p>
+<p>.. _oneof: <a href="https://proto-plus-python.readthedocs.io/en/stable/fields.html#oneofs-mutually-exclusive-fields">https://proto-plus-python.readthedocs.io/en/stable/fields.html#oneofs-mutually-exclusive-fields</a></p>
 
 
 <p><span class="doc-section-title">Attributes:</span></p>
@@ -8081,6 +8465,7 @@ Typically obtained from a 1D pinger.</p>
           –
           <div class="doc-md-description">
             <p>List of devices on this connector</p>
+<p>This field is a member of <code>oneof</code>_ <code>connected_device</code>.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -8089,6 +8474,7 @@ Typically obtained from a 1D pinger.</p>
           –
           <div class="doc-md-description">
             <p>Guest port connector error</p>
+<p>This field is a member of <code>oneof</code>_ <code>connected_device</code>.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -8230,6 +8616,17 @@ Typically obtained from a 1D pinger.</p>
 
         <p>GuestPort detach status.</p>
 
+
+<details class="values" open>
+  <summary>Values</summary>
+  <p>GUEST_PORT_DETACH_STATUS_UNSPECIFIED (0):
+    Unspecified (Default for non-detachable
+    devices)
+GUEST_PORT_DETACH_STATUS_ATTACHED (1):
+    Detachable device attached
+GUEST_PORT_DETACH_STATUS_DETACHED (2):
+    Detachable device detached</p>
+</details>
 
 
 
@@ -8384,6 +8781,96 @@ Typically obtained from a 1D pinger.</p>
         <p>GuestPort device ID.</p>
 
 
+<details class="values" open>
+  <summary>Values</summary>
+  <p>GUEST_PORT_DEVICE_ID_UNSPECIFIED (0):
+    Unspecified
+GUEST_PORT_DEVICE_ID_BLIND_PLUG (1):
+    Blueye blind plug
+GUEST_PORT_DEVICE_ID_TEST_STATION (2):
+    Blueye test station
+GUEST_PORT_DEVICE_ID_DEBUG_SERIAL (3):
+    Blueye debug serial
+GUEST_PORT_DEVICE_ID_BLUEYE_LIGHT (4):
+    Blueye Light
+GUEST_PORT_DEVICE_ID_BLUEYE_CAM (5):
+    Blueye Cam
+GUEST_PORT_DEVICE_ID_BLUE_ROBOTICS_LUMEN (6):
+    Blue Robotics Lumen
+GUEST_PORT_DEVICE_ID_BLUE_ROBOTICS_NEWTON (7):
+    Blue Robotics Newton
+GUEST_PORT_DEVICE_ID_BLUE_ROBOTICS_PING_SONAR (8):
+    Blue Robotics Ping Sonar
+GUEST_PORT_DEVICE_ID_BLUEPRINT_LAB_REACH_ALPHA (9):
+    Blueprint Lab Reach Alpha
+GUEST_PORT_DEVICE_ID_WATERLINKED_DVL_A50 (10):
+    Waterlinked DVL A50
+GUEST_PORT_DEVICE_ID_IMPACT_SUBSEA_ISS360 (11):
+    Impact Subsea ISS360 Sonar
+GUEST_PORT_DEVICE_ID_BLUEPRINT_SUBSEA_SEATRAC_X010 (12):
+    Blueprint Subsea Seatrac X110
+GUEST_PORT_DEVICE_ID_BLUEPRINT_SUBSEA_OCULUS_M750D (13):
+    Blueprint Subsea Oculus M750d
+GUEST_PORT_DEVICE_ID_CYGNUS_MINI_ROV_THICKNESS_GAUGE (14):
+    Cygnus Mini ROV Thickness Gauge
+GUEST_PORT_DEVICE_ID_BLUE_ROBOTICS_PING360_SONAR (15):
+    Blue Robotics Ping360 Scanning Imaging Sonar
+GUEST_PORT_DEVICE_ID_TRITECH_GEMINI_720IM (16):
+    Tritech Gemini 720im Multibeam Sonar
+GUEST_PORT_DEVICE_ID_BLUEYE_LIGHT_PAIR (17):
+    Blueye Light Pair
+GUEST_PORT_DEVICE_ID_TRITECH_GEMINI_MICRON (18):
+    Tritech Micron Gemini
+GUEST_PORT_DEVICE_ID_OCEAN_TOOLS_DIGICP (19):
+    Ocean Tools DigiCP
+GUEST_PORT_DEVICE_ID_TRITECH_GEMINI_720IK (20):
+    Tritech Gemini 720ik Multibeam Sonar
+GUEST_PORT_DEVICE_ID_NORTEK_NUCLEUS_1000 (21):
+    Nortek Nucleus 1000 DVL
+GUEST_PORT_DEVICE_ID_BLUEYE_GENERIC_SERVO (22):
+    Blueye Generic Servo
+GUEST_PORT_DEVICE_ID_BLUEYE_MULTIBEAM_SERVO (23):
+    Blueye Multibeam Skid Servo
+GUEST_PORT_DEVICE_ID_BLUE_ROBOTICS_DETACHABLE_NEWTON (24):
+    Detachable Blue Robotics Newton
+GUEST_PORT_DEVICE_ID_INSITU_AQUA_TROLL_500 (25):
+    In-Situ Aqua TROLL 500
+GUEST_PORT_DEVICE_ID_MEDUSA_RADIOMETRICS_MS100 (26):
+    Medusa Radiometrics Gamma Ray Sensor
+GUEST_PORT_DEVICE_ID_LASER_TOOLS_SEA_BEAM (27):
+    Laser Tools Sea Beam Underwater Laser
+GUEST_PORT_DEVICE_ID_SPOT_X_LASER_SCALERS (28):
+    Spot X Laser Scalers
+GUEST_PORT_DEVICE_ID_BLUEPRINT_SUBSEA_OCULUS_M1200D (29):
+    Blueprint Subsea Oculus M1200d
+GUEST_PORT_DEVICE_ID_BLUEPRINT_SUBSEA_OCULUS_M3000D (30):
+    Blueprint Subsea Oculus M3000d
+GUEST_PORT_DEVICE_ID_INSITU_AQUA_TROLL_100 (31):
+    In-Situ Aqua TROLL 100
+GUEST_PORT_DEVICE_ID_INSITU_RDO_PRO_X (32):
+    In-Situ RDO PRO-X
+GUEST_PORT_DEVICE_ID_INSITU_RDO_BLUE (33):
+    In-Situ RDO Blue
+GUEST_PORT_DEVICE_ID_BLUEYE_CAMERA_SERVO (34):
+    Blueye Camera Servo
+GUEST_PORT_DEVICE_ID_BLUEYE_MULTIBEAM_HEAD_SERVO (35):
+    Blueye Multibeam Head Servo
+GUEST_PORT_DEVICE_ID_CERULEAN_OMNISCAN_450FS (36):
+    Cerulean Omniscan 450 FS
+GUEST_PORT_DEVICE_ID_CERULEAN_OMNISCAN_450SS (37):
+    Cerulean Omniscan 450 SS
+GUEST_PORT_DEVICE_ID_BLUEYE_GNSS_DEVICE (38):
+    Blueye GNSS device
+GUEST_PORT_DEVICE_ID_WATERLINKED_DVL_A50_600 (39):
+    Waterlinked DVL A50 600m
+GUEST_PORT_DEVICE_ID_IMAGENEX_831L (40):
+    Imagenex 831L Pipe Profiling Sonar
+GUEST_PORT_DEVICE_ID_BLUEPRINT_SUBSEA_OCULUS_C550D (41):
+    Blueprint Subsea Oculus C550d
+GUEST_PORT_DEVICE_ID_BLUEPRINT_SUBSEA_OCULUS_M370S (42):
+    Blueprint Subsea Oculus M370s</p>
+</details>
+
 
 
 
@@ -8434,7 +8921,7 @@ Typically obtained from a 1D pinger.</p>
     <ul>
         <li class="doc-section-item field-body">
           <b><code><span title="blueye.protocol.types.message_formats.GuestPortDeviceList.devices">devices</span></code></b>
-              (<code>Sequence[<a class="autorefs autorefs-internal" title="blueye.protocol.types.GuestPortDevice" href="#blueye.protocol.types.message_formats.GuestPortDevice">GuestPortDevice</a>]</code>)
+              (<code><span title="typing.MutableSequence">MutableSequence</span>[<a class="autorefs autorefs-internal" title="blueye.protocol.types.GuestPortDevice" href="#blueye.protocol.types.message_formats.GuestPortDevice">GuestPortDevice</a>]</code>)
           –
           <div class="doc-md-description">
             <p>List of guest port devices</p>
@@ -8489,6 +8976,22 @@ Typically obtained from a 1D pinger.</p>
         <p>GuestPort error. Only indicated errors on the guest port
 connector itself.</p>
 
+
+<details class="values" open>
+  <summary>Values</summary>
+  <p>GUEST_PORT_ERROR_UNSPECIFIED (0):
+    Unspecified value
+GUEST_PORT_ERROR_NOT_CONNECTED (1):
+    Device not connected
+GUEST_PORT_ERROR_READ_ERROR (2):
+    EEPROM read error
+GUEST_PORT_ERROR_NOT_FLASHED (3):
+    Connector not flashed
+GUEST_PORT_ERROR_CRC_ERROR (4):
+    Wrong CRC for protobuf message
+GUEST_PORT_ERROR_PARSE_ERROR (5):
+    Protobuf message cannot be parsed</p>
+</details>
 
 
 
@@ -8611,6 +9114,18 @@ connector itself.</p>
         <p>GuestPort number.</p>
 
 
+<details class="values" open>
+  <summary>Values</summary>
+  <p>GUEST_PORT_NUMBER_UNSPECIFIED (0):
+    Unspecified
+GUEST_PORT_NUMBER_PORT_1 (1):
+    Guest port 1
+GUEST_PORT_NUMBER_PORT_2 (2):
+    Guest port 2
+GUEST_PORT_NUMBER_PORT_3 (3):
+    Guest port 3</p>
+</details>
+
 
 
 
@@ -8716,6 +9231,16 @@ connector itself.</p>
         <p>Heading source used during reset of the position estimate.</p>
 
 
+<details class="values" open>
+  <summary>Values</summary>
+  <p>HEADING_SOURCE_UNSPECIFIED (0):
+    Unspecified
+HEADING_SOURCE_DRONE_COMPASS (1):
+    Uses the drone compass to set the heading
+HEADING_SOURCE_MANUAL_INPUT (2):
+    Used when the user sets the heading manually</p>
+</details>
+
 
 
 
@@ -8759,8 +9284,8 @@ connector itself.</p>
     <div class="doc doc-contents ">
 
 
-        <p>Imu data in drone body frame
-x - forward
+        <p>Imu data in drone body frame</p>
+<p>x - forward
 y - right
 z - down</p>
 
@@ -8847,6 +9372,16 @@ z - down</p>
 
         <p>Interval type for time-lapse photos.</p>
 
+
+<details class="values" open>
+  <summary>Values</summary>
+  <p>INTERVAL_TYPE_UNSPECIFIED (0):
+    Unspecified
+INTERVAL_TYPE_TIME (1):
+    Time interval
+INTERVAL_TYPE_DISTANCE (2):
+    Distance interval</p>
+</details>
 
 
 
@@ -9155,6 +9690,18 @@ light or external lights.</p>
         <p>Available logo types.</p>
 
 
+<details class="values" open>
+  <summary>Values</summary>
+  <p>LOGO_TYPE_UNSPECIFIED (0):
+    Logo type not specified
+LOGO_TYPE_NONE (1):
+    Do not add any logo
+LOGO_TYPE_DEFAULT (2):
+    Add default logo
+LOGO_TYPE_CUSTOM (3):
+    Add user defined logo</p>
+</details>
+
 
 
 
@@ -9309,6 +9856,25 @@ light or external lights.</p>
         <p>Drone models produced by Blueye</p>
 
 
+<details class="values" open>
+  <summary>Values</summary>
+  <p>MODEL_UNSPECIFIED (0):
+    ModelName not specified
+MODEL_PIONEER (1):
+    Blueye Pioneer, the first model
+MODEL_PRO (2):
+    Blueye Pro, features camera tilt
+MODEL_X1 (4):
+    Blueye X1, features camera tilt and one guest
+    port
+MODEL_X3 (3):
+    Blueye X3, features support for peripherals
+MODEL_X3_ULTRA (6):
+    Blueye X3 Ultra
+MODEL_NEXT (5):
+    Blueye ?</p>
+</details>
+
 
 
 
@@ -9352,8 +9918,8 @@ light or external lights.</p>
     <div class="doc doc-contents ">
 
 
-        <p>Motion input from client.
-Used to indicate the desired motion in each direction. Typically
+        <p>Motion input from client.</p>
+<p>Used to indicate the desired motion in each direction. Typically
 these values map to the left and right joystick for motion, and
 the left and right trigger for the slow and boost modifiers.</p>
 
@@ -9557,6 +10123,15 @@ fresh water</p>
             <p>Device ID of the sonar</p>
           </div>
         </li>
+        <li class="doc-section-item field-body">
+          <b><code><span title="blueye.protocol.types.message_formats.MultibeamConfig.bandwidth_limit">bandwidth_limit</span></code></b>
+              (<code>int</code>)
+          –
+          <div class="doc-md-description">
+            <p>Network bandwidth limit (Mbit/s). Applies
+only to Oculus devices.</p>
+          </div>
+        </li>
     </ul>
 
 
@@ -9571,14 +10146,14 @@ fresh water</p>
           <b><code><a class="autorefs autorefs-internal" title="blueye.protocol.types.message_formats.MultibeamConfig.MaximumNumberOfBeams" href="#blueye.protocol.types.message_formats.MultibeamConfig.MaximumNumberOfBeams">MaximumNumberOfBeams</a></code></b>
           –
           <div class="doc-md-description">
-            
+            <p>Values:</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
           <b><code><a class="autorefs autorefs-internal" title="blueye.protocol.types.message_formats.MultibeamConfig.PingRate" href="#blueye.protocol.types.message_formats.MultibeamConfig.PingRate">PingRate</a></code></b>
           –
           <div class="doc-md-description">
-            
+            <p>Values:</p>
           </div>
         </li>
     </ul>
@@ -9613,8 +10188,21 @@ fresh water</p>
     <div class="doc doc-contents ">
 
 
-        
 
+
+<details class="values" open>
+  <summary>Values</summary>
+  <p>MAXIMUM_NUMBER_OF_BEAMS_UNSPECIFIED (0):
+    No description available.
+MAXIMUM_NUMBER_OF_BEAMS_MAX_128 (1):
+    128 beams
+MAXIMUM_NUMBER_OF_BEAMS_MAX_256 (2):
+    256 beams
+MAXIMUM_NUMBER_OF_BEAMS_MAX_512 (3):
+    512 beams
+MAXIMUM_NUMBER_OF_BEAMS_MAX_1024 (4):
+    1024 beams</p>
+</details>
 
 
 
@@ -9659,8 +10247,25 @@ fresh water</p>
     <div class="doc doc-contents ">
 
 
-        
 
+
+<details class="values" open>
+  <summary>Values</summary>
+  <p>PING_RATE_UNSPECIFIED (0):
+    No description available.
+PING_RATE_NORMAL (1):
+    10Hz max ping rate
+PING_RATE_HIGH (2):
+    15Hz max ping rate
+PING_RATE_HIGHEST (3):
+    40Hz max ping rate
+PING_RATE_LOW (4):
+    5Hz max ping rate
+PING_RATE_LOWEST (5):
+    2Hz max ping rate
+PING_RATE_STANDBY (6):
+    Disable ping</p>
+</details>
 
 
 
@@ -9888,8 +10493,21 @@ fresh water</p>
     <div class="doc doc-contents ">
 
 
-        
 
+
+<details class="values" open>
+  <summary>Values</summary>
+  <p>MULTIBEAM_FREQUENCY_MODE_UNSPECIFIED (0):
+    No description available.
+MULTIBEAM_FREQUENCY_MODE_AUTO (1):
+    Auto switching mode (if available)
+MULTIBEAM_FREQUENCY_MODE_LOW_FREQUENCY (2):
+    Low frequency mode (wide aperture,
+    navigation)
+MULTIBEAM_FREQUENCY_MODE_HIGH_FREQUENCY (3):
+    High frequency mode (narrow aperture, target
+    identification)</p>
+</details>
 
 
 
@@ -9934,8 +10552,8 @@ fresh water</p>
     <div class="doc doc-contents ">
 
 
-        <p>Multibeam sonar ping
-Contains all the information for rendering a multibeam sonar
+        <p>Multibeam sonar ping</p>
+<p>Contains all the information for rendering a multibeam sonar
 frame</p>
 
 
@@ -10010,7 +10628,7 @@ image.</p>
         </li>
         <li class="doc-section-item field-body">
           <b><code><span title="blueye.protocol.types.message_formats.MultibeamPing.bearings">bearings</span></code></b>
-              (<code>Sequence[float]</code>)
+              (<code><span title="typing.MutableSequence">MutableSequence</span>[float]</code>)
           –
           <div class="doc-md-description">
             <p>Bearing angle of each column of the sonar
@@ -10155,7 +10773,7 @@ sampled uniformly in the bearing direction.</p>
     <ul>
         <li class="doc-section-item field-body">
           <b><code><span title="blueye.protocol.types.message_formats.MutltibeamRecordingIndex.frame_offsets">frame_offsets</span></code></b>
-              (<code>Sequence[<a class="autorefs autorefs-internal" title="blueye.protocol.types.MultibeamFrameOffset" href="#blueye.protocol.types.message_formats.MultibeamFrameOffset">MultibeamFrameOffset</a>]</code>)
+              (<code><span title="typing.MutableSequence">MutableSequence</span>[<a class="autorefs autorefs-internal" title="blueye.protocol.types.MultibeamFrameOffset" href="#blueye.protocol.types.message_formats.MultibeamFrameOffset">MultibeamFrameOffset</a>]</code>)
           –
           <div class="doc-md-description">
             <p>List of frame offsets</p>
@@ -10280,6 +10898,22 @@ stream</p>
 observer</p>
 
 
+<details class="values" open>
+  <summary>Values</summary>
+  <p>NAVIGATION_SENSOR_ID_UNSPECIFIED (0):
+    Unspecified
+NAVIGATION_SENSOR_ID_WATERLINKED_DVL_A50 (1):
+    Water Linked DVL A50
+NAVIGATION_SENSOR_ID_WATERLINKED_UGPS_G2 (2):
+    Water Linked UGPS G2
+NAVIGATION_SENSOR_ID_NMEA (3):
+    NMEA stream from external positioning system
+NAVIGATION_SENSOR_ID_BLUEYE_GNSS (4):
+    Blueye GNSS device on the ROV
+NAVIGATION_SENSOR_ID_NORTEK_DVL_NUCLEUS (5):
+    Nortek DVL Nucleus 1000</p>
+</details>
+
 
 
 
@@ -10343,6 +10977,54 @@ state</p>
           –
           <div class="doc-md-description">
             <p>Sensor validity</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><span title="blueye.protocol.types.message_formats.NavigationSensorStatus.northing">northing</span></code></b>
+              (<code>float</code>)
+          –
+          <div class="doc-md-description">
+            <p>Position from reset point (m)</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><span title="blueye.protocol.types.message_formats.NavigationSensorStatus.easting">easting</span></code></b>
+              (<code>float</code>)
+          –
+          <div class="doc-md-description">
+            <p>Position from reset point (m)</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><span title="blueye.protocol.types.message_formats.NavigationSensorStatus.heading">heading</span></code></b>
+              (<code>float</code>)
+          –
+          <div class="doc-md-description">
+            <p>Heading from sensor (-pi..pi)</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><span title="blueye.protocol.types.message_formats.NavigationSensorStatus.fom">fom</span></code></b>
+              (<code>float</code>)
+          –
+          <div class="doc-md-description">
+            <p>Figure of merit</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><span title="blueye.protocol.types.message_formats.NavigationSensorStatus.std">std</span></code></b>
+              (<code>float</code>)
+          –
+          <div class="doc-md-description">
+            <p>Standard deviation</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><span title="blueye.protocol.types.message_formats.NavigationSensorStatus.global_position">global_position</span></code></b>
+              (<code><a class="autorefs autorefs-internal" title="blueye.protocol.types.LatLongPosition" href="#blueye.protocol.types.message_formats.LatLongPosition">LatLongPosition</a></code>)
+          –
+          <div class="doc-md-description">
+            <p>Global position from sensor</p>
           </div>
         </li>
     </ul>
@@ -10479,6 +11161,18 @@ error</p>
         <p>List of available notification levels.</p>
 
 
+<details class="values" open>
+  <summary>Values</summary>
+  <p>NOTIFICATION_LEVEL_UNSPECIFIED (0):
+    Unspecified
+NOTIFICATION_LEVEL_INFO (1):
+    Info
+NOTIFICATION_LEVEL_WARNING (2):
+    Warning
+NOTIFICATION_LEVEL_ERROR (3):
+    Error</p>
+</details>
+
 
 
 
@@ -10526,6 +11220,77 @@ error</p>
 errors to the user.</p>
 
 
+<details class="values" open>
+  <summary>Values</summary>
+  <p>NOTIFICATION_TYPE_UNSPECIFIED (0):
+    Unspecified
+NOTIFICATION_TYPE_POSITION_ESTIMATE_IS_INACCURATE (1):
+    Position estimate is inaccurate
+NOTIFICATION_TYPE_DRONE_POSITION_IS_UNKNOWN (2):
+    Drone position is unknown
+NOTIFICATION_TYPE_USER_POSITION_IS_UNKNOWN (3):
+    User position is unknown
+NOTIFICATION_TYPE_NO_MISSION_LOADED (4):
+    No mission is loaded
+NOTIFICATION_TYPE_MISSION_LOADED (5):
+    Mission is loaded
+NOTIFICATION_TYPE_FAILED_TO_LOAD_MISSION (6):
+    Failed to load mission
+NOTIFICATION_TYPE_MISSION_COMPLETE (7):
+    Mission is complete
+NOTIFICATION_TYPE_INSTRUCTION_COMPLETE (8):
+    Instruction is complete
+NOTIFICATION_TYPE_WAYPOINT_REACHED (9):
+    Waypoint reached
+NOTIFICATION_TYPE_DEPTH_TARGET_REACHED (10):
+    Depth set point is reached
+NOTIFICATION_TYPE_ALTITUDE_TARGET_REACHED (11):
+    Altitude set point is reached
+NOTIFICATION_TYPE_WAYPOINT_IS_TOO_FAR_AWAY (12):
+    The waypoint is too far away
+NOTIFICATION_TYPE_DEPTH_SET_POINT_IS_TOO_FAR_AWAY (13):
+    The depth set point is too far away
+NOTIFICATION_TYPE_TIME_TO_COMPLETE_IS_TOO_LONG (14):
+    The time to complete the mission is too long
+NOTIFICATION_TYPE_RETURNING_TO_HOME (15):
+    Returning to home
+NOTIFICATION_TYPE_GO_TO_SURFACE (16):
+    Go to surface
+NOTIFICATION_TYPE_GO_TO_SEABED (17):
+    Go to seabed with an altimeter
+NOTIFICATION_TYPE_GO_TO_WAYPOINT (18):
+    Go to waypoint
+NOTIFICATION_TYPE_GO_TO_DEPTH_SET_POINT (19):
+    Go to depth set point
+NOTIFICATION_TYPE_GO_TO_WAYPOINT_WITH_DEPTH_SET_POINT (20):
+    Go to waypoint with depth set point
+NOTIFICATION_TYPE_MISSION_STARTED (21):
+    Mission is started
+NOTIFICATION_TYPE_MISSION_PAUSED (22):
+    Mission is paused
+NOTIFICATION_TYPE_MISSION_RESUMED (23):
+    Mission is resumed
+NOTIFICATION_TYPE_MISSION_ABORTED (24):
+    Mission is aborted
+NOTIFICATION_TYPE_DRONE_IS_STUCK (25):
+    Drone is stuck during a mission
+NOTIFICATION_TYPE_WAIT_FOR (26):
+    Wait for instruction running
+NOTIFICATION_TYPE_CAMERA_ACTION (27):
+    Camera action initiated
+NOTIFICATION_TYPE_SET_TILT_MAIN_CAMERA (28):
+    Set tilt for main camera
+NOTIFICATION_TYPE_SET_TILT_MULTIBEAM (29):
+    Set tilt for multibeam
+NOTIFICATION_TYPE_INSTRUCTION_SKIPPED (30):
+    When an instruction is not available in the
+    ROV
+NOTIFICATION_TYPE_DVL_HIGH_TEMPERATURE_DETECTED (31):
+    DVL high temperature detected
+NOTIFICATION_TYPE_DVL_THERMAL_PROTECTION_MODE_DETECTED (32):
+    DVL thermal protection mode detected</p>
+</details>
+
 
 
 
@@ -10569,8 +11334,8 @@ errors to the user.</p>
     <div class="doc doc-contents ">
 
 
-        <p>Overlay parameters.
-All available parameters that can be used to configure telemetry
+        <p>Overlay parameters.</p>
+<p>All available parameters that can be used to configure telemetry
 overlay on video recordings.</p>
 
 
@@ -10947,8 +11712,8 @@ should be written to the data partition.</p>
     <div class="doc doc-contents ">
 
 
-        <p>Pinger configuration.
-Used to specify the configuration the BR 1D-Pinger.</p>
+        <p>Pinger configuration.</p>
+<p>Used to specify the configuration the BR 1D-Pinger.</p>
 
 
 <p><span class="doc-section-title">Attributes:</span></p>
@@ -10975,7 +11740,7 @@ Used to specify the configuration the BR 1D-Pinger.</p>
           <b><code><a class="autorefs autorefs-internal" title="blueye.protocol.types.message_formats.PingerConfiguration.MountingDirection" href="#blueye.protocol.types.message_formats.PingerConfiguration.MountingDirection">MountingDirection</a></code></b>
           –
           <div class="doc-md-description">
-            
+            <p>Values:</p>
           </div>
         </li>
     </ul>
@@ -11010,8 +11775,18 @@ Used to specify the configuration the BR 1D-Pinger.</p>
     <div class="doc doc-contents ">
 
 
-        
 
+
+<details class="values" open>
+  <summary>Values</summary>
+  <p>MOUNTING_DIRECTION_UNSPECIFIED (0):
+    Mounting direction is unspecified
+MOUNTING_DIRECTION_FORWARDS (1):
+    Pointing forwards from the drones perspective
+MOUNTING_DIRECTION_DOWNWARDS (2):
+    Pointing downwards from the drones
+    perspective</p>
+</details>
 
 
 
@@ -11092,8 +11867,7 @@ observer if a DVL is connected.</p>
               (<code>float</code>)
           –
           <div class="doc-md-description">
-            <p>Gyro based heading estimate (continous
-radians)</p>
+            <p>Continuous heading estimate (rad)</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -11155,10 +11929,34 @@ decimal degrees</p>
         </li>
         <li class="doc-section-item field-body">
           <b><code><span title="blueye.protocol.types.message_formats.PositionEstimate.navigation_sensors">navigation_sensors</span></code></b>
-              (<code>Sequence[<a class="autorefs autorefs-internal" title="blueye.protocol.types.NavigationSensorStatus" href="#blueye.protocol.types.message_formats.NavigationSensorStatus">NavigationSensorStatus</a>]</code>)
+              (<code><span title="typing.MutableSequence">MutableSequence</span>[<a class="autorefs autorefs-internal" title="blueye.protocol.types.NavigationSensorStatus" href="#blueye.protocol.types.message_formats.NavigationSensorStatus">NavigationSensorStatus</a>]</code>)
           –
           <div class="doc-md-description">
             <p>List of available sensors with status</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><span title="blueye.protocol.types.message_formats.PositionEstimate.speed_over_ground">speed_over_ground</span></code></b>
+              (<code>float</code>)
+          –
+          <div class="doc-md-description">
+            <p>Speed over ground (m/s)</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><span title="blueye.protocol.types.message_formats.PositionEstimate.course_over_ground">course_over_ground</span></code></b>
+              (<code>float</code>)
+          –
+          <div class="doc-md-description">
+            <p>Course over ground (°)</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><span title="blueye.protocol.types.message_formats.PositionEstimate.time_since_reset_sec">time_since_reset_sec</span></code></b>
+              (<code>int</code>)
+          –
+          <div class="doc-md-description">
+            <p>Time since reset (s)</p>
           </div>
         </li>
     </ul>
@@ -11209,6 +12007,22 @@ decimal degrees</p>
 
         <p>Depth sensors used by the drone.</p>
 
+
+<details class="values" open>
+  <summary>Values</summary>
+  <p>PRESSURE_SENSOR_TYPE_UNSPECIFIED (0):
+    Depth sensor type not specified
+PRESSURE_SENSOR_TYPE_NOT_CONNECTED (1):
+    No se
+PRESSURE_SENSOR_TYPE_MS5837_30BA26 (2):
+    Thh MS5837 30BA26 pressure sensor
+PRESSURE_SENSOR_TYPE_KELLER_PA7LD (3):
+    The extended depth sensor using the Keller
+    PA7LD pressure sensor
+PRESSURE_SENSOR_TYPE_MS5637_02BA03 (4):
+    The internal pressure sensor using the MS5637
+    02BA03 pressure sensor</p>
+</details>
 
 
 
@@ -11561,8 +12375,18 @@ based (°)</p>
     <div class="doc doc-contents ">
 
 
-        
 
+
+<details class="values" open>
+  <summary>Values</summary>
+  <p>RESET_COORDINATE_SOURCE_UNSPECIFIED (0):
+    Unspecified, fallback to device GPS
+RESET_COORDINATE_SOURCE_DEVICE_GPS (1):
+    Uses the device GPS to set the reset point
+RESET_COORDINATE_SOURCE_MANUAL (2):
+    Uses a coordinate in decimal degrees to set
+    the reset point</p>
+</details>
 
 
 
@@ -11695,6 +12519,16 @@ coordinate.</p>
 
         <p>Available camera resolutions.</p>
 
+
+<details class="values" open>
+  <summary>Values</summary>
+  <p>RESOLUTION_UNSPECIFIED (0):
+    Resolution not specified
+RESOLUTION_FULLHD_1080P (1):
+    1080p Full HD resolution
+RESOLUTION_HD_720P (2):
+    720p HD resolution</p>
+</details>
 
 
 
@@ -11927,6 +12761,16 @@ coordinate.</p>
         <p>Available temperature units.</p>
 
 
+<details class="values" open>
+  <summary>Values</summary>
+  <p>TEMPERATURE_UNIT_UNSPECIFIED (0):
+    Temperature unit not specified
+TEMPERATURE_UNIT_CELSIUS (1):
+    Temperature should be displayed as Celsius
+TEMPERATURE_UNIT_FAHRENHEIT (2):
+    Temperature should be displayed as Fahrenheit</p>
+</details>
+
 
 
 
@@ -12057,6 +12901,16 @@ invalid (0-3)</p>
         <p>Available thickness units.</p>
 
 
+<details class="values" open>
+  <summary>Values</summary>
+  <p>THICKNESS_UNIT_UNSPECIFIED (0):
+    Thickness unit not specified
+THICKNESS_UNIT_MILLIMETERS (1):
+    Thickness should be displayed as millimeters
+THICKNESS_UNIT_INCHES (2):
+    Thickness should be displayed as inches</p>
+</details>
+
 
 
 
@@ -12159,8 +13013,8 @@ invalid (0-3)</p>
     <div class="doc doc-contents ">
 
 
-        <p>Tilt stabilization state.
-Blueye drones with mechanical tilt has the ability to enable
+        <p>Tilt stabilization state.</p>
+<p>Blueye drones with mechanical tilt has the ability to enable
 camera stabilization.</p>
 
 
@@ -12430,8 +13284,8 @@ negative means down and positive means up</p>
     <div class="doc doc-contents ">
 
 
-        <p>Water density.
-Used to specify the water density the drone is operating in, to
+        <p>Water density.</p>
+<p>Used to specify the water density the drone is operating in, to
 achieve more accurate depth measurements, f. ex. influenced by
 salinity.</p>
 

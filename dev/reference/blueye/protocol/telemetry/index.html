@@ -1380,6 +1380,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#blueye.protocol.types.telemetry.DvlVelocityTel" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;DvlVelocityTel
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#blueye.protocol.types.telemetry.ErrorFlagsTel" class="md-nav__link">
     <span class="md-ellipsis">
       <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;ErrorFlagsTel
@@ -2034,6 +2043,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#blueye.protocol.types.telemetry.DvlVelocityTel" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;DvlVelocityTel
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#blueye.protocol.types.telemetry.ErrorFlagsTel" class="md-nav__link">
     <span class="md-ellipsis">
       <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;ErrorFlagsTel
@@ -2392,7 +2410,7 @@
           <b><code><a class="autorefs autorefs-internal" title="blueye.protocol.types.telemetry.CPUInfoTel" href="#blueye.protocol.types.telemetry.CPUInfoTel">CPUInfoTel</a></code></b>
           –
           <div class="doc-md-description">
-            <p>Attributes:</p>
+            <p>Information about cpu and memory usage</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -2512,6 +2530,13 @@
           –
           <div class="doc-md-description">
             <p>Receive time information from the drone.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><a class="autorefs autorefs-internal" title="blueye.protocol.types.telemetry.DvlVelocityTel" href="#blueye.protocol.types.telemetry.DvlVelocityTel">DvlVelocityTel</a></code></b>
+          –
+          <div class="doc-md-description">
+            <p>Dvl raw sensor data.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3162,6 +3187,7 @@ BQ40Z50 battery management system.</p>
     <div class="doc doc-contents ">
 
 
+        <p>Information about cpu and memory usage</p>
 
 
 <p><span class="doc-section-title">Attributes:</span></p>
@@ -3648,7 +3674,7 @@ BQ40Z50 battery management system.</p>
         </li>
         <li class="doc-section-item field-body">
           <b><code><span title="blueye.protocol.types.telemetry.ConnectedClientsTel.connected_clients">connected_clients</span></code></b>
-              (<code>Sequence[<a class="autorefs autorefs-internal" title="blueye.protocol.types.ConnectedClient" href="../message_formats/#blueye.protocol.types.message_formats.ConnectedClient">ConnectedClient</a>]</code>)
+              (<code><span title="typing.MutableSequence">MutableSequence</span>[<a class="autorefs autorefs-internal" title="blueye.protocol.types.ConnectedClient" href="../message_formats/#blueye.protocol.types.message_formats.ConnectedClient">ConnectedClient</a>]</code>)
           –
           <div class="doc-md-description">
             <p>List of connected clients.</p>
@@ -4195,6 +4221,65 @@ and serial number.</p>
           <div class="doc-md-description">
             <p>The monotonic clock of the drone (time since
 power on).</p>
+          </div>
+        </li>
+    </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="blueye.protocol.types.telemetry.DvlVelocityTel" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <span class="doc doc-object-name doc-class-name">DvlVelocityTel</span>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>Dvl raw sensor data.</p>
+
+
+<p><span class="doc-section-title">Attributes:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+          <b><code><span title="blueye.protocol.types.telemetry.DvlVelocityTel.dvl_velocity">dvl_velocity</span></code></b>
+              (<code><a class="autorefs autorefs-internal" title="blueye.protocol.types.DvlVelocity" href="../message_formats/#blueye.protocol.types.message_formats.DvlVelocity">DvlVelocity</a></code>)
+          –
+          <div class="doc-md-description">
+            <p>Dvl velocity data.</p>
           </div>
         </li>
     </ul>

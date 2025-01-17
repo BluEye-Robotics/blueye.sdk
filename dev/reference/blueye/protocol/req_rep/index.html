@@ -2248,8 +2248,8 @@
     <div class="doc doc-contents ">
 
 
-        <p>Response after connecting a client to the drone.
-Contains information about which client is in control, and a
+        <p>Response after connecting a client to the drone.</p>
+<p>Contains information about which client is in control, and a
 list of all connected clients.</p>
 
 
@@ -2273,7 +2273,7 @@ list of all connected clients.</p>
         </li>
         <li class="doc-section-item field-body">
           <b><code><span title="blueye.protocol.types.req_rep.ConnectClientRep.connected_clients">connected_clients</span></code></b>
-              (<code>Sequence[<a class="autorefs autorefs-internal" title="blueye.protocol.types.ConnectedClient" href="../message_formats/#blueye.protocol.types.message_formats.ConnectedClient">ConnectedClient</a>]</code>)
+              (<code><span title="typing.MutableSequence">MutableSequence</span>[<a class="autorefs autorefs-internal" title="blueye.protocol.types.ConnectedClient" href="../message_formats/#blueye.protocol.types.message_formats.ConnectedClient">ConnectedClient</a>]</code>)
           –
           <div class="doc-md-description">
             <p>List of connected clients.</p>
@@ -2385,8 +2385,8 @@ the drone.</p>
     <div class="doc doc-contents ">
 
 
-        <p>Response after disconnecting a client from the drone.
-Contains information about which clients are connected and in
+        <p>Response after disconnecting a client from the drone.</p>
+<p>Contains information about which clients are connected and in
 control.</p>
 
 
@@ -2402,7 +2402,7 @@ control.</p>
         </li>
         <li class="doc-section-item field-body">
           <b><code><span title="blueye.protocol.types.req_rep.DisconnectClientRep.connected_clients">connected_clients</span></code></b>
-              (<code>Sequence[<a class="autorefs autorefs-internal" title="blueye.protocol.types.ConnectedClient" href="../message_formats/#blueye.protocol.types.message_formats.ConnectedClient">ConnectedClient</a>]</code>)
+              (<code><span title="typing.MutableSequence">MutableSequence</span>[<a class="autorefs autorefs-internal" title="blueye.protocol.types.ConnectedClient" href="../message_formats/#blueye.protocol.types.message_formats.ConnectedClient">ConnectedClient</a>]</code>)
           –
           <div class="doc-md-description">
             <p>List of connected clients.</p>
@@ -2454,8 +2454,8 @@ control.</p>
     <div class="doc doc-contents ">
 
 
-        <p>Disconnect a client from the drone.
-This request will remove the client from the list of connected
+        <p>Disconnect a client from the drone.</p>
+<p>This request will remove the client from the list of connected
 clients. It allows clients to disconnect instantly, without
 waiting for a watchdog to clear the client in control, or
 promote a new client to be in control.</p>
@@ -2576,8 +2576,8 @@ promote a new client to be in control.</p>
     <div class="doc doc-contents ">
 
 
-        <p>Request essential battery information.
-Can be used to instantly get battery information,
+        <p>Request essential battery information.</p>
+<p>Can be used to instantly get battery information,
 instead of having to wait for the BatteryTel message to be
 received.</p>
 
@@ -3541,6 +3541,18 @@ generator</p>
         <p>Response after setting persistent storage settings.</p>
 
 
+<p><span class="doc-section-title">Attributes:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+          <b><code><span title="blueye.protocol.types.req_rep.SetPersistentStorageSettingsRep.success">success</span></code></b>
+              (<code>bool</code>)
+          –
+          <div class="doc-md-description">
+            <p>If the persistent storage settings were set
+successfully.</p>
+          </div>
+        </li>
+    </ul>
 
 
 
@@ -3549,6 +3561,24 @@ generator</p>
 
 
 
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
 
     </div>
 
@@ -3784,8 +3814,8 @@ successfully updated.</p>
     <div class="doc doc-contents ">
 
 
-        <p>Request to set parameters for ultrasonic thickness gauge.
-The sound velocity is used to calculate the thickness of the
+        <p>Request to set parameters for ultrasonic thickness gauge.</p>
+<p>The sound velocity is used to calculate the thickness of the
 material being measured.</p>
 
 
