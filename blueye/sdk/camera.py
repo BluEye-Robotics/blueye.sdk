@@ -17,34 +17,46 @@ logger = logging.getLogger(__name__)
 
 
 class Tilt:
+    """Handles the camera tilt functionality for the Blueye drone."""
+
     def __init__(self, parent_drone: Drone):
+        """Initialize the Tilt class.
+
+        Args:
+            parent_drone (Drone): The parent drone instance.
+        """
         self._parent_drone = parent_drone
 
     def _verify_tilt_in_features(self):
-        """Checks that the connected drone has the tilt feature
+        """Check that the connected drone has the tilt feature.
 
-        Raises a RuntimeError if it does not.
+        Raises:
+            RuntimeError: If the connected drone does not support tilting the camera.
         """
         if "tilt" not in self._parent_drone.features:
             raise RuntimeError("The connected drone does not support tilting the camera.")
 
     def set_velocity(self, velocity: float):
-        """Set the speed and direction of the camera tilt
+        """Set the speed and direction of the camera tilt.
 
-        *Arguments*:
+        Args:
+            velocity: Speed and direction of the tilt. 1 is max speed up, -1 is max speed down.
 
-        * velocity (float): Speed and direction of the tilt. 1 is max speed up, -1 is max speed down.
-
-        Raises a RuntimeError if the connected drone does not have the tilt option
+        Raises:
+            RuntimeError: If the connected drone does not have the tilt option.
         """
         self._verify_tilt_in_features()
         self._parent_drone._ctrl_client.set_tilt_velocity(velocity)
 
     @property
     def angle(self) -> Optional[float]:
-        """Return the current angle of the camera tilt
+        """Return the current angle of the camera tilt.
 
-        Raises a RuntimeError if the connected drone does not have the tilt option
+        Returns:
+            The current angle of the camera tilt.
+
+        Raises:
+            RuntimeError: If the connected drone does not have the tilt option.
         """
         self._verify_tilt_in_features()
         tilt_angle_tel = self._parent_drone.telemetry.get(blueye.protocol.TiltAngleTel)
@@ -55,15 +67,13 @@ class Tilt:
 
     @property
     def stabilization_enabled(self) -> Optional[bool]:
-        """Get or set the state of active camera stabilization
+        """Get the state of active camera stabilization.
 
-        *Arguments*:
+        Returns:
+            The current state of active camera stabilization.
 
-        * enabled (bool): True to turn stabilization on, False to turn it off
-
-        *Returns*:
-
-        * enabled (bool): Current state of active camera stabilization
+        Raises:
+            RuntimeError: If the connected drone does not have the tilt option.
         """
         self._verify_tilt_in_features()
         tilt_stab_tel = self._parent_drone.telemetry.get(blueye.protocol.TiltStabilizationTel)
@@ -74,23 +84,44 @@ class Tilt:
 
     @stabilization_enabled.setter
     def stabilization_enabled(self, enabled: bool):
+        """Set the state of active camera stabilization.
+
+        Args:
+            enabled (bool): True to turn stabilization on, False to turn it off.
+
+        Raises:
+            RuntimeError: If the connected drone does not have the tilt option.
+        """
         self._verify_tilt_in_features()
         self._parent_drone._ctrl_client.set_tilt_stabilization(enabled)
 
 
 class Overlay:
-    """Control the overlay on videos and pictures"""
+    """Control the overlay on videos and pictures."""
 
     def __init__(self, parent_drone: Drone):
+        """Initialize the Overlay class.
+
+        Args:
+            parent_drone (Drone): The parent drone instance.
+        """
         self._parent_drone = parent_drone
         self._overlay_parametres = None
 
     def _update_overlay_parameters(self):
+        """Update the overlay parameters from the drone."""
         self._overlay_parametres = self._parent_drone._req_rep_client.get_overlay_parameters()
 
     @property
     def temperature_enabled(self) -> bool:
-        """Get or set the state of the temperature overlay"""
+        """Get or set the state of the temperature overlay.
+
+        Returns:
+            The current state of the temperature overlay.
+
+        Args:
+            enable_temperature (bool): True to enable the temperature overlay, False to disable it.
+        """
         self._update_overlay_parameters()
         return self._overlay_parametres.temperature_enabled
 
@@ -103,8 +134,14 @@ class Overlay:
 
     @property
     def depth_enabled(self) -> bool:
-        """Get or set the state of the depth overlay"""
+        """Get or set the state of the depth overlay.
 
+        Returns:
+            The current state of the depth overlay.
+
+        Args:
+            enable_depth (bool): True to enable the depth overlay, False to disable it.
+        """
         self._update_overlay_parameters()
         return self._overlay_parametres.depth_enabled
 
@@ -117,7 +154,14 @@ class Overlay:
 
     @property
     def heading_enabled(self) -> bool:
-        """Get or set the state of the heading overlay"""
+        """Get or set the state of the heading overlay.
+
+        Returns:
+            The current state of the heading overlay.
+
+        Args:
+            enable_heading (bool): True to enable the heading overlay, False to disable it.
+        """
         self._update_overlay_parameters()
         return self._overlay_parametres.heading_enabled
 
@@ -130,7 +174,14 @@ class Overlay:
 
     @property
     def tilt_enabled(self) -> bool:
-        """Get or set the state of the tilt overlay"""
+        """Get or set the state of the tilt overlay.
+
+        Returns:
+            The current state of the tilt overlay.
+
+        Args:
+            enable_tilt (bool): True to enable the tilt overlay, False to disable it.
+        """
         self._update_overlay_parameters()
         return self._overlay_parametres.tilt_enabled
 
@@ -143,7 +194,14 @@ class Overlay:
 
     @property
     def date_enabled(self) -> bool:
-        """Get or set the state of the date overlay"""
+        """Get or set the state of the date overlay.
+
+        Returns:
+            The current state of the date overlay.
+
+        Args:
+            enable_date (bool): True to enable the date overlay, False to disable it.
+        """
         if self._overlay_parametres is None:
             self._update_overlay_parameters()
         return self._overlay_parametres.date_enabled
@@ -156,12 +214,17 @@ class Overlay:
         self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
 
     @property
-    def logo(self) -> blueye.protcol.LogoType:
-        """Get or set logo overlay selection
+    def logo(self) -> blueye.protocol.LogoType:
+        """Get or set logo overlay selection.
 
-        Needs to be set to an instance of the `blueye.protocol.LogoType` enum, if not a
-        RuntimeWarning is raised.
+        Returns:
+            The current logo type.
 
+        Args:
+            logo_type (blueye.protocol.LogoType): The logo type.
+
+        Warns:
+            RuntimeWarning: If the logo type is not an instance of blueye.protocol.LogoType.
         """
         self._update_overlay_parameters()
         return self._overlay_parametres.logo_type
@@ -178,10 +241,16 @@ class Overlay:
 
     @property
     def depth_unit(self) -> blueye.protocol.DepthUnit:
-        """Get or set the depth unit for the overlay
+        """Get or set the depth unit for the overlay.
 
-        Needs to be set to an instance of the `blueye.protocol.DepthUnit` enum, if not a
-        RuntimeWarning is raised.
+        Returns:
+            The current depth unit.
+
+        Args:
+            unit (blueye.protocol.DepthUnit): The depth unit to set.
+
+        Warns:
+            RuntimeWarning: If the unit is not an instance of blueye.protocol.DepthUnit.
         """
         self._update_overlay_parameters()
         return self._overlay_parametres.depth_unit
@@ -198,12 +267,17 @@ class Overlay:
 
     @property
     def temperature_unit(self) -> blueye.protocol.TemperatureUnit:
-        """Get or set the temperature unit for the overlay
+        """Get or set the temperature unit for the overlay.
 
-        Needs to be set to an instance of the `blueye.protocol.TemperatureUnit` enum, if not a
-        RuntimeWarning is raised.
+        Returns:
+            The current temperature unit.
+
+        Args:
+            unit (blueye.protocol.TemperatureUnit): The temperature unit to set.
+
+        Warns:
+            RuntimeWarning: If the unit is not an instance of blueye.protocol.TemperatureUnit.
         """
-
         self._update_overlay_parameters()
         return self._overlay_parametres.temperature_unit
 
@@ -219,7 +293,14 @@ class Overlay:
 
     @property
     def cp_probe_enabled(self) -> bool:
-        """Get or set the state of the CP probe overlay"""
+        """Get or set the state of the CP probe overlay.
+
+        Returns:
+            The current state of the CP probe overlay.
+
+        Args:
+            enable_cp_probe (bool): True to enable the CP probe overlay, False to disable it.
+        """
         self._update_overlay_parameters()
         return self._overlay_parametres.cp_probe_enabled
 
@@ -232,7 +313,14 @@ class Overlay:
 
     @property
     def distance_enabled(self) -> bool:
-        """Get or set the state of the distance overlay"""
+        """Get or set the state of the distance overlay.
+
+        Returns:
+            The current state of the distance overlay.
+
+        Args:
+            enable_distance (bool): True to enable the distance overlay, False to disable it.
+        """
         self._update_overlay_parameters()
         return self._overlay_parametres.distance_enabled
 
@@ -245,7 +333,14 @@ class Overlay:
 
     @property
     def altitude_enabled(self) -> bool:
-        """Get or set the state of the altitude overlay"""
+        """Get or set the state of the altitude overlay.
+
+        Returns:
+            The current state of the altitude overlay.
+
+        Args:
+            enable_altitude (bool): True to enable the altitude overlay, False to disable it.
+        """
         self._update_overlay_parameters()
         return self._overlay_parametres.altitude_enabled
 
@@ -258,7 +353,14 @@ class Overlay:
 
     @property
     def thickness_enabled(self) -> bool:
-        """Get or set the state of the thickness overlay"""
+        """Get or set the state of the thickness overlay.
+
+        Returns:
+            The current state of the thickness overlay.
+
+        Args:
+            enable_thickness (bool): True to enable the thickness overlay, False to disable it.
+        """
         self._update_overlay_parameters()
         return self._overlay_parametres.thickness_enabled
 
@@ -271,10 +373,16 @@ class Overlay:
 
     @property
     def thickness_unit(self) -> blueye.protocol.ThicknessUnit:
-        """Get or set the thickness unit for the overlay
+        """Get or set the thickness unit for the overlay.
 
-        Needs to be set to an instance of the `blueye.protocol.ThicknessUnit` enum, if not a
-        RuntimeWarning is raised.
+        Returns:
+            The current thickness unit.
+
+        Args:
+            unit (blueye.protocol.ThicknessUnit): The thickness unit to set.
+
+        Warns:
+            RuntimeWarning: If the unit is not an instance of blueye.protocol.ThicknessUnit.
         """
         self._update_overlay_parameters()
         return self._overlay_parametres.thickness_unit
@@ -291,7 +399,15 @@ class Overlay:
 
     @property
     def drone_location_enabled(self) -> bool:
-        """Get or set the state of the drone location overlay"""
+        """Get or set the state of the drone location overlay.
+
+        Returns:
+            The current state of the drone location overlay.
+
+        Args:
+            enable_drone_location (bool): True to enable the drone location overlay,
+                                          False to disable it.
+        """
         self._update_overlay_parameters()
         return self._overlay_parametres.drone_location_enabled
 
@@ -304,10 +420,17 @@ class Overlay:
 
     @property
     def shading(self) -> float:
-        """Get or set the pixel intensity to subtract from text background
+        """Get or set the pixel intensity to subtract from text background.
 
-        0 is transparent, 1 is black.
-        Needs to be a float between 0.0 and 1.0, if not a RuntimeWarning is raised.
+        Returns:
+            The current shading intensity.
+
+        Args:
+            intensity (float): The shading intensity to set. Valid range is 0.0 to 1.0.
+                               0 is transparent, 1 is black.
+
+        Warns:
+            RuntimeWarning: If the shading intensity is not a float between 0.0 and 1.0.
         """
         self._update_overlay_parameters()
         return self._overlay_parametres.shading
@@ -324,7 +447,15 @@ class Overlay:
 
     @property
     def gamma_ray_measurement_enabled(self) -> bool:
-        """Get or set the state of the gamma-ray measurement overlay"""
+        """Get or set the state of the gamma-ray measurement overlay.
+
+        Returns:
+            The current state of the gamma-ray measurement overlay.
+
+        Args:
+            enable_gamma_ray_measurement (bool): True to enable the gamma-ray measurement overlay,
+                                                 False to disable it.
+        """
         self._update_overlay_parameters()
         return self._overlay_parametres.medusa_enabled
 
@@ -337,9 +468,15 @@ class Overlay:
 
     @property
     def timezone_offset(self) -> int:
-        """Get or set the timezone offset for the overlay
+        """Get or set the timezone offset for the overlay.
 
         Set to the number of minutes (either positive or negative) the timestamp should be offset.
+
+        Returns:
+            The current timezone offset.
+
+        Args:
+            offset (int): The timezone offset to set.
         """
         self._update_overlay_parameters()
         return self._overlay_parametres.timezone_offset
@@ -353,10 +490,18 @@ class Overlay:
 
     @property
     def margin_width(self) -> int:
-        """Get or set the margin width for the overlay
+        """Get or set the margin width for the overlay.
 
-        The amount of pixels to use as margin on the right and left side of the overlay. Needs to
-        be a positive integer.
+        The amount of pixels to use as margin on the right and left side of the overlay.
+
+        Returns:
+            The current margin width.
+
+        Args:
+            width (int): The margin width to set. Needs to be a positive integer.
+
+        Warns:
+            RuntimeWarning: If the margin width is not a positive integer.
         """
         self._update_overlay_parameters()
         return self._overlay_parametres.margin_width
@@ -373,10 +518,15 @@ class Overlay:
 
     @property
     def margin_height(self) -> int:
-        """Get or set the margin height for the overlay
+        """Get or set the margin height for the overlay.
 
-        The amount of pixels to use as margin on the top and bottom side of the overlay. Needs to be
-        a positive integer.
+        The amount of pixels to use as margin on the top and bottom side of the overlay.
+
+        Returns:
+            The current margin height.
+
+        Args:
+            height (int): The margin height to set. Needs to be a positive integer.
         """
         self._update_overlay_parameters()
         return self._overlay_parametres.margin_height
@@ -393,10 +543,18 @@ class Overlay:
 
     @property
     def font_size(self) -> blueye.protocol.FontSize:
-        """Get or set the font size for the overlay
+        """Get or set the font size for the overlay.
 
-        Needs to be an instance of the `blueye.protocol.Fontsize` enum, if not a RuntimeWarning is
-        raised.
+        Needs to be an instance of the `blueye.protocol.FontSize` enum.
+
+        Returns:
+            The current font size.
+
+        Args:
+            size (blueye.protocol.FontSize): The font size to set.
+
+        Warns:
+            RuntimeWarning: If the font size is not an instance of blueye.protocol.FontSize.
         """
         self._update_overlay_parameters()
         return self._overlay_parametres.font_size
@@ -413,13 +571,21 @@ class Overlay:
 
     @property
     def title(self) -> str:
-        """Get or set the title for the overlay
+        """Get or set the title for the overlay.
 
         The title needs to be a string of only ASCII characters with a maximum length of 63
-        characters. If a longer title is passed it will be truncated, and a RuntimeWarning is
-        raised.
+        characters.
 
         Set to an empty string to disable title.
+
+        Returns:
+            The current title.
+
+        Args:
+            input_title (str): The title to set. Truncated to 63 characters if longer.
+
+        Warns:
+            RuntimeWarning: If the title is too long or contains non-ASCII characters.
         """
         self._update_overlay_parameters()
         return self._overlay_parametres.title
@@ -442,13 +608,22 @@ class Overlay:
 
     @property
     def subtitle(self) -> str:
-        """Get or set the subtitle for the overlay
+        """Get or set the subtitle for the overlay.
 
         The subtitle needs to be a string of only ASCII characters with a maximum length of 63
-        characters. If a longer subtitle is passed it will be truncated, and a RuntimeWarning is
-        raised.
+        characters.
 
         Set to an empty string to disable the subtitle.
+
+        Returns:
+            The current subtitle.
+
+        Args:
+            input_subtitle (str): The subtitle to set. Set to an empty string to disable.
+                                  Truncated to 63 characters if longer.
+
+        Warns:
+            RuntimeWarning: If the subtitle is too long or contains non-ASCII characters.
         """
         self._update_overlay_parameters()
         return self._overlay_parametres.subtitle
@@ -471,13 +646,22 @@ class Overlay:
 
     @property
     def date_format(self) -> str:
-        """Get or set the format string for the time displayed in the overlay
+        """Get or set the format string for the time displayed in the overlay.
 
         Must be a string containing only ASCII characters, with a max length of 63 characters.
 
         The format codes are defined by the C89 standard, see
-        https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes
-        for an overview of the available codes.
+        https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes for an
+        overview of the available codes.
+
+        Returns:
+            The current date format.
+
+        Args:
+            input_format_str (str): The date format string to set.
+
+        Warns:
+            RuntimeWarning: If the date format is too long or contains non-ASCII characters.
         """
         self._update_overlay_parameters()
         return self._overlay_parametres.date_format
@@ -503,7 +687,7 @@ class Overlay:
         self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
 
     def upload_logo(self, path_to_logo: str, timeout: float = 1.0):
-        """Upload user selectable logo for watermarking videos and pictures
+        """Upload user selectable logo for watermarking videos and pictures.
 
         Set the logo-property to `blueye.protocol.LogoType.LOG_TYPE_CUSTOM` to enable this logo.
 
@@ -511,14 +695,15 @@ class Overlay:
         Max resolution: 2000 px.
         Max file size: 5 MB.
 
-        *Exceptions*:
+        Args:
+            path_to_logo (str): The path to the logo file.
+            timeout (float, optional): The timeout for the upload request.
 
-        * `requests.exceptions.HTTPError` : Status code 400 for invalid files
-
-        * `requests.exceptions.ConnectTimeout` : If unable to create a connection within specified
-                                                 timeout (default 1s)
+        Raises:
+            requests.exceptions.HTTPError: If the file is invalid (status code 400).
+            requests.exceptions.ConnectTimeout: If unable to create a connection within the
+                                                specified timeout.
         """
-
         with open(path_to_logo, "rb") as f:
             url = f"http://{self._parent_drone._ip}/asset/logo"
             files = {"image": f}
@@ -526,18 +711,19 @@ class Overlay:
         response.raise_for_status()
 
     def download_logo(self, output_directory=".", timeout: float = 1.0):
-        """Download the original user uploaded logo (PNG or JPG)
+        """Download the original user uploaded logo (PNG or JPG).
 
         Select the download directory with the output_directory parameter.
 
-        *Exceptions*:
+        Args:
+            output_directory (str): The directory to save the downloaded logo.
+            timeout (float): The timeout for the download request.
 
-        * `requests.exceptions.HTTPError` : If no custom logo is uploaded.
-
-        * `requests.exceptions.ConnectTimeout` : If unable to create a connection within specified
-                                                 timeout (default 1s)
+        Raises:
+            requests.exceptions.HTTPError: If no custom logo is uploaded.
+            requests.exceptions.ConnectTimeout: If unable to create a connection within the
+                                                specified timeout.
         """
-
         response = requests.get(f"http://{self._parent_drone._ip}/asset/logo", timeout=timeout)
         response.raise_for_status()
         filename = re.findall('filename="(.+)"', response.headers["Content-Disposition"])[0]
@@ -545,22 +731,30 @@ class Overlay:
             f.write(response.content)
 
     def delete_logo(self, timeout: float = 1.0):
-        """Delete the user uploaded logo from the drone
+        """Delete the user uploaded logo from the drone.
 
-        *Exceptions*:
+        Args:
+            timeout (float): The timeout for the delete request.
 
-        * `requests.exceptions.HTTPError` : If an error occurs during deletion
-
-        * `requests.exceptions.ConnectTimeout` : If unable to create a connection within specified
-                                                 timeout (default 1s)
+        Raises:
+            requests.exceptions.HTTPError: If an error occurs during deletion.
+            requests.exceptions.ConnectTimeout: If unable to create a connection within the
+                                                specified timeout.
         """
-
         response = requests.delete(f"http://{self._parent_drone._ip}/asset/logo", timeout=timeout)
         response.raise_for_status()
 
 
 class Camera:
+    """Handles the camera functionality for the Blueye drone."""
+
     def __init__(self, parent_drone: Drone, is_guestport_camera: bool = False):
+        """Initialize the Camera class.
+
+        Args:
+            parent_drone (Drone): The parent drone instance.
+            is_guestport_camera (bool, optional): Whether this is a guestport camera.
+        """
         self._parent_drone = parent_drone
         self._is_guestport_camera = is_guestport_camera
         self._camera_type = (
@@ -587,16 +781,18 @@ class Camera:
 
     @property
     def is_recording(self) -> Optional[bool]:
-        """Get or set the camera recording state
+        """Get or set the camera recording state.
 
-        *Arguments*:
+        Args:
+            start_recording (bool): Set to True to start a recording, set to False to stop the
+                                    current recording.
 
-        * start_recording (bool): Set to True to start a recording, set to False to stop the current
-                                  recording.
+        Returns:
+            True if the camera is currently recording, False if not. Returns None if the SDK
+            hasn't received a RecordState telemetry message.
 
-        *Returns*:
-
-        * Recording state (bool): True if the camera is currently recording, False if not
+        Warns:
+            RuntimeWarning: If no recording state telemetry data is received.
         """
         record_state = self._get_record_state()
         if record_state is None:
@@ -623,16 +819,14 @@ class Camera:
 
     @property
     def bitrate(self) -> int:
-        """Set or get the video stream bitrate
+        """Set or get the video stream bitrate.
 
-        *Arguments*:
+        Args:
+            bitrate (int): Set the video stream bitrate in bits, valid values are in range
+                           (1 000 000 .. 16 000 000).
 
-        * bitrate (int): Set the video stream bitrate in bits, valid values are in range
-                         (1 000 000..16 000 000)
-
-        *Returns*:
-
-        * bitrate (int): The H264 video stream bitrate
+        Returns:
+            The H264 video stream bitrate.
         """
         self._update_camera_parameters()
         return self._camera_parameters.h264_bitrate
@@ -646,16 +840,14 @@ class Camera:
 
     @property
     def bitrate_still_picture(self) -> int:
-        """Set or get the bitrate for the still picture stream
+        """Set or get the bitrate for the still picture stream.
 
-        *Arguments*:
+        Args:
+            bitrate (int): Set the still picture stream bitrate in bits, valid values are in range
+                           (1 000 000 .. 300 000 000). Default value is 100 000 000.
 
-        * bitrate (int): Set the still picture stream bitrate in bits, valid values are in range
-                         (1 000 000 .. 300 000 000). Default value is 100 000 000.
-
-        *Returns*:
-
-        * bitrate (int): The still picture stream bitrate
+        Returns:
+            The still picture stream bitrate.
         """
         self._update_camera_parameters()
         return self._camera_parameters.mjpg_bitrate
@@ -669,17 +861,15 @@ class Camera:
 
     @property
     def exposure(self) -> int:
-        """Set or get the camera exposure
+        """Set or get the camera exposure.
 
-        *Arguments*:
+        Args:
+            exposure (int): Set the camera exposure time. Unit is thousandths of a second,
+                            ie. 5 = 5s/1000. Valid values are in the range (1 .. 5000) or -1
+                            for auto exposure.
 
-        * exposure (int): Set the camera exposure time. Unit is thousandths of a second, ie.
-                          5 = 5s/1000. Valid values are in the range (1 .. 5000) or -1 for auto
-                          exposure
-
-        *Returns*:
-
-        * exposure (int): Get the camera exposure
+        Returns:
+            The camera exposure.
         """
         self._update_camera_parameters()
         return self._camera_parameters.exposure
@@ -693,16 +883,14 @@ class Camera:
 
     @property
     def whitebalance(self) -> int:
-        """Set or get the camera white balance
+        """Set or get the camera white balance.
 
-        *Arguments*:
+        Args:
+            white_balance (int): Set the camera white balance. Valid values are in the range
+                                 (2800..9300) or -1 for auto white balance.
 
-        * white_balance (int): Set the camera white balance. Valid values are in the range
-                               (2800..9300) or -1 for auto white balance
-
-        *Returns*:
-
-        * white_balance (int): Get the camera white balance
+        Returns:
+            The camera white balance.
         """
         self._update_camera_parameters()
         return self._camera_parameters.white_balance
@@ -716,15 +904,13 @@ class Camera:
 
     @property
     def hue(self) -> int:
-        """Set or get the camera hue
+        """Set or get the camera hue.
 
-        *Arguments*:
+        Args:
+            hue (int): Set the camera hue. Valid values are in the range (-40..40).
 
-        * hue (int): Set the camera hue. Valid values are in the range (-40..40)
-
-        *Returns*:
-
-        * hue (int): Get the camera hue
+        Returns:
+            The camera hue.
         """
         self._update_camera_parameters()
         return self._camera_parameters.hue
@@ -738,15 +924,13 @@ class Camera:
 
     @property
     def resolution(self) -> int:
-        """Set or get the camera resolution
+        """Set or get the camera resolution.
 
-        *Arguments*:
+        Args:
+            resolution (int): Set the camera in vertical pixels. Valid values are 720 or 1080.
 
-        * resolution (int): Set the camera in vertical pixels. Valid values are 720 or 1080
-
-        *Returns*:
-
-        * resolution (int): Get the camera resolution
+        Returns:
+            The camera resolution.
         """
         self._update_camera_parameters()
         if self._camera_parameters.resolution == blueye.protocol.Resolution.RESOLUTION_HD_720P:
@@ -773,15 +957,14 @@ class Camera:
 
     @property
     def framerate(self) -> int:
-        """Set or get the camera frame rate
+        """Set or get the camera frame rate.
 
-        *Arguments*:
+        Args:
+            framerate (int): Set the camera frame rate in frames per second.
+                             Valid values are 25 or 30.
 
-        * framerate (int): Set the camera frame rate in frames per second. Valid values are 25 or 30
-
-        *Returns*:
-
-        * framerate (int): Get the camera frame rate
+        Returns:
+            The camera frame rate.
         """
         self._update_camera_parameters()
         if self._camera_parameters.framerate == blueye.protocol.Framerate.FRAMERATE_FPS_25:
@@ -803,11 +986,11 @@ class Camera:
 
     @property
     def record_time(self) -> Optional[int]:
-        """Set or get the duration of the current camera recording
+        """Get the duration of the current camera recording.
 
-        *Returns*:
-
-        * record_time (int): The length in seconds of the current recording, -1 if the camera is not currently recording
+        Returns:
+            The length in seconds of the current recording, -1 if the camera is not currently
+            recording. Returns None if the SDK hasn't received a RecordState telemetry message.
         """
         record_state = self._get_record_state()
         if record_state is None:
@@ -818,7 +1001,7 @@ class Camera:
             return record_state.main_seconds
 
     def take_picture(self):
-        """Takes a still picture and stores it locally on the drone
+        """Take a still picture and store it locally on the drone.
 
         These pictures can be downloaded with the Blueye App, or by any WebDAV compatible client.
         """

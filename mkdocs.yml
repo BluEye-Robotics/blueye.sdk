@@ -5,6 +5,32 @@ plugins:
   - search
   - macros:
       module_name: doc_utils
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            preload_modules:
+              - threading
+              - blueye.protocol
+            docstring_options:
+              ignore_init_summary: true
+              returns_multiple_items: False # To avoid having to indent continuation lines
+            docstring_style: google
+            docstring_section_style: list
+            heading_level: 2
+            inherited_members: true
+            merge_init_into_class: true
+            separate_signature: true
+            show_bases: false
+            show_root_heading: true
+            show_root_full_path: false
+            show_source: true
+            show_signature_annotations: true
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            signature_crossrefs: true
+            summary: true
+
 
 markdown_extensions:
   - admonition
@@ -46,6 +72,7 @@ theme:
   custom_dir: "docs/mkdocs_templates"
   features:
     - content.tabs.link
+    - navigation.top
 
 extra:
   version:
@@ -83,3 +110,11 @@ nav:
       - blueye.sdk.logs: "reference/blueye/sdk/logs.md"
       - blueye.sdk.motion: "reference/blueye/sdk/motion.md"
       - blueye.sdk.utils: "reference/blueye/sdk/utils.md"
+      - blueye.protocol:
+        - Overview: "reference/blueye/protocol/overview.md"
+        - Telemetry: "reference/blueye/protocol/telemetry.md"
+        - Control: "reference/blueye/protocol/control.md"
+        - ReqRep: "reference/blueye/protocol/req_rep.md"
+        - Message Formats: "reference/blueye/protocol/message_formats.md"
+        - Mission Planning: "reference/blueye/protocol/mission_planning.md"
+        - Aquatroll: "reference/blueye/protocol/aquatroll.md"

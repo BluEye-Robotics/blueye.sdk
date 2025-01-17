@@ -1,0 +1,1 @@
+::: blueye.protocol.types.telemetry

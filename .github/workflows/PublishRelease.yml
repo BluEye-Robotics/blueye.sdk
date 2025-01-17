@@ -23,10 +23,6 @@ jobs:
         run: poetry install
       - name: Build HTTP documentation
         run:  npx @redocly/cli build-docs http-api.yml --output docs/http-api.html
-      - name: Build python reference
-        run: |
-          poetry run pdocs as_markdown blueye.sdk -o docs/reference
-          rm docs/reference/blueye/sdk/index.md
       - name: Build documentation for publishing
         run: poetry run mkdocs build --no-directory-urls --site-dir blueye.sdk_docs
       - name: Build package with poetry, including documentation

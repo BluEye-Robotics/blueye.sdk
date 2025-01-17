@@ -10,16 +10,21 @@ if TYPE_CHECKING:
 
 
 class Battery:
+    """Contains the battery related functions."""
+
     def __init__(self, parent_drone: Drone):
+        """Initialize the Battery class.
+
+        Args:
+            parent_drone (Drone): The parent drone instance."""
         self._parent_drone = parent_drone
 
     @property
     def state_of_charge(self) -> Optional[float]:
-        """Get the battery state of charge
+        """Get the battery state of charge.
 
-        *Returns*:
-
-        * Current state of charge of the drone battery (0..1)
+        Returns:
+            Current state of charge of the drone battery (0..1).
         """
         battery_tel = self._parent_drone.telemetry.get(blueye.protocol.BatteryTel)
         if battery_tel is not None:

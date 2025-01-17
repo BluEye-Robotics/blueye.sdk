@@ -13,9 +13,20 @@ logger = logging.getLogger(__name__)
 
 
 class Peripheral:
+    """
+    Represents a peripheral device connected to a guest port on the Blueye drone.
+    """
+
     def __init__(
         self, parent_drone: "Drone", port_number: bp.GuestPortNumber, device: bp.GuestPortDevice
     ):
+        """Initialize the Peripheral class.
+
+        Args:
+            parent_drone (Drone): The parent drone instance.
+            port_number (bp.GuestPortNumber): The guest port number.
+            device (bp.GuestPortDevice): The guest port device.
+        """
         self.parent_drone = parent_drone
         self.port_number: bp.GuestPortNumber = port_number
         self.name: str = device.name
@@ -36,38 +47,72 @@ class Peripheral:
 
 
 class GuestPortCamera(Camera, Peripheral):
+    """
+    Represents a camera connected to a guest port on the Blueye drone.
+    """
+
     def __init__(
         self, parent_drone: "Drone", port_number: bp.GuestPortNumber, device: bp.GuestPortDevice
     ):
+        """Initialize the GuestPortCamera class.
+
+        Args:
+            parent_drone (Drone): The parent drone instance.
+            port_number (bp.GuestPortNumber): The guest port number.
+            device (bp.GuestPortDevice): The guest port device.
+        """
         Camera.__init__(self, parent_drone, is_guestport_camera=True)
         Peripheral.__init__(self, parent_drone, port_number, device)
 
 
 class GuestPortLight(Peripheral):
+    """
+    Represents a light connected to a guest port on the Blueye drone.
+    """
+
     def __init__(
         self, parent_drone: "Drone", port_number: bp.GuestPortNumber, device: bp.GuestPortDevice
     ):
+        """Initialize the GuestPortLight class.
+
+        Args:
+            parent_drone (Drone): The parent drone instance.
+            port_number (bp.GuestPortNumber): The guest port number.
+            device (bp.GuestPortDevice): The guest port device.
+        """
         Peripheral.__init__(self, parent_drone, port_number, device)
 
     def set_intensity(self, intensity: float):
+        """Set the intensity of the guest port light.
+
+        Args:
+            intensity (float): The intensity of the light (0..1).
+        """
         self.parent_drone._ctrl_client.set_guest_port_lights(intensity)
 
     def get_intensity(self) -> Optional[float]:
+        """Get the intensity of the guest port light.
+
+        Returns:
+            The intensity of the light (0..1).
+        """
         return self.parent_drone.telemetry.get(bp.GuestPortLightsTel).lights.value
 
 
 class Gripper(Peripheral):
+    """
+    Represents a gripper connected to a guest port on the Blueye drone.
+    """
+
     def __init__(
         self, parent_drone: "Drone", port_number: bp.GuestPortNumber, device: bp.GuestPortDevice
     ):
-        """
-        Initializes a new Gripper object.
+        """Initialize the Gripper class.
 
-        *Arguments*:
-
-        * parent_drone (Drone): The parent Drone object that this Gripper is attached to.
-        * port_number (GuestPortNumber): The guest port number that this Gripper is attached to.
-        * device (GuestPortDevice): The guest port device that this Gripper is attached to.
+        Args:
+            parent_drone (Drone): The parent drone instance.
+            port_number (bp.GuestPortNumber): The guest port number.
+            device (bp.GuestPortDevice): The guest port device.
         """
         Peripheral.__init__(self, parent_drone, port_number, device)
         self._grip_velocity = 0
@@ -75,20 +120,16 @@ class Gripper(Peripheral):
 
     @property
     def grip_velocity(self) -> float:
-        """
-        Gets or sets the current grip velocity of the Gripper.
+        """Get or set the current grip velocity of the Gripper.
 
-        When used as a getter, returns the current grip velocity of the Gripper.
+        Args:
+            value (float): The new grip velocity to set. Must be a float between -1.0 and 1.0.
 
-        When used as a setter, sets the grip velocity of the Gripper to the specified value.
+        Returns:
+            The current grip velocity of the Gripper.
 
-        *Arguments*:
-
-        * value (float): The new grip velocity to set. Must be a float between -1.0 and 1.0.
-
-        *Returns*:
-
-        * grip_velocity (float): The current grip velocity of the Gripper.
+        Raises:
+            ValueError: If the grip velocity is not between -1.0 and 1.0.
         """
         return self._grip_velocity
 
@@ -103,20 +144,16 @@ class Gripper(Peripheral):
 
     @property
     def rotation_velocity(self) -> float:
-        """
-        Gets or sets the current rotation velocity of the Gripper.
+        """Get or set the current rotation velocity of the Gripper.
 
-        When used as a getter, returns the current rotation velocity of the Gripper.
+        Args:
+            value (float): The new rotation velocity to set. Must be a float between -1.0 and 1.0.
 
-        When used as a setter, sets the rotation velocity of the Gripper to the specified value.
+        Returns:
+            The current rotation velocity of the Gripper.
 
-        *Arguments*:
-
-        * value (float): The new rotation velocity to set. Must be a float between -1.0 and 1.0.
-
-        *Returns*:
-
-        * rotation_velocity (float): The current rotation velocity of the Gripper.
+        Raises:
+            ValueError: If the rotation velocity is not between -1.0 and 1.0.
         """
         return self._rotation_velocity
 
@@ -131,25 +168,44 @@ class Gripper(Peripheral):
 
 
 class Laser(Peripheral):
+    """
+    Represents a laser connected to a guest port on the Blueye drone.
+    """
+
     def __init__(
         self, parent_drone: "Drone", port_number: bp.GuestPortNumber, device: bp.GuestPortDevice
     ):
+        """Initialize the Laser class.
+
+        Args:
+            parent_drone (Drone): The parent drone instance.
+            port_number (bp.GuestPortNumber): The guest port number.
+            device (bp.GuestPortDevice): The guest port device.
+        """
         Peripheral.__init__(self, parent_drone, port_number, device)
 
     def set_intensity(self, intensity: float):
-        """
-        Sets the intensity of the laser
+        """Set the intensity of the laser.
 
-        If the laser does not support dimming but only on and off, a
-        value of 0 turns the laser off, and any value above 0 turns the
-        laser on.
+        If the laser does not support dimming but only on and off, a value of 0 turns the laser off,
+        and any value above 0 turns the laser on.
+
+        Args:
+            intensity (float): The intensity of the laser (0..1).
+
+        Raises:
+            ValueError: If the intensity is not between 0 and 1.
         """
         if intensity < 0 or intensity > 1:
             raise ValueError("Laser intensity must be between 0 and 1.")
         self.parent_drone._ctrl_client.set_laser_intensity(intensity)
 
     def get_intensity(self) -> Optional[float]:
-        """Returns the current intensity of the laser (0..1)"""
+        """Get the current intensity of the laser.
+
+        Returns:
+            The current intensity of the laser.
+        """
         telemetry_msg = self.parent_drone.telemetry.get(bp.LaserTel)
         if telemetry_msg is None:
             return None
@@ -160,6 +216,16 @@ class Laser(Peripheral):
 def device_to_peripheral(
     parent_drone: "Drone", port_number: bp.GuestPortNumber, device: bp.GuestPortDevice
 ) -> Peripheral:
+    """Convert a device to its corresponding peripheral class.
+
+    Args:
+        parent_drone (Drone): The parent drone instance.
+        port_number (bp.GuestPortNumber): The guest port number.
+        device (bp.GuestPortDevice): The guest port device.
+
+    Returns:
+        The corresponding peripheral class instance.
+    """
     logger.debug(f"Found a {device.name} at port {port_number}")
     if device.device_id == bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_CAM:
         peripheral = GuestPortCamera(parent_drone, port_number, device)
