@@ -16,7 +16,7 @@
       
       
       <link rel="icon" href="../../../../media/blueye_b.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.43">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
     
     
       
@@ -24,7 +24,7 @@
       
     
     
-      <link rel="stylesheet" href="../../../../assets/stylesheets/main.0253249f.min.css">
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.6f8fc17f.min.css">
       
         
         <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
@@ -45,6 +45,8 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../../../assets/_mkdocstrings.css">
     
     <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -72,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#module-blueyesdklogs" class="md-skip">
+        <a href="#blueye.sdk.logs" class="md-skip">
           Skip to content
         </a>
       
@@ -227,7 +229,7 @@
       <a href="https://github.com/BluEye-Robotics/blueye.sdk" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
   </div>
   <div class="md-source__repository">
     
@@ -304,7 +306,7 @@
     <a href="https://github.com/BluEye-Robotics/blueye.sdk" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
   </div>
   <div class="md-source__repository">
     
@@ -986,8 +988,6 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
-        
-      
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
           
@@ -1016,8 +1016,6 @@
   
   
   
-    
-  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -1026,80 +1024,29 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#variables" class="md-nav__link">
+  <a href="#blueye.sdk.logs" class="md-nav__link">
     <span class="md-ellipsis">
-      Variables
+      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;logs
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#functions" class="md-nav__link">
-    <span class="md-ellipsis">
-      Functions
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Functions">
+    <nav class="md-nav" aria-label=" logs">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#decompress_log" class="md-nav__link">
+  <a href="#blueye.sdk.logs.LegacyLogFile" class="md-nav__link">
     <span class="md-ellipsis">
-      decompress_log
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;LegacyLogFile
     </span>
   </a>
   
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#human_readable_filesize" class="md-nav__link">
-    <span class="md-ellipsis">
-      human_readable_filesize
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#classes" class="md-nav__link">
-    <span class="md-ellipsis">
-      Classes
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Classes">
+    <nav class="md-nav" aria-label=" LegacyLogFile">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#legacylogfile" class="md-nav__link">
+  <a href="#blueye.sdk.logs.LegacyLogFile.download" class="md-nav__link">
     <span class="md-ellipsis">
-      LegacyLogFile
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="LegacyLogFile">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#methods" class="md-nav__link">
-    <span class="md-ellipsis">
-      Methods
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#download" class="md-nav__link">
-    <span class="md-ellipsis">
-      download
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;download
     </span>
   </a>
   
@@ -1111,28 +1058,19 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#legacylogs" class="md-nav__link">
+  <a href="#blueye.sdk.logs.LegacyLogs" class="md-nav__link">
     <span class="md-ellipsis">
-      LegacyLogs
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;LegacyLogs
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="LegacyLogs">
+    <nav class="md-nav" aria-label=" LegacyLogs">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#methods_1" class="md-nav__link">
+  <a href="#blueye.sdk.logs.LegacyLogs.refresh_log_index" class="md-nav__link">
     <span class="md-ellipsis">
-      Methods
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#refresh_log_index" class="md-nav__link">
-    <span class="md-ellipsis">
-      refresh_log_index
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;refresh_log_index
     </span>
   </a>
   
@@ -1144,37 +1082,28 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#logfile" class="md-nav__link">
+  <a href="#blueye.sdk.logs.LogFile" class="md-nav__link">
     <span class="md-ellipsis">
-      LogFile
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;LogFile
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="LogFile">
+    <nav class="md-nav" aria-label=" LogFile">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#methods_2" class="md-nav__link">
+  <a href="#blueye.sdk.logs.LogFile.download" class="md-nav__link">
     <span class="md-ellipsis">
-      Methods
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;download
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#download_1" class="md-nav__link">
+  <a href="#blueye.sdk.logs.LogFile.parse_to_stream" class="md-nav__link">
     <span class="md-ellipsis">
-      download
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#parse_to_stream" class="md-nav__link">
-    <span class="md-ellipsis">
-      parse_to_stream
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;parse_to_stream
     </span>
   </a>
   
@@ -1186,46 +1115,37 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#logstream" class="md-nav__link">
+  <a href="#blueye.sdk.logs.LogStream" class="md-nav__link">
     <span class="md-ellipsis">
-      LogStream
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;LogStream
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#logs" class="md-nav__link">
+  <a href="#blueye.sdk.logs.Logs" class="md-nav__link">
     <span class="md-ellipsis">
-      Logs
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;Logs
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Logs">
+    <nav class="md-nav" aria-label=" Logs">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#methods_3" class="md-nav__link">
+  <a href="#blueye.sdk.logs.Logs.filter" class="md-nav__link">
     <span class="md-ellipsis">
-      Methods
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;filter
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#filter" class="md-nav__link">
+  <a href="#blueye.sdk.logs.Logs.refresh_log_index" class="md-nav__link">
     <span class="md-ellipsis">
-      filter
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#refresh_log_index_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      refresh_log_index
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;refresh_log_index
     </span>
   </a>
   
@@ -1233,6 +1153,24 @@
         
       </ul>
     </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#blueye.sdk.logs.decompress_log" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;decompress_log
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#blueye.sdk.logs.human_readable_filesize" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;human_readable_filesize
+    </span>
+  </a>
   
 </li>
         
@@ -1292,6 +1230,196 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_14_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_14_10" id="__nav_14_10_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    blueye.protocol
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_14_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_14_10">
+            <span class="md-nav__icon md-icon"></span>
+            blueye.protocol
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../protocol/overview/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../protocol/telemetry/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Telemetry
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../protocol/control/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Control
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../protocol/req_rep/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ReqRep
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../protocol/message_formats/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Message Formats
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../protocol/mission_planning/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mission Planning
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../protocol/aquatroll/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Aquatroll
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1316,8 +1444,6 @@
   
   
   
-    
-  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -1326,80 +1452,29 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#variables" class="md-nav__link">
+  <a href="#blueye.sdk.logs" class="md-nav__link">
     <span class="md-ellipsis">
-      Variables
+      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;logs
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#functions" class="md-nav__link">
-    <span class="md-ellipsis">
-      Functions
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Functions">
+    <nav class="md-nav" aria-label=" logs">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#decompress_log" class="md-nav__link">
+  <a href="#blueye.sdk.logs.LegacyLogFile" class="md-nav__link">
     <span class="md-ellipsis">
-      decompress_log
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;LegacyLogFile
     </span>
   </a>
   
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#human_readable_filesize" class="md-nav__link">
-    <span class="md-ellipsis">
-      human_readable_filesize
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#classes" class="md-nav__link">
-    <span class="md-ellipsis">
-      Classes
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Classes">
+    <nav class="md-nav" aria-label=" LegacyLogFile">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#legacylogfile" class="md-nav__link">
+  <a href="#blueye.sdk.logs.LegacyLogFile.download" class="md-nav__link">
     <span class="md-ellipsis">
-      LegacyLogFile
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="LegacyLogFile">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#methods" class="md-nav__link">
-    <span class="md-ellipsis">
-      Methods
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#download" class="md-nav__link">
-    <span class="md-ellipsis">
-      download
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;download
     </span>
   </a>
   
@@ -1411,28 +1486,19 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#legacylogs" class="md-nav__link">
+  <a href="#blueye.sdk.logs.LegacyLogs" class="md-nav__link">
     <span class="md-ellipsis">
-      LegacyLogs
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;LegacyLogs
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="LegacyLogs">
+    <nav class="md-nav" aria-label=" LegacyLogs">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#methods_1" class="md-nav__link">
+  <a href="#blueye.sdk.logs.LegacyLogs.refresh_log_index" class="md-nav__link">
     <span class="md-ellipsis">
-      Methods
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#refresh_log_index" class="md-nav__link">
-    <span class="md-ellipsis">
-      refresh_log_index
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;refresh_log_index
     </span>
   </a>
   
@@ -1444,37 +1510,28 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#logfile" class="md-nav__link">
+  <a href="#blueye.sdk.logs.LogFile" class="md-nav__link">
     <span class="md-ellipsis">
-      LogFile
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;LogFile
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="LogFile">
+    <nav class="md-nav" aria-label=" LogFile">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#methods_2" class="md-nav__link">
+  <a href="#blueye.sdk.logs.LogFile.download" class="md-nav__link">
     <span class="md-ellipsis">
-      Methods
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;download
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#download_1" class="md-nav__link">
+  <a href="#blueye.sdk.logs.LogFile.parse_to_stream" class="md-nav__link">
     <span class="md-ellipsis">
-      download
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#parse_to_stream" class="md-nav__link">
-    <span class="md-ellipsis">
-      parse_to_stream
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;parse_to_stream
     </span>
   </a>
   
@@ -1486,46 +1543,37 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#logstream" class="md-nav__link">
+  <a href="#blueye.sdk.logs.LogStream" class="md-nav__link">
     <span class="md-ellipsis">
-      LogStream
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;LogStream
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#logs" class="md-nav__link">
+  <a href="#blueye.sdk.logs.Logs" class="md-nav__link">
     <span class="md-ellipsis">
-      Logs
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;Logs
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Logs">
+    <nav class="md-nav" aria-label=" Logs">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#methods_3" class="md-nav__link">
+  <a href="#blueye.sdk.logs.Logs.filter" class="md-nav__link">
     <span class="md-ellipsis">
-      Methods
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;filter
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#filter" class="md-nav__link">
+  <a href="#blueye.sdk.logs.Logs.refresh_log_index" class="md-nav__link">
     <span class="md-ellipsis">
-      filter
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#refresh_log_index_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      refresh_log_index
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;refresh_log_index
     </span>
   </a>
   
@@ -1533,6 +1581,24 @@
         
       </ul>
     </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#blueye.sdk.logs.decompress_log" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;decompress_log
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#blueye.sdk.logs.human_readable_filesize" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;human_readable_filesize
+    </span>
+  </a>
   
 </li>
         
@@ -1559,807 +1625,115 @@
   
 
 
-<h1 id="module-blueyesdklogs">Module blueye.sdk.logs</h1>
-<details class="example">
-<summary>View Source</summary>
-<pre><code>from __future__ import annotations
+  <h1>blueye.sdk.logs</h1>
 
-import logging
+<div class="doc doc-object doc-module">
 
-import zlib
 
-from datetime import datetime, timedelta, timezone
 
-from pathlib import Path
+<h2 id="blueye.sdk.logs" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-module"></code>            <span class="doc doc-object-name doc-module-name">logs</span>
 
-from typing import Callable, Iterator, List, Optional, Tuple
 
-import blueye.protocol as bp
+</h2>
 
-import dateutil.parser
+    <div class="doc doc-contents first">
 
-import proto
 
-import requests
 
-import tabulate
 
-from google.protobuf.internal.decoder import _DecodeVarint as decodeVarint
 
-from packaging import version
 
-from .utils import deserialize_any_to_message
 
-logger = logging.getLogger(__name__)
+<p><span class="doc-section-title">Classes:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+          <b><code><a class="autorefs autorefs-internal" title="blueye.sdk.logs.LegacyLogFile" href="#blueye.sdk.logs.LegacyLogFile">LegacyLogFile</a></code></b>
+          –
+          <div class="doc-md-description">
+            <p>This class is a container for a log file stored on the drone</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><a class="autorefs autorefs-internal" title="blueye.sdk.logs.LegacyLogs" href="#blueye.sdk.logs.LegacyLogs">LegacyLogs</a></code></b>
+          –
+          <div class="doc-md-description">
+            <p>This class is an index of the legacy csv log files stored on the drone</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><a class="autorefs autorefs-internal" title="blueye.sdk.logs.LogFile" href="#blueye.sdk.logs.LogFile">LogFile</a></code></b>
+          –
+          <div class="doc-md-description">
+            
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><a class="autorefs autorefs-internal" title="blueye.sdk.logs.LogStream" href="#blueye.sdk.logs.LogStream">LogStream</a></code></b>
+          –
+          <div class="doc-md-description">
+            <p>Class for streaming a log</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><a class="autorefs autorefs-internal" title="blueye.sdk.logs.Logs" href="#blueye.sdk.logs.Logs">Logs</a></code></b>
+          –
+          <div class="doc-md-description">
+            
+          </div>
+        </li>
+    </ul>
 
-def human_readable_filesize(binsize: int) -&gt; str:
 
-    """Convert bytes to human readable string"""
 
-    suffix = "B"
 
-    num = binsize
+<p><span class="doc-section-title">Functions:</span></p>
+    <ul>
+          <li class="doc-section-item field-body">
+            <b><code><a class="autorefs autorefs-internal" title="blueye.sdk.logs.decompress_log" href="#blueye.sdk.logs.decompress_log">decompress_log</a></code></b>
+            –
+            <div class="doc-md-description">
+              <p>Decompress a log file</p>
+            </div>
+          </li>
+          <li class="doc-section-item field-body">
+            <b><code><a class="autorefs autorefs-internal" title="blueye.sdk.logs.human_readable_filesize" href="#blueye.sdk.logs.human_readable_filesize">human_readable_filesize</a></code></b>
+            –
+            <div class="doc-md-description">
+              <p>Convert bytes to human readable string</p>
+            </div>
+          </li>
+    </ul>
 
-    for unit in ["", "Ki", "Mi"]:
 
-        if abs(num) &lt; 1024.0:
 
-            return f"{num:3.1f} {unit}{suffix}"
 
-        num /= 1024.0
 
-    return f"{num:.1f} Gi{suffix}"
+  <div class="doc doc-children">
 
-def decompress_log(log: bytes) -&gt; bytes:
 
-    """Decompress a log file"""
 
-    return zlib.decompressobj(wbits=zlib.MAX_WBITS | 16).decompress(log)
 
-class LogStream:
 
-    """Class for streaming a log
 
-    Creates a stream from a downloaded log file. Iterate over the object to get the next log record.
 
-    """
 
-    def __init__(self, log: bytes, decompress: bool = True) -&gt; Iterator[
+<div class="doc doc-object doc-class">
 
-        Tuple[
 
-            proto.datetime_helpers.DatetimeWithNanoseconds,  # Real time clock
 
-            timedelta,  # Time since first message
+<h3 id="blueye.sdk.logs.LegacyLogFile" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <span class="doc doc-object-name doc-class-name">LegacyLogFile</span>
 
-            proto.message.MessageMeta,  # Message type
 
-            proto.message.Message,  # Message contents
-
-        ]
-
-    ]:
-
-        if decompress:
-
-            self.decompressed_log = decompress_log(log)
-
-        else:
-
-            self.decompressed_log = log
-
-        self.pos = 0
-
-        self.start_monotonic: proto.datetime_helpers.DatetimeWithNanoseconds = 0
-
-    def __iter__(self):
-
-        return self
-
-    def __next__(self):
-
-        if self.pos &lt; len(self.decompressed_log):
-
-            msg_size, pos_msg_start = decodeVarint(self.decompressed_log, self.pos)
-
-            msg_data = self.decompressed_log[pos_msg_start : (pos_msg_start + msg_size)]
-
-            if len(msg_data) &lt; msg_size:
-
-                raise EOFError("Not enough bytes to read message")
-
-            self.pos = pos_msg_start + msg_size
-
-            msg = bp.BinlogRecord.deserialize(msg_data)
-
-            payload_type, payload_msg_deserialized = deserialize_any_to_message(msg.payload)
-
-            if self.start_monotonic == 0:
-
-                self.start_monotonic = msg.clock_monotonic
-
-            return (
-
-                msg.unix_timestamp,
-
-                msg.clock_monotonic - self.start_monotonic,
-
-                payload_type,
-
-                payload_msg_deserialized,
-
-            )
-
-        else:
-
-            raise StopIteration
-
-class LogFile:
-
-    def __init__(
-
-        self,
-
-        name: str,
-
-        is_dive: bool,
-
-        filesize: int,
-
-        start_time: int,
-
-        max_depth_magnitude: int,
-
-        ip: str,
-
-    ):
-
-        self.name = name
-
-        self.is_dive = is_dive
-
-        self.filesize = filesize
-
-        self.start_time: datetime = datetime.fromtimestamp(start_time, tz=timezone.utc)
-
-        self.max_depth_magnitude = max_depth_magnitude
-
-        self.download_url = f"http://{ip}/logs/{self.name}/binlog"
-
-        self.content = None
-
-        self._formatted_values = [
-
-            self.name,
-
-            self.start_time.strftime("%d. %b %Y %H:%M"),
-
-            f"{self.max_depth_magnitude} m",
-
-            human_readable_filesize(self.filesize),
-
-        ]
-
-    def download(
-
-        self,
-
-        output_path: Optional[Path | str] = None,
-
-        write_to_file: bool = True,
-
-        timeout: float = 1,
-
-        overwrite_cache: bool = False,
-
-    ) -&gt; bytes:
-
-        """Download a log file from the drone
-
-        *Arguments*:
-
-        * `output_path`:
-
-            Path to write the log file to. If `None`, the log will be written to the
-
-            current working directory. If the path is a directory, the log will be
-
-            downloaded to that directory with its original name. Else the log will be
-
-            downloaded to the specified path.
-
-        * `write_to_file`:
-
-            If True, the log will be written to the specified path. If False, the
-
-            log will only be returned as a bytes object.
-
-        * `timeout`:
-
-            Seconds to wait for response
-
-        * `overwrite_cache`:
-
-            If True, the log will be downloaded even if it is already been downloaded.
-
-        *Returns*:
-
-        The compressed log file as a bytes object.
-
-        """
-
-        if self.content is None or overwrite_cache:
-
-            self.content = requests.get(self.download_url, timeout=timeout).content
-
-        if write_to_file:
-
-            if output_path is None:
-
-                output_path = Path(f"{self.name}.bez")
-
-            else:
-
-                if type(output_path) == str:
-
-                    output_path = Path(output_path)
-
-                if output_path.is_dir():
-
-                    output_path = output_path.joinpath(f"{self.name}.bez")
-
-            with open(output_path, "wb") as f:
-
-                f.write(self.content)
-
-        return self.content
-
-    def parse_to_stream(self) -&gt; LogStream:
-
-        """Parse the log file to a stream
-
-        Will download the log if it is not already downloaded.
-
-        *Returns*:
-
-        A `LogStream` object
-
-        """
-
-        return LogStream(self.download(write_to_file=False))
-
-    def __format__(self, format_specifier):
-
-        if format_specifier == "with_header":
-
-            return tabulate.tabulate(
-
-                [self], headers=["Name", "Time", "Max depth", "Size"], tablefmt="plain"
-
-            )
-
-        else:
-
-            return tabulate.tabulate([self], tablefmt="plain")
-
-    def __str__(self):
-
-        return f"{self}"
-
-    def __getitem__(self, item):
-
-        return self._formatted_values[item]
-
-class Logs:
-
-    def __init__(self, parent_drone, auto_download_index=False):
-
-        self._parent_drone = parent_drone
-
-        self.auto_download_index = auto_download_index
-
-        self.index_downloaded = False
-
-        self._logs = {}
-
-        if auto_download_index:
-
-            self.refresh_log_index()
-
-    def refresh_log_index(self):
-
-        """Refresh the log index from the drone
-
-        This is method is run on the first log access by default, but if you would like to check
-
-        for new log files it can be called at any time.
-
-        """
-
-        if not self._parent_drone.connected:
-
-            raise ConnectionError(
-
-                "The connection to the drone is not established, try calling the connect method "
-
-                "before retrying"
-
-            )
-
-        logger.debug("Refreshing log index")
-
-        logs_endpoint = f"http://{self._parent_drone._ip}/logs"
-
-        logs: List[dict] = requests.get(logs_endpoint).json()
-
-        if version.parse(self._parent_drone.software_version_short) &lt; version.parse("3.3"):
-
-            # Extend index with dive info, sends a request for each log file so can be quite slow
-
-            # for drones with many logs. Not necessary for Blunux &gt;= 3.3 as dive info is included in
-
-            # the index.
-
-            logger.debug(f"Getting dive info for {len(logs)} logs")
-
-            for index, log in enumerate(logs):
-
-                dive_info = requests.get(f"{logs_endpoint}/{log['name']}/dive_info").json()
-
-                logs[index].update(dive_info)
-
-        # Instantiate log objects for each log
-
-        logger.debug(f"Creating log objects for {len(logs)} logs")
-
-        for log in logs:
-
-            if log["has_binlog"]:
-
-                self._logs[log["name"]] = LogFile(
-
-                    log["name"],
-
-                    log["is_dive"],
-
-                    log["binlog_size"],
-
-                    log["start_time"],
-
-                    log["max_depth_magnitude"],
-
-                    self._parent_drone._ip,
-
-                )
-
-            else:
-
-                logger.info(f"Log {log['name']} does not have a binlog, ignoring")
-
-        self.index_downloaded = True
-
-    def __len__(self):
-
-        if not self.index_downloaded:
-
-            self.refresh_log_index()
-
-        return len(self._logs)
-
-    def __getitem__(self, item):
-
-        if not self.index_downloaded:
-
-            self.refresh_log_index()
-
-        if type(item) == str:
-
-            try:
-
-                return self._logs[item]
-
-            except KeyError:
-
-                raise KeyError(f"A log with the name '{item}' does not exist")
-
-        elif isinstance(item, slice):
-
-            logs_slice = Logs(self._parent_drone)
-
-            for log in list(self._logs.values())[item]:
-
-                logs_slice._logs[log.name] = log
-
-            logs_slice.index_downloaded = True
-
-            return logs_slice
-
-        else:
-
-            try:
-
-                return list(self._logs.values())[item]
-
-            except IndexError:
-
-                raise IndexError(
-
-                    f"Tried to access log nr {item}, "
-
-                    + f"but there are only {len(self._logs.values())} logs available"
-
-                )
-
-    def __str__(self):
-
-        return tabulate.tabulate(
-
-            self, headers=["Name", "Time", "Max depth", "Size"], tablefmt="plain"
-
-        )
-
-    def filter(self, filter_func: Callable[[LogFile], bool]) -&gt; Logs:
-
-        """Return a new Logs object with only those matching the filter
-
-        Eg. to get logs classified as a dive:
-
-        ```
-
-        dive_logs = myDrone.logs.filter(lambda log: log.is_dive)
-
-        ```
-
-        or to get all logs with a max depth greater than 10m:
-
-        ```
-
-        deep_logs = myDrone.logs.filter(lambda log: log.max_depth_magnitude &gt; 10)
-
-        ```
-
-        """
-
-        if not self.index_downloaded:
-
-            self.refresh_log_index()
-
-        filtered_logs = Logs(self._parent_drone)
-
-        filtered_logs.index_downloaded = True
-
-        for log in self:
-
-            if filter_func(log):
-
-                filtered_logs._logs[log.name] = log
-
-        return filtered_logs
-
-class LegacyLogFile:
-
-    """
-
-    This class is a container for a log file stored on the drone
-
-    The drone lists the file name, max depth, start time, and file size for each log,
-
-    and you can show this information by printing the log object, eg. on a Drone
-
-    object called `myDrone`:
-
-    ```
-
-    print(myDrone.logs[0])
-
-    ```
-
-    or, if you want to display the header you can format the object with `with_header`:
-
-    ```
-
-    print(f"{myDrone.logs[0]:with_header}")
-
-    ```
-
-    Calling the download() method on a log object will pull the CSV (Comma Separated
-
-    Value) file from the drone to your local filesystem.
-
-    """
-
-    def __init__(self, maxdepth, name, timestamp, binsize, ip):
-
-        self.maxdepth = maxdepth
-
-        self.name = name
-
-        self.timestamp: datetime = dateutil.parser.isoparse(timestamp)
-
-        self.binsize = binsize
-
-        self.download_path = "http://" + ip + "/logcsv/" + name
-
-        self._formatted_values = [
-
-            self.name,
-
-            self.timestamp.strftime("%d. %b %Y %H:%M"),
-
-            f"{self.maxdepth/1000:.2f} m",
-
-            human_readable_filesize(self.binsize),
-
-        ]
-
-    def download(self, output_path=None, output_name=None, downsample_divisor=10):
-
-        """
-
-        Download the specified log to your local file system
-
-        If you specify an output_path the log file will be downloaded to that directory
-
-        instead of the current one.
-
-        Specifying output_name will overwrite the default file name with whatever you
-
-        have specified (be sure to include the .csv extension).
-
-        The drone samples the log content at 10 Hz, and by default this function downsamples this
-
-        rate to 1 Hz.
-
-        """
-
-        log = requests.get(self.download_path, params={"divisor": downsample_divisor}).content
-
-        if output_path is None:
-
-            output_path = "./"
-
-        if output_name is None:
-
-            output_name = self.name
-
-        with open(f"{output_path}{output_name}", "wb") as f:
-
-            f.write(log)
-
-    def __format__(self, format_specifier):
-
-        if format_specifier == "with_header":
-
-            return tabulate.tabulate(
-
-                [self], headers=["Name", "Time", "Max depth", "Size"], tablefmt="plain"
-
-            )
-
-        else:
-
-            return tabulate.tabulate([self], tablefmt="plain")
-
-    def __str__(self):
-
-        return f"{self}"
-
-    def __getitem__(self, item):
-
-        return self._formatted_values[item]
-
-class LegacyLogs:
-
-    """This class is an index of the legacy csv log files stored on the drone
-
-    To show the available logs you simply print this object, ie. if your Drone object
-
-    is called `myDrone`, you can do:
-
-    ```
-
-    print(myDrone.legacy_logs)
-
-    ```
-
-    This will print a list of all available logs, with some of their metadata, such as
-
-    name and maxdepth.
-
-    You can access logfile objects either by index or by name. Eg. if you want the first
-
-    logfile in the list you can do `myDrone.logs[0]`, or if you want some particular log you
-
-    can do `myDrone.logs["exampleName0001.csv"]`. You can even give it a slice, so if you want
-
-    the last 10 logs you can do `myDrone.logs[-10:]`.
-
-    """
-
-    def __init__(self, parent_drone, auto_download_index=False):
-
-        self.ip = parent_drone._ip
-
-        self._parent_drone = parent_drone
-
-        self.index_downloaded = False
-
-        if auto_download_index:
-
-            self.refresh_log_index()
-
-        else:
-
-            self._logs = {}
-
-    def _get_list_of_logs_from_drone(self, get_all: bool):
-
-        list_of_dictionaries = requests.get(
-
-            "http://" + self.ip + "/logcsv", params={"all": True} if get_all else {}
-
-        ).json()
-
-        return list_of_dictionaries
-
-    def _build_log_files_from_dictionary(self, list_of_logs_in_dictionaries):
-
-        loglist = {}
-
-        for log in list_of_logs_in_dictionaries:
-
-            try:
-
-                loglist[log["name"]] = LegacyLogFile(
-
-                    log["maxdepth"], log["name"], log["timestamp"], log["binsize"], self.ip
-
-                )
-
-            except dateutil.parser.ParserError:
-
-                logger.warning(
-
-                    f"Could not parse timestamp for log {log['name']}, skipping this log file"
-
-                )
-
-        return loglist
-
-    def refresh_log_index(self, get_all_logs=False):
-
-        """Refresh the log index from the drone
-
-        This is method is run on the first log access by default, but if you would like to check
-
-        for new log files it can be called at any time.
-
-        Pass with `get_all_logs=True` to include logs that are not classified as dives.
-
-        """
-
-        if not self._parent_drone.connected:
-
-            raise ConnectionError(
-
-                "The connection to the drone is not established, try calling the connect method "
-
-                "before retrying"
-
-            )
-
-        list_of_logs_in_dictionaries = self._get_list_of_logs_from_drone(get_all_logs)
-
-        self._logs = self._build_log_files_from_dictionary(list_of_logs_in_dictionaries)
-
-        self.index_downloaded = True
-
-    def __len__(self):
-
-        if not self.index_downloaded:
-
-            self.refresh_log_index()
-
-        return len(self._logs)
-
-    def __getitem__(self, item):
-
-        if not self.index_downloaded:
-
-            self.refresh_log_index()
-
-        if type(item) == str:
-
-            try:
-
-                return self._logs[item]
-
-            except KeyError:
-
-                raise KeyError(f"A log with the name '{item}' does not exist")
-
-        else:
-
-            try:
-
-                return list(self._logs.values())[item]
-
-            except IndexError:
-
-                raise IndexError(
-
-                    f"Tried to access log nr {item}, "
-
-                    + f"but there are only {len(self._logs.values())} logs available"
-
-                )
-
-    def __str__(self):
-
-        return tabulate.tabulate(
-
-            self, headers=["Name", "Time", "Max depth", "Size"], tablefmt="plain"
-
-        )
-</code></pre>
-</details>
-<h2 id="variables">Variables</h2>
-<div class="highlight"><pre><span></span><code><span class="n">logger</span>
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">LegacyLogFile</span><span class="p">(</span><span class="n">maxdepth</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">,</span> <span class="n">binsize</span><span class="p">,</span> <span class="n">ip</span><span class="p">)</span>
 </code></pre></div>
-<h2 id="functions">Functions</h2>
-<h3 id="decompress_log">decompress_log</h3>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">decompress_log</span><span class="p">(</span>
-    <span class="n">log</span><span class="p">:</span> <span class="s1">&#39;bytes&#39;</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;bytes&#39;</span>
-</code></pre></div>
-<p>Decompress a log file</p>
-<details class="example">
-<summary>View Source</summary>
-<pre><code>def decompress_log(log: bytes) -&gt; bytes:
 
-    """Decompress a log file"""
+    <div class="doc doc-contents ">
 
-    return zlib.decompressobj(wbits=zlib.MAX_WBITS | 16).decompress(log)
-</code></pre>
-</details>
-<h3 id="human_readable_filesize">human_readable_filesize</h3>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">human_readable_filesize</span><span class="p">(</span>
-    <span class="n">binsize</span><span class="p">:</span> <span class="s1">&#39;int&#39;</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;str&#39;</span>
-</code></pre></div>
-<p>Convert bytes to human readable string</p>
-<details class="example">
-<summary>View Source</summary>
-<pre><code>def human_readable_filesize(binsize: int) -&gt; str:
 
-    """Convert bytes to human readable string"""
-
-    suffix = "B"
-
-    num = binsize
-
-    for unit in ["", "Ki", "Mi"]:
-
-        if abs(num) &lt; 1024.0:
-
-            return f"{num:3.1f} {unit}{suffix}"
-
-        num /= 1024.0
-
-    return f"{num:.1f} Gi{suffix}"
-</code></pre>
-</details>
-<h2 id="classes">Classes</h2>
-<h3 id="legacylogfile">LegacyLogFile</h3>
-<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">LegacyLogFile</span><span class="p">(</span>
-    <span class="n">maxdepth</span><span class="p">,</span>
-    <span class="n">name</span><span class="p">,</span>
-    <span class="n">timestamp</span><span class="p">,</span>
-    <span class="n">binsize</span><span class="p">,</span>
-    <span class="n">ip</span>
-<span class="p">)</span>
-</code></pre></div>
-<p>This class is a container for a log file stored on the drone</p>
+        <p>This class is a container for a log file stored on the drone</p>
 <p>The drone lists the file name, max depth, start time, and file size for each log,
 and you can show this information by printing the log object, eg. on a Drone
 object called <code>myDrone</code>:</p>
@@ -2370,182 +1744,164 @@ object called <code>myDrone</code>:</p>
 </code></pre></div>
 <p>Calling the download() method on a log object will pull the CSV (Comma Separated
 Value) file from the drone to your local filesystem.</p>
-<details class="example">
-<summary>View Source</summary>
-<pre><code>class LegacyLogFile:
 
-    """
 
-    This class is a container for a log file stored on the drone
 
-    The drone lists the file name, max depth, start time, and file size for each log,
 
-    and you can show this information by printing the log object, eg. on a Drone
 
-    object called `myDrone`:
 
-    ```
 
-    print(myDrone.logs[0])
 
-    ```
 
-    or, if you want to display the header you can format the object with `with_header`:
+<p><span class="doc-section-title">Methods:</span></p>
+    <ul>
+          <li class="doc-section-item field-body">
+            <b><code><a class="autorefs autorefs-internal" title="blueye.sdk.logs.LegacyLogFile.download" href="#blueye.sdk.logs.LegacyLogFile.download">download</a></code></b>
+            –
+            <div class="doc-md-description">
+              <p>Download the specified log to your local file system</p>
+            </div>
+          </li>
+    </ul>
 
-    ```
 
-    print(f"{myDrone.logs[0]:with_header}")
 
-    ```
+                  <details class="quote">
+                    <summary>Source code in <code>blueye/sdk/logs.py</code></summary>
+                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">304</span>
+<span class="normal">305</span>
+<span class="normal">306</span>
+<span class="normal">307</span>
+<span class="normal">308</span>
+<span class="normal">309</span>
+<span class="normal">310</span>
+<span class="normal">311</span>
+<span class="normal">312</span>
+<span class="normal">313</span>
+<span class="normal">314</span>
+<span class="normal">315</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">maxdepth</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">,</span> <span class="n">binsize</span><span class="p">,</span> <span class="n">ip</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">maxdepth</span> <span class="o">=</span> <span class="n">maxdepth</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">timestamp</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="n">dateutil</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">isoparse</span><span class="p">(</span><span class="n">timestamp</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">binsize</span> <span class="o">=</span> <span class="n">binsize</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">download_path</span> <span class="o">=</span> <span class="s2">&quot;http://&quot;</span> <span class="o">+</span> <span class="n">ip</span> <span class="o">+</span> <span class="s2">&quot;/logcsv/&quot;</span> <span class="o">+</span> <span class="n">name</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_formatted_values</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timestamp</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">. %b %Y %H:%M&quot;</span><span class="p">),</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">maxdepth</span><span class="o">/</span><span class="mi">1000</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> m&quot;</span><span class="p">,</span>
+        <span class="n">human_readable_filesize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">binsize</span><span class="p">),</span>
+    <span class="p">]</span>
+</code></pre></div></td></tr></table></div>
+                  </details>
 
-    Calling the download() method on a log object will pull the CSV (Comma Separated
 
-    Value) file from the drone to your local filesystem.
 
-    """
+  <div class="doc doc-children">
 
-    def __init__(self, maxdepth, name, timestamp, binsize, ip):
 
-        self.maxdepth = maxdepth
 
-        self.name = name
 
-        self.timestamp: datetime = dateutil.parser.isoparse(timestamp)
 
-        self.binsize = binsize
 
-        self.download_path = "http://" + ip + "/logcsv/" + name
 
-        self._formatted_values = [
 
-            self.name,
 
-            self.timestamp.strftime("%d. %b %Y %H:%M"),
+<div class="doc doc-object doc-function">
 
-            f"{self.maxdepth/1000:.2f} m",
 
-            human_readable_filesize(self.binsize),
+<h4 id="blueye.sdk.logs.LegacyLogFile.download" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">download</span>
 
-        ]
 
-    def download(self, output_path=None, output_name=None, downsample_divisor=10):
-
-        """
-
-        Download the specified log to your local file system
-
-        If you specify an output_path the log file will be downloaded to that directory
-
-        instead of the current one.
-
-        Specifying output_name will overwrite the default file name with whatever you
-
-        have specified (be sure to include the .csv extension).
-
-        The drone samples the log content at 10 Hz, and by default this function downsamples this
-
-        rate to 1 Hz.
-
-        """
-
-        log = requests.get(self.download_path, params={"divisor": downsample_divisor}).content
-
-        if output_path is None:
-
-            output_path = "./"
-
-        if output_name is None:
-
-            output_name = self.name
-
-        with open(f"{output_path}{output_name}", "wb") as f:
-
-            f.write(log)
-
-    def __format__(self, format_specifier):
-
-        if format_specifier == "with_header":
-
-            return tabulate.tabulate(
-
-                [self], headers=["Name", "Time", "Max depth", "Size"], tablefmt="plain"
-
-            )
-
-        else:
-
-            return tabulate.tabulate([self], tablefmt="plain")
-
-    def __str__(self):
-
-        return f"{self}"
-
-    def __getitem__(self, item):
-
-        return self._formatted_values[item]
-</code></pre>
-</details>
-<hr />
-<h4 id="methods">Methods</h4>
-<h4 id="download">download</h4>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">download</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span>
+</h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">download</span><span class="p">(</span>
     <span class="n">output_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">output_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">downsample_divisor</span><span class="o">=</span><span class="mi">10</span>
+    <span class="n">downsample_divisor</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
 <span class="p">)</span>
 </code></pre></div>
-<p>Download the specified log to your local file system</p>
+
+    <div class="doc doc-contents ">
+
+        <p>Download the specified log to your local file system</p>
 <p>If you specify an output_path the log file will be downloaded to that directory
 instead of the current one.</p>
 <p>Specifying output_name will overwrite the default file name with whatever you
 have specified (be sure to include the .csv extension).</p>
 <p>The drone samples the log content at 10 Hz, and by default this function downsamples this
 rate to 1 Hz.</p>
-<details class="example">
-<summary>View Source</summary>
-<pre><code>    def download(self, output_path=None, output_name=None, downsample_divisor=10):
 
-        """
+            <details class="quote">
+              <summary>Source code in <code>blueye/sdk/logs.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">317</span>
+<span class="normal">318</span>
+<span class="normal">319</span>
+<span class="normal">320</span>
+<span class="normal">321</span>
+<span class="normal">322</span>
+<span class="normal">323</span>
+<span class="normal">324</span>
+<span class="normal">325</span>
+<span class="normal">326</span>
+<span class="normal">327</span>
+<span class="normal">328</span>
+<span class="normal">329</span>
+<span class="normal">330</span>
+<span class="normal">331</span>
+<span class="normal">332</span>
+<span class="normal">333</span>
+<span class="normal">334</span>
+<span class="normal">335</span>
+<span class="normal">336</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">download</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">downsample_divisor</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Download the specified log to your local file system</span>
 
-        Download the specified log to your local file system
+<span class="sd">    If you specify an output_path the log file will be downloaded to that directory</span>
+<span class="sd">    instead of the current one.</span>
 
-        If you specify an output_path the log file will be downloaded to that directory
+<span class="sd">    Specifying output_name will overwrite the default file name with whatever you</span>
+<span class="sd">    have specified (be sure to include the .csv extension).</span>
 
-        instead of the current one.
+<span class="sd">    The drone samples the log content at 10 Hz, and by default this function downsamples this</span>
+<span class="sd">    rate to 1 Hz.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">log</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">download_path</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;divisor&quot;</span><span class="p">:</span> <span class="n">downsample_divisor</span><span class="p">})</span><span class="o">.</span><span class="n">content</span>
+    <span class="k">if</span> <span class="n">output_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">output_path</span> <span class="o">=</span> <span class="s2">&quot;./&quot;</span>
+    <span class="k">if</span> <span class="n">output_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">output_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">output_path</span><span class="si">}{</span><span class="n">output_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
 
-        Specifying output_name will overwrite the default file name with whatever you
+</div>
 
-        have specified (be sure to include the .csv extension).
 
-        The drone samples the log content at 10 Hz, and by default this function downsamples this
 
-        rate to 1 Hz.
+  </div>
 
-        """
+    </div>
 
-        log = requests.get(self.download_path, params={"divisor": downsample_divisor}).content
+</div>
 
-        if output_path is None:
+<div class="doc doc-object doc-class">
 
-            output_path = "./"
 
-        if output_name is None:
 
-            output_name = self.name
+<h3 id="blueye.sdk.logs.LegacyLogs" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <span class="doc doc-object-name doc-class-name">LegacyLogs</span>
 
-        with open(f"{output_path}{output_name}", "wb") as f:
 
-            f.write(log)
-</code></pre>
-</details>
-<h3 id="legacylogs">LegacyLogs</h3>
-<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">LegacyLogs</span><span class="p">(</span>
-    <span class="n">parent_drone</span><span class="p">,</span>
-    <span class="n">auto_download_index</span><span class="o">=</span><span class="kc">False</span>
-<span class="p">)</span>
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">LegacyLogs</span><span class="p">(</span><span class="n">parent_drone</span><span class="p">,</span> <span class="n">auto_download_index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </code></pre></div>
-<p>This class is an index of the legacy csv log files stored on the drone</p>
+
+    <div class="doc doc-contents ">
+
+
+        <p>This class is an index of the legacy csv log files stored on the drone</p>
 <p>To show the available logs you simply print this object, ie. if your Drone object
 is called <code>myDrone</code>, you can do:</p>
 <div class="highlight"><pre><span></span><code>print(myDrone.legacy_logs)
@@ -2556,387 +1912,254 @@ name and maxdepth.</p>
 logfile in the list you can do <code>myDrone.logs[0]</code>, or if you want some particular log you
 can do <code>myDrone.logs["exampleName0001.csv"]</code>. You can even give it a slice, so if you want
 the last 10 logs you can do <code>myDrone.logs[-10:]</code>.</p>
-<details class="example">
-<summary>View Source</summary>
-<pre><code>class LegacyLogs:
 
-    """This class is an index of the legacy csv log files stored on the drone
 
-    To show the available logs you simply print this object, ie. if your Drone object
 
-    is called `myDrone`, you can do:
 
-    ```
 
-    print(myDrone.legacy_logs)
 
-    ```
 
-    This will print a list of all available logs, with some of their metadata, such as
 
-    name and maxdepth.
 
-    You can access logfile objects either by index or by name. Eg. if you want the first
+<p><span class="doc-section-title">Methods:</span></p>
+    <ul>
+          <li class="doc-section-item field-body">
+            <b><code><a class="autorefs autorefs-internal" title="blueye.sdk.logs.LegacyLogs.refresh_log_index" href="#blueye.sdk.logs.LegacyLogs.refresh_log_index">refresh_log_index</a></code></b>
+            –
+            <div class="doc-md-description">
+              <p>Refresh the log index from the drone</p>
+            </div>
+          </li>
+    </ul>
 
-    logfile in the list you can do `myDrone.logs[0]`, or if you want some particular log you
 
-    can do `myDrone.logs["exampleName0001.csv"]`. You can even give it a slice, so if you want
 
-    the last 10 logs you can do `myDrone.logs[-10:]`.
+                  <details class="quote">
+                    <summary>Source code in <code>blueye/sdk/logs.py</code></summary>
+                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">372</span>
+<span class="normal">373</span>
+<span class="normal">374</span>
+<span class="normal">375</span>
+<span class="normal">376</span>
+<span class="normal">377</span>
+<span class="normal">378</span>
+<span class="normal">379</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_drone</span><span class="p">,</span> <span class="n">auto_download_index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">ip</span> <span class="o">=</span> <span class="n">parent_drone</span><span class="o">.</span><span class="n">_ip</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_parent_drone</span> <span class="o">=</span> <span class="n">parent_drone</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">index_downloaded</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">auto_download_index</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh_log_index</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logs</span> <span class="o">=</span> <span class="p">{}</span>
+</code></pre></div></td></tr></table></div>
+                  </details>
 
-    """
 
-    def __init__(self, parent_drone, auto_download_index=False):
 
-        self.ip = parent_drone._ip
+  <div class="doc doc-children">
 
-        self._parent_drone = parent_drone
 
-        self.index_downloaded = False
 
-        if auto_download_index:
 
-            self.refresh_log_index()
 
-        else:
 
-            self._logs = {}
 
-    def _get_list_of_logs_from_drone(self, get_all: bool):
 
-        list_of_dictionaries = requests.get(
 
-            "http://" + self.ip + "/logcsv", params={"all": True} if get_all else {}
+<div class="doc doc-object doc-function">
 
-        ).json()
 
-        return list_of_dictionaries
+<h4 id="blueye.sdk.logs.LegacyLogs.refresh_log_index" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">refresh_log_index</span>
 
-    def _build_log_files_from_dictionary(self, list_of_logs_in_dictionaries):
 
-        loglist = {}
-
-        for log in list_of_logs_in_dictionaries:
-
-            try:
-
-                loglist[log["name"]] = LegacyLogFile(
-
-                    log["maxdepth"], log["name"], log["timestamp"], log["binsize"], self.ip
-
-                )
-
-            except dateutil.parser.ParserError:
-
-                logger.warning(
-
-                    f"Could not parse timestamp for log {log['name']}, skipping this log file"
-
-                )
-
-        return loglist
-
-    def refresh_log_index(self, get_all_logs=False):
-
-        """Refresh the log index from the drone
-
-        This is method is run on the first log access by default, but if you would like to check
-
-        for new log files it can be called at any time.
-
-        Pass with `get_all_logs=True` to include logs that are not classified as dives.
-
-        """
-
-        if not self._parent_drone.connected:
-
-            raise ConnectionError(
-
-                "The connection to the drone is not established, try calling the connect method "
-
-                "before retrying"
-
-            )
-
-        list_of_logs_in_dictionaries = self._get_list_of_logs_from_drone(get_all_logs)
-
-        self._logs = self._build_log_files_from_dictionary(list_of_logs_in_dictionaries)
-
-        self.index_downloaded = True
-
-    def __len__(self):
-
-        if not self.index_downloaded:
-
-            self.refresh_log_index()
-
-        return len(self._logs)
-
-    def __getitem__(self, item):
-
-        if not self.index_downloaded:
-
-            self.refresh_log_index()
-
-        if type(item) == str:
-
-            try:
-
-                return self._logs[item]
-
-            except KeyError:
-
-                raise KeyError(f"A log with the name '{item}' does not exist")
-
-        else:
-
-            try:
-
-                return list(self._logs.values())[item]
-
-            except IndexError:
-
-                raise IndexError(
-
-                    f"Tried to access log nr {item}, "
-
-                    + f"but there are only {len(self._logs.values())} logs available"
-
-                )
-
-    def __str__(self):
-
-        return tabulate.tabulate(
-
-            self, headers=["Name", "Time", "Max depth", "Size"], tablefmt="plain"
-
-        )
-</code></pre>
-</details>
-<hr />
-<h4 id="methods_1">Methods</h4>
-<h4 id="refresh_log_index">refresh_log_index</h4>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">refresh_log_index</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span>
-    <span class="n">get_all_logs</span><span class="o">=</span><span class="kc">False</span>
-<span class="p">)</span>
+</h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">refresh_log_index</span><span class="p">(</span><span class="n">get_all_logs</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </code></pre></div>
-<p>Refresh the log index from the drone</p>
+
+    <div class="doc doc-contents ">
+
+        <p>Refresh the log index from the drone</p>
 <p>This is method is run on the first log access by default, but if you would like to check
 for new log files it can be called at any time.</p>
 <p>Pass with <code>get_all_logs=True</code> to include logs that are not classified as dives.</p>
-<details class="example">
-<summary>View Source</summary>
-<pre><code>    def refresh_log_index(self, get_all_logs=False):
 
-        """Refresh the log index from the drone
+            <details class="quote">
+              <summary>Source code in <code>blueye/sdk/logs.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">400</span>
+<span class="normal">401</span>
+<span class="normal">402</span>
+<span class="normal">403</span>
+<span class="normal">404</span>
+<span class="normal">405</span>
+<span class="normal">406</span>
+<span class="normal">407</span>
+<span class="normal">408</span>
+<span class="normal">409</span>
+<span class="normal">410</span>
+<span class="normal">411</span>
+<span class="normal">412</span>
+<span class="normal">413</span>
+<span class="normal">414</span>
+<span class="normal">415</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">refresh_log_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">get_all_logs</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Refresh the log index from the drone</span>
 
-        This is method is run on the first log access by default, but if you would like to check
+<span class="sd">    This is method is run on the first log access by default, but if you would like to check</span>
+<span class="sd">    for new log files it can be called at any time.</span>
 
-        for new log files it can be called at any time.
+<span class="sd">    Pass with `get_all_logs=True` to include logs that are not classified as dives.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent_drone</span><span class="o">.</span><span class="n">connected</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ConnectionError</span><span class="p">(</span>
+            <span class="s2">&quot;The connection to the drone is not established, try calling the connect method &quot;</span>
+            <span class="s2">&quot;before retrying&quot;</span>
+        <span class="p">)</span>
+    <span class="n">list_of_logs_in_dictionaries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_list_of_logs_from_drone</span><span class="p">(</span><span class="n">get_all_logs</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_logs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_log_files_from_dictionary</span><span class="p">(</span><span class="n">list_of_logs_in_dictionaries</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">index_downloaded</span> <span class="o">=</span> <span class="kc">True</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
 
-        Pass with `get_all_logs=True` to include logs that are not classified as dives.
+</div>
 
-        """
 
-        if not self._parent_drone.connected:
 
-            raise ConnectionError(
+  </div>
 
-                "The connection to the drone is not established, try calling the connect method "
+    </div>
 
-                "before retrying"
+</div>
 
-            )
+<div class="doc doc-object doc-class">
 
-        list_of_logs_in_dictionaries = self._get_list_of_logs_from_drone(get_all_logs)
 
-        self._logs = self._build_log_files_from_dictionary(list_of_logs_in_dictionaries)
 
-        self.index_downloaded = True
-</code></pre>
-</details>
-<h3 id="logfile">LogFile</h3>
-<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">LogFile</span><span class="p">(</span>
-    <span class="n">name</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span>
-    <span class="n">is_dive</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span><span class="p">,</span>
-    <span class="n">filesize</span><span class="p">:</span> <span class="s1">&#39;int&#39;</span><span class="p">,</span>
-    <span class="n">start_time</span><span class="p">:</span> <span class="s1">&#39;int&#39;</span><span class="p">,</span>
-    <span class="n">max_depth_magnitude</span><span class="p">:</span> <span class="s1">&#39;int&#39;</span><span class="p">,</span>
-    <span class="n">ip</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span>
+<h3 id="blueye.sdk.logs.LogFile" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <span class="doc doc-object-name doc-class-name">LogFile</span>
+
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">LogFile</span><span class="p">(</span>
+    <span class="n">name</span><span class="p">:</span> <span class="n">str</span><span class="p">,</span>
+    <span class="n">is_dive</span><span class="p">:</span> <span class="n">bool</span><span class="p">,</span>
+    <span class="n">filesize</span><span class="p">:</span> <span class="n">int</span><span class="p">,</span>
+    <span class="n">start_time</span><span class="p">:</span> <span class="n">int</span><span class="p">,</span>
+    <span class="n">max_depth_magnitude</span><span class="p">:</span> <span class="n">int</span><span class="p">,</span>
+    <span class="n">ip</span><span class="p">:</span> <span class="n">str</span><span class="p">,</span>
 <span class="p">)</span>
 </code></pre></div>
-<details class="example">
-<summary>View Source</summary>
-<pre><code>class LogFile:
 
-    def __init__(
+    <div class="doc doc-contents ">
 
-        self,
 
-        name: str,
 
-        is_dive: bool,
 
-        filesize: int,
 
-        start_time: int,
 
-        max_depth_magnitude: int,
 
-        ip: str,
 
-    ):
 
-        self.name = name
 
-        self.is_dive = is_dive
+<p><span class="doc-section-title">Methods:</span></p>
+    <ul>
+          <li class="doc-section-item field-body">
+            <b><code><a class="autorefs autorefs-internal" title="blueye.sdk.logs.LogFile.download" href="#blueye.sdk.logs.LogFile.download">download</a></code></b>
+            –
+            <div class="doc-md-description">
+              <p>Download a log file from the drone</p>
+            </div>
+          </li>
+          <li class="doc-section-item field-body">
+            <b><code><a class="autorefs autorefs-internal" title="blueye.sdk.logs.LogFile.parse_to_stream" href="#blueye.sdk.logs.LogFile.parse_to_stream">parse_to_stream</a></code></b>
+            –
+            <div class="doc-md-description">
+              <p>Parse the log file to a stream</p>
+            </div>
+          </li>
+    </ul>
 
-        self.filesize = filesize
 
-        self.start_time: datetime = datetime.fromtimestamp(start_time, tz=timezone.utc)
 
-        self.max_depth_magnitude = max_depth_magnitude
-
-        self.download_url = f"http://{ip}/logs/{self.name}/binlog"
-
-        self.content = None
-
-        self._formatted_values = [
-
-            self.name,
-
-            self.start_time.strftime("%d. %b %Y %H:%M"),
-
-            f"{self.max_depth_magnitude} m",
-
-            human_readable_filesize(self.filesize),
-
-        ]
-
-    def download(
-
-        self,
-
-        output_path: Optional[Path | str] = None,
-
-        write_to_file: bool = True,
-
-        timeout: float = 1,
-
-        overwrite_cache: bool = False,
-
-    ) -&gt; bytes:
-
-        """Download a log file from the drone
-
-        *Arguments*:
-
-        * `output_path`:
-
-            Path to write the log file to. If `None`, the log will be written to the
-
-            current working directory. If the path is a directory, the log will be
-
-            downloaded to that directory with its original name. Else the log will be
-
-            downloaded to the specified path.
-
-        * `write_to_file`:
-
-            If True, the log will be written to the specified path. If False, the
-
-            log will only be returned as a bytes object.
-
-        * `timeout`:
-
-            Seconds to wait for response
-
-        * `overwrite_cache`:
-
-            If True, the log will be downloaded even if it is already been downloaded.
-
-        *Returns*:
-
-        The compressed log file as a bytes object.
-
-        """
-
-        if self.content is None or overwrite_cache:
-
-            self.content = requests.get(self.download_url, timeout=timeout).content
-
-        if write_to_file:
-
-            if output_path is None:
-
-                output_path = Path(f"{self.name}.bez")
-
-            else:
-
-                if type(output_path) == str:
-
-                    output_path = Path(output_path)
-
-                if output_path.is_dir():
-
-                    output_path = output_path.joinpath(f"{self.name}.bez")
-
-            with open(output_path, "wb") as f:
-
-                f.write(self.content)
-
-        return self.content
-
-    def parse_to_stream(self) -&gt; LogStream:
-
-        """Parse the log file to a stream
-
-        Will download the log if it is not already downloaded.
-
-        *Returns*:
-
-        A `LogStream` object
-
-        """
-
-        return LogStream(self.download(write_to_file=False))
-
-    def __format__(self, format_specifier):
-
-        if format_specifier == "with_header":
-
-            return tabulate.tabulate(
-
-                [self], headers=["Name", "Time", "Max depth", "Size"], tablefmt="plain"
-
-            )
-
-        else:
-
-            return tabulate.tabulate([self], tablefmt="plain")
-
-    def __str__(self):
-
-        return f"{self}"
-
-    def __getitem__(self, item):
-
-        return self._formatted_values[item]
-</code></pre>
-</details>
-<hr />
-<h4 id="methods_2">Methods</h4>
-<h4 id="download_1">download</h4>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">download</span><span class="p">(</span>
+                  <details class="quote">
+                    <summary>Source code in <code>blueye/sdk/logs.py</code></summary>
+                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
-    <span class="n">output_path</span><span class="p">:</span> <span class="s1">&#39;Optional[Path | str]&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">write_to_file</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">timeout</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="n">overwrite_cache</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;bytes&#39;</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">is_dive</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="n">filesize</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">start_time</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">max_depth_magnitude</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">ip</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">is_dive</span> <span class="o">=</span> <span class="n">is_dive</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">filesize</span> <span class="o">=</span> <span class="n">filesize</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">start_time</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">max_depth_magnitude</span> <span class="o">=</span> <span class="n">max_depth_magnitude</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">download_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;http://</span><span class="si">{</span><span class="n">ip</span><span class="si">}</span><span class="s2">/logs/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">/binlog&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">content</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_formatted_values</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">. %b %Y %H:%M&quot;</span><span class="p">),</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max_depth_magnitude</span><span class="si">}</span><span class="s2"> m&quot;</span><span class="p">,</span>
+        <span class="n">human_readable_filesize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filesize</span><span class="p">),</span>
+    <span class="p">]</span>
+</code></pre></div></td></tr></table></div>
+                  </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="blueye.sdk.logs.LogFile.download" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">download</span>
+
+
+</h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">download</span><span class="p">(</span>
+    <span class="n">output_path</span><span class="p">:</span> <span class="n"><span title="typing.Optional">Optional</span></span><span class="p">[</span><span class="n"><span title="pathlib.Path">Path</span></span> <span class="o">|</span> <span class="n">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">write_to_file</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">timeout</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">overwrite_cache</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">bytes</span>
 </code></pre></div>
-<p>Download a log file from the drone</p>
+
+    <div class="doc doc-contents ">
+
+        <p>Download a log file from the drone</p>
 <p><em>Arguments</em>:</p>
 <ul>
 <li><code>output_path</code>:
@@ -2954,533 +2177,557 @@ for new log files it can be called at any time.</p>
 </ul>
 <p><em>Returns</em>:</p>
 <p>The compressed log file as a bytes object.</p>
-<details class="example">
-<summary>View Source</summary>
-<pre><code>    def download(
 
-        self,
+            <details class="quote">
+              <summary>Source code in <code>blueye/sdk/logs.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">download</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">output_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span> <span class="o">|</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">write_to_file</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">overwrite_cache</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Download a log file from the drone</span>
 
-        output_path: Optional[Path | str] = None,
+<span class="sd">    *Arguments*:</span>
 
-        write_to_file: bool = True,
+<span class="sd">    * `output_path`:</span>
+<span class="sd">        Path to write the log file to. If `None`, the log will be written to the</span>
+<span class="sd">        current working directory. If the path is a directory, the log will be</span>
+<span class="sd">        downloaded to that directory with its original name. Else the log will be</span>
+<span class="sd">        downloaded to the specified path.</span>
+<span class="sd">    * `write_to_file`:</span>
+<span class="sd">        If True, the log will be written to the specified path. If False, the</span>
+<span class="sd">        log will only be returned as a bytes object.</span>
+<span class="sd">    * `timeout`:</span>
+<span class="sd">        Seconds to wait for response</span>
+<span class="sd">    * `overwrite_cache`:</span>
+<span class="sd">        If True, the log will be downloaded even if it is already been downloaded.</span>
 
-        timeout: float = 1,
+<span class="sd">    *Returns*:</span>
 
-        overwrite_cache: bool = False,
+<span class="sd">    The compressed log file as a bytes object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">overwrite_cache</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">content</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">download_url</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span><span class="o">.</span><span class="n">content</span>
+    <span class="k">if</span> <span class="n">write_to_file</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">output_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">output_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.bez&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
+                <span class="n">output_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">output_path</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+                <span class="n">output_path</span> <span class="o">=</span> <span class="n">output_path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.bez&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
 
-    ) -&gt; bytes:
+</div>
 
-        """Download a log file from the drone
+<div class="doc doc-object doc-function">
 
-        *Arguments*:
 
-        * `output_path`:
+<h4 id="blueye.sdk.logs.LogFile.parse_to_stream" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">parse_to_stream</span>
 
-            Path to write the log file to. If `None`, the log will be written to the
 
-            current working directory. If the path is a directory, the log will be
-
-            downloaded to that directory with its original name. Else the log will be
-
-            downloaded to the specified path.
-
-        * `write_to_file`:
-
-            If True, the log will be written to the specified path. If False, the
-
-            log will only be returned as a bytes object.
-
-        * `timeout`:
-
-            Seconds to wait for response
-
-        * `overwrite_cache`:
-
-            If True, the log will be downloaded even if it is already been downloaded.
-
-        *Returns*:
-
-        The compressed log file as a bytes object.
-
-        """
-
-        if self.content is None or overwrite_cache:
-
-            self.content = requests.get(self.download_url, timeout=timeout).content
-
-        if write_to_file:
-
-            if output_path is None:
-
-                output_path = Path(f"{self.name}.bez")
-
-            else:
-
-                if type(output_path) == str:
-
-                    output_path = Path(output_path)
-
-                if output_path.is_dir():
-
-                    output_path = output_path.joinpath(f"{self.name}.bez")
-
-            with open(output_path, "wb") as f:
-
-                f.write(self.content)
-
-        return self.content
-</code></pre>
-</details>
-<h4 id="parse_to_stream">parse_to_stream</h4>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">parse_to_stream</span><span class="p">(</span>
-    <span class="bp">self</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;LogStream&#39;</span>
+</h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">parse_to_stream</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="blueye.sdk.logs.LogStream" href="#blueye.sdk.logs.LogStream">LogStream</a></span>
 </code></pre></div>
-<p>Parse the log file to a stream</p>
+
+    <div class="doc doc-contents ">
+
+        <p>Parse the log file to a stream</p>
 <p>Will download the log if it is not already downloaded.</p>
 <p><em>Returns</em>:</p>
 <p>A <code>LogStream</code> object</p>
-<details class="example">
-<summary>View Source</summary>
-<pre><code>    def parse_to_stream(self) -&gt; LogStream:
 
-        """Parse the log file to a stream
+            <details class="quote">
+              <summary>Source code in <code>blueye/sdk/logs.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">parse_to_stream</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LogStream</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse the log file to a stream</span>
 
-        Will download the log if it is not already downloaded.
+<span class="sd">    Will download the log if it is not already downloaded.</span>
 
-        *Returns*:
+<span class="sd">    *Returns*:</span>
 
-        A `LogStream` object
+<span class="sd">    A `LogStream` object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">LogStream</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="n">write_to_file</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
 
-        """
+</div>
 
-        return LogStream(self.download(write_to_file=False))
-</code></pre>
-</details>
-<h3 id="logstream">LogStream</h3>
-<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">LogStream</span><span class="p">(</span>
-    <span class="n">log</span><span class="p">:</span> <span class="s1">&#39;bytes&#39;</span><span class="p">,</span>
-    <span class="n">decompress</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="p">)</span>
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="blueye.sdk.logs.LogStream" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <span class="doc doc-object-name doc-class-name">LogStream</span>
+
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">LogStream</span><span class="p">(</span><span class="n">log</span><span class="p">:</span> <span class="n">bytes</span><span class="p">,</span> <span class="n">decompress</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
-<p>Class for streaming a log</p>
+
+    <div class="doc doc-contents ">
+
+
+        <p>Class for streaming a log</p>
 <p>Creates a stream from a downloaded log file. Iterate over the object to get the next log record.</p>
-<details class="example">
-<summary>View Source</summary>
-<pre><code>class LogStream:
 
-    """Class for streaming a log
 
-    Creates a stream from a downloaded log file. Iterate over the object to get the next log record.
 
-    """
 
-    def __init__(self, log: bytes, decompress: bool = True) -&gt; Iterator[
 
-        Tuple[
 
-            proto.datetime_helpers.DatetimeWithNanoseconds,  # Real time clock
 
-            timedelta,  # Time since first message
 
-            proto.message.MessageMeta,  # Message type
 
-            proto.message.Message,  # Message contents
 
-        ]
+                  <details class="quote">
+                    <summary>Source code in <code>blueye/sdk/logs.py</code></summary>
+                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">decompress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span>
+    <span class="n">Tuple</span><span class="p">[</span>
+        <span class="n">proto</span><span class="o">.</span><span class="n">datetime_helpers</span><span class="o">.</span><span class="n">DatetimeWithNanoseconds</span><span class="p">,</span>  <span class="c1"># Real time clock</span>
+        <span class="n">timedelta</span><span class="p">,</span>  <span class="c1"># Time since first message</span>
+        <span class="n">proto</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">MessageMeta</span><span class="p">,</span>  <span class="c1"># Message type</span>
+        <span class="n">proto</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">Message</span><span class="p">,</span>  <span class="c1"># Message contents</span>
+    <span class="p">]</span>
+<span class="p">]:</span>
+    <span class="k">if</span> <span class="n">decompress</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">decompressed_log</span> <span class="o">=</span> <span class="n">decompress_log</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">decompressed_log</span> <span class="o">=</span> <span class="n">log</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">pos</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">start_monotonic</span><span class="p">:</span> <span class="n">proto</span><span class="o">.</span><span class="n">datetime_helpers</span><span class="o">.</span><span class="n">DatetimeWithNanoseconds</span> <span class="o">=</span> <span class="mi">0</span>
+</code></pre></div></td></tr></table></div>
+                  </details>
 
-    ]:
 
-        if decompress:
 
-            self.decompressed_log = decompress_log(log)
+  <div class="doc doc-children">
 
-        else:
 
-            self.decompressed_log = log
 
-        self.pos = 0
 
-        self.start_monotonic: proto.datetime_helpers.DatetimeWithNanoseconds = 0
 
-    def __iter__(self):
 
-        return self
 
-    def __next__(self):
 
-        if self.pos &lt; len(self.decompressed_log):
 
-            msg_size, pos_msg_start = decodeVarint(self.decompressed_log, self.pos)
 
-            msg_data = self.decompressed_log[pos_msg_start : (pos_msg_start + msg_size)]
 
-            if len(msg_data) &lt; msg_size:
+  </div>
 
-                raise EOFError("Not enough bytes to read message")
+    </div>
 
-            self.pos = pos_msg_start + msg_size
+</div>
 
-            msg = bp.BinlogRecord.deserialize(msg_data)
+<div class="doc doc-object doc-class">
 
-            payload_type, payload_msg_deserialized = deserialize_any_to_message(msg.payload)
 
-            if self.start_monotonic == 0:
 
-                self.start_monotonic = msg.clock_monotonic
+<h3 id="blueye.sdk.logs.Logs" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <span class="doc doc-object-name doc-class-name">Logs</span>
 
-            return (
 
-                msg.unix_timestamp,
-
-                msg.clock_monotonic - self.start_monotonic,
-
-                payload_type,
-
-                payload_msg_deserialized,
-
-            )
-
-        else:
-
-            raise StopIteration
-</code></pre>
-</details>
-<hr />
-<h3 id="logs">Logs</h3>
-<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Logs</span><span class="p">(</span>
-    <span class="n">parent_drone</span><span class="p">,</span>
-    <span class="n">auto_download_index</span><span class="o">=</span><span class="kc">False</span>
-<span class="p">)</span>
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">Logs</span><span class="p">(</span><span class="n">parent_drone</span><span class="p">,</span> <span class="n">auto_download_index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </code></pre></div>
-<details class="example">
-<summary>View Source</summary>
-<pre><code>class Logs:
 
-    def __init__(self, parent_drone, auto_download_index=False):
+    <div class="doc doc-contents ">
 
-        self._parent_drone = parent_drone
 
-        self.auto_download_index = auto_download_index
 
-        self.index_downloaded = False
 
-        self._logs = {}
 
-        if auto_download_index:
 
-            self.refresh_log_index()
 
-    def refresh_log_index(self):
 
-        """Refresh the log index from the drone
 
-        This is method is run on the first log access by default, but if you would like to check
 
-        for new log files it can be called at any time.
+<p><span class="doc-section-title">Methods:</span></p>
+    <ul>
+          <li class="doc-section-item field-body">
+            <b><code><a class="autorefs autorefs-internal" title="blueye.sdk.logs.Logs.filter" href="#blueye.sdk.logs.Logs.filter">filter</a></code></b>
+            –
+            <div class="doc-md-description">
+              <p>Return a new Logs object with only those matching the filter</p>
+            </div>
+          </li>
+          <li class="doc-section-item field-body">
+            <b><code><a class="autorefs autorefs-internal" title="blueye.sdk.logs.Logs.refresh_log_index" href="#blueye.sdk.logs.Logs.refresh_log_index">refresh_log_index</a></code></b>
+            –
+            <div class="doc-md-description">
+              <p>Refresh the log index from the drone</p>
+            </div>
+          </li>
+    </ul>
 
-        """
 
-        if not self._parent_drone.connected:
 
-            raise ConnectionError(
+                  <details class="quote">
+                    <summary>Source code in <code>blueye/sdk/logs.py</code></summary>
+                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_drone</span><span class="p">,</span> <span class="n">auto_download_index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_parent_drone</span> <span class="o">=</span> <span class="n">parent_drone</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">auto_download_index</span> <span class="o">=</span> <span class="n">auto_download_index</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">index_downloaded</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_logs</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">if</span> <span class="n">auto_download_index</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh_log_index</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+                  </details>
 
-                "The connection to the drone is not established, try calling the connect method "
 
-                "before retrying"
 
-            )
+  <div class="doc doc-children">
 
-        logger.debug("Refreshing log index")
 
-        logs_endpoint = f"http://{self._parent_drone._ip}/logs"
 
-        logs: List[dict] = requests.get(logs_endpoint).json()
 
-        if version.parse(self._parent_drone.software_version_short) &lt; version.parse("3.3"):
 
-            # Extend index with dive info, sends a request for each log file so can be quite slow
 
-            # for drones with many logs. Not necessary for Blunux &gt;= 3.3 as dive info is included in
 
-            # the index.
 
-            logger.debug(f"Getting dive info for {len(logs)} logs")
 
-            for index, log in enumerate(logs):
+<div class="doc doc-object doc-function">
 
-                dive_info = requests.get(f"{logs_endpoint}/{log['name']}/dive_info").json()
 
-                logs[index].update(dive_info)
+<h4 id="blueye.sdk.logs.Logs.filter" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">filter</span>
 
-        # Instantiate log objects for each log
 
-        logger.debug(f"Creating log objects for {len(logs)} logs")
-
-        for log in logs:
-
-            if log["has_binlog"]:
-
-                self._logs[log["name"]] = LogFile(
-
-                    log["name"],
-
-                    log["is_dive"],
-
-                    log["binlog_size"],
-
-                    log["start_time"],
-
-                    log["max_depth_magnitude"],
-
-                    self._parent_drone._ip,
-
-                )
-
-            else:
-
-                logger.info(f"Log {log['name']} does not have a binlog, ignoring")
-
-        self.index_downloaded = True
-
-    def __len__(self):
-
-        if not self.index_downloaded:
-
-            self.refresh_log_index()
-
-        return len(self._logs)
-
-    def __getitem__(self, item):
-
-        if not self.index_downloaded:
-
-            self.refresh_log_index()
-
-        if type(item) == str:
-
-            try:
-
-                return self._logs[item]
-
-            except KeyError:
-
-                raise KeyError(f"A log with the name '{item}' does not exist")
-
-        elif isinstance(item, slice):
-
-            logs_slice = Logs(self._parent_drone)
-
-            for log in list(self._logs.values())[item]:
-
-                logs_slice._logs[log.name] = log
-
-            logs_slice.index_downloaded = True
-
-            return logs_slice
-
-        else:
-
-            try:
-
-                return list(self._logs.values())[item]
-
-            except IndexError:
-
-                raise IndexError(
-
-                    f"Tried to access log nr {item}, "
-
-                    + f"but there are only {len(self._logs.values())} logs available"
-
-                )
-
-    def __str__(self):
-
-        return tabulate.tabulate(
-
-            self, headers=["Name", "Time", "Max depth", "Size"], tablefmt="plain"
-
-        )
-
-    def filter(self, filter_func: Callable[[LogFile], bool]) -&gt; Logs:
-
-        """Return a new Logs object with only those matching the filter
-
-        Eg. to get logs classified as a dive:
-
-        ```
-
-        dive_logs = myDrone.logs.filter(lambda log: log.is_dive)
-
-        ```
-
-        or to get all logs with a max depth greater than 10m:
-
-        ```
-
-        deep_logs = myDrone.logs.filter(lambda log: log.max_depth_magnitude &gt; 10)
-
-        ```
-
-        """
-
-        if not self.index_downloaded:
-
-            self.refresh_log_index()
-
-        filtered_logs = Logs(self._parent_drone)
-
-        filtered_logs.index_downloaded = True
-
-        for log in self:
-
-            if filter_func(log):
-
-                filtered_logs._logs[log.name] = log
-
-        return filtered_logs
-</code></pre>
-</details>
-<hr />
-<h4 id="methods_3">Methods</h4>
-<h4 id="filter">filter</h4>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">filter</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span>
-    <span class="n">filter_func</span><span class="p">:</span> <span class="s1">&#39;Callable[[LogFile], bool]&#39;</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Logs&#39;</span>
+</h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nb">filter</span><span class="p">(</span><span class="nf">filter_func</span><span class="p">:</span> <span class="n"><span title="typing.Callable">Callable</span></span><span class="p">[[</span><span class="n"><a class="autorefs autorefs-internal" title="blueye.sdk.logs.LogFile" href="#blueye.sdk.logs.LogFile">LogFile</a></span><span class="p">],</span> <span class="n">bool</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="blueye.sdk.logs.Logs" href="#blueye.sdk.logs.Logs">Logs</a></span>
 </code></pre></div>
-<p>Return a new Logs object with only those matching the filter</p>
+
+    <div class="doc doc-contents ">
+
+        <p>Return a new Logs object with only those matching the filter</p>
 <p>Eg. to get logs classified as a dive:
 <div class="highlight"><pre><span></span><code>dive_logs = myDrone.logs.filter(lambda log: log.is_dive)
 </code></pre></div></p>
 <p>or to get all logs with a max depth greater than 10m:
 <div class="highlight"><pre><span></span><code>deep_logs = myDrone.logs.filter(lambda log: log.max_depth_magnitude &gt; 10)
 </code></pre></div></p>
-<details class="example">
-<summary>View Source</summary>
-<pre><code>    def filter(self, filter_func: Callable[[LogFile], bool]) -&gt; Logs:
 
-        """Return a new Logs object with only those matching the filter
+            <details class="quote">
+              <summary>Source code in <code>blueye/sdk/logs.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span>
+<span class="normal">276</span>
+<span class="normal">277</span>
+<span class="normal">278</span>
+<span class="normal">279</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filter_func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">LogFile</span><span class="p">],</span> <span class="nb">bool</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Logs</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a new Logs object with only those matching the filter</span>
 
-        Eg. to get logs classified as a dive:
+<span class="sd">    Eg. to get logs classified as a dive:</span>
+<span class="sd">    ```</span>
+<span class="sd">    dive_logs = myDrone.logs.filter(lambda log: log.is_dive)</span>
+<span class="sd">    ```</span>
 
-        ```
+<span class="sd">    or to get all logs with a max depth greater than 10m:</span>
+<span class="sd">    ```</span>
+<span class="sd">    deep_logs = myDrone.logs.filter(lambda log: log.max_depth_magnitude &gt; 10)</span>
+<span class="sd">    ```</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_downloaded</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh_log_index</span><span class="p">()</span>
+    <span class="n">filtered_logs</span> <span class="o">=</span> <span class="n">Logs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parent_drone</span><span class="p">)</span>
+    <span class="n">filtered_logs</span><span class="o">.</span><span class="n">index_downloaded</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">for</span> <span class="n">log</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">filter_func</span><span class="p">(</span><span class="n">log</span><span class="p">):</span>
+            <span class="n">filtered_logs</span><span class="o">.</span><span class="n">_logs</span><span class="p">[</span><span class="n">log</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">log</span>
+    <span class="k">return</span> <span class="n">filtered_logs</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
 
-        dive_logs = myDrone.logs.filter(lambda log: log.is_dive)
+</div>
 
-        ```
+<div class="doc doc-object doc-function">
 
-        or to get all logs with a max depth greater than 10m:
 
-        ```
+<h4 id="blueye.sdk.logs.Logs.refresh_log_index" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">refresh_log_index</span>
 
-        deep_logs = myDrone.logs.filter(lambda log: log.max_depth_magnitude &gt; 10)
 
-        ```
-
-        """
-
-        if not self.index_downloaded:
-
-            self.refresh_log_index()
-
-        filtered_logs = Logs(self._parent_drone)
-
-        filtered_logs.index_downloaded = True
-
-        for log in self:
-
-            if filter_func(log):
-
-                filtered_logs._logs[log.name] = log
-
-        return filtered_logs
-</code></pre>
-</details>
-<h4 id="refresh_log_index_1">refresh_log_index</h4>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">refresh_log_index</span><span class="p">(</span>
-    <span class="bp">self</span>
-<span class="p">)</span>
+</h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">refresh_log_index</span><span class="p">()</span>
 </code></pre></div>
-<p>Refresh the log index from the drone</p>
+
+    <div class="doc doc-contents ">
+
+        <p>Refresh the log index from the drone</p>
 <p>This is method is run on the first log access by default, but if you would like to check
 for new log files it can be called at any time.</p>
-<details class="example">
-<summary>View Source</summary>
-<pre><code>    def refresh_log_index(self):
 
-        """Refresh the log index from the drone
+            <details class="quote">
+              <summary>Source code in <code>blueye/sdk/logs.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">refresh_log_index</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Refresh the log index from the drone</span>
 
-        This is method is run on the first log access by default, but if you would like to check
+<span class="sd">    This is method is run on the first log access by default, but if you would like to check</span>
+<span class="sd">    for new log files it can be called at any time.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent_drone</span><span class="o">.</span><span class="n">connected</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ConnectionError</span><span class="p">(</span>
+            <span class="s2">&quot;The connection to the drone is not established, try calling the connect method &quot;</span>
+            <span class="s2">&quot;before retrying&quot;</span>
+        <span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Refreshing log index&quot;</span><span class="p">)</span>
+    <span class="n">logs_endpoint</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;http://</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_parent_drone</span><span class="o">.</span><span class="n">_ip</span><span class="si">}</span><span class="s2">/logs&quot;</span>
+    <span class="n">logs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">logs_endpoint</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
 
-        for new log files it can be called at any time.
+    <span class="k">if</span> <span class="n">version</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parent_drone</span><span class="o">.</span><span class="n">software_version_short</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">version</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;3.3&quot;</span><span class="p">):</span>
+        <span class="c1"># Extend index with dive info, sends a request for each log file so can be quite slow</span>
+        <span class="c1"># for drones with many logs. Not necessary for Blunux &gt;= 3.3 as dive info is included in</span>
+        <span class="c1"># the index.</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Getting dive info for </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">logs</span><span class="p">)</span><span class="si">}</span><span class="s2"> logs&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">log</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">logs</span><span class="p">):</span>
+            <span class="n">dive_info</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">logs_endpoint</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">log</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">/dive_info&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+            <span class="n">logs</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">dive_info</span><span class="p">)</span>
 
-        """
+    <span class="c1"># Instantiate log objects for each log</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creating log objects for </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">logs</span><span class="p">)</span><span class="si">}</span><span class="s2"> logs&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">log</span> <span class="ow">in</span> <span class="n">logs</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">log</span><span class="p">[</span><span class="s2">&quot;has_binlog&quot;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logs</span><span class="p">[</span><span class="n">log</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">LogFile</span><span class="p">(</span>
+                <span class="n">log</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span>
+                <span class="n">log</span><span class="p">[</span><span class="s2">&quot;is_dive&quot;</span><span class="p">],</span>
+                <span class="n">log</span><span class="p">[</span><span class="s2">&quot;binlog_size&quot;</span><span class="p">],</span>
+                <span class="n">log</span><span class="p">[</span><span class="s2">&quot;start_time&quot;</span><span class="p">],</span>
+                <span class="n">log</span><span class="p">[</span><span class="s2">&quot;max_depth_magnitude&quot;</span><span class="p">],</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_parent_drone</span><span class="o">.</span><span class="n">_ip</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Log </span><span class="si">{</span><span class="n">log</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> does not have a binlog, ignoring&quot;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">index_downloaded</span> <span class="o">=</span> <span class="kc">True</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
 
-        if not self._parent_drone.connected:
+</div>
 
-            raise ConnectionError(
 
-                "The connection to the drone is not established, try calling the connect method "
 
-                "before retrying"
+  </div>
 
-            )
+    </div>
 
-        logger.debug("Refreshing log index")
+</div>
 
-        logs_endpoint = f"http://{self._parent_drone._ip}/logs"
 
-        logs: List[dict] = requests.get(logs_endpoint).json()
+<div class="doc doc-object doc-function">
 
-        if version.parse(self._parent_drone.software_version_short) &lt; version.parse("3.3"):
 
-            # Extend index with dive info, sends a request for each log file so can be quite slow
+<h3 id="blueye.sdk.logs.decompress_log" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">decompress_log</span>
 
-            # for drones with many logs. Not necessary for Blunux &gt;= 3.3 as dive info is included in
 
-            # the index.
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">decompress_log</span><span class="p">(</span><span class="n">log</span><span class="p">:</span> <span class="n">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">bytes</span>
+</code></pre></div>
 
-            logger.debug(f"Getting dive info for {len(logs)} logs")
+    <div class="doc doc-contents ">
 
-            for index, log in enumerate(logs):
+        <p>Decompress a log file</p>
 
-                dive_info = requests.get(f"{logs_endpoint}/{log['name']}/dive_info").json()
+            <details class="quote">
+              <summary>Source code in <code>blueye/sdk/logs.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">decompress_log</span><span class="p">(</span><span class="n">log</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Decompress a log file&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">zlib</span><span class="o">.</span><span class="n">decompressobj</span><span class="p">(</span><span class="n">wbits</span><span class="o">=</span><span class="n">zlib</span><span class="o">.</span><span class="n">MAX_WBITS</span> <span class="o">|</span> <span class="mi">16</span><span class="p">)</span><span class="o">.</span><span class="n">decompress</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
 
-                logs[index].update(dive_info)
+</div>
 
-        # Instantiate log objects for each log
+<div class="doc doc-object doc-function">
 
-        logger.debug(f"Creating log objects for {len(logs)} logs")
 
-        for log in logs:
+<h3 id="blueye.sdk.logs.human_readable_filesize" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">human_readable_filesize</span>
 
-            if log["has_binlog"]:
 
-                self._logs[log["name"]] = LogFile(
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">human_readable_filesize</span><span class="p">(</span><span class="n">binsize</span><span class="p">:</span> <span class="n">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">str</span>
+</code></pre></div>
 
-                    log["name"],
+    <div class="doc doc-contents ">
 
-                    log["is_dive"],
+        <p>Convert bytes to human readable string</p>
 
-                    log["binlog_size"],
+            <details class="quote">
+              <summary>Source code in <code>blueye/sdk/logs.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">human_readable_filesize</span><span class="p">(</span><span class="n">binsize</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert bytes to human readable string&quot;&quot;&quot;</span>
+    <span class="n">suffix</span> <span class="o">=</span> <span class="s2">&quot;B&quot;</span>
+    <span class="n">num</span> <span class="o">=</span> <span class="n">binsize</span>
+    <span class="k">for</span> <span class="n">unit</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;Ki&quot;</span><span class="p">,</span> <span class="s2">&quot;Mi&quot;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">num</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1024.0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">num</span><span class="si">:</span><span class="s2">3.1f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">unit</span><span class="si">}{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">num</span> <span class="o">/=</span> <span class="mf">1024.0</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">num</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> Gi</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
 
-                    log["start_time"],
+</div>
 
-                    log["max_depth_magnitude"],
 
-                    self._parent_drone._ip,
 
-                )
+  </div>
 
-            else:
+    </div>
 
-                logger.info(f"Log {log['name']} does not have a binlog, ignoring")
-
-        self.index_downloaded = True
-</code></pre>
-</details>
+</div>
 
 
 
@@ -3502,6 +2749,12 @@ for new log files it can be called at any time.</p>
 
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
         
       </main>
       
@@ -3553,10 +2806,10 @@ for new log files it can be called at any time.</p>
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "../../../..", "features": ["content.tabs.link"], "search": "../../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../../../..", "features": ["content.tabs.link", "navigation.top"], "search": "../../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../../../assets/javascripts/bundle.83f73b43.min.js"></script>
+      <script src="../../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
       
     
   </body>
