@@ -18,18 +18,18 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+          python-version: "3.13"
       - name: Install Poetry
-        uses: abatilo/actions-poetry@v2.1.4
+        uses: abatilo/actions-poetry@v3.0.2
         with:
-          poetry-version: "1.3.2"
+          poetry-version: "2.0.1"
       - name: Install dependencies
         run: poetry install
       - name: Build HTTP documentation
         run: npx @redocly/cli build-docs http-api.yml --output docs/http-api.html
       - name: Build documentation
         run: poetry run mkdocs build
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: docs
           path: site
@@ -61,7 +61,7 @@ jobs:
         run: git checkout gh-pages
       - name: Push to gh-pages
         if: github.ref == 'refs/heads/master' || github.event_name == 'release'
-        uses: ad-m/github-push-action@v0.6.0
+        uses: ad-m/github-push-action@v0.8.0
         with:
           github_token: ${{ secrets.GIT_TOKEN }}
           branch: gh-pages
