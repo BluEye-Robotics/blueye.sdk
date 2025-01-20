@@ -38,8 +38,8 @@ def main():
     """
     my_drone = Drone()
 
-    # Add a callback for the DepthTel message, storing the ID for later use
     callback_id = my_drone.telemetry.add_msg_callback([bp.AttitudeTel], callback_attitude)
+    # Add a callback for the AttitudeTel message
 
     # Adjust the publishing frequency to 10 Hz
     my_drone.telemetry.set_msg_publish_frequency(bp.AttitudeTel, 10)
