@@ -31,7 +31,6 @@ plugins:
             signature_crossrefs: true
             summary: true
 
-
 markdown_extensions:
   - admonition
   - pymdownx.arithmatex
@@ -98,7 +97,6 @@ nav:
   - "Visualizing with Foxglove": "foxglove-bridge.md"
   - "Forwarding positioning to NMEA": "nmea-publisher.md"
   - "Updating from v1 to v2": "migrating-to-v2.md"
-  - "Protobuf protocol": "protobuf-protocol.md"
   - "HTTP API": "http-api.html"
   - Reference:
       - blueye.sdk.battery: "reference/blueye/sdk/battery.md"
@@ -111,10 +109,10 @@ nav:
       - blueye.sdk.motion: "reference/blueye/sdk/motion.md"
       - blueye.sdk.utils: "reference/blueye/sdk/utils.md"
       - blueye.protocol:
-        - Overview: "reference/blueye/protocol/overview.md"
-        - Telemetry: "reference/blueye/protocol/telemetry.md"
-        - Control: "reference/blueye/protocol/control.md"
-        - ReqRep: "reference/blueye/protocol/req_rep.md"
-        - Message Formats: "reference/blueye/protocol/message_formats.md"
-        - Mission Planning: "reference/blueye/protocol/mission_planning.md"
-        - Aquatroll: "reference/blueye/protocol/aquatroll.md"
+          - Overview: "reference/blueye/protocol/overview.md"
+          - Telemetry: "reference/blueye/protocol/telemetry.md"
+          - Control: "reference/blueye/protocol/control.md"
+          - ReqRep: "reference/blueye/protocol/req_rep.md"
+          - Message Formats: "reference/blueye/protocol/message_formats.md"
+          - Mission Planning: "reference/blueye/protocol/mission_planning.md"
+          - Aquatroll: "reference/blueye/protocol/aquatroll.md"

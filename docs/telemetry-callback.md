@@ -5,7 +5,7 @@ The drone publishes all of its telemetry data as protobuf encoded messages trans
 Upon connection the [Drone object][blueye.sdk.drone.Drone] will instantiate an instance of the [Telemetry class][blueye.sdk.drone.Telemetry] as the `telemetry` attribute. Using this attribute one can control various telemetry function and add/remove new callbacks.
 
 ## Adding a callback
-To add a callback we need to use the [`add_msg_callback`][blueye.sdk.drone.Telemetry.add_msg_callback] function, and provide it with a list of telemetry messages types we want it to trigger on, as well as a function handle to call. All available telemetry messages can be found in [telemetry.proto](protobuf-protocol.md#telemetryproto)
+To add a callback we need to use the [`add_msg_callback`][blueye.sdk.drone.Telemetry.add_msg_callback] function, and provide it with a list of telemetry messages types we want it to trigger on, as well as a function handle to call. All available telemetry messages can be found in [telemetry.proto][blueye.protocol.types.telemetry]
 
 ## Removing a callback
 A callback is removed with [`remove_msg_callback`][blueye.sdk.drone.Telemetry.remove_msg_callback] using the ID returned when creating the callback.

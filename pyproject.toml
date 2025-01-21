@@ -26,7 +26,7 @@ foxglove_websocket = {version= "^0.1.2", optional = true}
 requests = "^2.22.0"
 tabulate = "^0.9"
 packaging = ">=24.2"
-"blueye.protocol" = "^2.7"
+"blueye.protocol" = "^2.7.1"
 python-dateutil = "^2.8.2"
 pyzmq = "^26.0"
 proto-plus = "^1.22.2"
