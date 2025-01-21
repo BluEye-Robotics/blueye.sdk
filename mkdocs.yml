@@ -102,6 +102,7 @@ nav:
   - "Visualizing with Foxglove": "foxglove-bridge.md"
   - "Forwarding positioning to NMEA": "nmea-publisher.md"
   - "Updating from v1 to v2": "migrating-to-v2.md"
+  - "Using the Protobuf protocol directly": "using-raw-protobuf.md"
   - "HTTP API": "http-api.html"
   - Reference:
       - blueye.sdk.battery: "reference/blueye/sdk/battery.md"
