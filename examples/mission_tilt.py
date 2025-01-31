@@ -1,7 +1,9 @@
-from blueye.sdk import Drone
-import blueye.protocol as bp
 import time
 
+import blueye.protocol as bp
+
+from blueye.sdk import Drone
+from blueye.sdk.mission import prepare_new_mission
 
 # Create some instructions for the mission
 tilt_camera_center = bp.Instruction(tilt_main_camera_command={"tilt_angle": {"value": 0.0}})
@@ -10,8 +12,10 @@ tilt_camera_bottom = bp.Instruction(tilt_main_camera_command={"tilt_angle": {"va
 wait = bp.Instruction(wait_for_command={"wait_for_seconds": 4})
 
 # Create a mission with the instructions
-mission = bp.Mission(
-    instructions=[tilt_camera_top, wait, tilt_camera_bottom, wait, tilt_camera_center]
+mission = prepare_new_mission(
+    instruction_list=[tilt_camera_top, wait, tilt_camera_bottom, wait, tilt_camera_center],
+    mission_id=0,
+    mission_name="Tilt camera",
 )
 
 # Establish a connection to the drone
