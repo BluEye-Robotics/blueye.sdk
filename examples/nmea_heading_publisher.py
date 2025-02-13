@@ -1,3 +1,8 @@
+"""nmea_heading_publisher.py
+
+This example program demonstrates how one can subscribe to the drone's heading and publish it as an NMEA sentence to a (virtual) COM port.
+"""
+
 import serial
 import time
 import blueye.protocol as bp
