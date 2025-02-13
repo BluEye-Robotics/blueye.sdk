@@ -5,8 +5,8 @@ from blueye.sdk import Drone
 
 
 # Configure the COM port
-COM_PORT = "COM2"  # Change this to your virtual COM port
-BAUD_RATE = 9600  # Set the baud rate (ensure it matches your virtual COM port configuration)
+COM_PORT = "COM2"  # Change this to your COM port
+BAUD_RATE = 9600  # Set the baud rate (ensure it matches your COM port configuration)
 heading = 0.0
 
 
@@ -34,7 +34,7 @@ def callback_attitude(msg_type: str, msg: bp.AttitudeTel):
 def main():
     """
     Main function to set up the drone telemetry, process attitude data,
-    and publish it as an NMEA sentence to a virtual COM port.
+    and publish it as an NMEA sentence to a virtual (or real) COM port.
     """
     my_drone = Drone()
 
@@ -60,7 +60,7 @@ def main():
                 print(f"Sent: {nmea_sentence.strip()}")
 
                 # Wait before sending the next value
-                time.sleep(0.1)  # Send data every second
+                time.sleep(0.1)  # Set the update frequency here
 
     except serial.SerialException as e:
         print(f"Serial error: {e}")
