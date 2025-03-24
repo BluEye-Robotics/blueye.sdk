@@ -47,7 +47,7 @@ if __name__ == "__main__":
     my_drone.telemetry.set_msg_publish_frequency(bp.PositionEstimateTel, 10)
 
     # Add a callback for the PositionEstimateTel message
-    callback_id = my_drone.telemetry.add_msg_callback(
+    my_drone.telemetry.add_msg_callback(
         [bp.PositionEstimateTel], callback_position_estimate, udp_socket=udp_socket
     )
 
