@@ -1,4 +1,3 @@
-
 """publish_odometer_to_831l.py
 
 This example program demonstrates how to publish the drone's odometer as a cable counter
@@ -18,7 +17,7 @@ def callback_position_estimate(
     odometer = msg.position_estimate.odometer * 1000  # Convert to mm
     formatted_message = f"{{,#CABLE,{odometer},mm,}}\r\n"
 
-    udp_socket.sendto(formatted_message.encode('ascii'), (UDP_IP, UDP_PORT))
+    udp_socket.sendto(formatted_message.encode("ascii"), (UDP_IP, UDP_PORT))
     print(f"Sent: {formatted_message.strip()}")
 
 
