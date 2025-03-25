@@ -43,7 +43,7 @@ if __name__ == "__main__":
         print("Connected to the drone.")
 
     # Increase publishing frequenzy for the PositionEstimateTel message
-    my_drone.telemetry.set_msg_publish_frequency(bp.PositionEstimateTel, 10)
+    my_drone.telemetry.set_msg_publish_frequency(bp.PositionEstimateTel, 5)
 
     # Add a callback for the PositionEstimateTel message
     my_drone.telemetry.add_msg_callback(
