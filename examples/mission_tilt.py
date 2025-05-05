@@ -19,7 +19,7 @@ mission = prepare_new_mission(
 )
 
 # Establish a connection to the drone
-d = Drone()
+d = Drone(log_notifications=True)
 
 # Check if the drone is ready to receive a new mission
 if not d.mission.get_status().state == bp.MissionState.MISSION_STATE_INACTIVE:

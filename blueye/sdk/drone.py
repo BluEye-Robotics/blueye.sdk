@@ -8,6 +8,7 @@ from json import JSONDecodeError
 from typing import Any, Callable, Dict, List, Optional
 
 import blueye.protocol
+import google.protobuf.any_pb2
 import proto
 import requests
 from packaging import version
@@ -25,8 +26,9 @@ from .guestport import (
     device_to_peripheral,
 )
 from .logs import LegacyLogs, Logs
-from .motion import Motion
 from .mission import Mission
+from .motion import Motion
+from .utils import deserialize_any_to_message, is_scalar_type
 
 logger = logging.getLogger(__name__)
 
@@ -306,6 +308,35 @@ class Drone:
         # Remove the callback after the first message has been received
         drone.telemetry.remove_msg_callback(drone._drone_info_cb_id)
 
+    @staticmethod
+    def notification_callback(msg_type: str, msg: blueye.protocol.NotificationTel, drone: Drone):
+        level = msg.notification.level
+        notification_type = msg.notification.type_
+        notification_msg: google.protobuf.any_pb2.Any = msg.notification.value
+
+        # Ignore repeated notifications
+        if drone._last_notification_timestamp == msg.notification.timestamp:
+            return
+
+        drone._last_notification_timestamp = msg.notification.timestamp
+
+        log_msg = f"{notification_type.name}"
+        if notification_msg.type_url != "":
+            _, unpacked_msg = deserialize_any_to_message(notification_msg)
+            if is_scalar_type(unpacked_msg):
+                log_msg += f": {unpacked_msg.value}"
+            else:
+                log_msg += f": {unpacked_msg}"
+
+        if level == blueye.protocol.NotificationLevel.NOTIFICATION_LEVEL_ERROR:
+            logger.error(log_msg)
+        elif level == blueye.protocol.NotificationLevel.NOTIFICATION_LEVEL_WARNING:
+            logger.warning(log_msg)
+        elif level == blueye.protocol.NotificationLevel.NOTIFICATION_LEVEL_INFO:
+            logger.info(log_msg)
+        else:
+            logger.debug(log_msg)
+
     def _create_peripherals_from_drone_info(self, gp_info: blueye.protocol.GuestPortInfo):
         self.peripherals = []
         for port in (gp_info.gp1, gp_info.gp2, gp_info.gp3):
@@ -327,6 +358,7 @@ class Drone:
         timeout: float = 4,
         disconnect_other_clients: bool = False,
         connect_as_observer: bool = False,
+        log_notifications: bool = False,
     ):
         """Establish a connection to the drone.
 
@@ -347,6 +379,8 @@ class Drone:
                 If True, disconnect clients until the drone reports that we are in control.
             connect_as_observer (bool, optional):
                 If True, the client will not be promoted to in control of the drone.
+            log_notifications (bool, optional):
+                If True, the notifications will be logged using the logging module.
 
         Raises:
             ConnectionError: If the connection attempt fails.
@@ -387,6 +421,15 @@ class Drone:
             False,
             drone=self,
         )
+
+        self._last_notification_timestamp = None
+        if log_notifications:
+            self.notification_cb_id = self.telemetry.add_msg_callback(
+                [blueye.protocol.NotificationTel],
+                Drone.notification_callback,
+                False,
+                drone=self,
+            )
 
         if self.in_control:
             # The drone runs from a read-only filesystem, and as such does not keep any state,
