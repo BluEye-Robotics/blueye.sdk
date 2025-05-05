@@ -203,6 +203,7 @@ class Drone:
         timeout=10,
         disconnect_other_clients=False,
         connect_as_observer=False,
+        **kwargs: Dict[str, Any],
     ):
         """Initialize the Drone class.
 
@@ -217,6 +218,9 @@ class Drone:
                 Whether to disconnect other clients.
             connect_as_observer (bool, optional):
                 Whether to connect as an observer.
+            **kwargs:
+                Additional keyword arguments to pass to the [`connect`][blueye.sdk.drone.Drone.connect]
+                method.
         """
         self._ip = ip
         self.camera = Camera(self, is_guestport_camera=False)
@@ -244,6 +248,7 @@ class Drone:
                 timeout=timeout,
                 disconnect_other_clients=disconnect_other_clients,
                 connect_as_observer=connect_as_observer,
+                **kwargs,
             )
 
     def _verify_required_blunux_version(self, requirement: str):
