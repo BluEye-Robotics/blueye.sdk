@@ -88,6 +88,7 @@ class Mission:
 
         Returns None if no telemetry data has been received yet
         """
+        self._parent_drone._verify_required_blunux_version("4.0.5")
         msg = self._parent_drone.telemetry.get(blueye.protocol.MissionStatusTel)
         if msg is None:
             return None
@@ -98,20 +99,25 @@ class Mission:
         """Returns the current active mission
 
         The mission will be empty if no mission is running."""
+        self._parent_drone._verify_required_blunux_version("4.0.5")
         return self._parent_drone._req_rep_client.get_active_mission().mission
 
     def send_new(self, mission: blueye.protocol.Mission) -> None:
         """Sends a new mission to the drone."""
+        self._parent_drone._verify_required_blunux_version("4.0.5")
         self._parent_drone._req_rep_client.set_mission(mission)
 
     def run(self) -> None:
         """Runs the currently loaded mission"""
+        self._parent_drone._verify_required_blunux_version("4.0.5")
         self._parent_drone._ctrl_client.run_mission()
 
     def pause(self) -> None:
         """Pauses the currently running mission"""
+        self._parent_drone._verify_required_blunux_version("4.0.5")
         self._parent_drone._ctrl_client.pause_mission()
 
     def clear(self) -> None:
         """Clears the currently loaded mission"""
+        self._parent_drone._verify_required_blunux_version("4.0.5")
         self._parent_drone._ctrl_client.clear_mission()
