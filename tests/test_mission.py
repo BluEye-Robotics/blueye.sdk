@@ -38,3 +38,43 @@ def test_mission_planning_on_old_versions_raises_exception(mocked_drone):
     with pytest.raises(RuntimeError):
         mocked_drone.mission.clear()
 
+
+def test_get_status_returns_none_on_missing_telemetry(mocked_drone):
+    mocked_drone.telemetry.get.return_value = None
+    assert mocked_drone.mission.get_status() is None
+
+
+def test_get_status_returns_mission_status(mocked_drone):
+    mission_status = bp.MissionStatus({"state": bp.MissionState.MISSION_STATE_READY})
+    mission_status_tel = bp.MissionStatusTel(mission_status=mission_status)
+    mocked_drone.telemetry.get.return_value = mission_status_tel
+
+    assert mocked_drone.mission.get_status() == mission_status
+
+
+def test_get_active_returns_active_mission(mocked_drone):
+    mocked_drone._req_rep_client.get_active_mission.return_value = bp.GetMissionRep(
+        mission=example_mission
+    )
+    active_mission = mocked_drone.mission.get_active()
+    assert active_mission == example_mission
+
+
+def test_send_new_sends_mission(mocked_drone):
+    mocked_drone.mission.send_new(example_mission)
+    mocked_drone._req_rep_client.set_mission.assert_called_once_with(example_mission)
+
+
+def test_run_calls_run_mission(mocked_drone):
+    mocked_drone.mission.run()
+    mocked_drone._ctrl_client.run_mission.assert_called_once()
+
+
+def test_pause_calls_pause_mission(mocked_drone):
+    mocked_drone.mission.pause()
+    mocked_drone._ctrl_client.pause_mission.assert_called_once()
+
+
+def test_clear_calls_clear_mission(mocked_drone):
+    mocked_drone.mission.clear()
+    mocked_drone._ctrl_client.clear_mission.assert_called_once()
