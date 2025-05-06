@@ -46,38 +46,50 @@ def prepare_new_mission(
 class Mission:
     """Class for handling mission planning with the drone
 
-    The flow is a follows:
-    1. Create some instructions
-        import blueye.protocol as bp
-        go_to_seabed = bp.Instruction(go_to_seabed_command={"desired_speed": 0.3})
-        take_picture = bp.Instruction(camera_command={
-            "camera_action": bp.CameraAction.CAMERA_ACTION_TAKE_PHOTO
-        })
-        go_to_surface = bp.Instruction(go_to_surface_command={"desired_speed": 0.3})
+    Example usage:
+        1. Create some instructions
+            ```python
+            import blueye.protocol as bp
+            go_to_seabed = bp.Instruction(go_to_seabed_command={"desired_speed": 0.3})
+            take_picture = bp.Instruction(camera_command={
+                "camera_action": bp.CameraAction.CAMERA_ACTION_TAKE_PHOTO
+            })
+            go_to_surface = bp.Instruction(go_to_surface_command={"desired_speed": 0.3})
+            ```
 
-    2. Create a mission with the instructions
-        from blueye.sdk.mission import prepare_new_mission
-        mission = prepare_new_mission(
-            instruction_list = [go_to_seabed, take_picture, go_to_surface],
-            mission_id = 0,
-            mission_name = "Go to seabed and take a picture",)
+        2. Create a mission with the instructions
+            ```python
+            from blueye.sdk.mission import prepare_new_mission
+            mission = prepare_new_mission(
+                instruction_list = [go_to_seabed, take_picture, go_to_surface],
+                mission_id = 0,
+                mission_name = "Go to seabed and take a picture",)
+            ```
 
-    3. Clear any previous missions
-        drone.mission.clear()
+        3. Clear any previous missions
+            ```python
+            drone.mission.clear()
+            ```
 
-    4. Wait for the drone to be ready to receive a new mission
-        while drone.mission.get_status().state != bp.MissionState.MISSION_STATE_INACTIVE:
-            time.sleep(0.1)
+        4. Wait for the drone to be ready to receive a new mission
+            ```python
+            while drone.mission.get_status().state != bp.MissionState.MISSION_STATE_INACTIVE:
+                time.sleep(0.1)
+            ```
+        5. Send the mission to the drone
+            ```python
+            drone.mission.send_new(mission)
+            ```
 
-    5. Send the mission to the drone
-        drone.mission.send_new(mission)
-
-    6. Wait for the drone to be ready to run the mission
-        while drone.mission.get_status().state != bp.MissionState.MISSION_STATE_READY:
-            time.sleep(0.1)
-
-    7. Run the mission
-        drone.mission.run()
+        6. Wait for the drone to be ready to run the mission
+            ```python
+            while drone.mission.get_status().state != bp.MissionState.MISSION_STATE_READY:
+                time.sleep(0.1)
+            ```
+        7. Run the mission
+            ```python
+            drone.mission.run()
+            ```
     """
 
     def __init__(self, parent_drone: "Drone"):
