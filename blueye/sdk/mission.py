@@ -93,12 +93,21 @@ class Mission:
     """
 
     def __init__(self, parent_drone: "Drone"):
+        """Initialize the Mission class.
+
+        Args:
+            parent_drone: The parent drone instance.
+        """
         self._parent_drone = parent_drone
 
     def get_status(self) -> Optional[blueye.protocol.MissionStatus]:
-        """Returns the current mission status
+        """Get the current mission status.
 
-        Returns None if no telemetry data has been received yet
+        Returns:
+            The current mission status, or None if no telemetry data has been received.
+
+        Raises:
+            RuntimeError: If the connected drone does not meet the required Blunux version.
         """
         self._parent_drone._verify_required_blunux_version("4.0.5")
         msg = self._parent_drone.telemetry.get(blueye.protocol.MissionStatusTel)
@@ -108,28 +117,52 @@ class Mission:
             return msg.mission_status
 
     def get_active(self) -> blueye.protocol.Mission:
-        """Returns the current active mission
+        """Get the current active mission.
 
-        The mission will be empty if no mission is running."""
+        Returns:
+            The current active mission. The mission will be empty if no mission is running.
+
+        Raises:
+            RuntimeError: If the connected drone does not meet the required Blunux version.
+        """
         self._parent_drone._verify_required_blunux_version("4.0.5")
         return self._parent_drone._req_rep_client.get_active_mission().mission
 
-    def send_new(self, mission: blueye.protocol.Mission) -> None:
-        """Sends a new mission to the drone."""
+    def send_new(self, mission: blueye.protocol.Mission):
+        """Send a new mission to the drone.
+
+        Args:
+            mission: The mission to send to the drone.
+
+        Raises:
+            RuntimeError: If the connected drone does not meet the required Blunux version.
+        """
         self._parent_drone._verify_required_blunux_version("4.0.5")
         self._parent_drone._req_rep_client.set_mission(mission)
 
-    def run(self) -> None:
-        """Runs the currently loaded mission"""
+    def run(self):
+        """Run the currently loaded mission.
+
+        Raises:
+            RuntimeError: If the connected drone does not meet the required Blunux version.
+        """
         self._parent_drone._verify_required_blunux_version("4.0.5")
         self._parent_drone._ctrl_client.run_mission()
 
-    def pause(self) -> None:
-        """Pauses the currently running mission"""
+    def pause(self):
+        """Pause the currently running mission.
+
+        Raises:
+            RuntimeError: If the connected drone does not meet the required Blunux version.
+        """
         self._parent_drone._verify_required_blunux_version("4.0.5")
         self._parent_drone._ctrl_client.pause_mission()
 
-    def clear(self) -> None:
-        """Clears the currently loaded mission"""
+    def clear(self):
+        """Clear the currently loaded mission.
+
+        Raises:
+            RuntimeError: If the connected drone does not meet the required Blunux version.
+        """
         self._parent_drone._verify_required_blunux_version("4.0.5")
         self._parent_drone._ctrl_client.clear_mission()
