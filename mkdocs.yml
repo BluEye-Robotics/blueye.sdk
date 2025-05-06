@@ -108,6 +108,7 @@ nav:
       - blueye.sdk.logs: "reference/blueye/sdk/logs.md"
       - blueye.sdk.motion: "reference/blueye/sdk/motion.md"
       - blueye.sdk.utils: "reference/blueye/sdk/utils.md"
+      - blueye.sdk.mission: "reference/blueye/sdk/mission.md"
       - blueye.protocol:
           - Overview: "reference/blueye/protocol/overview.md"
           - Telemetry: "reference/blueye/protocol/telemetry.md"
