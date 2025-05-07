@@ -134,9 +134,10 @@ def test_export_to_json_with_no_path(mocked_open):
     mocked_open.assert_called_once_with(Path("BlueyeMission.json"), "w")
 
 
-def test_export_to_json_with_directory(mocked_open):
-    blueye.sdk.mission.export_to_json(example_mission, output_path=Path("/tmp/"))
-    mocked_open.assert_called_once_with(Path("/tmp/BlueyeMission.json"), "w")
+def test_export_to_json_with_directory(mocked_open, mocker):
+    mocker.patch("blueye.sdk.mission.Path.is_dir").return_value = True
+    blueye.sdk.mission.export_to_json(example_mission, output_path=Path("SomeDirectory"))
+    mocked_open.assert_called_once_with(Path("SomeDirectory") / "BlueyeMission.json", "w")
 
 
 def test_export_to_json_with_path(mocked_open):
