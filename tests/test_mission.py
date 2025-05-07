@@ -1,7 +1,10 @@
+from pathlib import Path
+
 import blueye.protocol as bp
 import pytest
 
 import blueye.sdk
+import blueye.sdk.mission
 from blueye.sdk.mission import prepare_new_mission
 
 tilt_camera_center = bp.Instruction(tilt_main_camera_command={"tilt_angle": {"value": 0.0}})
@@ -21,6 +24,11 @@ def mocked_drone(mocked_drone: blueye.sdk.Drone, mocker):
     mocked_drone.software_version_short = "4.0.5"
     mocked_drone.telemetry = mocker.patch("blueye.sdk.drone.Telemetry")
     return mocked_drone
+
+
+@pytest.fixture
+def mocked_open(mocker):
+    return mocker.patch("blueye.sdk.mission.open", mocker.mock_open())
 
 
 def test_mission_planning_on_old_versions_raises_exception(mocked_drone):
@@ -78,3 +86,19 @@ def test_pause_calls_pause_mission(mocked_drone):
 def test_clear_calls_clear_mission(mocked_drone):
     mocked_drone.mission.clear()
     mocked_drone._ctrl_client.clear_mission.assert_called_once()
+
+
+def test_export_to_json_with_no_path(mocked_open):
+    blueye.sdk.mission.export_to_json(example_mission)
+    mocked_open.assert_called_once_with(Path("BlueyeMission.json"), "w")
+
+
+def test_export_to_json_with_directory(mocked_open):
+    blueye.sdk.mission.export_to_json(example_mission, output_path=Path("/tmp/"))
+    mocked_open.assert_called_once_with(Path("/tmp/BlueyeMission.json"), "w")
+
+
+def test_export_to_json_with_path(mocked_open):
+    path = Path("/tmp/something_else.json")
+    blueye.sdk.mission.export_to_json(example_mission, output_path=path)
+    mocked_open.assert_called_once_with(path, "w")

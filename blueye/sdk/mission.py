@@ -1,8 +1,10 @@
 import copy
 import logging
+from pathlib import Path
 from typing import TYPE_CHECKING, List, Optional
 
 import blueye.protocol
+from google.protobuf.json_format import MessageToJson
 
 # Necessary to avoid cyclic imports
 if TYPE_CHECKING:
@@ -41,6 +43,31 @@ def prepare_new_mission(
         instruction_id += 1
         instruction_list[instruction_list.index(instruction)] = instruction_copy
     return blueye.protocol.Mission(id=mission_id, name=mission_name, instructions=instruction_list)
+
+
+def export_to_json(mission: blueye.protocol.Mission, output_path: Optional[Path | str] = None):
+    """Export the mission to a JSON file
+
+    This allows you to save the mission to a file for later use or to share it with others.
+
+    Args:
+        mission: The mission to export
+        output_path: The path to write the JSON file to. If `None` the mission will be written to
+                     the current directory with the name `BlueyeMission.json`. If the path is a
+                     directory, the mission will be written to that directory with the name
+                     `BlueyeMission.json`. Else the mission will be written to the specified file.
+    """
+    if output_path is None:
+        output_path = Path("BlueyeMission.json")
+    else:
+        if type(output_path) == str:
+            output_path = Path(output_path)
+        if output_path.is_dir():
+            output_path = output_path.joinpath("BlueyeMission.json")
+
+    logger.debug(f'Exporting mission "{mission.name}" to {output_path}')
+    with open(output_path, "w") as f:
+        f.write(MessageToJson(mission._pb))
 
 
 class Mission:
