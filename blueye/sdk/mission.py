@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, List, Optional
 
 import blueye.protocol
-from google.protobuf.json_format import MessageToJson
+from google.protobuf.json_format import MessageToJson, Parse
 
 # Necessary to avoid cyclic imports
 if TYPE_CHECKING:
@@ -43,6 +43,28 @@ def prepare_new_mission(
         instruction_id += 1
         instruction_list[instruction_list.index(instruction)] = instruction_copy
     return blueye.protocol.Mission(id=mission_id, name=mission_name, instructions=instruction_list)
+
+
+def import_from_json(input_path: Path | str) -> blueye.protocol.Mission:
+    """Import a mission from a JSON file
+
+    This allows you to load a mission from a file that was previously exported.
+
+    Args:
+        input_path: The path to the JSON file to import
+
+    Returns:
+        The imported mission
+    """
+    if type(input_path) == str:
+        input_path = Path(input_path)
+    logger.debug(f"Importing mission from {input_path}")
+
+    with open(input_path, "r") as f:
+        json_data = f.read()
+        mission = blueye.protocol.Mission()
+        Parse(json_data, mission._pb)
+        return mission
 
 
 def export_to_json(mission: blueye.protocol.Mission, output_path: Optional[Path | str] = None):

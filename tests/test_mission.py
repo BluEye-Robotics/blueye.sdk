@@ -18,6 +18,47 @@ example_mission = prepare_new_mission(
     mission_name="Example mission",
 )
 
+example_mission_json = (
+    "{\n"
+    '  "name": "Example mission",\n'
+    '  "instructions": [\n'
+    "    {\n"
+    '      "tiltMainCameraCommand": {\n'
+    '        "tiltAngle": {\n'
+    '          "value": 30.0\n'
+    "        }\n"
+    "      }\n"
+    "    },\n"
+    "    {\n"
+    '      "id": 1,\n'
+    '      "waitForCommand": {\n'
+    '        "waitForSeconds": 4.0\n'
+    "      }\n"
+    "    },\n"
+    "    {\n"
+    '      "id": 2,\n'
+    '      "tiltMainCameraCommand": {\n'
+    '        "tiltAngle": {\n'
+    '          "value": -30.0\n'
+    "        }\n"
+    "      }\n"
+    "    },\n"
+    "    {\n"
+    '      "id": 3,\n'
+    '      "waitForCommand": {\n'
+    '        "waitForSeconds": 4.0\n'
+    "      }\n"
+    "    },\n"
+    "    {\n"
+    '      "id": 4,\n'
+    '      "tiltMainCameraCommand": {\n'
+    '        "tiltAngle": {}\n'
+    "      }\n"
+    "    }\n"
+    "  ]\n"
+    "}"
+)
+
 
 @pytest.fixture
 def mocked_drone(mocked_drone: blueye.sdk.Drone, mocker):
@@ -102,3 +143,10 @@ def test_export_to_json_with_path(mocked_open):
     path = Path("/tmp/something_else.json")
     blueye.sdk.mission.export_to_json(example_mission, output_path=path)
     mocked_open.assert_called_once_with(path, "w")
+
+
+def test_import_from_json(mocked_open):
+    mocked_open.return_value.__enter__.return_value.read.return_value = example_mission_json
+    mission = blueye.sdk.mission.import_from_json(Path("dummy_path.json"))
+    assert mission == example_mission
+    mocked_open.assert_called_once_with(Path("dummy_path.json"), "r")
