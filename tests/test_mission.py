@@ -5,14 +5,13 @@ import pytest
 
 import blueye.sdk
 import blueye.sdk.mission
-from blueye.sdk.mission import prepare_new_mission
 
 tilt_camera_center = bp.Instruction(tilt_main_camera_command={"tilt_angle": {"value": 0.0}})
 tilt_camera_top = bp.Instruction(tilt_main_camera_command={"tilt_angle": {"value": 30.0}})
 tilt_camera_bottom = bp.Instruction(tilt_main_camera_command={"tilt_angle": {"value": -30.0}})
 wait = bp.Instruction(wait_for_command={"wait_for_seconds": 4})
 
-example_mission = prepare_new_mission(
+example_mission = blueye.sdk.mission.prepare_new_mission(
     instruction_list=[tilt_camera_top, wait, tilt_camera_bottom, wait, tilt_camera_center],
     mission_id=0,
     mission_name="Example mission",
