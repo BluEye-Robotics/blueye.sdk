@@ -3,7 +3,7 @@ import logging
 from pathlib import Path
 from typing import TYPE_CHECKING, List, Optional
 
-import blueye.protocol
+import blueye.protocol as bp
 from google.protobuf.json_format import MessageToJson, Parse
 
 # Necessary to avoid cyclic imports
@@ -14,10 +14,10 @@ logger = logging.getLogger(__name__)
 
 
 def prepare_new_mission(
-    instruction_list: List[blueye.protocol.Instruction],
+    instruction_list: List[bp.Instruction],
     mission_id: int = 0,
     mission_name: str = "",
-) -> blueye.protocol.Mission:
+) -> bp.Mission:
     """Creates a mission from a list of instructions
 
     Automatically assigns an ID to each instruction based on the order they are in the list.
@@ -42,10 +42,10 @@ def prepare_new_mission(
         instruction_copy.id = instruction_id
         instruction_id += 1
         instruction_list[instruction_list.index(instruction)] = instruction_copy
-    return blueye.protocol.Mission(id=mission_id, name=mission_name, instructions=instruction_list)
+    return bp.Mission(id=mission_id, name=mission_name, instructions=instruction_list)
 
 
-def import_from_json(input_path: Path | str) -> blueye.protocol.Mission:
+def import_from_json(input_path: Path | str) -> bp.Mission:
     """Import a mission from a JSON file
 
     This allows you to load a mission from a file that was previously exported.
@@ -62,12 +62,12 @@ def import_from_json(input_path: Path | str) -> blueye.protocol.Mission:
 
     with open(input_path, "r") as f:
         json_data = f.read()
-        mission = blueye.protocol.Mission()
+        mission = bp.Mission()
         Parse(json_data, mission._pb)
         return mission
 
 
-def export_to_json(mission: blueye.protocol.Mission, output_path: Optional[Path | str] = None):
+def export_to_json(mission: bp.Mission, output_path: Optional[Path | str] = None):
     """Export the mission to a JSON file
 
     This allows you to save the mission to a file for later use or to share it with others.
@@ -149,7 +149,7 @@ class Mission:
         """
         self._parent_drone = parent_drone
 
-    def get_status(self) -> Optional[blueye.protocol.MissionStatus]:
+    def get_status(self) -> Optional[bp.MissionStatus]:
         """Get the current mission status.
 
         Returns:
@@ -159,13 +159,13 @@ class Mission:
             RuntimeError: If the connected drone does not meet the required Blunux version.
         """
         self._parent_drone._verify_required_blunux_version("4.0.5")
-        msg = self._parent_drone.telemetry.get(blueye.protocol.MissionStatusTel)
+        msg = self._parent_drone.telemetry.get(bp.MissionStatusTel)
         if msg is None:
             return None
         else:
             return msg.mission_status
 
-    def get_active(self) -> blueye.protocol.Mission:
+    def get_active(self) -> bp.Mission:
         """Get the current active mission.
 
         Returns:
@@ -177,7 +177,7 @@ class Mission:
         self._parent_drone._verify_required_blunux_version("4.0.5")
         return self._parent_drone._req_rep_client.get_active_mission().mission
 
-    def send_new(self, mission: blueye.protocol.Mission):
+    def send_new(self, mission: bp.Mission):
         """Send a new mission to the drone.
 
         Args:
