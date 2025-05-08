@@ -150,3 +150,37 @@ def test_import_from_json(mocked_open):
     mission = blueye.sdk.mission.import_from_json(Path("dummy_path.json"))
     assert mission == example_mission
     mocked_open.assert_called_once_with(Path("dummy_path.json"), "r")
+
+
+def test_create_waypoint_instruction():
+    waypoint = blueye.sdk.mission.create_waypoint_instruction(
+        waypoint_name="waypoint",
+        latitude=60.0,
+        longitude=10.0,
+        depth=5.0,
+        speed_to_target=0.5,
+        speed_to_depth=0.5,
+        circle_of_acceptance=1.0,
+        waypoint_id=1,
+    )
+    assert waypoint == bp.Instruction(
+        {
+            "waypoint_command": {
+                "waypoint": {
+                    "id": 1,
+                    "name": "waypoint",
+                    "speed_to_target": 0.5,
+                    "circle_of_acceptance": 1.0,
+                    "depth_set_point": {
+                        "depth": 5.0,
+                        "speed_to_depth": 0.5,
+                        "depth_zero_reference": bp.DepthZeroReference.DEPTH_ZERO_REFERENCE_SURFACE,
+                    },
+                    "global_position": {
+                        "latitude": 60.0,
+                        "longitude": 10.0,
+                    },
+                }
+            }
+        }
+    )
