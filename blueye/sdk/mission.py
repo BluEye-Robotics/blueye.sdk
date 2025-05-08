@@ -13,6 +13,54 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
+def create_waypoint_instruction(
+    waypoint_name: str,
+    latitude: float,
+    longitude: float,
+    depth: float,
+    speed_to_target: float = 0.6,
+    speed_to_depth: float = 0.3,
+    circle_of_acceptance: float = 1,
+    waypoint_id: int = 0,
+) -> bp.Instruction:
+    """
+    Helper function to create waypoint instructions.
+
+    Args:
+        waypoint_name (str): The name of the waypoint.
+        latitude (float): The latitude of the waypoint (WGS 84 decimal format).
+        longitude (float): The longitude of the waypoint (WGS 84 decimal format).
+        depth (float): The depth of the waypoint (meters below surface).
+        circle_of_acceptance: The radius of the circle of acceptance (meters).
+        speed_to_target: The speed to the waypoint (m/s).
+        waypoint_id: The ID of the waypoint.
+
+    Returns:
+        Instruction: An Instruction object with the specified waypoint details.
+    """
+    global_position = bp.LatLongPosition()
+    global_position.latitude = latitude
+    global_position.longitude = longitude
+
+    depth_set_point = bp.DepthSetPoint()
+    depth_set_point.depth = depth
+    depth_set_point.depth_zero_reference = bp.DepthZeroReference.DEPTH_ZERO_REFERENCE_SURFACE
+    depth_set_point.speed_to_depth = speed_to_depth
+
+    waypoint = bp.Waypoint()
+    waypoint.id = waypoint_id
+    waypoint.name = waypoint_name
+    waypoint.global_position = global_position
+    waypoint.circle_of_acceptance = circle_of_acceptance
+    waypoint.speed_to_target = speed_to_target
+    waypoint.depth_set_point = depth_set_point
+
+    waypoint_command = bp.WaypointCommand(waypoint=waypoint)
+
+    instruction = bp.Instruction({"waypoint_command": waypoint_command})
+    return instruction
+
+
 def prepare_new_mission(
     instruction_list: List[bp.Instruction],
     mission_id: int = 0,
