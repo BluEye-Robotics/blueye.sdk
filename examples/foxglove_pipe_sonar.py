@@ -1,6 +1,5 @@
 import math
 import json  # Import JSON for encoding the LaserScan data
-from foxglove_websocket import run_cancellable
 from foxglove_websocket.server import FoxgloveServer
 import asyncio
 import time
@@ -9,26 +8,24 @@ import socket
 # This example shows how to create a Foxglove server that listens for UDP packets
 # and sends the data as a LaserScan message to a Foxglove client.
 # The server listens on port 4040 for incoming UDP packets from the 831L Pipe Profiling Sonar
-# The incoming message format is:
-# DD-MMM-YYYY,HH:MM:SS.mmm,X.XXX,Y.YYY,Z.ZZZ<CR><LF>
+# The incoming message format is: # DD-MMM-YYYY,HH:MM:SS.mmm,X.XXX,Y.YYY,Z.ZZZ<CR><LF>
 # The points can be viewed as a point cloud in the Foxglove client with the "Decay time" feature.
 
 
 # Returns the radius and angle from the x and y coordinates of the sonar, to fit into the LaserScan message.
 def get_radius_and_angle_from_xy(x, y):
     """Calculate the radius and angle from x and y coordinates."""
-    radius = math.sqrt(x**2 + y**2)
+    radius = math.hypot(x,y)
     angle = math.atan2(y, x)  # Angle in radians
     return radius, angle
 
 
 async def start_server():
     # Specify the server's host, port, and a human-readable name
-    async with FoxgloveServer("0.0.0.0", 8766, "Blueye SDK bridge") as server:
+    async with FoxgloveServer("0.0.0.0", 8765, "Blueye SDK bridge") as server:
         print("Starting Foxglove server...")
         global global_server
         global_server = server
-        odometer = 0.0
 
         # Register a channel for foxglove.FrameTransform
         transform_topic = await global_server.add_channel(
@@ -65,6 +62,8 @@ async def start_server():
         print(f"Listening for UDP packets on port {port}...")
         odometer = -1.0
         points = []
+        # The bool can be used to accumulate multiple points in one LaserScan message
+        stack_points_until_odometer_change = False
 
         while True:
             try:
@@ -74,8 +73,7 @@ async def start_server():
                 if x is not None and y is not None and z is not None:
 
                     points.append((x, y, z))
-                    # The following statement can be changed to accumulate multiple points in one LaserScan message
-                    if odometer > 0 and odometer != z or True:
+                    if not stack_points_until_odometer_change or odometer > 0 and odometer != z:
                         odometer = z
                         laser_scan = create_laser_scan_message(points)
                         # Serialize the LaserScan data to JSON and encode it as bytes
@@ -93,7 +91,6 @@ async def start_server():
             except BlockingIOError:
                 # No data received, continue listening
                 await asyncio.sleep(0.1)
-                pass
 
             # Update position of the ROV relative to the world frame.
             frame_transform = create_free_transform_message(odometer)
@@ -136,7 +133,6 @@ def create_free_transform_message(odometer):
 def create_laser_scan_message(point_buffer):
     odometer = point_buffer[0][2]  # Get the odometer value from the first z coordinate
     # Generate 10 points for the laser scan
-    num_points = len(point_buffer)  # Number of points to calculate
     ranges = []
     intensities = []
     start_angle = None
