@@ -15,7 +15,7 @@ import socket
 # Returns the radius and angle from the x and y coordinates of the sonar, to fit into the LaserScan message.
 def get_radius_and_angle_from_xy(x, y):
     """Calculate the radius and angle from x and y coordinates."""
-    radius = math.hypot(x,y)
+    radius = math.hypot(x, y)
     angle = math.atan2(y, x)  # Angle in radians
     return radius, angle
 
@@ -101,6 +101,7 @@ async def start_server():
                 transform_topic, int(time.time() * 1e9), ft_message_transform
             )
 
+
 def create_free_transform_message(odometer):
     """
     Create a FrameTransform message.
@@ -129,6 +130,7 @@ def create_free_transform_message(odometer):
         },  # Identity quaternion (no rotation)
     }
     return frame_transform
+
 
 def create_laser_scan_message(point_buffer):
     odometer = point_buffer[0][2]  # Get the odometer value from the first z coordinate

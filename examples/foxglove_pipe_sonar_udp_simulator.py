@@ -15,8 +15,10 @@ where:
 - Y.YYY: Y coordinate of the sonar
 - Z.ZZZ: Odometer value from the ROV
 This example is intended for use with the foxglove_pipe_sonar.py example,
-which listens for UDP packets and sends the data as a LaserScan message to a Foxglove client.
+which listens for UDP packets and sends the data as
+a LaserScan message to a Foxglove client.
 """
+
 
 def generate_message(odometer):
     """
@@ -26,8 +28,8 @@ def generate_message(odometer):
     now = datetime.now()
     timestamp = now.strftime("%d-%b-%Y,%H:%M:%S.%f")[:-3]  # Format with milliseconds
     # Generate points to form a pipe
-    x = math.cos(odometer*20)
-    y = math.sin(odometer*20)
+    x = math.cos(odometer * 20)
+    y = math.sin(odometer * 20)
     # Simulate the ROV moving forwards
     z = round(odometer, 3)
     message = f"{timestamp},{x},{y},{z}\r\n"
