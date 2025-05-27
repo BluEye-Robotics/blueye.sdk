@@ -56,8 +56,6 @@ async def start_server():
 
         # Set the socket to non-blocking mode
         sock.setblocking(False)
-        # Set a timeout for the socket
-        # sock.settimeout(3)  # Timeout in seconds
 
         print(f"Listening for UDP packets on port {port}...")
         odometer = -1.0
@@ -68,7 +66,6 @@ async def start_server():
         while True:
             try:
                 data, addr = sock.recvfrom(4096)  # buffer size is 4096 bytes
-                # Parse the message and print the values
                 x, y, z = parse_message(data.decode(errors="replace"))
                 if x is not None and y is not None and z is not None:
 
