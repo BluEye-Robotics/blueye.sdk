@@ -28,16 +28,25 @@ def create_waypoint_instruction(
 
     Args:
         waypoint_name (str): The name of the waypoint.
-        latitude (float): The latitude of the waypoint (WGS 84 decimal format).
-        longitude (float): The longitude of the waypoint (WGS 84 decimal format).
+        latitude (float): The latitude of the waypoint (WGS 84 decimal format). Needs to be in the
+                          range [-90, 90].
+        longitude (float): The longitude of the waypoint (WGS 84 decimal format). Needs to be in the
+                           range [-180, 180].
         depth (float): The depth of the waypoint (meters below surface).
         circle_of_acceptance: The radius of the circle of acceptance (meters).
         speed_to_target: The speed to the waypoint (m/s).
         waypoint_id: The ID of the waypoint.
 
+    Raises:
+        ValueError: If latitude or longitude are out of bounds.
+
     Returns:
         Instruction: An Instruction object with the specified waypoint details.
     """
+    if not (-90 <= latitude <= 90):
+        raise ValueError(f"Latitude must be between -90 and 90 degrees, got {latitude}")
+    if not (-180 <= longitude <= 180):
+        raise ValueError(f"Longitude must be between -180 and 180 degrees, got {longitude}")
     global_position = bp.LatLongPosition()
     global_position.latitude = latitude
     global_position.longitude = longitude

@@ -184,3 +184,25 @@ def test_create_waypoint_instruction():
             }
         }
     )
+
+
+@pytest.mark.parametrize("latitude", [-91.0, 91.0])
+def test_create_waypoint_instruction_invalid_latitude(latitude):
+    with pytest.raises(ValueError, match="Latitude must be between -90 and 90 degrees"):
+        blueye.sdk.mission.create_waypoint_instruction(
+            waypoint_name="Test Waypoint",
+            latitude=latitude,
+            longitude=50.0,
+            depth=10.0,
+        )
+
+
+@pytest.mark.parametrize("longitude", [-181.0, 181.0])
+def test_create_waypoint_instruction_invalid_longitude(longitude):
+    with pytest.raises(ValueError, match="Longitude must be between -180 and 180 degrees"):
+        blueye.sdk.mission.create_waypoint_instruction(
+            waypoint_name="Test Waypoint",
+            latitude=45.0,
+            longitude=longitude,
+            depth=10.0,
+        )
