@@ -88,7 +88,7 @@ def prepare_new_mission(
         A mission object with the instructions and their respective IDs
     """
     logger.debug(
-        f"Preparing the {mission_name} mission, with ID {mission_id} and "
+        f'Preparing the "{mission_name}" mission, with ID {mission_id} and '
         f"{len(instruction_list)} instructions"
     )
     instruction_id = 0
