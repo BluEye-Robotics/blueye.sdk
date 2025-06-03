@@ -13,7 +13,7 @@ wait = bp.Instruction(wait_for_command={"wait_for_seconds": 4})
 
 # Create a mission with the instructions
 mission = prepare_new_mission(
-    instruction_list=[tilt_camera_top, wait, tilt_camera_bottom, wait, tilt_camera_center],
+    instruction_list=[tilt_camera_top, wait, tilt_camera_bottom, wait, tilt_camera_center, wait],
     mission_id=0,
     mission_name="Tilt camera",
 )
