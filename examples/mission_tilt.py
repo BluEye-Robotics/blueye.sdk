@@ -37,3 +37,8 @@ while d.mission.get_status().state != bp.MissionState.MISSION_STATE_READY:
 
 # Run the mission
 d.mission.run()
+
+# Wait until the mission state becomes MISSION_STATE_COMPLETED
+while d.mission.get_status().state != bp.MissionState.MISSION_STATE_COMPLETED:
+    time.sleep(0.1)
+print("Mission completed successfully!")
