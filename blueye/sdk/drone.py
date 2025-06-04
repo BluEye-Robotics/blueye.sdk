@@ -320,7 +320,7 @@ class Drone:
 
         drone._last_notification_timestamp = msg.notification.timestamp
 
-        log_msg = f"{notification_type.name}"
+        log_msg = f"{msg.notification.timestamp.astimezone()} - {notification_type.name}"
         if notification_msg.type_url != "":
             _, unpacked_msg = deserialize_any_to_message(notification_msg)
             if is_scalar_type(unpacked_msg):
