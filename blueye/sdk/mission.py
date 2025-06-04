@@ -1,5 +1,6 @@
 import copy
 import logging
+import time
 from pathlib import Path
 from typing import TYPE_CHECKING, List, Optional
 
@@ -180,29 +181,9 @@ class Mission:
                 mission_name = "Go to seabed and take a picture",)
             ```
 
-        3. Clear any previous missions
+        3. Load and run the new mission
             ```python
-            drone.mission.clear()
-            ```
-
-        4. Wait for the drone to be ready to receive a new mission
-            ```python
-            while drone.mission.get_status().state != bp.MissionState.MISSION_STATE_INACTIVE:
-                time.sleep(0.1)
-            ```
-        5. Send the mission to the drone
-            ```python
-            drone.mission.send_new(mission)
-            ```
-
-        6. Wait for the drone to be ready to run the mission
-            ```python
-            while drone.mission.get_status().state != bp.MissionState.MISSION_STATE_READY:
-                time.sleep(0.1)
-            ```
-        7. Run the mission
-            ```python
-            drone.mission.run()
+            drone.mission.load_and_run(mission)
             ```
     """
 
@@ -282,3 +263,46 @@ class Mission:
         """
         self._parent_drone._verify_required_blunux_version("4.0.5")
         self._parent_drone._ctrl_client.clear_mission()
+
+    def load_and_run(self, mission: bp.Mission, timeout: float = 2.0):
+        """Clears any previous mission, loads the given mission, and runs it.
+
+        Args:
+            mission: The mission to load and run.
+            timeout: The maximum time to wait for the mission to be ready before raising an exception.
+
+        Raises:
+            RuntimeError: If the connected drone does not meet the required Blunux version.
+            TimeoutError: If the mission does not become ready within the specified timeout.
+        """
+        self._parent_drone._verify_required_blunux_version("4.0.5")
+        if self.get_status().state not in (
+            bp.MissionState.MISSION_STATE_INACTIVE,
+            bp.MissionState.MISSION_STATE_COMPLETED,
+        ):
+            # Clear the previous mission if it exists
+            self.clear()
+
+            # Wait until the mission state becomes MISSION_STATE_INACTIVE
+            start_time = time.time()
+            while self.get_status().state != bp.MissionState.MISSION_STATE_INACTIVE:
+                if time.time() - start_time > timeout:
+                    raise TimeoutError(
+                        "Mission status did not become inactive within the timeout period."
+                    )
+                time.sleep(0.1)
+
+        # Send the new mission
+        self.send_new(mission)
+
+        # Wait until the mission state becomes MISSION_STATE_READY
+        start_time = time.time()
+        while self.get_status().state != bp.MissionState.MISSION_STATE_READY:
+            if time.time() - start_time > timeout:
+                raise TimeoutError("Mission status did not become ready within the timeout period.")
+            if self.get_status().state == bp.MissionState.MISSION_STATE_FAILED_TO_LOAD_MISSION:
+                raise RuntimeError("Failed to load the mission. Check the mission instructions.")
+            time.sleep(0.1)
+
+        # Run the mission
+        self.run()

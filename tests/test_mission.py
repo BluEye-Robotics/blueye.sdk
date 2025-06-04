@@ -85,6 +85,8 @@ def test_mission_planning_on_old_versions_raises_exception(mocked_drone):
         mocked_drone.mission.pause()
     with pytest.raises(RuntimeError):
         mocked_drone.mission.clear()
+    with pytest.raises(RuntimeError):
+        mocked_drone.mission.load_and_run(example_mission)
 
 
 def test_get_status_returns_none_on_missing_telemetry(mocked_drone):
@@ -206,3 +208,68 @@ def test_create_waypoint_instruction_invalid_longitude(longitude):
             longitude=longitude,
             depth=10.0,
         )
+
+
+def test_load_and_run_success(mocked_drone):
+    mission_status_ready = bp.MissionStatus({"state": bp.MissionState.MISSION_STATE_READY})
+    mission_status_ready_tel = bp.MissionStatusTel(mission_status=mission_status_ready)
+    mission_status_inactive = bp.MissionStatus({"state": bp.MissionState.MISSION_STATE_INACTIVE})
+    mission_status_inactive_tel = bp.MissionStatusTel(mission_status=mission_status_inactive)
+    mocked_drone.telemetry.get.side_effect = [mission_status_inactive_tel, mission_status_ready_tel]
+
+    mocked_drone.mission.load_and_run(example_mission)
+
+    mocked_drone._req_rep_client.set_mission.assert_called_once_with(example_mission)
+    mocked_drone._ctrl_client.run_mission.assert_called_once()
+
+
+def test_load_and_run_aborted(mocked_drone):
+    mission_status_aborted = bp.MissionStatus({"state": bp.MissionState.MISSION_STATE_ABORTED})
+    mission_status_aborted_tel = bp.MissionStatusTel(mission_status=mission_status_aborted)
+    mission_status_inactive = bp.MissionStatus({"state": bp.MissionState.MISSION_STATE_INACTIVE})
+    mission_status_inactive_tel = bp.MissionStatusTel(mission_status=mission_status_inactive)
+    mission_status_ready = bp.MissionStatus({"state": bp.MissionState.MISSION_STATE_READY})
+    mission_status_ready_tel = bp.MissionStatusTel(mission_status=mission_status_ready)
+    mocked_drone.telemetry.get.side_effect = [
+        mission_status_aborted_tel,
+        mission_status_inactive_tel,
+        mission_status_ready_tel,
+    ]
+
+    mocked_drone.mission.load_and_run(example_mission)
+
+    mocked_drone._ctrl_client.clear_mission.assert_called_once()
+    mocked_drone._req_rep_client.set_mission.assert_called_once_with(example_mission)
+    mocked_drone._ctrl_client.run_mission.assert_called_once()
+
+
+def test_load_and_run_timeout(mocked_drone):
+    mission_status_inactive = bp.MissionStatus({"state": bp.MissionState.MISSION_STATE_INACTIVE})
+    mission_status_inactive_tel = bp.MissionStatusTel(mission_status=mission_status_inactive)
+    mocked_drone.telemetry.get.side_effect = [mission_status_inactive_tel] * 10
+
+    with pytest.raises(TimeoutError):
+        mocked_drone.mission.load_and_run(example_mission, timeout=0.1)
+
+    mocked_drone._req_rep_client.set_mission.assert_called_once_with(example_mission)
+    mocked_drone._ctrl_client.run_mission.assert_not_called()
+
+
+def test_load_and_run_failed_to_load(mocked_drone):
+    mission_status_failed = bp.MissionStatus(
+        {"state": bp.MissionState.MISSION_STATE_FAILED_TO_LOAD_MISSION}
+    )
+    mission_status_failed_tel = bp.MissionStatusTel(mission_status=mission_status_failed)
+    mission_status_inactive = bp.MissionStatus({"state": bp.MissionState.MISSION_STATE_INACTIVE})
+    mission_status_inactive_tel = bp.MissionStatusTel(mission_status=mission_status_inactive)
+    mocked_drone.telemetry.get.side_effect = [
+        mission_status_inactive_tel,
+        mission_status_inactive_tel,
+        mission_status_failed_tel,
+    ]
+
+    with pytest.raises(RuntimeError):
+        mocked_drone.mission.load_and_run(example_mission)
+
+    mocked_drone._req_rep_client.set_mission.assert_called_once_with(example_mission)
+    mocked_drone._ctrl_client.run_mission.assert_not_called()

@@ -21,22 +21,8 @@ mission = prepare_new_mission(
 # Establish a connection to the drone
 d = Drone(log_notifications=True)
 
-# Check if the drone is ready to receive a new mission
-if not d.mission.get_status().state == bp.MissionState.MISSION_STATE_INACTIVE:
-    d.mission.clear()
-    # Wait until the mission state becomes MISSION_STATE_INACTIVE
-    while d.mission.get_status().state != bp.MissionState.MISSION_STATE_INACTIVE:
-        time.sleep(0.1)
-
-# Send the mission to the drone
-d.mission.send_new(mission)
-
-# Wait until the mission state becomes MISSION_STATE_READY
-while d.mission.get_status().state != bp.MissionState.MISSION_STATE_READY:
-    time.sleep(0.1)
-
-# Run the mission
-d.mission.run()
+# Send the mission to the drone and start it
+d.mission.load_and_run(mission)
 
 # Wait until the mission state becomes MISSION_STATE_COMPLETED
 while d.mission.get_status().state != bp.MissionState.MISSION_STATE_COMPLETED:
