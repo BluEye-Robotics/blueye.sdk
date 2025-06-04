@@ -257,6 +257,8 @@ class Mission:
     def run(self):
         """Run the currently loaded mission.
 
+        The mission state must be MISSION_STATE_READY before calling this method.
+
         Raises:
             RuntimeError: If the connected drone does not meet the required Blunux version.
         """
