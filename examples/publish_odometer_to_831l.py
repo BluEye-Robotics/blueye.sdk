@@ -6,7 +6,9 @@ to the PipeSonarL software used to operate the Imagenex 831L Pipe Profiling Sona
 
 import socket
 import time
+
 import blueye.protocol as bp
+
 from blueye.sdk import Drone
 
 
