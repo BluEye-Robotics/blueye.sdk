@@ -51,3 +51,75 @@ def disable_logging():
 ```
 
 In the example above, we define a function `disable_logging()` that sets a `NullHandler` to the logger. The `NullHandler` is a special handler that essentially discards all log records, effectively disabling logging.
+
+## Receiving logs in another terminal
+Sometimes the program output can become quite cluttered if the logs are being printed inbetween the program output. In such cases, it can be useful to run the program in one terminal and then run a separate terminal to read the logs. This can be accomblished by configuring a simple TCP server to listen for log messages. Here's an example of how to do this:
+
+```python
+import logging
+import logging.handlers
+import socketserver
+import struct
+
+
+class LogRecordStreamHandler(socketserver.StreamRequestHandler):
+    def handle(self):
+        while True:
+            chunk = self.connection.recv(4)
+            if len(chunk) < 4:
+                break
+            slen = struct.unpack(">L", chunk)[0]
+            chunk = self.connection.recv(slen)
+            while len(chunk) < slen:
+                chunk = chunk + self.connection.recv(slen - len(chunk))
+            obj = self.unPickle(chunk)
+            record = logging.makeLogRecord(obj)
+            self.handleLogRecord(record)
+
+    def unPickle(self, data):
+        import pickle
+
+        return pickle.loads(data)
+
+    def handleLogRecord(self, record):
+        logger = logging.getLogger(record.name)
+        logger.handle(record)
+
+
+class LogRecordSocketReceiver(socketserver.ThreadingTCPServer):
+    allow_reuse_address = True
+
+    def __init__(
+        self,
+        host="localhost",
+        port=logging.handlers.DEFAULT_TCP_LOGGING_PORT,
+        handler=LogRecordStreamHandler,
+    ):
+        socketserver.ThreadingTCPServer.__init__(self, (host, port), handler)
+
+
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s:\n    %(message)s\n"
+)
+tcpserver = LogRecordSocketReceiver()
+print("Starting logging server...")
+tcpserver.serve_forever()
+```
+
+And then we need to configure the SDKs logger to send the logs to this server.
+
+```python
+from blueye.sdk import Drone
+
+# Set up logging
+logger = logging.getLogger("blueye.sdk")
+logger.setLevel(logging.INFO)
+socket_handler = logging.handlers.SocketHandler(
+    "localhost", logging.handlers.DEFAULT_TCP_LOGGING_PORT
+)
+logger.addHandler(socket_handler)
+
+d = Drone()
+
+# Logs from the SDK will now be sent to the logging server
+```
