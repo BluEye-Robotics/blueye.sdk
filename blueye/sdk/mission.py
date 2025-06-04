@@ -84,9 +84,17 @@ def prepare_new_mission(
         mission_name: Name of the mission
         instruction_list: List of instructions to create the mission from
 
+    Raises:
+        ValueError: If the number of instructions exceeds 50, which is the maximum allowed.
+
     Returns:
         A mission object with the instructions and their respective IDs
     """
+    if len(instruction_list) > 50:
+        raise ValueError(
+            "A mission can only contain up to 50 instructions. "
+            f"Received {len(instruction_list)} instructions."
+        )
     logger.debug(
         f'Preparing the "{mission_name}" mission, with ID {mission_id} and '
         f"{len(instruction_list)} instructions"
