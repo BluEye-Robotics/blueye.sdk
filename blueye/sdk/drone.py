@@ -387,6 +387,7 @@ class Drone:
             RuntimeError: If the Blunux version of the connected drone is too old.
         """
         logger.info(f"Attempting to connect to drone at {self._ip}")
+        time_connection_start = time.time()
         self._update_drone_info(timeout=timeout)
         self._verify_required_blunux_version("3.2")
 
@@ -440,6 +441,7 @@ class Drone:
             self.config.set_drone_time(current_time)
             logger.debug(f"Disabling thrusters")
             self.motion.send_thruster_setpoint(0, 0, 0, 0)
+        logger.debug("Connected in {:.2f} seconds".format(time.time() - time_connection_start))
 
     def disconnect(self):
         """Disconnects the connection, allowing another client to take control of the drone."""
