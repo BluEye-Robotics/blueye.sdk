@@ -1,9 +1,19 @@
+import logging
+import logging.handlers
 import time
 
 import blueye.protocol as bp
 
 from blueye.sdk import Drone
 from blueye.sdk.mission import prepare_new_mission
+
+# Publish runtime logs over TCP (including mission status notifications)
+logger = logging.getLogger("blueye.sdk")
+logger.setLevel(logging.DEBUG)
+socket_handler = logging.handlers.SocketHandler(
+    "localhost", logging.handlers.DEFAULT_TCP_LOGGING_PORT
+)
+logger.addHandler(socket_handler)
 
 # Create some instructions for the mission
 tilt_camera_center = bp.Instruction(tilt_main_camera_command={"tilt_angle": {"value": 0.0}})
