@@ -395,6 +395,15 @@ class CtrlClient(threading.Thread):
         msg = blueye.protocol.ClearMissionCtrl()
         self._messages_to_send.put(msg)
 
+    def set_multibeam_servo_angle(self, angle: float) -> None:
+        """Set the angle of the servo on the multibeam skid.
+
+        Args:
+            angle (float): The angle in degrees.
+        """
+        msg = blueye.protocol.MultibeamServoCtrl(servo={"angle": angle})
+        self._messages_to_send.put(msg)
+
 
 class ReqRepClient(threading.Thread):
     """A thread that handles request-reply messages to and from the drone."""

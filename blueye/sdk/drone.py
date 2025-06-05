@@ -23,6 +23,7 @@ from .guestport import (
     GuestPortLight,
     Laser,
     Peripheral,
+    SkidServo,
     device_to_peripheral,
 )
 from .logs import LegacyLogs, Logs
@@ -351,6 +352,8 @@ class Drone:
                     self.gripper = peripheral
                 elif isinstance(peripheral, Laser):
                     self.laser = peripheral
+                elif isinstance(peripheral, SkidServo):
+                    self.skid_servo = peripheral
 
     def connect(
         self,
