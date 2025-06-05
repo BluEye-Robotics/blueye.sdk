@@ -797,6 +797,15 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#servo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Servo
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1454,6 +1463,15 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#servo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Servo
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1518,6 +1536,14 @@
 
 <span class="c1"># Rotate the gripper counterclockwise</span>
 <span class="n">drone</span><span class="o">.</span><span class="n">gripper</span><span class="o">.</span><span class="n">rotation_velocity</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
+</code></pre></div>
+<h2 id="servo">Servo</h2>
+<p>If the drone has a servo attached, the <code>Drone</code> class will either have a <code>servo</code> attribute that is a <a class="autorefs autorefs-internal" href="../reference/blueye/sdk/guestport/#blueye.sdk.guestport.GenericServo"><code>GenericServo</code></a> object, or a <code>skid_servo</code> attribute that is a <a class="autorefs autorefs-internal" href="../reference/blueye/sdk/guestport/#blueye.sdk.guestport.SkidServo"><code>SkidServo</code></a> object. These objects can be used to control the servo.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Set the angle</span>
+<span class="n">drone</span><span class="o">.</span><span class="n">skid_servo</span><span class="o">.</span><span class="n">set_angle</span><span class="p">(</span><span class="mf">20.0</span><span class="p">)</span>
+
+<span class="c1"># Get the current angle</span>
+<span class="n">drone</span><span class="o">.</span><span class="n">skid_servo</span><span class="o">.</span><span class="n">get_angle</span><span class="p">()</span>
 </code></pre></div>
 
 
