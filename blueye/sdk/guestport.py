@@ -213,6 +213,101 @@ class Laser(Peripheral):
             return telemetry_msg.laser.value
 
 
+class GenericServo(Peripheral):
+    """
+    Represents a servo connected to a guest port on the Blueye drone.
+    """
+
+    def __init__(
+        self, parent_drone: "Drone", port_number: bp.GuestPortNumber, device: bp.GuestPortDevice
+    ):
+        """Initialize the Servo class.
+
+        Args:
+            parent_drone (Drone): The parent drone instance.
+            port_number (bp.GuestPortNumber): The guest port number.
+            device (bp.GuestPortDevice): The guest port device.
+        """
+
+        self.max_angle = 90
+        self.min_angle = -90
+        Peripheral.__init__(self, parent_drone, port_number, device)
+
+    def set_angle(self, angle: float) -> None:
+        """Set the angle of the servo.
+
+        Args:
+            angle (float): The angle to set for the servo (-90 to 90 degrees).
+
+        Raises:
+            ValueError: If the angle is not within the allowed range.
+        """
+        if angle < self.min_angle or angle > self.max_angle:
+            raise ValueError(
+                f"Angle must be between {self.min_angle} and {self.max_angle} degrees."
+            )
+        self.parent_drone._ctrl_client.set_generic_servo_angle(angle, self.port_number)
+
+    def get_angle(self) -> float | None:
+        """Get the current angle of the servo.
+
+        Returns:
+            The current angle of the servo in degrees. None if telemetry is not available.
+        """
+        telemetry_msg = self.parent_drone.telemetry.get(bp.GenericServoTel)
+        if telemetry_msg is None:
+            return None
+        else:
+            return telemetry_msg.servo.value
+
+
+class SkidServo(Peripheral):
+    """
+    Represents the servo on the skid (typically used for multibeams)
+    """
+
+    def __init__(
+        self, parent_drone: "Drone", port_number: bp.GuestPortNumber, device: bp.GuestPortDevice
+    ):
+        """Initialize the SkidServo class.
+
+        Args:
+            parent_drone (Drone): The parent drone instance.
+            port_number (bp.GuestPortNumber): The guest port number.
+            device (bp.GuestPortDevice): The guest port device.
+        """
+        self.max_angle = 28
+        self.min_angle = -28
+        Peripheral.__init__(self, parent_drone, port_number, device)
+
+    def set_angle(self, angle: float) -> None:
+        """Set the angle of the skid servo.
+
+        Args:
+            angle (float): The angle to set for the servo (-28 to 28 degrees).
+
+        Raises:
+            ValueError: If the angle is not within the allowed range.
+        """
+        if angle < self.min_angle or angle > self.max_angle:
+            raise ValueError(
+                f"Angle must be between {self.min_angle} and {self.max_angle} degrees."
+            )
+        self.parent_drone._ctrl_client.set_multibeam_servo_angle(angle)
+
+    def get_angle(self) -> float | None:
+        """Get the current angle of the skid servo.
+
+        Returns:
+            The current angle of the skid servo in degrees. None if telemetry is not available.
+        """
+        telemetry_msg = self.parent_drone.telemetry.get(bp.MultibeamServoTel)
+        if telemetry_msg is None:
+            return None
+        else:
+            return telemetry_msg.servo.angle
+
+
 def device_to_peripheral(
     parent_drone: "Drone", port_number: bp.GuestPortNumber, device: bp.GuestPortDevice
 ) -> Peripheral:
@@ -247,6 +342,10 @@ def device_to_peripheral(
         or device.device_id == bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_SPOT_X_LASER_SCALERS
     ):
         peripheral = Laser(parent_drone, port_number, device)
+    elif device.device_id == bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_GENERIC_SERVO:
+        peripheral = GenericServo(parent_drone, port_number, device)
+    elif device.device_id == bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_MULTIBEAM_SERVO:
+        peripheral = SkidServo(parent_drone, port_number, device)
     else:
         peripheral = Peripheral(parent_drone, port_number, device)
     return peripheral

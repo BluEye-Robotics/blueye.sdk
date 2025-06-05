@@ -2,6 +2,7 @@ import blueye.protocol as bp
 import pytest
 
 import blueye.sdk
+from blueye.sdk.guestport import GenericServo, SkidServo
 
 
 def test_peripheral_attribute_setter(mocked_drone):
@@ -41,3 +42,92 @@ def test_laser_peripheral(mocked_drone):
     assert mocked_drone.laser.get_intensity() == 1
     with pytest.raises(ValueError):
         mocked_drone.laser.set_intensity(2)
+
+
+def test_generic_servo_set_angle(mocked_drone):
+    # Create a GenericServo instance
+    generic_servo = GenericServo(
+        parent_drone=mocked_drone,
+        port_number=bp.GuestPortNumber.GUEST_PORT_NUMBER_PORT_1,
+        device=bp.GuestPortDevice(
+            {"device_id": bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_GENERIC_SERVO}
+        ),
+    )
+
+    # Test valid angle
+    generic_servo.set_angle(45)
+    mocked_drone._ctrl_client.set_generic_servo_angle.assert_called_once_with(
+        45, bp.GuestPortNumber.GUEST_PORT_NUMBER_PORT_1
+    )
+
+    # Test invalid angle
+    with pytest.raises(ValueError, match="Angle must be between -90 and 90 degrees."):
+        generic_servo.set_angle(100)
+
+
+def test_generic_servo_get_angle(mocked_drone):
+    # Create a GenericServo instance
+    generic_servo = GenericServo(
+        parent_drone=mocked_drone,
+        port_number=bp.GuestPortNumber.GUEST_PORT_NUMBER_PORT_1,
+        device=bp.GuestPortDevice(
+            {"device_id": bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_GENERIC_SERVO}
+        ),
+    )
+
+    # Mock telemetry data
+    telemetry_msg = bp.GenericServoTel.serialize(
+        bp.GenericServoTel(servo=bp.GenericServo(value=30))
+    )
+    mocked_drone._telemetry_watcher._state[bp.GenericServoTel] = telemetry_msg
+
+    # Test getting angle
+    assert generic_servo.get_angle() == 30
+
+    # Test when telemetry is not available
+    mocked_drone._telemetry_watcher._state = {}
+
+    assert generic_servo.get_angle() is None
+
+
+def test_skid_servo_set_angle(mocked_drone):
+    # Create a SkidServo instance
+    skid_servo = SkidServo(
+        parent_drone=mocked_drone,
+        port_number=bp.GuestPortNumber.GUEST_PORT_NUMBER_PORT_2,
+        device=bp.GuestPortDevice(
+            {"device_id": bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_MULTIBEAM_SERVO}
+        ),
+    )
+
+    # Test valid angle
+    skid_servo.set_angle(20)
+    mocked_drone._ctrl_client.set_multibeam_servo_angle.assert_called_once_with(20)
+
+    # Test invalid angle
+    with pytest.raises(ValueError, match="Angle must be between -28 and 28 degrees."):
+        skid_servo.set_angle(50)
+
+
+def test_skid_servo_get_angle(mocked_drone):
+    # Create a SkidServo instance
+    skid_servo = SkidServo(
+        parent_drone=mocked_drone,
+        port_number=bp.GuestPortNumber.GUEST_PORT_NUMBER_PORT_2,
+        device=bp.GuestPortDevice(
+            {"device_id": bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_MULTIBEAM_SERVO}
+        ),
+    )
+
+    # Mock telemetry data
+    telemetry_msg = bp.MultibeamServoTel.serialize(
+        bp.MultibeamServoTel(servo=bp.MultibeamServo(angle=15))
+    )
+    mocked_drone._telemetry_watcher._state[bp.MultibeamServoTel] = telemetry_msg
+
+    # Test getting angle
+    assert skid_servo.get_angle() == 15
+
+    # Test when telemetry is not available
+    mocked_drone._telemetry_watcher._state = {}
+    assert skid_servo.get_angle() is None

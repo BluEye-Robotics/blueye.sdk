@@ -60,3 +60,14 @@ drone.gripper.rotation_velocity = 1.0
 # Rotate the gripper counterclockwise
 drone.gripper.rotation_velocity = -1.0
 ```
+
+## Servo
+If the drone has a servo attached, the `Drone` class will either have a `servo` attribute that is a [`GenericServo`][blueye.sdk.guestport.GenericServo] object, or a `skid_servo` attribute that is a [`SkidServo`][blueye.sdk.guestport.SkidServo] object. These objects can be used to control the servo.
+
+```python
+# Set the angle
+drone.skid_servo.set_angle(20.0)
+
+# Get the current angle
+drone.skid_servo.get_angle()
+```
