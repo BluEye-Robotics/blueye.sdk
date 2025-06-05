@@ -8,6 +8,7 @@ from json import JSONDecodeError
 from typing import Any, Callable, Dict, List, Optional
 
 import blueye.protocol
+import google.protobuf.any_pb2
 import proto
 import requests
 from packaging import version
@@ -25,7 +26,9 @@ from .guestport import (
     device_to_peripheral,
 )
 from .logs import LegacyLogs, Logs
+from .mission import Mission
 from .motion import Motion
+from .utils import deserialize_any_to_message, is_scalar_type
 
 logger = logging.getLogger(__name__)
 
@@ -202,6 +205,7 @@ class Drone:
         timeout=10,
         disconnect_other_clients=False,
         connect_as_observer=False,
+        **connect_args: Dict[str, Any],
     ):
         """Initialize the Drone class.
 
@@ -216,6 +220,9 @@ class Drone:
                 Whether to disconnect other clients.
             connect_as_observer (bool, optional):
                 Whether to connect as an observer.
+            **connect_args:
+                Additional keyword arguments to pass to the [`connect`][blueye.sdk.drone.Drone.connect]
+                method.
         """
         self._ip = ip
         self.camera = Camera(self, is_guestport_camera=False)
@@ -225,6 +232,7 @@ class Drone:
         self.config = Config(self)
         self.battery = Battery(self)
         self.telemetry = Telemetry(self)
+        self.mission = Mission(self)
         self.connected = False
         self.client_id: int = None
         self.in_control: bool = False
@@ -242,6 +250,7 @@ class Drone:
                 timeout=timeout,
                 disconnect_other_clients=disconnect_other_clients,
                 connect_as_observer=connect_as_observer,
+                **connect_args,
             )
 
     def _verify_required_blunux_version(self, requirement: str):
@@ -299,6 +308,35 @@ class Drone:
         # Remove the callback after the first message has been received
         drone.telemetry.remove_msg_callback(drone._drone_info_cb_id)
 
+    @staticmethod
+    def notification_callback(msg_type: str, msg: blueye.protocol.NotificationTel, drone: Drone):
+        level = msg.notification.level
+        notification_type = msg.notification.type_
+        notification_msg: google.protobuf.any_pb2.Any = msg.notification.value
+
+        # Ignore repeated notifications
+        if drone._last_notification_timestamp == msg.notification.timestamp:
+            return
+
+        drone._last_notification_timestamp = msg.notification.timestamp
+
+        log_msg = f"{msg.notification.timestamp.astimezone()} - {notification_type.name}"
+        if notification_msg.type_url != "":
+            _, unpacked_msg = deserialize_any_to_message(notification_msg)
+            if is_scalar_type(unpacked_msg):
+                log_msg += f": {unpacked_msg.value}"
+            else:
+                log_msg += f": {unpacked_msg}"
+
+        if level == blueye.protocol.NotificationLevel.NOTIFICATION_LEVEL_ERROR:
+            logger.error(log_msg)
+        elif level == blueye.protocol.NotificationLevel.NOTIFICATION_LEVEL_WARNING:
+            logger.warning(log_msg)
+        elif level == blueye.protocol.NotificationLevel.NOTIFICATION_LEVEL_INFO:
+            logger.info(log_msg)
+        else:
+            logger.debug(log_msg)
+
     def _create_peripherals_from_drone_info(self, gp_info: blueye.protocol.GuestPortInfo):
         self.peripherals = []
         for port in (gp_info.gp1, gp_info.gp2, gp_info.gp3):
@@ -320,6 +358,7 @@ class Drone:
         timeout: float = 4,
         disconnect_other_clients: bool = False,
         connect_as_observer: bool = False,
+        log_notifications: bool = False,
     ):
         """Establish a connection to the drone.
 
@@ -340,12 +379,15 @@ class Drone:
                 If True, disconnect clients until the drone reports that we are in control.
             connect_as_observer (bool, optional):
                 If True, the client will not be promoted to in control of the drone.
+            log_notifications (bool, optional):
+                If True, the notifications will be logged using the logging module.
 
         Raises:
             ConnectionError: If the connection attempt fails.
             RuntimeError: If the Blunux version of the connected drone is too old.
         """
         logger.info(f"Attempting to connect to drone at {self._ip}")
+        time_connection_start = time.time()
         self._update_drone_info(timeout=timeout)
         self._verify_required_blunux_version("3.2")
 
@@ -381,6 +423,15 @@ class Drone:
             drone=self,
         )
 
+        self._last_notification_timestamp = None
+        if log_notifications:
+            self.notification_cb_id = self.telemetry.add_msg_callback(
+                [blueye.protocol.NotificationTel],
+                Drone.notification_callback,
+                False,
+                drone=self,
+            )
+
         if self.in_control:
             # The drone runs from a read-only filesystem, and as such does not keep any state,
             # therefore when we connect to it we should send the current time
@@ -390,6 +441,7 @@ class Drone:
             self.config.set_drone_time(current_time)
             logger.debug(f"Disabling thrusters")
             self.motion.send_thruster_setpoint(0, 0, 0, 0)
+        logger.debug("Connected in {:.2f} seconds".format(time.time() - time_connection_start))
 
     def disconnect(self):
         """Disconnects the connection, allowing another client to take control of the drone."""
