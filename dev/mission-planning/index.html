@@ -9,10 +9,10 @@
       
       
       
-        <link rel="prev" href="../mission-planning/">
+        <link rel="prev" href="../nmea-publisher/">
       
       
-        <link rel="next" href="../http-api.html">
+        <link rel="next" href="../migrating-to-v2/">
       
       
       <link rel="icon" href="../media/blueye_b.svg">
@@ -20,7 +20,7 @@
     
     
       
-        <title>Updating from v1 to v2 - Blueye SDK</title>
+        <title>Mission Planning - Blueye SDK</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#upgrading-to-v2" class="md-skip">
+        <a href="#mission-planning-with-the-sdk" class="md-skip">
           Skip to content
         </a>
       
@@ -142,7 +142,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-            Updating from v1 to v2
+            Mission Planning
             
           </span>
         </div>
@@ -774,27 +774,6 @@
     
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../mission-planning/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Mission Planning
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-    
-    
-  
-  
     
   
   
@@ -811,7 +790,7 @@
           
   
   <span class="md-ellipsis">
-    Updating from v1 to v2
+    Mission Planning
     
   </span>
   
@@ -823,7 +802,7 @@
         
   
   <span class="md-ellipsis">
-    Updating from v1 to v2
+    Mission Planning
     
   </span>
   
@@ -846,117 +825,54 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#change-of-underlying-communication-protocol" class="md-nav__link">
+  <a href="#creating-a-mission" class="md-nav__link">
     <span class="md-ellipsis">
-      Change of underlying communication protocol
+      Creating a mission
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#requirement-on-blunux-v32-or-newer" class="md-nav__link">
+  <a href="#loading-and-running-the-mission" class="md-nav__link">
     <span class="md-ellipsis">
-      Requirement on Blunux v3.2 or newer
+      Loading and running the mission
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#dropped-support-python-37" class="md-nav__link">
+  <a href="#getting-status-updates-from-the-mission" class="md-nav__link">
     <span class="md-ellipsis">
-      Dropped support Python 3.7
+      Getting status updates from the mission
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#new-range-for-lights-control" class="md-nav__link">
+  <a href="#exporting-to-json" class="md-nav__link">
     <span class="md-ellipsis">
-      New range for lights control
+      Exporting to JSON
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#error-flags-are-a-dictionary-of-bools" class="md-nav__link">
+  <a href="#importing-from-json" class="md-nav__link">
     <span class="md-ellipsis">
-      Error flags are a dictionary of bools
+      Importing from JSON
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#changed-return-type-in-active_video_streams-property" class="md-nav__link">
+  <a href="#examples" class="md-nav__link">
     <span class="md-ellipsis">
-      Changed return type in active_video_streams property
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#water-density-unit-changed-from-gl-to-kgl" class="md-nav__link">
-    <span class="md-ellipsis">
-      Water Density Unit changed from g/L to kg/L
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#camera-stabilization-uses-onoff-instead-of-toggle" class="md-nav__link">
-    <span class="md-ellipsis">
-      Camera Stabilization uses on/off instead of toggle
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#tilt_speed-has-been-renamed-to-tilt_velocity" class="md-nav__link">
-    <span class="md-ellipsis">
-      tilt_speed has been renamed to tilt_velocity
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#new-subclass-for-battery-data" class="md-nav__link">
-    <span class="md-ellipsis">
-      New subclass for battery data
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#custom-overlay-classes-replaced-with-enums" class="md-nav__link">
-    <span class="md-ellipsis">
-      Custom Overlay Classes Replaced with Enums
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#telemetry-properties-will-now-return-none-if-no-data-exists" class="md-nav__link">
-    <span class="md-ellipsis">
-      Telemetry properties will now return None if no data exists
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#new-initialization-parameters-to-the-drone-object" class="md-nav__link">
-    <span class="md-ellipsis">
-      New initialization parameters to the Drone object
+      Examples
     </span>
   </a>
   
@@ -966,6 +882,27 @@
   
 </nav>
       
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../migrating-to-v2/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Updating from v1 to v2
+    
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -1479,117 +1416,54 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#change-of-underlying-communication-protocol" class="md-nav__link">
+  <a href="#creating-a-mission" class="md-nav__link">
     <span class="md-ellipsis">
-      Change of underlying communication protocol
+      Creating a mission
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#requirement-on-blunux-v32-or-newer" class="md-nav__link">
+  <a href="#loading-and-running-the-mission" class="md-nav__link">
     <span class="md-ellipsis">
-      Requirement on Blunux v3.2 or newer
+      Loading and running the mission
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#dropped-support-python-37" class="md-nav__link">
+  <a href="#getting-status-updates-from-the-mission" class="md-nav__link">
     <span class="md-ellipsis">
-      Dropped support Python 3.7
+      Getting status updates from the mission
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#new-range-for-lights-control" class="md-nav__link">
+  <a href="#exporting-to-json" class="md-nav__link">
     <span class="md-ellipsis">
-      New range for lights control
+      Exporting to JSON
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#error-flags-are-a-dictionary-of-bools" class="md-nav__link">
+  <a href="#importing-from-json" class="md-nav__link">
     <span class="md-ellipsis">
-      Error flags are a dictionary of bools
+      Importing from JSON
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#changed-return-type-in-active_video_streams-property" class="md-nav__link">
+  <a href="#examples" class="md-nav__link">
     <span class="md-ellipsis">
-      Changed return type in active_video_streams property
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#water-density-unit-changed-from-gl-to-kgl" class="md-nav__link">
-    <span class="md-ellipsis">
-      Water Density Unit changed from g/L to kg/L
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#camera-stabilization-uses-onoff-instead-of-toggle" class="md-nav__link">
-    <span class="md-ellipsis">
-      Camera Stabilization uses on/off instead of toggle
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#tilt_speed-has-been-renamed-to-tilt_velocity" class="md-nav__link">
-    <span class="md-ellipsis">
-      tilt_speed has been renamed to tilt_velocity
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#new-subclass-for-battery-data" class="md-nav__link">
-    <span class="md-ellipsis">
-      New subclass for battery data
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#custom-overlay-classes-replaced-with-enums" class="md-nav__link">
-    <span class="md-ellipsis">
-      Custom Overlay Classes Replaced with Enums
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#telemetry-properties-will-now-return-none-if-no-data-exists" class="md-nav__link">
-    <span class="md-ellipsis">
-      Telemetry properties will now return None if no data exists
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#new-initialization-parameters-to-the-drone-object" class="md-nav__link">
-    <span class="md-ellipsis">
-      New initialization parameters to the Drone object
+      Examples
     </span>
   </a>
   
@@ -1614,116 +1488,211 @@
   
 
 
-<h1 id="upgrading-to-v2">Upgrading to v2</h1>
-<p>Version 2 of the Blueye SDK (unfortunately) introduces a few breaking changes. The following guide outlines what has changed, and what you need to change to be compatible with the new version.</p>
-<h2 id="change-of-underlying-communication-protocol">Change of underlying communication protocol</h2>
-<p>The underlying communications protocol has been changed from UDP/TCP to protobuf messages sent over ZeroMQ sockets. This means that the drone now supports multiple simultaneous clients, and as such, the 'slave-mode' functionality is no longer necessary and has been removed.</p>
-<p>Another added benefit is the ability to list and disconnect other clients connected to the drone.</p>
-<h2 id="requirement-on-blunux-v32-or-newer">Requirement on Blunux v3.2 or newer</h2>
-<p>The SDK now requires v3.2 or newer of the Blunux operating system to be installed on the drone to able to connect to it.</p>
-<h2 id="dropped-support-python-37">Dropped support Python 3.7</h2>
-<p>One or several of our subdependencies has dropped support for 3.7, and in an effort to reduce the maintenance burden we decided to drop support for 3.7 when adding support for 3.11.</p>
-<h2 id="new-range-for-lights-control">New range for lights control</h2>
-<p>Previously the valid range for the <code>lights</code> property was an <code>int</code> between 0 and 255, it has now been updated to a <code>float</code> in the range 0 to 1.</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Previously</span>
-<span class="n">my_drone</span><span class="o">.</span><span class="n">lights</span> <span class="o">=</span> <span class="mi">64</span>
+<h1 id="mission-planning-with-the-sdk">Mission planning with the SDK</h1>
+<p>The SDK supports creating and running missions on the drone using the <a class="autorefs autorefs-internal" href="../reference/blueye/sdk/mission/#blueye.sdk.mission.Mission"><code>mission</code></a> attribute of the <a class="autorefs autorefs-internal" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Drone"><code>Drone</code></a> class. Missions are created using a set of instructions that define the actions the drone should perform.</p>
+<h2 id="creating-a-mission">Creating a mission</h2>
+<p>As an example we will create a mission that goes to the seabed, takes a picture with the main camera, and returns to the surface.</p>
+<p>First we define the instructions we want to use. The available instructions are outlined in the <a class="autorefs autorefs-internal" href="../reference/blueye/protocol/mission_planning/#blueye.protocol.types.mission_planning.Instruction"><code>Instruction</code></a> class.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">blueye.protocol</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">bp</span>
 
-<span class="c1"># Updated</span>
-<span class="n">my_drone</span><span class="o">.</span><span class="n">lights</span> <span class="o">=</span> <span class="mf">0.25</span>
+<span class="n">go_to_seabed</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">Instruction</span><span class="p">(</span><span class="n">go_to_seabed_command</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;desired_speed&quot;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">})</span>
+<span class="n">take_picture</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">Instruction</span><span class="p">(</span><span class="n">camera_command</span><span class="o">=</span><span class="p">{</span>
+    <span class="s2">&quot;camera_action&quot;</span><span class="p">:</span> <span class="n">bp</span><span class="o">.</span><span class="n">CameraAction</span><span class="o">.</span><span class="n">CAMERA_ACTION_TAKE_PHOTO</span>
+<span class="p">})</span>
+<span class="n">go_to_surface</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">Instruction</span><span class="p">(</span><span class="n">go_to_surface_command</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;desired_speed&quot;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">})</span>
 </code></pre></div>
-<h2 id="error-flags-are-a-dictionary-of-bools">Error flags are a dictionary of bools</h2>
-<p>Error flags are now represented as a dictionary of bools instead of bitflags in an <code>int</code>. See the <a class="autorefs autorefs-internal" href="../reference/blueye/protocol/message_formats/#blueye.protocol.types.message_formats.ErrorFlags">ErrorFlags message</a> for an overview of the possible error states.</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Previously</span>
-<span class="n">depth_read_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">my_drone</span><span class="o">.</span><span class="n">error_flags</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">2</span><span class="p">)</span>
-
-<span class="c1"># Updated</span>
-<span class="n">depth_read_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">my_drone</span><span class="o">.</span><span class="n">error_flags</span><span class="p">[</span><span class="s2">&quot;depth_read&quot;</span><span class="p">]</span>
+<p>Next we create the mission using these instructions. The mission is created by passing a list of instructions to the <a class="autorefs autorefs-internal" href="../reference/blueye/sdk/mission/#blueye.sdk.mission.prepare_new_mission"><code>prepare_new_mission</code></a> function.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk.mission</span><span class="w"> </span><span class="kn">import</span> <span class="n">prepare_new_mission</span>
+<span class="n">go_to_seabed_mission</span> <span class="o">=</span> <span class="n">prepare_new_mission</span><span class="p">(</span>
+    <span class="n">instruction_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">go_to_seabed</span><span class="p">,</span> <span class="n">take_picture</span><span class="p">,</span> <span class="n">go_to_surface</span><span class="p">],</span>
+    <span class="n">mission_id</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">mission_name</span> <span class="o">=</span> <span class="s2">&quot;Go to seabed and take a picture&quot;</span><span class="p">,</span>
+<span class="p">)</span>
 </code></pre></div>
-<h2 id="changed-return-type-in-active_video_streams-property">Changed return type in <code>active_video_streams</code> property</h2>
-<p>The <code>active_video_streams</code> property has been modified to return a dictionary containing <code>"main"</code> and <code>"guestport"</code> as keys. This change provides the option to be able to read the number of active video streams for both the main camera and (optinally) a guestport camera.
-<div class="highlight"><pre><span></span><code><span class="c1"># Previously</span>
-<span class="n">streams_on_main_camera</span> <span class="o">=</span> <span class="n">my_drone</span><span class="o">.</span><span class="n">active_video_streams</span>
+<h2 id="loading-and-running-the-mission">Loading and running the mission</h2>
+<p>With the mission created we can now transfer it to the drone and run it. The easiest way to do this is to use the <a class="autorefs autorefs-internal" href="../reference/blueye/sdk/mission/#blueye.sdk.mission.Mission.load_and_run"><code>load_and_run</code></a> method, which will transfer the mission the drone, wait for it to become ready and then start the mission.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drone</span>
 
-<span class="c1"># Updated</span>
-<span class="n">streams_on_main_camera</span> <span class="o">=</span> <span class="n">my_drone</span><span class="o">.</span><span class="n">active_video_streams</span><span class="p">[</span><span class="s2">&quot;main&quot;</span><span class="p">]</span>
-</code></pre></div></p>
-<h2 id="water-density-unit-changed-from-gl-to-kgl">Water Density Unit changed from g/L to kg/L</h2>
-<p>The unit for water density has been updated from grams per liter (g/L) to kilograms per liter (kg/L). Make sure to adjust your calculations or conversions accordingly.</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Previously</span>
-<span class="n">density</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">my_drone</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">water_density</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">density</span><span class="p">)</span> <span class="c1"># Will print 1025</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">()</span>
 
-<span class="c1"># Updated</span>
-<span class="n">density</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">my_drone</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">water_density</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">density</span><span class="p">)</span> <span class="c1"># Will print 1.025</span>
+<span class="n">d</span><span class="o">.</span><span class="n">mission</span><span class="o">.</span><span class="n">load_and_run</span><span class="p">(</span><span class="n">go_to_seabed_mission</span><span class="p">)</span>
 </code></pre></div>
-<h2 id="camera-stabilization-uses-onoff-instead-of-toggle">Camera Stabilization uses on/off instead of toggle</h2>
-<p>The camera stabilization functionality now uses separate methods for enabling and disabling instead of a single toggle method. Update your code to use the appropriate methods based on the desired behavior.</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Previously</span>
-<span class="n">my_drone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">toggle_stabilization</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">my_drone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">stabilization_enabled</span><span class="p">)</span>
+<h2 id="getting-status-updates-from-the-mission">Getting status updates from the mission</h2>
+<p>The mission progress is published through the <a class="autorefs autorefs-internal" href="../reference/blueye/protocol/telemetry/#blueye.protocol.types.telemetry.NotificationTel"><code>NotificationTel</code></a> messages. These messages can be read manually with the usual telemetry methods, ie. <a class="autorefs autorefs-internal" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Telemetry.get"><code>telemetry.get</code></a> or <a class="autorefs autorefs-internal" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Telemetry.add_msg_callback"><code>telemetry.add_msg_callback</code></a>.</p>
+<p>Alternatively, if one initializes the Drone object with <code>log_notifications=True</code>, the notifications will be logged with pythons <code>logging</code> module. This is the recommended way to get notified about mission progress.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drone</span>
 
-<span class="c1"># Updated</span>
-<span class="n">my_drone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">stabilization_enabled</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">my_drone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">stabilization_enabled</span><span class="p">)</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">(</span><span class="n">log_notifications</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
-<h2 id="tilt_speed-has-been-renamed-to-tilt_velocity"><code>tilt_speed</code> has been renamed to <code>tilt_velocity</code></h2>
-<p>The function tilt_speed has been renamed to tilt_velocity to better reflect its purpose and usage. Update your code to use the new function name.
-<div class="highlight"><pre><span></span><code><span class="c1"># Previously</span>
-<span class="n">my_drone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">tilt</span><span class="o">.</span><span class="n">set_speed</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<p>The termial output can however quickly become cluttered when the logs are being printed inbetween the program output. In such cases, it can be useful to run the program in one terminal and then run a separate terminal to read the logs. This can be accomplished by configuring a simple TCP server to listen for log messages. See the <a href="../logs/runtime-logs/#receiving-logs-in-another-terminal">Receiving logs in another terminal</a> section for an example of how to do this.</p>
+<h2 id="exporting-to-json">Exporting to JSON</h2>
+<p>The mission can be exported to a JSON file using the <a class="autorefs autorefs-internal" href="../reference/blueye/sdk/mission/#blueye.sdk.mission.export_to_json"><code>export_to_json</code></a> method. This allows you to save the mission for later use or share it with others. It is also possible to load the json file in the Blueye App.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">blueye.protocol</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">bp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk.mission</span><span class="w"> </span><span class="kn">import</span> <span class="n">export_to_json</span><span class="p">,</span> <span class="n">prepare_new_mission</span>
 
-<span class="c1"># Updated</span>
-<span class="n">my_drone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">tilt</span><span class="o">.</span><span class="n">set_velocity</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-</code></pre></div></p>
-<h2 id="new-subclass-for-battery-data">New subclass for battery data</h2>
-<p>The <code>battery_state_of_charge</code> property has been moved to a subclass on the <code>Drone</code>-object. In addition the state of charge range for the battery has been adjusted to a scale of 0 to 1, instead of the previous 0 to 100 range.</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Previously</span>
-<span class="n">state_of_charge</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">my_drone</span><span class="o">.</span><span class="n">battery_state_of_charge</span>
+<span class="c1"># Create a mission</span>
+<span class="n">mission</span> <span class="o">=</span> <span class="n">prepare_new_mission</span><span class="p">(</span>
+    <span class="n">instruction_list</span><span class="o">=</span><span class="p">[</span><span class="n">bp</span><span class="o">.</span><span class="n">Instruction</span><span class="p">(</span><span class="n">go_to_seabed_command</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;desired_speed&quot;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">})]</span>
+<span class="p">)</span>
 
-<span class="c1"># Updated</span>
-<span class="n">state_of_charge</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">my_drone</span><span class="o">.</span><span class="n">battery</span><span class="o">.</span><span class="n">state_of_charge</span>
+<span class="c1"># Export the mission to a JSON file</span>
+<span class="n">export_to_json</span><span class="p">(</span><span class="n">mission</span><span class="p">,</span> <span class="s2">&quot;exported_mission.json&quot;</span><span class="p">)</span>
 </code></pre></div>
-<h2 id="custom-overlay-classes-replaced-with-enums">Custom Overlay Classes Replaced with Enums</h2>
-<p>Custom overlay classes have been replaced with enums defined in the <code>blueye.protocol</code> package. Make sure to update your code to use the new enums for overlay functionality.</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Previously</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">DepthUnitOverlay</span><span class="p">,</span> <span class="n">FontSizeOverlay</span><span class="p">,</span> <span class="n">LogoOverlay</span><span class="p">,</span> <span class="n">TemperatureUnitOverlay</span>
+<h2 id="importing-from-json">Importing from JSON</h2>
+<p>You can also import a mission from a JSON file using the <a class="autorefs autorefs-internal" href="../reference/blueye/sdk/mission/#blueye.sdk.mission.import_from_json"><code>import_from_json</code></a> method. This allows you to load a previously saved mission and run it on the drone.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drone</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk.mission</span><span class="w"> </span><span class="kn">import</span> <span class="n">import_from_json</span>
 
-<span class="n">my_drone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">overlay</span><span class="o">.</span><span class="n">depth_unit</span> <span class="o">=</span> <span class="n">DepthUnitOverlay</span><span class="o">.</span><span class="n">METERS</span>
-<span class="n">my_drone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">overlay</span><span class="o">.</span><span class="n">font_size</span> <span class="o">=</span> <span class="n">FontSizeOverlay</span><span class="o">.</span><span class="n">PX15</span>
-<span class="n">my_drone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">overlay</span><span class="o">.</span><span class="n">logo</span> <span class="o">=</span> <span class="n">LogoOverlay</span><span class="o">.</span><span class="n">BLUEYE</span>
-<span class="n">my_drone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">overlay</span><span class="o">.</span><span class="n">temperature_unit</span> <span class="o">=</span> <span class="n">TemperatureUnitOverlay</span><span class="o">.</span><span class="n">CELSIUS</span>
+<span class="n">mission</span> <span class="o">=</span> <span class="n">import_from_json</span><span class="p">(</span><span class="s2">&quot;exported_mission.json&quot;</span><span class="p">)</span>
 
-<span class="c1"># Updated</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">()</span>
+<span class="n">d</span><span class="o">.</span><span class="n">mission</span><span class="o">.</span><span class="n">load_and_run</span><span class="p">(</span><span class="n">mission</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="examples">Examples</h2>
+<p>Here are some examples outlining how to use some of the mission planning features</p>
+<details class="example">
+<summary>Tilt camera</summary>
+<p>This is a simple example that tilts the camera up and down. Useful for testing with the drone out of the water.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging.handlers</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+
 <span class="kn">import</span><span class="w"> </span><span class="nn">blueye.protocol</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">bp</span>
 
-<span class="n">my_drone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">overlay</span><span class="o">.</span><span class="n">depth_unit</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">DepthUnit</span><span class="o">.</span><span class="n">DEPTH_UNIT_METERS</span>
-<span class="n">my_drone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">overlay</span><span class="o">.</span><span class="n">font_size</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">FontSize</span><span class="o">.</span><span class="n">FONT_SIZE_PX15</span>
-<span class="n">my_drone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">overlay</span><span class="o">.</span><span class="n">logo</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">LogoType</span><span class="o">.</span><span class="n">LOGO_TYPE_DEFAULT</span>
-<span class="n">my_drone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">overlay</span><span class="o">.</span><span class="n">temperature_unit</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">TemperatureUnit</span><span class="o">.</span><span class="n">TEMPERATURE_UNIT_CELSIUS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drone</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk.mission</span><span class="w"> </span><span class="kn">import</span> <span class="n">prepare_new_mission</span>
+
+<span class="c1"># Publish runtime logs over TCP (including mission status notifications)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;blueye.sdk&quot;</span><span class="p">)</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+<span class="n">socket_handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">SocketHandler</span><span class="p">(</span>
+    <span class="s2">&quot;localhost&quot;</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">DEFAULT_TCP_LOGGING_PORT</span>
+<span class="p">)</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">socket_handler</span><span class="p">)</span>
+
+<span class="c1"># Create some instructions for the mission</span>
+<span class="n">tilt_camera_center</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">Instruction</span><span class="p">(</span><span class="n">tilt_main_camera_command</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;tilt_angle&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">}})</span>
+<span class="n">tilt_camera_top</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">Instruction</span><span class="p">(</span><span class="n">tilt_main_camera_command</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;tilt_angle&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mf">30.0</span><span class="p">}})</span>
+<span class="n">tilt_camera_bottom</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">Instruction</span><span class="p">(</span><span class="n">tilt_main_camera_command</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;tilt_angle&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">30.0</span><span class="p">}})</span>
+<span class="n">wait</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">Instruction</span><span class="p">(</span><span class="n">wait_for_command</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;wait_for_seconds&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">})</span>
+
+<span class="c1"># Create a mission with the instructions</span>
+<span class="n">mission</span> <span class="o">=</span> <span class="n">prepare_new_mission</span><span class="p">(</span>
+    <span class="n">instruction_list</span><span class="o">=</span><span class="p">[</span><span class="n">tilt_camera_top</span><span class="p">,</span> <span class="n">wait</span><span class="p">,</span> <span class="n">tilt_camera_bottom</span><span class="p">,</span> <span class="n">wait</span><span class="p">,</span> <span class="n">tilt_camera_center</span><span class="p">,</span> <span class="n">wait</span><span class="p">],</span>
+    <span class="n">mission_id</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">mission_name</span><span class="o">=</span><span class="s2">&quot;Tilt camera&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Establish a connection to the drone</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">(</span><span class="n">log_notifications</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Send the mission to the drone and start it</span>
+<span class="n">d</span><span class="o">.</span><span class="n">mission</span><span class="o">.</span><span class="n">load_and_run</span><span class="p">(</span><span class="n">mission</span><span class="p">)</span>
+
+<span class="c1"># Wait until the mission state becomes MISSION_STATE_COMPLETED</span>
+<span class="k">while</span> <span class="n">d</span><span class="o">.</span><span class="n">mission</span><span class="o">.</span><span class="n">get_status</span><span class="p">()</span><span class="o">.</span><span class="n">state</span> <span class="o">!=</span> <span class="n">bp</span><span class="o">.</span><span class="n">MissionState</span><span class="o">.</span><span class="n">MISSION_STATE_COMPLETED</span><span class="p">:</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Mission completed successfully!&quot;</span><span class="p">)</span>
 </code></pre></div>
-<h2 id="telemetry-properties-will-now-return-none-if-no-data-exists">Telemetry properties will now return <code>None</code> if no data exists</h2>
-<p>Properties that read telemetry data, such as <code>lights</code>, <code>tilt_angle</code>, <code>depth</code>, <code>pose</code>, <code>battery_state_of_charge</code>, <code>error_flags</code>, <code>active_video_streams</code>, <code>auto_depth_active</code>, and <code>auto_heading_active</code>, will now return <code>None</code> if no telemetry message has been received from the drone. Previously if a UDP message had not arrived, a <code>KeyError</code> exception would have been raised.</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Previously</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">my_drone</span><span class="o">.</span><span class="n">pose</span><span class="p">)</span> <span class="c1"># If no state message has been received yet this could throw a KeyError</span>
+</details>
+<details class="example">
+<summary>Go to seabed</summary>
+<p>Another simple example outlining how to create some simple instructions and run them on the drone. This example goes to the seabed, takes a picture with the main camera, and returns to the surface.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging.handlers</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 
-<span class="c1"># Updated</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">my_drone</span><span class="o">.</span><span class="n">pose</span><span class="p">)</span> <span class="c1"># This will now print &quot;None&quot; if no AttitudeTel-message has been received.</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">blueye.protocol</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">bp</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drone</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk.mission</span><span class="w"> </span><span class="kn">import</span> <span class="n">prepare_new_mission</span>
+
+<span class="c1"># Set up logging</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;blueye.sdk&quot;</span><span class="p">)</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+<span class="n">socket_handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">SocketHandler</span><span class="p">(</span>
+    <span class="s2">&quot;localhost&quot;</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">DEFAULT_TCP_LOGGING_PORT</span>
+<span class="p">)</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">socket_handler</span><span class="p">)</span>
+
+<span class="c1"># Create some instructions for the mission</span>
+<span class="n">go_to_seabed</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">Instruction</span><span class="p">(</span><span class="n">go_to_seabed_command</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;desired_speed&quot;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">})</span>
+<span class="n">take_picture</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">Instruction</span><span class="p">(</span>
+    <span class="n">camera_command</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;camera_action&quot;</span><span class="p">:</span> <span class="n">bp</span><span class="o">.</span><span class="n">CameraAction</span><span class="o">.</span><span class="n">CAMERA_ACTION_TAKE_PHOTO</span><span class="p">}</span>
+<span class="p">)</span>
+<span class="n">go_to_surface</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">Instruction</span><span class="p">(</span><span class="n">go_to_surface_command</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;desired_speed&quot;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">})</span>
+
+<span class="c1"># Create a mission with the instructions</span>
+<span class="n">mission</span> <span class="o">=</span> <span class="n">prepare_new_mission</span><span class="p">(</span>
+    <span class="n">instruction_list</span><span class="o">=</span><span class="p">[</span><span class="n">go_to_seabed</span><span class="p">,</span> <span class="n">take_picture</span><span class="p">,</span> <span class="n">go_to_surface</span><span class="p">],</span>
+    <span class="n">mission_id</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">mission_name</span><span class="o">=</span><span class="s2">&quot;Go to seabed and take a picture&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Establish a connection to the drone</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">(</span><span class="n">log_notifications</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Send the mission to the drone and start it</span>
+<span class="n">d</span><span class="o">.</span><span class="n">mission</span><span class="o">.</span><span class="n">load_and_run</span><span class="p">(</span><span class="n">mission</span><span class="p">)</span>
+
+<span class="c1"># Wait until the mission state becomes MISSION_STATE_COMPLETED</span>
+<span class="k">while</span> <span class="n">d</span><span class="o">.</span><span class="n">mission</span><span class="o">.</span><span class="n">get_status</span><span class="p">()</span><span class="o">.</span><span class="n">state</span> <span class="o">!=</span> <span class="n">bp</span><span class="o">.</span><span class="n">MissionState</span><span class="o">.</span><span class="n">MISSION_STATE_COMPLETED</span><span class="p">:</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Mission completed successfully!&quot;</span><span class="p">)</span>
 </code></pre></div>
-<h2 id="new-initialization-parameters-to-the-drone-object">New initialization parameters to the <code>Drone</code> object</h2>
-<p>The <code>AutoConnect</code> parameter has been renamed to <code>auto_connect</code> for consistency and clarity.
-<div class="highlight"><pre><span></span><code><span class="c1"># Previously</span>
-<span class="n">my_drone</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">(</span><span class="n">AutoConnect</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+</details>
+<details class="example">
+<summary>Go to waypoints</summary>
+<p>This example shows how one can create multiple waypoints and have the drone go to each of them in sequence.
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging.handlers</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 
-<span class="c1"># Updated</span>
-<span class="n">my_drone</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">(</span><span class="n">auto_connect</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-</code></pre></div></p>
-<p>The <code>udpTimeout</code> parameter has been renamed to <code>timeout</code> for consistency and clarity.
-<div class="highlight"><pre><span></span><code><span class="c1"># Previously</span>
-<span class="n">my_drone</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">(</span><span class="n">udpTimeout</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">blueye.protocol</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">bp</span>
 
-<span class="c1"># Updated</span>
-<span class="n">my_drone</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">(</span><span class="n">timeout</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drone</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk.mission</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_waypoint_instruction</span><span class="p">,</span> <span class="n">prepare_new_mission</span>
+
+<span class="c1"># Publish runtime logs over TCP (including mission status notifications)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;blueye.sdk&quot;</span><span class="p">)</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+<span class="n">socket_handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">SocketHandler</span><span class="p">(</span>
+    <span class="s2">&quot;localhost&quot;</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">DEFAULT_TCP_LOGGING_PORT</span>
+<span class="p">)</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">socket_handler</span><span class="p">)</span>
+
+<span class="c1"># Create some waypoints in a (roughly) square pattern</span>
+<span class="c1">#    10.3840°E           10.3841°E</span>
+<span class="c1">#    B ------------------ C 63.4612°N</span>
+<span class="c1">#    |                    |</span>
+<span class="c1">#    |                    |</span>
+<span class="c1">#    |                    |</span>
+<span class="c1">#    A ------------------ D 63.4610°N</span>
+<span class="n">wp_a</span> <span class="o">=</span> <span class="n">create_waypoint_instruction</span><span class="p">(</span><span class="s2">&quot;Point A&quot;</span><span class="p">,</span> <span class="mf">63.4610</span><span class="p">,</span> <span class="mf">10.3840</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">wp_b</span> <span class="o">=</span> <span class="n">create_waypoint_instruction</span><span class="p">(</span><span class="s2">&quot;Point B&quot;</span><span class="p">,</span> <span class="mf">63.4612</span><span class="p">,</span> <span class="mf">10.3840</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">wp_c</span> <span class="o">=</span> <span class="n">create_waypoint_instruction</span><span class="p">(</span><span class="s2">&quot;Point C&quot;</span><span class="p">,</span> <span class="mf">63.4612</span><span class="p">,</span> <span class="mf">10.3842</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">wp_d</span> <span class="o">=</span> <span class="n">create_waypoint_instruction</span><span class="p">(</span><span class="s2">&quot;Point D&quot;</span><span class="p">,</span> <span class="mf">63.4610</span><span class="p">,</span> <span class="mf">10.3842</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+
+
+<span class="c1"># Create a mission with the instructions</span>
+<span class="n">mission</span> <span class="o">=</span> <span class="n">prepare_new_mission</span><span class="p">(</span>
+    <span class="n">instruction_list</span><span class="o">=</span><span class="p">[</span><span class="n">wp_a</span><span class="p">,</span> <span class="n">wp_b</span><span class="p">,</span> <span class="n">wp_c</span><span class="p">,</span> <span class="n">wp_d</span><span class="p">,</span> <span class="n">wp_a</span><span class="p">],</span>
+    <span class="n">mission_id</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">mission_name</span><span class="o">=</span><span class="s2">&quot;Go to waypoints&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Establish a connection to the drone</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">(</span><span class="n">log_notifications</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Send the mission to the drone and start it</span>
+<span class="n">d</span><span class="o">.</span><span class="n">mission</span><span class="o">.</span><span class="n">load_and_run</span><span class="p">(</span><span class="n">mission</span><span class="p">)</span>
+
+<span class="c1"># Wait until the mission state becomes MISSION_STATE_COMPLETED</span>
+<span class="k">while</span> <span class="n">d</span><span class="o">.</span><span class="n">mission</span><span class="o">.</span><span class="n">get_status</span><span class="p">()</span><span class="o">.</span><span class="n">state</span> <span class="o">!=</span> <span class="n">bp</span><span class="o">.</span><span class="n">MissionState</span><span class="o">.</span><span class="n">MISSION_STATE_COMPLETED</span><span class="p">:</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Mission completed successfully!&quot;</span><span class="p">)</span>
 </code></pre></div></p>
+</details>
 
 
 
@@ -1760,8 +1729,8 @@
   <nav class="md-footer__inner md-grid" aria-label="footer.title">
     
     
-    <a href="../mission-planning/" class="md-footer__link md-footer__link--prev"
-      aria-label="Previous: Mission Planning" rel="prev">
+    <a href="../nmea-publisher/" class="md-footer__link md-footer__link--prev"
+      aria-label="Previous: Forwarding positioning to NMEA" rel="prev">
       <div class="md-footer__button md-icon">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
       </div>
@@ -1770,21 +1739,21 @@
           <span class="md-footer__direction">
             Previous
           </span>
-          Mission Planning
+          Forwarding positioning to NMEA
         </div>
       </div>
     </a>
     
     
     
-    <a href="../http-api.html" class="md-footer__link md-footer__link--next"
-      aria-label="Next: HTTP API" rel="next">
+    <a href="../migrating-to-v2/" class="md-footer__link md-footer__link--next"
+      aria-label="Next: Updating from v1 to v2" rel="next">
       <div class="md-footer__title">
         <div class="md-ellipsis">
           <span class="md-footer__direction">
             Next
           </span>
-          HTTP API
+          Updating from v1 to v2
         </div>
       </div>
       <div class="md-footer__button md-icon">
