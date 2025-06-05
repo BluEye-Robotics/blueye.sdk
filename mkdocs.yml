@@ -97,6 +97,7 @@ nav:
   - "Visualizing with Foxglove": "foxglove-bridge.md"
   - "Forwarding positioning to NMEA": "nmea-publisher.md"
   - "Mission Planning": "mission-planning.md"
+  - "Odometer forwarding": odometer-to-831l.md
   - "Updating from v1 to v2": "migrating-to-v2.md"
   - "HTTP API": "http-api.html"
   - Reference:

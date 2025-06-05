@@ -6,11 +6,10 @@ The PipeSonarL software accepts input from external cable counting systems, whic
 
 On a Blueye X3, we can use the odometer distance from the position messages to generate the cable count for the PipeSonarL software. The odometer distance is the distance the drone has traveled since the last reset.
 
-
 The script performs the following steps:
 
-1. **UDP Configuration**: Sets up the UDP IP and port for sending NMEA messages. If your receiver expects to receive data on a different port you need to change it here
-2. **Increase publishing frequenzy**: Increase the publishing frequenzy of the position estimate message to 5 Hz.
+1. **UDP Configuration**: Sets up the UDP IP and port for sending NMEA messages. If your receiver expects to receive data on a different port, you need to change it here.
+2. **Increase publishing frequency**: Increases the publishing frequency of the position estimate message to 5 Hz.
 3. **Drone Connection**: Establishes a connection to the Blueye drone.
 4. **Callback Registration**: Registers a callback function to handle position estimate telemetry messages.
 5. **Main Loop**: Keeps the script running to continuously receive and send messages.
