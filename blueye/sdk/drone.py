@@ -18,6 +18,7 @@ from .camera import Camera
 from .connection import CtrlClient, ReqRepClient, TelemetryClient, WatchdogPublisher
 from .constants import WaterDensities
 from .guestport import (
+    GenericServo,
     Gripper,
     GuestPortCamera,
     GuestPortLight,
@@ -352,6 +353,8 @@ class Drone:
                     self.gripper = peripheral
                 elif isinstance(peripheral, Laser):
                     self.laser = peripheral
+                elif isinstance(peripheral, GenericServo):
+                    self.servo = peripheral
                 elif isinstance(peripheral, SkidServo):
                     self.skid_servo = peripheral
 
