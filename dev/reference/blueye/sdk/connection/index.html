@@ -3783,16 +3783,16 @@ This represents the Thread ID as reported by the kernel.</p>
 
             <details class="quote">
               <summary>Source code in <code>python3.13/threading.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1192</span>
-<span class="normal">1193</span>
-<span class="normal">1194</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1194</span>
 <span class="normal">1195</span>
 <span class="normal">1196</span>
 <span class="normal">1197</span>
 <span class="normal">1198</span>
 <span class="normal">1199</span>
 <span class="normal">1200</span>
-<span class="normal">1201</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">getName</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">1201</span>
+<span class="normal">1202</span>
+<span class="normal">1203</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">getName</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a string used for identification purposes only.</span>
 
 <span class="sd">    This method is deprecated, use the name attribute instead.</span>
@@ -3826,16 +3826,16 @@ This represents the Thread ID as reported by the kernel.</p>
 
             <details class="quote">
               <summary>Source code in <code>python3.13/threading.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1170</span>
-<span class="normal">1171</span>
-<span class="normal">1172</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1172</span>
 <span class="normal">1173</span>
 <span class="normal">1174</span>
 <span class="normal">1175</span>
 <span class="normal">1176</span>
 <span class="normal">1177</span>
 <span class="normal">1178</span>
-<span class="normal">1179</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">isDaemon</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">1179</span>
+<span class="normal">1180</span>
+<span class="normal">1181</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">isDaemon</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return whether this thread is a daemon.</span>
 
 <span class="sd">    This method is deprecated, use the daemon attribute instead.</span>
@@ -3871,16 +3871,16 @@ enumerate().</p>
 
             <details class="quote">
               <summary>Source code in <code>python3.13/threading.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1134</span>
-<span class="normal">1135</span>
-<span class="normal">1136</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1136</span>
 <span class="normal">1137</span>
 <span class="normal">1138</span>
 <span class="normal">1139</span>
 <span class="normal">1140</span>
 <span class="normal">1141</span>
 <span class="normal">1142</span>
-<span class="normal">1143</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">is_alive</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">1143</span>
+<span class="normal">1144</span>
+<span class="normal">1145</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">is_alive</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return whether the thread is alive.</span>
 
 <span class="sd">    This method returns True just before the run() method starts until just</span>
@@ -3928,9 +3928,7 @@ exception.</p>
 
             <details class="quote">
               <summary>Source code in <code>python3.13/threading.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1056</span>
-<span class="normal">1057</span>
-<span class="normal">1058</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1058</span>
 <span class="normal">1059</span>
 <span class="normal">1060</span>
 <span class="normal">1061</span>
@@ -3964,7 +3962,9 @@ exception.</p>
 <span class="normal">1089</span>
 <span class="normal">1090</span>
 <span class="normal">1091</span>
-<span class="normal">1092</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="normal">1092</span>
+<span class="normal">1093</span>
+<span class="normal">1094</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Wait until the thread terminates.</span>
 
 <span class="sd">    This blocks the calling thread until the thread whose join() method is</span>
@@ -4075,16 +4075,16 @@ exception.</p>
 
             <details class="quote">
               <summary>Source code in <code>python3.13/threading.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1181</span>
-<span class="normal">1182</span>
-<span class="normal">1183</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1183</span>
 <span class="normal">1184</span>
 <span class="normal">1185</span>
 <span class="normal">1186</span>
 <span class="normal">1187</span>
 <span class="normal">1188</span>
 <span class="normal">1189</span>
-<span class="normal">1190</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">setDaemon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">daemonic</span><span class="p">):</span>
+<span class="normal">1190</span>
+<span class="normal">1191</span>
+<span class="normal">1192</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">setDaemon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">daemonic</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set whether this thread is a daemon.</span>
 
 <span class="sd">    This method is deprecated, use the .daemon property instead.</span>
@@ -4118,16 +4118,16 @@ exception.</p>
 
             <details class="quote">
               <summary>Source code in <code>python3.13/threading.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1203</span>
-<span class="normal">1204</span>
-<span class="normal">1205</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1205</span>
 <span class="normal">1206</span>
 <span class="normal">1207</span>
 <span class="normal">1208</span>
 <span class="normal">1209</span>
 <span class="normal">1210</span>
 <span class="normal">1211</span>
-<span class="normal">1212</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">setName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="normal">1212</span>
+<span class="normal">1213</span>
+<span class="normal">1214</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">setName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the name string for this thread.</span>
 
 <span class="sd">    This method is deprecated, use the name attribute instead.</span>
@@ -5109,9 +5109,7 @@ same thread object.</p>
 
             <details class="quote">
               <summary>Source code in <code>python3.13/threading.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">953</span>
-<span class="normal">954</span>
-<span class="normal">955</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">955</span>
 <span class="normal">956</span>
 <span class="normal">957</span>
 <span class="normal">958</span>
@@ -5135,7 +5133,9 @@ same thread object.</p>
 <span class="normal">976</span>
 <span class="normal">977</span>
 <span class="normal">978</span>
-<span class="normal">979</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">979</span>
+<span class="normal">980</span>
+<span class="normal">981</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Start the thread&#39;s activity.</span>
 
 <span class="sd">    It must be called at most once per thread object. It arranges for the</span>
@@ -5846,16 +5846,16 @@ This represents the Thread ID as reported by the kernel.</p>
 
             <details class="quote">
               <summary>Source code in <code>python3.13/threading.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1192</span>
-<span class="normal">1193</span>
-<span class="normal">1194</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1194</span>
 <span class="normal">1195</span>
 <span class="normal">1196</span>
 <span class="normal">1197</span>
 <span class="normal">1198</span>
 <span class="normal">1199</span>
 <span class="normal">1200</span>
-<span class="normal">1201</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">getName</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">1201</span>
+<span class="normal">1202</span>
+<span class="normal">1203</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">getName</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a string used for identification purposes only.</span>
 
 <span class="sd">    This method is deprecated, use the name attribute instead.</span>
@@ -6180,16 +6180,16 @@ This represents the Thread ID as reported by the kernel.</p>
 
             <details class="quote">
               <summary>Source code in <code>python3.13/threading.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1170</span>
-<span class="normal">1171</span>
-<span class="normal">1172</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1172</span>
 <span class="normal">1173</span>
 <span class="normal">1174</span>
 <span class="normal">1175</span>
 <span class="normal">1176</span>
 <span class="normal">1177</span>
 <span class="normal">1178</span>
-<span class="normal">1179</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">isDaemon</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">1179</span>
+<span class="normal">1180</span>
+<span class="normal">1181</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">isDaemon</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return whether this thread is a daemon.</span>
 
 <span class="sd">    This method is deprecated, use the daemon attribute instead.</span>
@@ -6225,16 +6225,16 @@ enumerate().</p>
 
             <details class="quote">
               <summary>Source code in <code>python3.13/threading.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1134</span>
-<span class="normal">1135</span>
-<span class="normal">1136</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1136</span>
 <span class="normal">1137</span>
 <span class="normal">1138</span>
 <span class="normal">1139</span>
 <span class="normal">1140</span>
 <span class="normal">1141</span>
 <span class="normal">1142</span>
-<span class="normal">1143</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">is_alive</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">1143</span>
+<span class="normal">1144</span>
+<span class="normal">1145</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">is_alive</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return whether the thread is alive.</span>
 
 <span class="sd">    This method returns True just before the run() method starts until just</span>
@@ -6282,9 +6282,7 @@ exception.</p>
 
             <details class="quote">
               <summary>Source code in <code>python3.13/threading.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1056</span>
-<span class="normal">1057</span>
-<span class="normal">1058</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1058</span>
 <span class="normal">1059</span>
 <span class="normal">1060</span>
 <span class="normal">1061</span>
@@ -6318,7 +6316,9 @@ exception.</p>
 <span class="normal">1089</span>
 <span class="normal">1090</span>
 <span class="normal">1091</span>
-<span class="normal">1092</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="normal">1092</span>
+<span class="normal">1093</span>
+<span class="normal">1094</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Wait until the thread terminates.</span>
 
 <span class="sd">    This blocks the calling thread until the thread whose join() method is</span>
@@ -6510,16 +6510,16 @@ exception.</p>
 
             <details class="quote">
               <summary>Source code in <code>python3.13/threading.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1181</span>
-<span class="normal">1182</span>
-<span class="normal">1183</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1183</span>
 <span class="normal">1184</span>
 <span class="normal">1185</span>
 <span class="normal">1186</span>
 <span class="normal">1187</span>
 <span class="normal">1188</span>
 <span class="normal">1189</span>
-<span class="normal">1190</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">setDaemon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">daemonic</span><span class="p">):</span>
+<span class="normal">1190</span>
+<span class="normal">1191</span>
+<span class="normal">1192</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">setDaemon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">daemonic</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set whether this thread is a daemon.</span>
 
 <span class="sd">    This method is deprecated, use the .daemon property instead.</span>
@@ -6553,16 +6553,16 @@ exception.</p>
 
             <details class="quote">
               <summary>Source code in <code>python3.13/threading.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1203</span>
-<span class="normal">1204</span>
-<span class="normal">1205</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1205</span>
 <span class="normal">1206</span>
 <span class="normal">1207</span>
 <span class="normal">1208</span>
 <span class="normal">1209</span>
 <span class="normal">1210</span>
 <span class="normal">1211</span>
-<span class="normal">1212</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">setName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="normal">1212</span>
+<span class="normal">1213</span>
+<span class="normal">1214</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">setName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the name string for this thread.</span>
 
 <span class="sd">    This method is deprecated, use the name attribute instead.</span>
@@ -6935,9 +6935,7 @@ same thread object.</p>
 
             <details class="quote">
               <summary>Source code in <code>python3.13/threading.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">953</span>
-<span class="normal">954</span>
-<span class="normal">955</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">955</span>
 <span class="normal">956</span>
 <span class="normal">957</span>
 <span class="normal">958</span>
@@ -6961,7 +6959,9 @@ same thread object.</p>
 <span class="normal">976</span>
 <span class="normal">977</span>
 <span class="normal">978</span>
-<span class="normal">979</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">979</span>
+<span class="normal">980</span>
+<span class="normal">981</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Start the thread&#39;s activity.</span>
 
 <span class="sd">    It must be called at most once per thread object. It arranges for the</span>
@@ -7664,16 +7664,16 @@ This represents the Thread ID as reported by the kernel.</p>
 
             <details class="quote">
               <summary>Source code in <code>python3.13/threading.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1192</span>
-<span class="normal">1193</span>
-<span class="normal">1194</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1194</span>
 <span class="normal">1195</span>
 <span class="normal">1196</span>
 <span class="normal">1197</span>
 <span class="normal">1198</span>
 <span class="normal">1199</span>
 <span class="normal">1200</span>
-<span class="normal">1201</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">getName</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">1201</span>
+<span class="normal">1202</span>
+<span class="normal">1203</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">getName</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a string used for identification purposes only.</span>
 
 <span class="sd">    This method is deprecated, use the name attribute instead.</span>
@@ -7707,16 +7707,16 @@ This represents the Thread ID as reported by the kernel.</p>
 
             <details class="quote">
               <summary>Source code in <code>python3.13/threading.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1170</span>
-<span class="normal">1171</span>
-<span class="normal">1172</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1172</span>
 <span class="normal">1173</span>
 <span class="normal">1174</span>
 <span class="normal">1175</span>
 <span class="normal">1176</span>
 <span class="normal">1177</span>
 <span class="normal">1178</span>
-<span class="normal">1179</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">isDaemon</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">1179</span>
+<span class="normal">1180</span>
+<span class="normal">1181</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">isDaemon</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return whether this thread is a daemon.</span>
 
 <span class="sd">    This method is deprecated, use the daemon attribute instead.</span>
@@ -7752,16 +7752,16 @@ enumerate().</p>
 
             <details class="quote">
               <summary>Source code in <code>python3.13/threading.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1134</span>
-<span class="normal">1135</span>
-<span class="normal">1136</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1136</span>
 <span class="normal">1137</span>
 <span class="normal">1138</span>
 <span class="normal">1139</span>
 <span class="normal">1140</span>
 <span class="normal">1141</span>
 <span class="normal">1142</span>
-<span class="normal">1143</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">is_alive</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">1143</span>
+<span class="normal">1144</span>
+<span class="normal">1145</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">is_alive</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return whether the thread is alive.</span>
 
 <span class="sd">    This method returns True just before the run() method starts until just</span>
@@ -7809,9 +7809,7 @@ exception.</p>
 
             <details class="quote">
               <summary>Source code in <code>python3.13/threading.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1056</span>
-<span class="normal">1057</span>
-<span class="normal">1058</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1058</span>
 <span class="normal">1059</span>
 <span class="normal">1060</span>
 <span class="normal">1061</span>
@@ -7845,7 +7843,9 @@ exception.</p>
 <span class="normal">1089</span>
 <span class="normal">1090</span>
 <span class="normal">1091</span>
-<span class="normal">1092</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="normal">1092</span>
+<span class="normal">1093</span>
+<span class="normal">1094</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Wait until the thread terminates.</span>
 
 <span class="sd">    This blocks the calling thread until the thread whose join() method is</span>
@@ -8003,16 +8003,16 @@ exception.</p>
 
             <details class="quote">
               <summary>Source code in <code>python3.13/threading.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1181</span>
-<span class="normal">1182</span>
-<span class="normal">1183</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1183</span>
 <span class="normal">1184</span>
 <span class="normal">1185</span>
 <span class="normal">1186</span>
 <span class="normal">1187</span>
 <span class="normal">1188</span>
 <span class="normal">1189</span>
-<span class="normal">1190</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">setDaemon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">daemonic</span><span class="p">):</span>
+<span class="normal">1190</span>
+<span class="normal">1191</span>
+<span class="normal">1192</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">setDaemon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">daemonic</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set whether this thread is a daemon.</span>
 
 <span class="sd">    This method is deprecated, use the .daemon property instead.</span>
@@ -8046,16 +8046,16 @@ exception.</p>
 
             <details class="quote">
               <summary>Source code in <code>python3.13/threading.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1203</span>
-<span class="normal">1204</span>
-<span class="normal">1205</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1205</span>
 <span class="normal">1206</span>
 <span class="normal">1207</span>
 <span class="normal">1208</span>
 <span class="normal">1209</span>
 <span class="normal">1210</span>
 <span class="normal">1211</span>
-<span class="normal">1212</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">setName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="normal">1212</span>
+<span class="normal">1213</span>
+<span class="normal">1214</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">setName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the name string for this thread.</span>
 
 <span class="sd">    This method is deprecated, use the name attribute instead.</span>
@@ -8092,9 +8092,7 @@ same thread object.</p>
 
             <details class="quote">
               <summary>Source code in <code>python3.13/threading.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">953</span>
-<span class="normal">954</span>
-<span class="normal">955</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">955</span>
 <span class="normal">956</span>
 <span class="normal">957</span>
 <span class="normal">958</span>
@@ -8118,7 +8116,9 @@ same thread object.</p>
 <span class="normal">976</span>
 <span class="normal">977</span>
 <span class="normal">978</span>
-<span class="normal">979</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">979</span>
+<span class="normal">980</span>
+<span class="normal">981</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Start the thread&#39;s activity.</span>
 
 <span class="sd">    It must be called at most once per thread object. It arranges for the</span>
@@ -8503,16 +8503,16 @@ This represents the Thread ID as reported by the kernel.</p>
 
             <details class="quote">
               <summary>Source code in <code>python3.13/threading.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1192</span>
-<span class="normal">1193</span>
-<span class="normal">1194</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1194</span>
 <span class="normal">1195</span>
 <span class="normal">1196</span>
 <span class="normal">1197</span>
 <span class="normal">1198</span>
 <span class="normal">1199</span>
 <span class="normal">1200</span>
-<span class="normal">1201</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">getName</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">1201</span>
+<span class="normal">1202</span>
+<span class="normal">1203</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">getName</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a string used for identification purposes only.</span>
 
 <span class="sd">    This method is deprecated, use the name attribute instead.</span>
@@ -8546,16 +8546,16 @@ This represents the Thread ID as reported by the kernel.</p>
 
             <details class="quote">
               <summary>Source code in <code>python3.13/threading.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1170</span>
-<span class="normal">1171</span>
-<span class="normal">1172</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1172</span>
 <span class="normal">1173</span>
 <span class="normal">1174</span>
 <span class="normal">1175</span>
 <span class="normal">1176</span>
 <span class="normal">1177</span>
 <span class="normal">1178</span>
-<span class="normal">1179</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">isDaemon</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">1179</span>
+<span class="normal">1180</span>
+<span class="normal">1181</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">isDaemon</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return whether this thread is a daemon.</span>
 
 <span class="sd">    This method is deprecated, use the daemon attribute instead.</span>
@@ -8591,16 +8591,16 @@ enumerate().</p>
 
             <details class="quote">
               <summary>Source code in <code>python3.13/threading.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1134</span>
-<span class="normal">1135</span>
-<span class="normal">1136</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1136</span>
 <span class="normal">1137</span>
 <span class="normal">1138</span>
 <span class="normal">1139</span>
 <span class="normal">1140</span>
 <span class="normal">1141</span>
 <span class="normal">1142</span>
-<span class="normal">1143</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">is_alive</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">1143</span>
+<span class="normal">1144</span>
+<span class="normal">1145</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">is_alive</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return whether the thread is alive.</span>
 
 <span class="sd">    This method returns True just before the run() method starts until just</span>
@@ -8648,9 +8648,7 @@ exception.</p>
 
             <details class="quote">
               <summary>Source code in <code>python3.13/threading.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1056</span>
-<span class="normal">1057</span>
-<span class="normal">1058</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1058</span>
 <span class="normal">1059</span>
 <span class="normal">1060</span>
 <span class="normal">1061</span>
@@ -8684,7 +8682,9 @@ exception.</p>
 <span class="normal">1089</span>
 <span class="normal">1090</span>
 <span class="normal">1091</span>
-<span class="normal">1092</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="normal">1092</span>
+<span class="normal">1093</span>
+<span class="normal">1094</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Wait until the thread terminates.</span>
 
 <span class="sd">    This blocks the calling thread until the thread whose join() method is</span>
@@ -8846,16 +8846,16 @@ exception.</p>
 
             <details class="quote">
               <summary>Source code in <code>python3.13/threading.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1181</span>
-<span class="normal">1182</span>
-<span class="normal">1183</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1183</span>
 <span class="normal">1184</span>
 <span class="normal">1185</span>
 <span class="normal">1186</span>
 <span class="normal">1187</span>
 <span class="normal">1188</span>
 <span class="normal">1189</span>
-<span class="normal">1190</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">setDaemon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">daemonic</span><span class="p">):</span>
+<span class="normal">1190</span>
+<span class="normal">1191</span>
+<span class="normal">1192</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">setDaemon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">daemonic</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set whether this thread is a daemon.</span>
 
 <span class="sd">    This method is deprecated, use the .daemon property instead.</span>
@@ -8889,16 +8889,16 @@ exception.</p>
 
             <details class="quote">
               <summary>Source code in <code>python3.13/threading.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1203</span>
-<span class="normal">1204</span>
-<span class="normal">1205</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1205</span>
 <span class="normal">1206</span>
 <span class="normal">1207</span>
 <span class="normal">1208</span>
 <span class="normal">1209</span>
 <span class="normal">1210</span>
 <span class="normal">1211</span>
-<span class="normal">1212</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">setName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="normal">1212</span>
+<span class="normal">1213</span>
+<span class="normal">1214</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">setName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the name string for this thread.</span>
 
 <span class="sd">    This method is deprecated, use the name attribute instead.</span>
@@ -8935,9 +8935,7 @@ same thread object.</p>
 
             <details class="quote">
               <summary>Source code in <code>python3.13/threading.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">953</span>
-<span class="normal">954</span>
-<span class="normal">955</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">955</span>
 <span class="normal">956</span>
 <span class="normal">957</span>
 <span class="normal">958</span>
@@ -8961,7 +8959,9 @@ same thread object.</p>
 <span class="normal">976</span>
 <span class="normal">977</span>
 <span class="normal">978</span>
-<span class="normal">979</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">979</span>
+<span class="normal">980</span>
+<span class="normal">981</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Start the thread&#39;s activity.</span>
 
 <span class="sd">    It must be called at most once per thread object. It arranges for the</span>
