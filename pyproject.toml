@@ -12,8 +12,6 @@ requires-python = "~=3.10"
 readme = "README.md"
 keywords = [
     "Blueye",
-    "Pioneer",
-    "Pro",
     "Robotics",
     "SDK",
     "Software Development Kit",
