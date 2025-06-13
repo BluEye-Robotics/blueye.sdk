@@ -1,6 +1,6 @@
 [project]
 name = "blueye.sdk"
-version = "2.5.2"
+version = "2.6.0"
 license = { file = "LICENSE" }
 description = "SDK for controlling Blueye underwater drones"
 authors = [{ name = "Blueye Robotics", email = "contact@blueye.no" }]
