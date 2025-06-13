@@ -27,6 +27,8 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+# These are dependencies that are not necessary for the core functionality of the SDK, but are
+# necessary for some of the examples.
 examples = [
     "inputs>=0.5,<0.6",
     "asciimatics>=1.11.0,<2",
