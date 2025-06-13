@@ -64,12 +64,16 @@ dev = [
 [tool.hatch.build.targets.sdist]
 include = [
     "blueye",
+]
+artifacts = [
     "blueye.sdk_docs/**/*",
 ]
 
 [tool.hatch.build.targets.wheel]
 include = [
     "blueye",
+]
+artifacts = [
     "blueye.sdk_docs/**/*",
 ]
 
