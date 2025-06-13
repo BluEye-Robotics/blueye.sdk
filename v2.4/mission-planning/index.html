@@ -9,10 +9,10 @@
       
       
       
-        <link rel="prev" href="../peripherals/">
+        <link rel="prev" href="../nmea-publisher/">
       
       
-        <link rel="next" href="../nmea-publisher/">
+        <link rel="next" href="../odometer-to-831l/">
       
       
       <link rel="icon" href="../media/blueye_b.svg">
@@ -20,7 +20,7 @@
     
     
       
-        <title>Visualizing with Foxglove - Blueye SDK</title>
+        <title>Mission Planning - Blueye SDK</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#visualize-live-sensor-data-from-the-drone-with-foxglove" class="md-skip">
+        <a href="#mission-planning-with-the-sdk" class="md-skip">
           Skip to content
         </a>
       
@@ -142,7 +142,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-            Visualizing with Foxglove
+            Mission Planning
             
           </span>
         </div>
@@ -732,31 +732,10 @@
     
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Visualizing with Foxglove
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../foxglove-bridge/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -766,53 +745,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#alternative-with-docker" class="md-nav__link">
-    <span class="md-ellipsis">
-      Alternative with Docker
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#how-it-works" class="md-nav__link">
-    <span class="md-ellipsis">
-      How it works
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#example-of-a-websocket-bridge" class="md-nav__link">
-    <span class="md-ellipsis">
-      Example of a websocket bridge
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -842,10 +774,31 @@
     
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../mission-planning/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Mission Planning
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -855,6 +808,80 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#creating-a-mission" class="md-nav__link">
+    <span class="md-ellipsis">
+      Creating a mission
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#loading-and-running-the-mission" class="md-nav__link">
+    <span class="md-ellipsis">
+      Loading and running the mission
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#getting-status-updates-from-the-mission" class="md-nav__link">
+    <span class="md-ellipsis">
+      Getting status updates from the mission
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exporting-to-json" class="md-nav__link">
+    <span class="md-ellipsis">
+      Exporting to JSON
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#importing-from-json" class="md-nav__link">
+    <span class="md-ellipsis">
+      Importing from JSON
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Examples
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1410,27 +1437,54 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#alternative-with-docker" class="md-nav__link">
+  <a href="#creating-a-mission" class="md-nav__link">
     <span class="md-ellipsis">
-      Alternative with Docker
+      Creating a mission
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#how-it-works" class="md-nav__link">
+  <a href="#loading-and-running-the-mission" class="md-nav__link">
     <span class="md-ellipsis">
-      How it works
+      Loading and running the mission
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#example-of-a-websocket-bridge" class="md-nav__link">
+  <a href="#getting-status-updates-from-the-mission" class="md-nav__link">
     <span class="md-ellipsis">
-      Example of a websocket bridge
+      Getting status updates from the mission
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exporting-to-json" class="md-nav__link">
+    <span class="md-ellipsis">
+      Exporting to JSON
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#importing-from-json" class="md-nav__link">
+    <span class="md-ellipsis">
+      Importing from JSON
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Examples
     </span>
   </a>
   
@@ -1455,164 +1509,211 @@
   
 
 
-<h1 id="visualize-live-sensor-data-from-the-drone-with-foxglove">Visualize live sensor data from the drone with Foxglove</h1>
-<p>With some simple steps you can visualize live sensor data from the drone in Foxglove.</p>
-<ol>
-<li>Download foxglove <a href="https://foxglove.dev/download">here</a> and create an account.</li>
-<li>Power on the drone and connect your computer to the Blueye wifi.</li>
-<li>Run <code>pip install "blueye.sdk[examples]"</code> to get the necessary dependencies, if you have not done so already.</li>
-<li>Clone the <a href="https://github.com/BluEye-Robotics/blueye.sdk">blueye.sdk repository</a> to get the examples, or copy the script below into a file. In the examples folder you simply run <code>python foxglove_bridge_ws.py</code> to start the bridge.</li>
-<li>Open foxglove and open a new <code>Foxglove WebSocket</code> connection and leave it on default (<code>ws://localhost:8765</code>).</li>
-<li>Add panel, Raw message, or Plot and select the topic you want to display.</li>
-</ol>
-<h3 id="alternative-with-docker">Alternative with Docker</h3>
-<p>We have also provided a docker container that you can use to automatically starts the blueye-foxglove server.</p>
-<ol>
-<li>Pull the image: <code>docker pull blueyerobotics/foxglove-bridge</code>.</li>
-<li>Run the image in a container with port 8765 open: <code>docker run --rm -p 8765:8765 blueyerobotics/foxglove-bridge</code>.</li>
-<li>Connect as above in step 5.</li>
-</ol>
-<h3 id="how-it-works">How it works</h3>
-<p>The script below uses the Blueye SDK to subscribe to the drone telemetry messages with <code>ZeroMQ</code>. Then the foxglove websocket server is forwarding the protobuf messages so they can be subscribed to in the <code>Foxglove GUI</code>.</p>
-<h3 id="example-of-a-websocket-bridge">Example of a websocket bridge</h3>
-<div class="highlight"><pre><span></span><code><span class="ch">#!/usr/bin/env python3</span>
+<h1 id="mission-planning-with-the-sdk">Mission planning with the SDK</h1>
+<p>The SDK supports creating and running missions on the drone using the <a class="autorefs autorefs-internal" href="../reference/blueye/sdk/mission/#blueye.sdk.mission.Mission"><code>mission</code></a> attribute of the <a class="autorefs autorefs-internal" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Drone"><code>Drone</code></a> class. Missions are created using a set of instructions that define the actions the drone should perform.</p>
+<h2 id="creating-a-mission">Creating a mission</h2>
+<p>As an example we will create a mission that goes to the seabed, takes a picture with the main camera, and returns to the surface.</p>
+<p>First we define the instructions we want to use. The available instructions are outlined in the <a class="autorefs autorefs-internal" href="../reference/blueye/protocol/mission_planning/#blueye.protocol.types.mission_planning.Instruction"><code>Instruction</code></a> class.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">blueye.protocol</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">bp</span>
+
+<span class="n">go_to_seabed</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">Instruction</span><span class="p">(</span><span class="n">go_to_seabed_command</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;desired_speed&quot;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">})</span>
+<span class="n">take_picture</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">Instruction</span><span class="p">(</span><span class="n">camera_command</span><span class="o">=</span><span class="p">{</span>
+    <span class="s2">&quot;camera_action&quot;</span><span class="p">:</span> <span class="n">bp</span><span class="o">.</span><span class="n">CameraAction</span><span class="o">.</span><span class="n">CAMERA_ACTION_TAKE_PHOTO</span>
+<span class="p">})</span>
+<span class="n">go_to_surface</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">Instruction</span><span class="p">(</span><span class="n">go_to_surface_command</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;desired_speed&quot;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">})</span>
+</code></pre></div>
+<p>Next we create the mission using these instructions. The mission is created by passing a list of instructions to the <a class="autorefs autorefs-internal" href="../reference/blueye/sdk/mission/#blueye.sdk.mission.prepare_new_mission"><code>prepare_new_mission</code></a> function.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk.mission</span><span class="w"> </span><span class="kn">import</span> <span class="n">prepare_new_mission</span>
+<span class="n">go_to_seabed_mission</span> <span class="o">=</span> <span class="n">prepare_new_mission</span><span class="p">(</span>
+    <span class="n">instruction_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">go_to_seabed</span><span class="p">,</span> <span class="n">take_picture</span><span class="p">,</span> <span class="n">go_to_surface</span><span class="p">],</span>
+    <span class="n">mission_id</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">mission_name</span> <span class="o">=</span> <span class="s2">&quot;Go to seabed and take a picture&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div>
+<h2 id="loading-and-running-the-mission">Loading and running the mission</h2>
+<p>With the mission created we can now transfer it to the drone and run it. The easiest way to do this is to use the <a class="autorefs autorefs-internal" href="../reference/blueye/sdk/mission/#blueye.sdk.mission.Mission.load_and_run"><code>load_and_run</code></a> method, which will transfer the mission the drone, wait for it to become ready and then start the mission.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drone</span>
+
+<span class="n">d</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">()</span>
+
+<span class="n">d</span><span class="o">.</span><span class="n">mission</span><span class="o">.</span><span class="n">load_and_run</span><span class="p">(</span><span class="n">go_to_seabed_mission</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="getting-status-updates-from-the-mission">Getting status updates from the mission</h2>
+<p>The mission progress is published through the <a class="autorefs autorefs-internal" href="../reference/blueye/protocol/telemetry/#blueye.protocol.types.telemetry.NotificationTel"><code>NotificationTel</code></a> messages. These messages can be read manually with the usual telemetry methods, ie. <a class="autorefs autorefs-internal" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Telemetry.get"><code>telemetry.get</code></a> or <a class="autorefs autorefs-internal" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Telemetry.add_msg_callback"><code>telemetry.add_msg_callback</code></a>.</p>
+<p>Alternatively, if one initializes the Drone object with <code>log_notifications=True</code>, the notifications will be logged with pythons <code>logging</code> module. This is the recommended way to get notified about mission progress.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drone</span>
+
+<span class="n">d</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">(</span><span class="n">log_notifications</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+<p>The termial output can however quickly become cluttered when the logs are being printed inbetween the program output. In such cases, it can be useful to run the program in one terminal and then run a separate terminal to read the logs. This can be accomplished by configuring a simple TCP server to listen for log messages. See the <a href="../logs/runtime-logs/#receiving-logs-in-another-terminal">Receiving logs in another terminal</a> section for an example of how to do this.</p>
+<h2 id="exporting-to-json">Exporting to JSON</h2>
+<p>The mission can be exported to a JSON file using the <a class="autorefs autorefs-internal" href="../reference/blueye/sdk/mission/#blueye.sdk.mission.export_to_json"><code>export_to_json</code></a> method. This allows you to save the mission for later use or share it with others. It is also possible to load the json file in the Blueye App.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">blueye.protocol</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">bp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk.mission</span><span class="w"> </span><span class="kn">import</span> <span class="n">export_to_json</span><span class="p">,</span> <span class="n">prepare_new_mission</span>
+
+<span class="c1"># Create a mission</span>
+<span class="n">mission</span> <span class="o">=</span> <span class="n">prepare_new_mission</span><span class="p">(</span>
+    <span class="n">instruction_list</span><span class="o">=</span><span class="p">[</span><span class="n">bp</span><span class="o">.</span><span class="n">Instruction</span><span class="p">(</span><span class="n">go_to_seabed_command</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;desired_speed&quot;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">})]</span>
+<span class="p">)</span>
+
+<span class="c1"># Export the mission to a JSON file</span>
+<span class="n">export_to_json</span><span class="p">(</span><span class="n">mission</span><span class="p">,</span> <span class="s2">&quot;exported_mission.json&quot;</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="importing-from-json">Importing from JSON</h2>
+<p>You can also import a mission from a JSON file using the <a class="autorefs autorefs-internal" href="../reference/blueye/sdk/mission/#blueye.sdk.mission.import_from_json"><code>import_from_json</code></a> method. This allows you to load a previously saved mission and run it on the drone.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drone</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk.mission</span><span class="w"> </span><span class="kn">import</span> <span class="n">import_from_json</span>
+
+<span class="n">mission</span> <span class="o">=</span> <span class="n">import_from_json</span><span class="p">(</span><span class="s2">&quot;exported_mission.json&quot;</span><span class="p">)</span>
+
+<span class="n">d</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">()</span>
+<span class="n">d</span><span class="o">.</span><span class="n">mission</span><span class="o">.</span><span class="n">load_and_run</span><span class="p">(</span><span class="n">mission</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="examples">Examples</h2>
+<p>Here are some examples outlining how to use some of the mission planning features</p>
+<details class="example">
+<summary>Tilt camera</summary>
+<p>This is a simple example that tilts the camera up and down. Useful for testing with the drone out of the water.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging.handlers</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">blueye.protocol</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">bp</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drone</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk.mission</span><span class="w"> </span><span class="kn">import</span> <span class="n">prepare_new_mission</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">base64</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">foxglove_websocket</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_cancellable</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">foxglove_websocket.server</span><span class="w"> </span><span class="kn">import</span> <span class="n">FoxgloveServer</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">google.protobuf</span><span class="w"> </span><span class="kn">import</span> <span class="n">descriptor_pb2</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">blueye.protocol</span>
-
-<span class="c1"># Declare the global variable</span>
-<span class="n">channel_ids</span> <span class="o">=</span> <span class="p">{}</span>
-<span class="n">global_server</span> <span class="o">=</span> <span class="kc">None</span>
-
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;FoxgloveBridge&quot;</span><span class="p">)</span>
+<span class="c1"># Publish runtime logs over TCP (including mission status notifications)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;blueye.sdk&quot;</span><span class="p">)</span>
 <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
-<span class="n">handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()</span>
-<span class="n">handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%(asctime)s</span><span class="s2">: [</span><span class="si">%(levelname)s</span><span class="s2">] &lt;</span><span class="si">%(name)s</span><span class="s2">&gt; </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">))</span>
-<span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
-<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting Foxglove bridge&quot;</span><span class="p">)</span>
+<span class="n">socket_handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">SocketHandler</span><span class="p">(</span>
+    <span class="s2">&quot;localhost&quot;</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">DEFAULT_TCP_LOGGING_PORT</span>
+<span class="p">)</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">socket_handler</span><span class="p">)</span>
 
-<span class="n">logger_sdk</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">blueye</span><span class="o">.</span><span class="n">sdk</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
-<span class="n">logger_sdk</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
-<span class="n">logger_sdk</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+<span class="c1"># Create some instructions for the mission</span>
+<span class="n">tilt_camera_center</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">Instruction</span><span class="p">(</span><span class="n">tilt_main_camera_command</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;tilt_angle&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">}})</span>
+<span class="n">tilt_camera_top</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">Instruction</span><span class="p">(</span><span class="n">tilt_main_camera_command</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;tilt_angle&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mf">30.0</span><span class="p">}})</span>
+<span class="n">tilt_camera_bottom</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">Instruction</span><span class="p">(</span><span class="n">tilt_main_camera_command</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;tilt_angle&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">30.0</span><span class="p">}})</span>
+<span class="n">wait</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">Instruction</span><span class="p">(</span><span class="n">wait_for_command</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;wait_for_seconds&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">})</span>
 
+<span class="c1"># Create a mission with the instructions</span>
+<span class="n">mission</span> <span class="o">=</span> <span class="n">prepare_new_mission</span><span class="p">(</span>
+    <span class="n">instruction_list</span><span class="o">=</span><span class="p">[</span><span class="n">tilt_camera_top</span><span class="p">,</span> <span class="n">wait</span><span class="p">,</span> <span class="n">tilt_camera_bottom</span><span class="p">,</span> <span class="n">wait</span><span class="p">,</span> <span class="n">tilt_camera_center</span><span class="p">,</span> <span class="n">wait</span><span class="p">],</span>
+    <span class="n">mission_id</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">mission_name</span><span class="o">=</span><span class="s2">&quot;Tilt camera&quot;</span><span class="p">,</span>
+<span class="p">)</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">parse_message</span><span class="p">(</span><span class="n">payload_msg_name</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-    <span class="k">global</span> <span class="n">global_server</span>
-    <span class="k">global</span> <span class="n">channel_ids</span>
+<span class="c1"># Establish a connection to the drone</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">(</span><span class="n">log_notifications</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">payload_msg_name</span> <span class="ow">in</span> <span class="n">channel_ids</span><span class="p">:</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
-                <span class="n">global_server</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">channel_ids</span><span class="p">[</span><span class="n">payload_msg_name</span><span class="p">],</span> <span class="n">time</span><span class="o">.</span><span class="n">time_ns</span><span class="p">(),</span> <span class="n">data</span><span class="p">)</span>
-            <span class="p">)</span>
-        <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error sending message for </span><span class="si">{</span><span class="n">payload_msg_name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Warning: Channel ID not found for message type: </span><span class="si">{</span><span class="n">payload_msg_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># Send the mission to the drone and start it</span>
+<span class="n">d</span><span class="o">.</span><span class="n">mission</span><span class="o">.</span><span class="n">load_and_run</span><span class="p">(</span><span class="n">mission</span><span class="p">)</span>
 
-
-<span class="k">def</span><span class="w"> </span><span class="nf">add_file_descriptor_and_dependencies</span><span class="p">(</span><span class="n">file_descriptor</span><span class="p">,</span> <span class="n">file_descriptor_set</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Recursively add descriptors and their dependencies to the FileDescriptorSet&quot;&quot;&quot;</span>
-    <span class="c1"># Check if the descriptor is already in the FileDescriptorSet</span>
-    <span class="k">if</span> <span class="n">file_descriptor</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">fd</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">fd</span> <span class="ow">in</span> <span class="n">file_descriptor_set</span><span class="o">.</span><span class="n">file</span><span class="p">]:</span>
-        <span class="c1"># Add the descriptor to the FileDescriptorSet</span>
-        <span class="n">file_descriptor</span><span class="o">.</span><span class="n">CopyToProto</span><span class="p">(</span><span class="n">file_descriptor_set</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">add</span><span class="p">())</span>
-
-        <span class="c1"># Recursively add dependencies</span>
-        <span class="k">for</span> <span class="n">file_descriptor_dep</span> <span class="ow">in</span> <span class="n">file_descriptor</span><span class="o">.</span><span class="n">dependencies</span><span class="p">:</span>
-            <span class="n">add_file_descriptor_and_dependencies</span><span class="p">(</span><span class="n">file_descriptor_dep</span><span class="p">,</span> <span class="n">file_descriptor_set</span><span class="p">)</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">get_protobuf_descriptors</span><span class="p">(</span><span class="n">namespace</span><span class="p">):</span>
-    <span class="n">descriptors</span> <span class="o">=</span> <span class="p">{}</span>
-
-    <span class="c1"># Get the module corresponding to the namespace</span>
-    <span class="n">module</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">namespace</span><span class="p">]</span>
-
-    <span class="c1"># Iterate through all the attributes of the module</span>
-    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="n">module</span><span class="p">):</span>
-        <span class="c1"># Check if the object is a class, ends with &#39;Tel&#39;, and has a _meta attribute with pb</span>
-        <span class="k">if</span> <span class="p">(</span>
-            <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
-            <span class="ow">and</span> <span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;Tel&quot;</span><span class="p">)</span>
-            <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;_meta&quot;</span><span class="p">)</span>
-            <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">_meta</span><span class="p">,</span> <span class="s2">&quot;pb&quot;</span><span class="p">)</span>
-        <span class="p">):</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="c1"># Access the DESCRIPTOR</span>
-                <span class="n">descriptor</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">pb</span><span class="o">.</span><span class="n">DESCRIPTOR</span>
-
-                <span class="c1"># Create a FileDescriptorSet</span>
-                <span class="n">file_descriptor_set</span> <span class="o">=</span> <span class="n">descriptor_pb2</span><span class="o">.</span><span class="n">FileDescriptorSet</span><span class="p">()</span>
-
-                <span class="c1"># Add the descriptor and its dependencies</span>
-                <span class="n">add_file_descriptor_and_dependencies</span><span class="p">(</span><span class="n">descriptor</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="n">file_descriptor_set</span><span class="p">)</span>
-
-                <span class="c1"># Serialize the FileDescriptorSet to binary</span>
-                <span class="n">serialized_data</span> <span class="o">=</span> <span class="n">file_descriptor_set</span><span class="o">.</span><span class="n">SerializeToString</span><span class="p">()</span>
-
-                <span class="c1"># Base64 encode the serialized data</span>
-                <span class="n">schema_base64</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">serialized_data</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
-
-                <span class="c1"># Store the serialized data in the dictionary</span>
-                <span class="n">descriptors</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">schema_base64</span>
-            <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Skipping message: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                <span class="c1"># Skip non-message types</span>
-                <span class="k">raise</span> <span class="n">e</span>
-
-    <span class="k">return</span> <span class="n">descriptors</span>
-
-
-<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
-    <span class="c1"># Initialize the drone</span>
-    <span class="n">myDrone</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">(</span><span class="n">connect_as_observer</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">myDrone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">add_msg_callback</span><span class="p">([],</span> <span class="n">parse_message</span><span class="p">,</span> <span class="n">raw</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-    <span class="c1"># Specify the server&#39;s host, port, and a human-readable name</span>
-    <span class="k">async</span> <span class="k">with</span> <span class="n">FoxgloveServer</span><span class="p">(</span><span class="s2">&quot;0.0.0.0&quot;</span><span class="p">,</span> <span class="mi">8765</span><span class="p">,</span> <span class="s2">&quot;Blueye SDK bridge&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">server</span><span class="p">:</span>
-        <span class="k">global</span> <span class="n">global_server</span>
-        <span class="n">global_server</span> <span class="o">=</span> <span class="n">server</span>
-
-        <span class="c1"># Get Protobuf descriptors for all relevant message types</span>
-        <span class="n">namespace</span> <span class="o">=</span> <span class="s2">&quot;blueye.protocol&quot;</span>
-        <span class="n">descriptors</span> <span class="o">=</span> <span class="n">get_protobuf_descriptors</span><span class="p">(</span><span class="n">namespace</span><span class="p">)</span>
-
-        <span class="c1"># Register each message type as a channel</span>
-        <span class="k">for</span> <span class="n">message_name</span><span class="p">,</span> <span class="n">schema_base64</span> <span class="ow">in</span> <span class="n">descriptors</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">chan_id</span> <span class="o">=</span> <span class="k">await</span> <span class="n">global_server</span><span class="o">.</span><span class="n">add_channel</span><span class="p">(</span>
-                <span class="p">{</span>
-                    <span class="s2">&quot;topic&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;blueye.protocol.</span><span class="si">{</span><span class="n">message_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>  <span class="c1"># Using the message name as the topic</span>
-                    <span class="s2">&quot;encoding&quot;</span><span class="p">:</span> <span class="s2">&quot;protobuf&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;schemaName&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;blueye.protocol.</span><span class="si">{</span><span class="n">message_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="n">schema_base64</span><span class="p">,</span>
-                <span class="p">}</span>
-            <span class="p">)</span>
-            <span class="c1"># Store the chan_id in the map</span>
-            <span class="n">channel_ids</span><span class="p">[</span><span class="n">message_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">chan_id</span>
-
-        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">chan_id</span> <span class="ow">in</span> <span class="n">channel_ids</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Registered topic: blueye.protocol.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-        <span class="c1"># Keep the server running</span>
-        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+<span class="c1"># Wait until the mission state becomes MISSION_STATE_COMPLETED</span>
+<span class="k">while</span> <span class="n">d</span><span class="o">.</span><span class="n">mission</span><span class="o">.</span><span class="n">get_status</span><span class="p">()</span><span class="o">.</span><span class="n">state</span> <span class="o">!=</span> <span class="n">bp</span><span class="o">.</span><span class="n">MissionState</span><span class="o">.</span><span class="n">MISSION_STATE_COMPLETED</span><span class="p">:</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Mission completed successfully!&quot;</span><span class="p">)</span>
 </code></pre></div>
+</details>
+<details class="example">
+<summary>Go to seabed</summary>
+<p>Another simple example outlining how to create some simple instructions and run them on the drone. This example goes to the seabed, takes a picture with the main camera, and returns to the surface.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging.handlers</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">blueye.protocol</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">bp</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drone</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk.mission</span><span class="w"> </span><span class="kn">import</span> <span class="n">prepare_new_mission</span>
+
+<span class="c1"># Set up logging</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;blueye.sdk&quot;</span><span class="p">)</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+<span class="n">socket_handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">SocketHandler</span><span class="p">(</span>
+    <span class="s2">&quot;localhost&quot;</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">DEFAULT_TCP_LOGGING_PORT</span>
+<span class="p">)</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">socket_handler</span><span class="p">)</span>
+
+<span class="c1"># Create some instructions for the mission</span>
+<span class="n">go_to_seabed</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">Instruction</span><span class="p">(</span><span class="n">go_to_seabed_command</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;desired_speed&quot;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">})</span>
+<span class="n">take_picture</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">Instruction</span><span class="p">(</span>
+    <span class="n">camera_command</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;camera_action&quot;</span><span class="p">:</span> <span class="n">bp</span><span class="o">.</span><span class="n">CameraAction</span><span class="o">.</span><span class="n">CAMERA_ACTION_TAKE_PHOTO</span><span class="p">}</span>
+<span class="p">)</span>
+<span class="n">go_to_surface</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">Instruction</span><span class="p">(</span><span class="n">go_to_surface_command</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;desired_speed&quot;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">})</span>
+
+<span class="c1"># Create a mission with the instructions</span>
+<span class="n">mission</span> <span class="o">=</span> <span class="n">prepare_new_mission</span><span class="p">(</span>
+    <span class="n">instruction_list</span><span class="o">=</span><span class="p">[</span><span class="n">go_to_seabed</span><span class="p">,</span> <span class="n">take_picture</span><span class="p">,</span> <span class="n">go_to_surface</span><span class="p">],</span>
+    <span class="n">mission_id</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">mission_name</span><span class="o">=</span><span class="s2">&quot;Go to seabed and take a picture&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Establish a connection to the drone</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">(</span><span class="n">log_notifications</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Send the mission to the drone and start it</span>
+<span class="n">d</span><span class="o">.</span><span class="n">mission</span><span class="o">.</span><span class="n">load_and_run</span><span class="p">(</span><span class="n">mission</span><span class="p">)</span>
+
+<span class="c1"># Wait until the mission state becomes MISSION_STATE_COMPLETED</span>
+<span class="k">while</span> <span class="n">d</span><span class="o">.</span><span class="n">mission</span><span class="o">.</span><span class="n">get_status</span><span class="p">()</span><span class="o">.</span><span class="n">state</span> <span class="o">!=</span> <span class="n">bp</span><span class="o">.</span><span class="n">MissionState</span><span class="o">.</span><span class="n">MISSION_STATE_COMPLETED</span><span class="p">:</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Mission completed successfully!&quot;</span><span class="p">)</span>
+</code></pre></div>
+</details>
+<details class="example">
+<summary>Go to waypoints</summary>
+<p>This example shows how one can create multiple waypoints and have the drone go to each of them in sequence.
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging.handlers</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">blueye.protocol</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">bp</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drone</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk.mission</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_waypoint_instruction</span><span class="p">,</span> <span class="n">prepare_new_mission</span>
+
+<span class="c1"># Publish runtime logs over TCP (including mission status notifications)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;blueye.sdk&quot;</span><span class="p">)</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+<span class="n">socket_handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">SocketHandler</span><span class="p">(</span>
+    <span class="s2">&quot;localhost&quot;</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">DEFAULT_TCP_LOGGING_PORT</span>
+<span class="p">)</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">socket_handler</span><span class="p">)</span>
+
+<span class="c1"># Create some waypoints in a (roughly) square pattern</span>
+<span class="c1">#    10.3840°E           10.3841°E</span>
+<span class="c1">#    B ------------------ C 63.4612°N</span>
+<span class="c1">#    |                    |</span>
+<span class="c1">#    |                    |</span>
+<span class="c1">#    |                    |</span>
+<span class="c1">#    A ------------------ D 63.4610°N</span>
+<span class="n">wp_a</span> <span class="o">=</span> <span class="n">create_waypoint_instruction</span><span class="p">(</span><span class="s2">&quot;Point A&quot;</span><span class="p">,</span> <span class="mf">63.4610</span><span class="p">,</span> <span class="mf">10.3840</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">wp_b</span> <span class="o">=</span> <span class="n">create_waypoint_instruction</span><span class="p">(</span><span class="s2">&quot;Point B&quot;</span><span class="p">,</span> <span class="mf">63.4612</span><span class="p">,</span> <span class="mf">10.3840</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">wp_c</span> <span class="o">=</span> <span class="n">create_waypoint_instruction</span><span class="p">(</span><span class="s2">&quot;Point C&quot;</span><span class="p">,</span> <span class="mf">63.4612</span><span class="p">,</span> <span class="mf">10.3842</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">wp_d</span> <span class="o">=</span> <span class="n">create_waypoint_instruction</span><span class="p">(</span><span class="s2">&quot;Point D&quot;</span><span class="p">,</span> <span class="mf">63.4610</span><span class="p">,</span> <span class="mf">10.3842</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+
+
+<span class="c1"># Create a mission with the instructions</span>
+<span class="n">mission</span> <span class="o">=</span> <span class="n">prepare_new_mission</span><span class="p">(</span>
+    <span class="n">instruction_list</span><span class="o">=</span><span class="p">[</span><span class="n">wp_a</span><span class="p">,</span> <span class="n">wp_b</span><span class="p">,</span> <span class="n">wp_c</span><span class="p">,</span> <span class="n">wp_d</span><span class="p">,</span> <span class="n">wp_a</span><span class="p">],</span>
+    <span class="n">mission_id</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">mission_name</span><span class="o">=</span><span class="s2">&quot;Go to waypoints&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Establish a connection to the drone</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">(</span><span class="n">log_notifications</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Send the mission to the drone and start it</span>
+<span class="n">d</span><span class="o">.</span><span class="n">mission</span><span class="o">.</span><span class="n">load_and_run</span><span class="p">(</span><span class="n">mission</span><span class="p">)</span>
+
+<span class="c1"># Wait until the mission state becomes MISSION_STATE_COMPLETED</span>
+<span class="k">while</span> <span class="n">d</span><span class="o">.</span><span class="n">mission</span><span class="o">.</span><span class="n">get_status</span><span class="p">()</span><span class="o">.</span><span class="n">state</span> <span class="o">!=</span> <span class="n">bp</span><span class="o">.</span><span class="n">MissionState</span><span class="o">.</span><span class="n">MISSION_STATE_COMPLETED</span><span class="p">:</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Mission completed successfully!&quot;</span><span class="p">)</span>
+</code></pre></div></p>
+</details>
 
 
 
@@ -1649,8 +1750,8 @@
   <nav class="md-footer__inner md-grid" aria-label="footer.title">
     
     
-    <a href="../peripherals/" class="md-footer__link md-footer__link--prev"
-      aria-label="Previous: Peripherals" rel="prev">
+    <a href="../nmea-publisher/" class="md-footer__link md-footer__link--prev"
+      aria-label="Previous: Forwarding positioning to NMEA" rel="prev">
       <div class="md-footer__button md-icon">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
       </div>
@@ -1659,21 +1760,21 @@
           <span class="md-footer__direction">
             Previous
           </span>
-          Peripherals
+          Forwarding positioning to NMEA
         </div>
       </div>
     </a>
     
     
     
-    <a href="../nmea-publisher/" class="md-footer__link md-footer__link--next"
-      aria-label="Next: Forwarding positioning to NMEA" rel="next">
+    <a href="../odometer-to-831l/" class="md-footer__link md-footer__link--next"
+      aria-label="Next: Odometer forwarding" rel="next">
       <div class="md-footer__title">
         <div class="md-ellipsis">
           <span class="md-footer__direction">
             Next
           </span>
-          Forwarding positioning to NMEA
+          Odometer forwarding
         </div>
       </div>
       <div class="md-footer__button md-icon">

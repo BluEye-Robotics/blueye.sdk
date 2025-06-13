@@ -9,10 +9,10 @@
       
       
       
-        <link rel="prev" href="../configuration/">
+        <link rel="prev" href="../mission-planning/">
       
       
-        <link rel="next" href="../peripherals/">
+        <link rel="next" href="../migrating-to-v2/">
       
       
       <link rel="icon" href="../media/blueye_b.svg">
@@ -20,7 +20,7 @@
     
     
       
-        <title>Subscribing to a telemetry message - Blueye SDK</title>
+        <title>Odometer forwarding - Blueye SDK</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#subscribing-to-a-telemetry-message" class="md-skip">
+        <a href="#odometer-to-imagenex-831l-publisher" class="md-skip">
           Skip to content
         </a>
       
@@ -142,7 +142,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-            Subscribing to a telemetry message
+            Odometer forwarding
             
           </span>
         </div>
@@ -690,31 +690,10 @@
     
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Subscribing to a telemetry message
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../telemetry-callback/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -724,62 +703,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#adding-a-callback" class="md-nav__link">
-    <span class="md-ellipsis">
-      Adding a callback
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#removing-a-callback" class="md-nav__link">
-    <span class="md-ellipsis">
-      Removing a callback
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#adjusting-the-publishing-frequency-of-a-telemetry-message" class="md-nav__link">
-    <span class="md-ellipsis">
-      Adjusting the publishing frequency of a telemetry message
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#example" class="md-nav__link">
-    <span class="md-ellipsis">
-      Example
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -872,10 +795,19 @@
     
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../odometer-to-831l/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -885,6 +817,7 @@
   
 
       </a>
+      
     </li>
   
 
@@ -1412,50 +1345,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#adding-a-callback" class="md-nav__link">
-    <span class="md-ellipsis">
-      Adding a callback
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#removing-a-callback" class="md-nav__link">
-    <span class="md-ellipsis">
-      Removing a callback
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#adjusting-the-publishing-frequency-of-a-telemetry-message" class="md-nav__link">
-    <span class="md-ellipsis">
-      Adjusting the publishing frequency of a telemetry message
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#example" class="md-nav__link">
-    <span class="md-ellipsis">
-      Example
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -1473,23 +1362,25 @@
   
 
 
-<h1 id="subscribing-to-a-telemetry-message">Subscribing to a telemetry message</h1>
-<p>The drone publishes all of its telemetry data as protobuf encoded messages transmitted via a ZeroMQ socket. You can find the protobuf message definitions in the <a href="https://github.com/BluEye-Robotics/ProtocolDefinitions/">Protocol Definitions</a> repository, and the generated python definitions are located in the <a href="https://github.com/BluEye-Robotics/blueye.protocol">blueye.protocol</a> repository.</p>
-<p>Upon connection the <a class="autorefs autorefs-internal" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Drone">Drone object</a> will instantiate an instance of the <a class="autorefs autorefs-internal" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Telemetry">Telemetry class</a> as the <code>telemetry</code> attribute. Using this attribute one can control various telemetry function and add/remove new callbacks.</p>
-<h2 id="adding-a-callback">Adding a callback</h2>
-<p>To add a callback we need to use the <a class="autorefs autorefs-internal" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Telemetry.add_msg_callback"><code>add_msg_callback</code></a> function, and provide it with a list of telemetry messages types we want it to trigger on, as well as a function handle to call. All available telemetry messages can be found in <a class="autorefs autorefs-internal" href="../reference/blueye/protocol/telemetry/#blueye.protocol.types.telemetry">telemetry.proto</a></p>
-<h2 id="removing-a-callback">Removing a callback</h2>
-<p>A callback is removed with <a class="autorefs autorefs-internal" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Telemetry.remove_msg_callback"><code>remove_msg_callback</code></a> using the ID returned when creating the callback.</p>
-<h2 id="adjusting-the-publishing-frequency-of-a-telemetry-message">Adjusting the publishing frequency of a telemetry message</h2>
-<p>By using the <a class="autorefs autorefs-internal" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Telemetry.set_msg_publish_frequency"><code>set_msg_publish_frequency</code></a> function we can alter how often the drone should publish the specified telemetry message. The valid frequency range is 0 to 100 Hz.</p>
-<h2 id="example">Example</h2>
-<p>The following example illustrates how can use a callback to print the depth reported by the drone.</p>
-<div class="highlight"><pre><span></span><code><span class="sd">&quot;&quot;&quot;print_depth.py</span>
+<h1 id="odometer-to-imagenex-831l-publisher">Odometer to Imagenex 831L Publisher</h1>
+<p>This example shows how one can use the blueye.sdk to forward the odometer distance from the position messages from the drone to the PipeSonarL software from Imagenex. The PipeSonarL software is used to operate the <a href="https://imagenex.com/products/831l-pipe-profiling">Imagenex 831L Pipe Profiling sonar</a>.</p>
+<p>The PipeSonarL software accepts input from external cable counting systems, which is used to generate a 3D point cloud from a pipe inspection.</p>
+<p>On a Blueye X3, we can use the odometer distance from the position messages to generate the cable count for the PipeSonarL software. The odometer distance is the distance the drone has traveled since the last reset.</p>
+<p>The script performs the following steps:</p>
+<ol>
+<li><strong>UDP Configuration</strong>: Sets up the UDP IP and port for sending NMEA messages. If your receiver expects to receive data on a different port, you need to change it here.</li>
+<li><strong>Increase publishing frequency</strong>: Increases the publishing frequency of the position estimate message to 5 Hz.</li>
+<li><strong>Drone Connection</strong>: Establishes a connection to the Blueye drone.</li>
+<li><strong>Callback Registration</strong>: Registers a callback function to handle position estimate telemetry messages.</li>
+<li><strong>Main Loop</strong>: Keeps the script running to continuously receive and send messages.</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="sd">&quot;&quot;&quot;publish_odometer_to_831l.py</span>
 
-<span class="sd">This example program demonstrates how one can add a callback function to a telemetry message, as</span>
-<span class="sd">well as how to adjust the frequency of that telemetry message, and how to remove the callback.</span>
+<span class="sd">This example program demonstrates how to publish the drone&#39;s odometer as a cable counter</span>
+<span class="sd">to the PipeSonarL software used to operate the Imagenex 831L Pipe Profiling Sonar.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">socket</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">blueye.protocol</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">bp</span>
@@ -1497,30 +1388,57 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drone</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">callback_depth</span><span class="p">(</span><span class="n">msg_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="n">bp</span><span class="o">.</span><span class="n">DepthTel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Callback for the depth telemetry message</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">callback_position_estimate</span><span class="p">(</span>
+    <span class="n">msg_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="n">bp</span><span class="o">.</span><span class="n">PositionEstimateTel</span><span class="p">,</span> <span class="n">udp_socket</span><span class="p">:</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Callback for the PositionEstimateTel message.&quot;&quot;&quot;</span>
+    <span class="n">odometer</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">position_estimate</span><span class="o">.</span><span class="n">odometer</span> <span class="o">*</span> <span class="mi">1000</span>  <span class="c1"># Convert to mm</span>
+    <span class="n">formatted_message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">{{</span><span class="s2">,#CABLE,</span><span class="si">{</span><span class="n">odometer</span><span class="si">}</span><span class="s2">,mm,</span><span class="se">}}\r\n</span><span class="s2">&quot;</span>
 
-<span class="sd">    This function is called once for every DepthTel message received by the telemetry watcher</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Got a </span><span class="si">{</span><span class="n">msg_type</span><span class="si">}</span><span class="s2"> message with depth: </span><span class="si">{</span><span class="n">msg</span><span class="o">.</span><span class="n">depth</span><span class="o">.</span><span class="n">value</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">udp_socket</span><span class="o">.</span><span class="n">sendto</span><span class="p">(</span><span class="n">formatted_message</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;ascii&quot;</span><span class="p">),</span> <span class="p">(</span><span class="n">UDP_IP</span><span class="p">,</span> <span class="n">UDP_PORT</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sent: </span><span class="si">{</span><span class="n">formatted_message</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="c1"># Instantiate a drone object</span>
-    <span class="n">my_drone</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">()</span>
+    <span class="c1"># UDP configuration</span>
+    <span class="c1"># This IP will broadcast to all devices in the 192.168.1 subnet</span>
+    <span class="n">UDP_IP</span> <span class="o">=</span> <span class="s2">&quot;192.168.1.255&quot;</span>
 
-    <span class="c1"># Add a callback for the DepthTel message, storing the ID for later use</span>
-    <span class="n">callback_id</span> <span class="o">=</span> <span class="n">my_drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">add_msg_callback</span><span class="p">([</span><span class="n">bp</span><span class="o">.</span><span class="n">DepthTel</span><span class="p">],</span> <span class="n">callback_depth</span><span class="p">)</span>
+    <span class="c1"># 1261 is the default UDP port used by the PipeSonarL software.</span>
+    <span class="n">UDP_PORT</span> <span class="o">=</span> <span class="mi">1261</span>
 
-    <span class="c1"># Adjust the publishing frequency to 5 Hz</span>
-    <span class="n">my_drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">set_msg_publish_frequency</span><span class="p">(</span><span class="n">bp</span><span class="o">.</span><span class="n">DepthTel</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+    <span class="n">udp_socket</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_DGRAM</span><span class="p">)</span>
+    <span class="n">udp_socket</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">SOL_SOCKET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SO_BROADCAST</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># Enable broadcasting</span>
 
-    <span class="c1"># Callback is triggered by a separate thread while we sleep here</span>
-    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+    <span class="c1"># Instantiate a drone object and connect to the drone</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Connecting to the drone...&quot;</span><span class="p">)</span>
+        <span class="n">my_drone</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">(</span><span class="n">connect_as_observer</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ConnectionError</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Could not connect to the drone.&quot;</span><span class="p">)</span>
+        <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Connected to the drone.&quot;</span><span class="p">)</span>
 
-    <span class="c1"># Remove the callback using the ID we stored when it was created (not really necessary here</span>
-    <span class="c1"># since the my_drone object goes out of scope immediately afterwards)</span>
-    <span class="n">my_drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">remove_msg_callback</span><span class="p">(</span><span class="n">callback_id</span><span class="p">)</span>
+    <span class="c1"># Increase publishing frequenzy for the PositionEstimateTel message</span>
+    <span class="n">my_drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">set_msg_publish_frequency</span><span class="p">(</span><span class="n">bp</span><span class="o">.</span><span class="n">PositionEstimateTel</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+
+    <span class="c1"># Add a callback for the PositionEstimateTel message</span>
+    <span class="n">my_drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">add_msg_callback</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">bp</span><span class="o">.</span><span class="n">PositionEstimateTel</span><span class="p">],</span> <span class="n">callback_position_estimate</span><span class="p">,</span> <span class="n">udp_socket</span><span class="o">=</span><span class="n">udp_socket</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Keep the script running to receive and send messages</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Press Ctrl+C to exit.&quot;</span><span class="p">)</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Exiting...&quot;</span><span class="p">)</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="c1"># Cleanup</span>
+        <span class="n">my_drone</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
+        <span class="n">udp_socket</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </code></pre></div>
 
 
@@ -1558,8 +1476,8 @@
   <nav class="md-footer__inner md-grid" aria-label="footer.title">
     
     
-    <a href="../configuration/" class="md-footer__link md-footer__link--prev"
-      aria-label="Previous: Configure drone parameters" rel="prev">
+    <a href="../mission-planning/" class="md-footer__link md-footer__link--prev"
+      aria-label="Previous: Mission Planning" rel="prev">
       <div class="md-footer__button md-icon">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
       </div>
@@ -1568,21 +1486,21 @@
           <span class="md-footer__direction">
             Previous
           </span>
-          Configure drone parameters
+          Mission Planning
         </div>
       </div>
     </a>
     
     
     
-    <a href="../peripherals/" class="md-footer__link md-footer__link--next"
-      aria-label="Next: Peripherals" rel="next">
+    <a href="../migrating-to-v2/" class="md-footer__link md-footer__link--next"
+      aria-label="Next: Updating from v1 to v2" rel="next">
       <div class="md-footer__title">
         <div class="md-ellipsis">
           <span class="md-footer__direction">
             Next
           </span>
-          Peripherals
+          Updating from v1 to v2
         </div>
       </div>
       <div class="md-footer__button md-icon">
