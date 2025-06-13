@@ -15,17 +15,15 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.13"
-      - name: Install Poetry
-        uses: abatilo/actions-poetry@v3.0.2
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
         with:
-          poetry-version: "2.0.1"
-      - name: Install dependencies
-        run: poetry install
+         version: "0.7.11"
       - name: Build HTTP documentation
         run:  npx @redocly/cli build-docs http-api.yml --output docs/http-api.html
       - name: Build documentation for publishing
-        run: poetry run mkdocs build --no-directory-urls --site-dir blueye.sdk_docs
-      - name: Build package with poetry, including documentation
-        run: poetry build
+        run: uv run mkdocs build --no-directory-urls --site-dir blueye.sdk_docs
+      - name: Build package (including documentation)
+        run: uv build
       - name: Publish to PyPI
-        run: poetry publish --username __token__ --password ${{ secrets.PYPI_TOKEN }}
+        run: uv publish --username __token__ --password ${{ secrets.PYPI_TOKEN }} dist/blueye_sdk-*
