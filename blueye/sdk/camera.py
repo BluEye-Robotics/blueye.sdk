@@ -984,6 +984,28 @@ class Camera:
         self._parent_drone._req_rep_client.set_camera_parameters(self._camera_parameters)
 
     @property
+    def recording_resolution(self) -> blueye.protocol.Resolution:
+        """Set or get the camera recording resolution.
+
+        Requires Blunux version >= 4.4. For older versions use the
+        [`resolution`][blueye.sdk.camera.Camera.resolution] property.
+
+        Returns:
+            The camera recording resolution.
+        """
+        self._update_camera_parameters()
+        return self._camera_parameters.recording_resolution
+
+    @recording_resolution.setter
+    def recording_resolution(self, resolution: blueye.protocol.Resolution):
+        if not isinstance(resolution, blueye.protocol.Resolution):
+            raise ValueError(f"{resolution} is not a valid resolution type")
+        if self._camera_parameters is None:
+            self._update_camera_parameters()
+        self._camera_parameters.recording_resolution = resolution
+        self._parent_drone._req_rep_client.set_camera_parameters(self._camera_parameters)
+
+    @property
     def framerate(self) -> int:
         """Set or get the camera frame rate.
 
