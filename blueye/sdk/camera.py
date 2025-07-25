@@ -956,6 +956,34 @@ class Camera:
         self._parent_drone._req_rep_client.set_camera_parameters(self._camera_parameters)
 
     @property
+    def stream_resolution(self) -> blueye.protocol.Resolution:
+        """Set or get the camera stream resolution.
+
+        Requires Blunux version >= 4.4. For older versions use the
+        [`resolution`][blueye.sdk.camera.Camera.resolution] property.
+
+        Args:
+            resolution (blueye.protocol.Resolution): Set the camera stream resolution.
+
+        Raises:
+            ValueError: If the resolution is not a valid `blueye.protocol.Resolution` type
+
+        Returns:
+            The camera stream resolution
+        """
+        self._update_camera_parameters()
+        return self._camera_parameters.stream_resolution
+
+    @stream_resolution.setter
+    def stream_resolution(self, resolution: blueye.protocol.Resolution):
+        if not isinstance(resolution, blueye.protocol.Resolution):
+            raise ValueError(f"{resolution} is not a valid resolution type")
+        if self._camera_parameters is None:
+            self._update_camera_parameters()
+        self._camera_parameters.stream_resolution = resolution
+        self._parent_drone._req_rep_client.set_camera_parameters(self._camera_parameters)
+
+    @property
     def framerate(self) -> int:
         """Set or get the camera frame rate.
 
