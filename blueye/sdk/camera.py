@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Optional
 
 import blueye.protocol
 import requests
+from packaging import version
 
 # Necessary to avoid cyclic imports
 if TYPE_CHECKING:
@@ -959,7 +960,7 @@ class Camera:
     def stream_resolution(self) -> blueye.protocol.Resolution:
         """Set or get the camera stream resolution.
 
-        Requires Blunux version >= 4.4. For older versions use the
+        For drones running blunux version < 4.4.1 this is the same as the
         [`resolution`][blueye.sdk.camera.Camera.resolution] property.
 
         Args:
@@ -972,7 +973,13 @@ class Camera:
             The camera stream resolution
         """
         self._update_camera_parameters()
-        return self._camera_parameters.stream_resolution
+
+        # Drones running Blunux < 4.4 do not support stream resolution so we return the old
+        # resolution field instead.
+        if version.parse(self._parent_drone.software_version_short) < version.parse("4.4"):
+            return self._camera_parameters.resolution
+        else:
+            return self._camera_parameters.stream_resolution
 
     @stream_resolution.setter
     def stream_resolution(self, resolution: blueye.protocol.Resolution):
@@ -981,20 +988,28 @@ class Camera:
         if self._camera_parameters is None:
             self._update_camera_parameters()
         self._camera_parameters.stream_resolution = resolution
+        # If the drone is running Blunux < 4.4 we need to set the resolution field as well.
+        self._camera_parameters.resolution = resolution
         self._parent_drone._req_rep_client.set_camera_parameters(self._camera_parameters)
 
     @property
     def recording_resolution(self) -> blueye.protocol.Resolution:
         """Set or get the camera recording resolution.
 
-        Requires Blunux version >= 4.4. For older versions use the
+        For drones running Blunux version < 4.4.1 this is the same as the
         [`resolution`][blueye.sdk.camera.Camera.resolution] property.
 
         Returns:
             The camera recording resolution.
         """
         self._update_camera_parameters()
-        return self._camera_parameters.recording_resolution
+
+        # Drones running Blunux < 4.4 do not support recording resolution so we return the old
+        # resolution field instead.
+        if version.parse(self._parent_drone.software_version_short) < version.parse("4.4"):
+            return self._camera_parameters.resolution
+        else:
+            return self._camera_parameters.recording_resolution
 
     @recording_resolution.setter
     def recording_resolution(self, resolution: blueye.protocol.Resolution):
@@ -1003,6 +1018,8 @@ class Camera:
         if self._camera_parameters is None:
             self._update_camera_parameters()
         self._camera_parameters.recording_resolution = resolution
+        # If the drone is running Blunux < 4.4 we need to set the resolution field as well.
+        self._camera_parameters.resolution = resolution
         self._parent_drone._req_rep_client.set_camera_parameters(self._camera_parameters)
 
     @property
