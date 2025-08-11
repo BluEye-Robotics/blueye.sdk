@@ -41,7 +41,7 @@ class LogStream:
     Creates a stream from a downloaded log file. Iterate over the object to get the next log record.
     """
 
-    def __init__(self, log: bytes, decompress: bool = True) -> Iterator[
+    def __init__(self, log: bytes, decompress: bool = True, deserialize_msg: bool = True) -> Iterator[
         Tuple[
             proto.datetime_helpers.DatetimeWithNanoseconds,  # Real time clock
             timedelta,  # Time since first message
@@ -49,6 +49,7 @@ class LogStream:
             proto.message.Message,  # Message contents
         ]
     ]:
+        self.deserialize_msg = deserialize_msg
         if decompress:
             self.decompressed_log = decompress_log(log)
         else:
@@ -69,14 +70,14 @@ class LogStream:
 
             self.pos = pos_msg_start + msg_size
             msg = bp.BinlogRecord.deserialize(msg_data)
-            payload_type, payload_msg_deserialized = deserialize_any_to_message(msg.payload)
+            payload_type, payload_msg = deserialize_any_to_message(msg.payload, deserialize_msg=self.deserialize_msg)
             if self.start_monotonic == 0:
                 self.start_monotonic = msg.clock_monotonic
             return (
                 msg.unix_timestamp,
                 msg.clock_monotonic - self.start_monotonic,
                 payload_type,
-                payload_msg_deserialized,
+                payload_msg,
             )
         else:
             raise StopIteration

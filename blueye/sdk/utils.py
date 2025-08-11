@@ -34,27 +34,35 @@ def open_local_documentation():
     webbrowser.open(documentation_path)
 
 
-def deserialize_any_to_message(msg: Any) -> Tuple[proto.message.MessageMeta, proto.message.Message]:
+def deserialize_any_to_message(msg: Any, deserialize_msg: bool = True) -> Tuple[proto.message.MessageMeta, proto.message.Message]:
     """Deserialize a protobuf Any message to a concrete message type.
 
     Args:
         msg (Any): The Any message to deserialize. Needs to be a message defined in the
                    blueye.protocol package or a well-known-type (FloatValue, Int32Value, etc) from
                    google.protobuf.wrappers_pb2
+        deserialize_msg (bool): If True, the message will be deserialized to a concrete message type.
+                                If False, the raw payload value will be returned.
 
     Returns:
-        A tuple with the message type and the deserialized message.
+        A tuple with three elements; the message type and the deserialized message, or the raw payload message.
     """
     if msg.type_url.startswith("type.googleapis.com/google.protobuf"):
         payload_msg_name = msg.type_url.replace("type.googleapis.com/google.protobuf.", "")
         payload_type = wrappers.__getattribute__(payload_msg_name)
-        payload_msg_deserialized = payload_type.FromString(msg.value)
-        return (payload_type, payload_msg_deserialized)
+        if deserialize_msg:
+            payload_msg = payload_type.FromString(msg.value)
+        else:
+            payload_msg = msg.value
+        return (payload_type, payload_msg)
 
     payload_msg_name = msg.type_url.replace("type.googleapis.com/blueye.protocol.", "")
     payload_type = bp.__getattribute__(payload_msg_name)
-    payload_msg_deserialized = payload_type.deserialize(msg.value)
-    return (payload_type, payload_msg_deserialized)
+    if deserialize_msg:
+        payload_msg = payload_type.deserialize(msg.value)
+    else:
+        payload_msg = msg.value
+    return (payload_type, payload_msg)
 
 
 def is_scalar_type(msg: proto.message.Message) -> bool:
