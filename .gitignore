@@ -117,3 +117,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Log file formats
+*.mcap
+*.bez
