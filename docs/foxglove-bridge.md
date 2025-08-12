@@ -18,8 +18,8 @@ We have also provided a docker container that you can use to automatically start
 ### How it works
  The script below uses the Blueye SDK to subscribe to the drone telemetry messages with `ZeroMQ`. Then the foxglove websocket server is forwarding the protobuf messages so they can be subscribed to in the `Foxglove GUI`.
 
+### Visualize entire dive logs
+With our `.bez` to `.mcap` log file converter you can easily visualize all the logged data from a dive. Check out the [`Logfile to MCAP converter`](logs/foxglove-bez-to-mcap.md) to get started.
+
 ### Example of a websocket bridge
 {{code_from_file("../examples/foxglove_bridge_ws.py", "python")}}
-
-### Visualize entire dive logs
-With our .bez to .mcap converter you can easily browse all the logged data from a dive. Check out the [`Logfile to MCAP converter`](foxglove-bez-to-mcap.md) to get started.

@@ -1,4 +1,4 @@
-# Visualize logged sensor data from the drone with Foxglove
+# Visualize dive log sensor data with Foxglove
 With some simple steps you can visualize dive log data with ease in Foxglove. This is a great tool to play back and visualize control signals and estimated states and other sensor data from the dive.
 
 1. Download foxglove [here](https://foxglove.dev/download) and create an account.
