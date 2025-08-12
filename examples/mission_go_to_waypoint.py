@@ -16,17 +16,16 @@ socket_handler = logging.handlers.SocketHandler(
 logger.addHandler(socket_handler)
 
 # Create some waypoints in a (roughly) square pattern
-#    10.3840°E           10.3841°E
-#    B ------------------ C 63.4612°N
+#    10.4174°E           10.4176°E
+#    B ------------------ C 63.4418°N
 #    |                    |
 #    |                    |
 #    |                    |
-#    A ------------------ D 63.4610°N
+#    A ------------------ D 63.4415°N
 wp_a = create_waypoint_instruction("Point A", 63.4415, 10.4174, 0)
 wp_b = create_waypoint_instruction("Point B", 63.4418, 10.4176, 0)
 wp_c = create_waypoint_instruction("Point C", 63.4418, 10.4174, 0)
 wp_d = create_waypoint_instruction("Point D", 63.4415, 10.4176, 0)
-wp_e = create_waypoint_instruction("Point E", 63.4415, 10.4175, 0)
 
 
 # Create a mission with the instructions
