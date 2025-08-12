@@ -41,8 +41,6 @@ def deserialize_any_to_message(msg: Any) -> Tuple[proto.message.MessageMeta, pro
         msg (Any): The Any message to deserialize. Needs to be a message defined in the
                    blueye.protocol package or a well-known-type (FloatValue, Int32Value, etc) from
                    google.protobuf.wrappers_pb2
-        deserialize_msg (bool): If True, the message will be deserialized to a concrete message type.
-                                If False, the raw payload value will be returned.
 
     Returns:
         A tuple with the message type and the deserialized message.
