@@ -106,20 +106,18 @@ name = "blueye-protocol"
 version = "3.1.0"
 description = "Python protocol definition for the Blueye drones"
 optional = false
-python-versions = ">=3.10, <4"
+python-versions = "<4,>=3.10"
 groups = ["main"]
-files = []
-develop = true
+files = [
+    {file = "blueye_protocol-3.1.0-py3-none-any.whl", hash = "sha256:38eec1431804d53a035709f6713d94c0f1123071bab31927136c7fbd94be3674"},
+    {file = "blueye_protocol-3.1.0.tar.gz", hash = "sha256:11ffb558651abe1de5e780940cc41aff775a9ea816c5b3212ad795bb2c570a28"},
+]
 
 [package.dependencies]
 proto-plus = ">=1.25,<2.0"
 
 [package.extras]
 legacy = ["blueye.legacyprotocol (>=0.1)"]
-
-[package.source]
-type = "directory"
-url = "../blueye.protocol/protocol"
 
 [[package]]
 name = "certifi"
@@ -2921,4 +2919,4 @@ examples = ["asciimatics", "foxglove_websocket", "inputs", "matplotlib", "mcap-p
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.10"
-content-hash = "3d05baca73b65d6ba6777cd4f024b210fb2fb4a3d855b54219d897db8fe1ccfb"
+content-hash = "2a405e9b24954f59e7a2896159beb3d5afb60742ce5d3a3c34e3c233dcf4fe9a"
