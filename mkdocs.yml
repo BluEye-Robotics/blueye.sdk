@@ -88,13 +88,14 @@ nav:
       - "Downloading videos and images": "video/downloading.md"
   - Logs:
       - "Listing and downloading log files": "logs/listing-and-downloading.md"
+      - "Visualize dive log data in Foxglove": "logs/foxglove-bez-to-mcap.md"
       - "Plotting log files": "logs/plotting.md"
       - "Runtime logs": "logs/runtime-logs.md"
       - "Legacy log file format": "logs/legacy-log-file-format.md"
   - "Configure drone parameters": "configuration.md"
   - "Subscribing to a telemetry message": "telemetry-callback.md"
   - "Peripherals": "peripherals.md"
-  - "Visualizing with Foxglove": "foxglove-bridge.md"
+  - "Visualize live sensor data": "foxglove-bridge.md"
   - "Forwarding positioning to NMEA": "nmea-publisher.md"
   - "Mission Planning": "mission-planning.md"
   - "Odometer forwarding": odometer-to-831l.md
