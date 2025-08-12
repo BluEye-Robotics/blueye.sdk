@@ -34,7 +34,9 @@ def open_local_documentation():
     webbrowser.open(documentation_path)
 
 
-def deserialize_any_to_message(msg: Any, deserialize_msg: bool = True) -> Tuple[proto.message.MessageMeta, proto.message.Message]:
+def deserialize_any_to_message(
+    msg: Any, deserialize_msg: bool = True
+) -> Tuple[proto.message.MessageMeta, proto.message.Message]:
     """Deserialize a protobuf Any message to a concrete message type.
 
     Args:
