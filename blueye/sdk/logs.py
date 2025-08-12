@@ -69,14 +69,14 @@ class LogStream:
 
             self.pos = pos_msg_start + msg_size
             msg = bp.BinlogRecord.deserialize(msg_data)
-            payload_type, payload_msg = deserialize_any_to_message(msg.payload)
+            payload_type, payload_msg_deserialized = deserialize_any_to_message(msg.payload)
             if self.start_monotonic == 0:
                 self.start_monotonic = msg.clock_monotonic
             return (
                 msg.unix_timestamp,
                 msg.clock_monotonic - self.start_monotonic,
                 payload_type,
-                payload_msg,
+                payload_msg_deserialized,
             )
         else:
             raise StopIteration
