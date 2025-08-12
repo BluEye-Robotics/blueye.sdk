@@ -30,13 +30,11 @@ def main(logfile_path, output_mcap_path):
         for record in log_stream:
             unix_ts, delta, msg_type, msg = record
 
-            msg_type_name = msg_type.__name__
-
             writer.write_message(
-                    topic=msg_type_name,
-                    message=msg._pb,
-                    log_time=int(unix_ts.timestamp() * 1e9),
-                    publish_time=int(unix_ts.timestamp() * 1e9),
+                topic=msg_type.__name__,
+                message=msg._pb,
+                log_time=int(unix_ts.timestamp() * 1e9),
+                publish_time=int(unix_ts.timestamp() * 1e9),
             )
             count += 1
 

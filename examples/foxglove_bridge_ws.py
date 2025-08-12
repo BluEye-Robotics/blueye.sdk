@@ -116,7 +116,7 @@ async def main():
         for message_name, schema_base64 in descriptors.items():
             chan_id = await global_server.add_channel(
                 {
-                    "topic": f"blueye.protocol.{message_name}",  # Using the message name as the topic
+                    "topic": message_name,  # Using the message name as the topic
                     "encoding": "protobuf",
                     "schemaName": f"blueye.protocol.{message_name}",
                     "schema": schema_base64,
