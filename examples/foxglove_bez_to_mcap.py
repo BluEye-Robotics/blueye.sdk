@@ -11,7 +11,7 @@ def parse_logfile(log: LogFile | Path):
     if isinstance(log, Path):
         with open(log, "rb") as f:
             log_bytes = f.read()
-    return LogStream(log_bytes, deserialize_msg=True)
+    return LogStream(log_bytes)
 
 
 def main(logfile_path, output_mcap_path):
