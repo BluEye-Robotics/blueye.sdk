@@ -2,7 +2,7 @@ import os
 import time
 from mcap_protobuf.writer import Writer
 import sys
-from blueye.sdk.logs import LogFile, LogStream
+from blueye.sdk.logs import LogStream
 from pathlib import Path
 
 
