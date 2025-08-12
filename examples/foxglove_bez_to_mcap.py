@@ -6,11 +6,10 @@ from blueye.sdk.logs import LogFile, LogStream
 from pathlib import Path
 
 
-def parse_logfile(log: LogFile | Path):
+def parse_logfile(log: Path) -> LogStream:
     log_bytes = b""
-    if isinstance(log, Path):
-        with open(log, "rb") as f:
-            log_bytes = f.read()
+    with open(log, "rb") as f:
+        log_bytes = f.read()
     return LogStream(log_bytes)
 
 
