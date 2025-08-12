@@ -27,9 +27,7 @@ def main(logfile_path, output_mcap_path):
         log_stream = parse_logfile(path)
 
         count = 0
-        for record in log_stream:
-            unix_ts, delta, msg_type, msg = record
-
+        for unix_ts, delta, msg_type, msg in log_stream:
             writer.write_message(
                 topic=msg_type.__name__,
                 message=msg._pb,
