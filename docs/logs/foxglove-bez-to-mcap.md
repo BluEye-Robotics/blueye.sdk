@@ -10,5 +10,5 @@ With some simple steps you can visualize dive log data with ease in Foxglove. Th
 7. Start typing `DepthTel.depth.value` to get auto-complete on all available messages in the protocol.
 8. You can also get a nice overview of the logged messages with this command: `mcap info logfile.mcap` in your terminal.
 
-### Example of a websocket bridge
+### The .bez to .mcap log file converter:
 {{code_from_file("../examples/foxglove_bez_to_mcap.py", "python")}}
