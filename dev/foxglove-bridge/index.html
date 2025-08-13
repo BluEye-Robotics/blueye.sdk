@@ -20,7 +20,7 @@
     
     
       
-        <title>Visualizing with Foxglove - Blueye SDK</title>
+        <title>Visualize live sensor data - Blueye SDK</title>
       
     
     
@@ -142,7 +142,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-            Visualizing with Foxglove
+            Visualize live sensor data
             
           </span>
         </div>
@@ -612,6 +612,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../logs/foxglove-bez-to-mcap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Visualize dive log data in Foxglove
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../logs/plotting/" class="md-nav__link">
         
   
@@ -768,7 +791,7 @@
   
   
   <span class="md-ellipsis">
-    Visualizing with Foxglove
+    Visualize live sensor data
     
   </span>
   
@@ -781,7 +804,7 @@
   
   
   <span class="md-ellipsis">
-    Visualizing with Foxglove
+    Visualize live sensor data
     
   </span>
   
@@ -816,6 +839,15 @@
   <a href="#how-it-works" class="md-nav__link">
     <span class="md-ellipsis">
       How it works
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#visualize-entire-dive-logs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Visualize entire dive logs
     </span>
   </a>
   
@@ -1475,6 +1507,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#visualize-entire-dive-logs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Visualize entire dive logs
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example-of-a-websocket-bridge" class="md-nav__link">
     <span class="md-ellipsis">
       Example of a websocket bridge
@@ -1521,6 +1562,8 @@
 </ol>
 <h3 id="how-it-works">How it works</h3>
 <p>The script below uses the Blueye SDK to subscribe to the drone telemetry messages with <code>ZeroMQ</code>. Then the foxglove websocket server is forwarding the protobuf messages so they can be subscribed to in the <code>Foxglove GUI</code>.</p>
+<h3 id="visualize-entire-dive-logs">Visualize entire dive logs</h3>
+<p>With our <code>.bez</code> to <code>.mcap</code> log file converter you can easily visualize all the logged data from a dive. Check out the <a href="../logs/foxglove-bez-to-mcap/"><code>Logfile to MCAP converter</code></a> to get started.</p>
 <h3 id="example-of-a-websocket-bridge">Example of a websocket bridge</h3>
 <div class="highlight"><pre><span></span><code><span class="ch">#!/usr/bin/env python3</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
@@ -1640,7 +1683,7 @@
         <span class="k">for</span> <span class="n">message_name</span><span class="p">,</span> <span class="n">schema_base64</span> <span class="ow">in</span> <span class="n">descriptors</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">chan_id</span> <span class="o">=</span> <span class="k">await</span> <span class="n">global_server</span><span class="o">.</span><span class="n">add_channel</span><span class="p">(</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;topic&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;blueye.protocol.</span><span class="si">{</span><span class="n">message_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>  <span class="c1"># Using the message name as the topic</span>
+                    <span class="s2">&quot;topic&quot;</span><span class="p">:</span> <span class="n">message_name</span><span class="p">,</span>  <span class="c1"># Using the message name as the topic</span>
                     <span class="s2">&quot;encoding&quot;</span><span class="p">:</span> <span class="s2">&quot;protobuf&quot;</span><span class="p">,</span>
                     <span class="s2">&quot;schemaName&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;blueye.protocol.</span><span class="si">{</span><span class="n">message_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
                     <span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="n">schema_base64</span><span class="p">,</span>

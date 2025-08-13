@@ -612,6 +612,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../logs/foxglove-bez-to-mcap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Visualize dive log data in Foxglove
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../logs/plotting/" class="md-nav__link">
         
   
@@ -759,7 +782,7 @@
   
   
   <span class="md-ellipsis">
-    Visualizing with Foxglove
+    Visualize live sensor data
     
   </span>
   
@@ -1730,16 +1753,16 @@
 <span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">socket_handler</span><span class="p">)</span>
 
 <span class="c1"># Create some waypoints in a (roughly) square pattern</span>
-<span class="c1">#    10.3840°E           10.3841°E</span>
-<span class="c1">#    B ------------------ C 63.4612°N</span>
+<span class="c1">#    10.4174°E           10.4176°E</span>
+<span class="c1">#    B ------------------ C 63.4418°N</span>
 <span class="c1">#    |                    |</span>
 <span class="c1">#    |                    |</span>
 <span class="c1">#    |                    |</span>
-<span class="c1">#    A ------------------ D 63.4610°N</span>
-<span class="n">wp_a</span> <span class="o">=</span> <span class="n">create_waypoint_instruction</span><span class="p">(</span><span class="s2">&quot;Point A&quot;</span><span class="p">,</span> <span class="mf">63.4610</span><span class="p">,</span> <span class="mf">10.3840</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-<span class="n">wp_b</span> <span class="o">=</span> <span class="n">create_waypoint_instruction</span><span class="p">(</span><span class="s2">&quot;Point B&quot;</span><span class="p">,</span> <span class="mf">63.4612</span><span class="p">,</span> <span class="mf">10.3840</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-<span class="n">wp_c</span> <span class="o">=</span> <span class="n">create_waypoint_instruction</span><span class="p">(</span><span class="s2">&quot;Point C&quot;</span><span class="p">,</span> <span class="mf">63.4612</span><span class="p">,</span> <span class="mf">10.3842</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-<span class="n">wp_d</span> <span class="o">=</span> <span class="n">create_waypoint_instruction</span><span class="p">(</span><span class="s2">&quot;Point D&quot;</span><span class="p">,</span> <span class="mf">63.4610</span><span class="p">,</span> <span class="mf">10.3842</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="c1">#    A ------------------ D 63.4415°N</span>
+<span class="n">wp_a</span> <span class="o">=</span> <span class="n">create_waypoint_instruction</span><span class="p">(</span><span class="s2">&quot;Point A&quot;</span><span class="p">,</span> <span class="mf">63.4415</span><span class="p">,</span> <span class="mf">10.4174</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">wp_b</span> <span class="o">=</span> <span class="n">create_waypoint_instruction</span><span class="p">(</span><span class="s2">&quot;Point B&quot;</span><span class="p">,</span> <span class="mf">63.4418</span><span class="p">,</span> <span class="mf">10.4176</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">wp_c</span> <span class="o">=</span> <span class="n">create_waypoint_instruction</span><span class="p">(</span><span class="s2">&quot;Point C&quot;</span><span class="p">,</span> <span class="mf">63.4418</span><span class="p">,</span> <span class="mf">10.4174</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">wp_d</span> <span class="o">=</span> <span class="n">create_waypoint_instruction</span><span class="p">(</span><span class="s2">&quot;Point D&quot;</span><span class="p">,</span> <span class="mf">63.4415</span><span class="p">,</span> <span class="mf">10.4176</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
 
 <span class="c1"># Create a mission with the instructions</span>

@@ -9,10 +9,10 @@
       
       
       
-        <link rel="prev" href="../../video/downloading/">
+        <link rel="prev" href="../listing-and-downloading/">
       
       
-        <link rel="next" href="../foxglove-bez-to-mcap/">
+        <link rel="next" href="../plotting/">
       
       
       <link rel="icon" href="../../media/blueye_b.svg">
@@ -20,7 +20,7 @@
     
     
       
-        <title>Listing and downloading log files - Blueye SDK</title>
+        <title>Visualize dive log data in Foxglove - Blueye SDK</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#logs-from-the-drone" class="md-skip">
+        <a href="#visualize-dive-log-sensor-data-with-foxglove" class="md-skip">
           Skip to content
         </a>
       
@@ -142,7 +142,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-            Listing and downloading log files
+            Visualize dive log data in Foxglove
             
           </span>
         </div>
@@ -588,6 +588,29 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../listing-and-downloading/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Listing and downloading log files
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -605,7 +628,7 @@
   
   
   <span class="md-ellipsis">
-    Listing and downloading log files
+    Visualize dive log data in Foxglove
     
   </span>
   
@@ -618,7 +641,7 @@
   
   
   <span class="md-ellipsis">
-    Listing and downloading log files
+    Visualize dive log data in Foxglove
     
   </span>
   
@@ -641,27 +664,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#listing-the-log-files" class="md-nav__link">
+  <a href="#example-of-a-websocket-bridge" class="md-nav__link">
     <span class="md-ellipsis">
-      Listing the log files
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#selecting-a-log-file" class="md-nav__link">
-    <span class="md-ellipsis">
-      Selecting a log file
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#downloading-a-log-file-to-your-computer" class="md-nav__link">
-    <span class="md-ellipsis">
-      Downloading a log file to your computer
+      Example of a websocket bridge
     </span>
   </a>
   
@@ -671,29 +676,6 @@
   
 </nav>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../foxglove-bez-to-mcap/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Visualize dive log data in Foxglove
-    
-  </span>
-  
-
-      </a>
     </li>
   
 
@@ -1482,27 +1464,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#listing-the-log-files" class="md-nav__link">
+  <a href="#example-of-a-websocket-bridge" class="md-nav__link">
     <span class="md-ellipsis">
-      Listing the log files
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#selecting-a-log-file" class="md-nav__link">
-    <span class="md-ellipsis">
-      Selecting a log file
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#downloading-a-log-file-to-your-computer" class="md-nav__link">
-    <span class="md-ellipsis">
-      Downloading a log file to your computer
+      Example of a websocket bridge
     </span>
   </a>
   
@@ -1527,172 +1491,75 @@
   
 
 
-<h1 id="logs-from-the-drone">Logs from the drone</h1>
-<p>When the drone is powered on a new log file is created, where it stores telemetry data such as depth, temperature, and more, is created. The drone will log data as long as it is powered on. These files can be downloaded to your local system where you can plot them or use them however you see fit.</p>
-<p>Blunux v3.0 introduced a a modern binary log format to replace the older CSV-based logs. This updated format employs gzip compression and Google's Protocol Buffers (Protobuf) for serialization. Gzip compression reduces log file sizes, optimizing storage and data transfer. The integration of Protobuf streamlines log parsing and analysis, offering more efficient data handling.</p>
-<p>Every entry in the binary log is a <a class="autorefs autorefs-internal" href="../../reference/blueye/protocol/message_formats/#blueye.protocol.types.message_formats.BinlogRecord">BinlogRecord</a> Protobuf message, which in turn contains a unix timestamp in UTC, the monotonic timestamp (time since boot), and an Any message wrapping the Blueye telemetry message. The telemetry messages are documented in the <a class="autorefs autorefs-internal" href="../../reference/blueye/protocol/telemetry/#blueye.protocol.types.telemetry">telemetry proto</a>.</p>
-<h2 id="listing-the-log-files">Listing the log files</h2>
-<p>If your drone has completed 5 dives and you do</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Binary logs</label><label for="__tabbed_1_2">Legacy logs</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drone</span>
-<span class="n">myDrone</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">myDrone</span><span class="o">.</span><span class="n">logs</span><span class="p">)</span>
+<h1 id="visualize-dive-log-sensor-data-with-foxglove">Visualize dive log sensor data with Foxglove</h1>
+<p>With some simple steps you can visualize dive log data with ease in Foxglove. This is a great tool to play back and visualize control signals and estimated states and other sensor data from the dive.</p>
+<ol>
+<li>Download foxglove <a href="https://foxglove.dev/download">here</a> and create an account.</li>
+<li>Download a divelog from the drone as shown <a href="https://blueye-robotics.github.io/blueye.sdk/latest/logs/listing-and-downloading/">here</a>.</li>
+<li>Run <code>pip install "blueye.sdk[examples]"</code> to get the necessary dependencies, if you have not done so already.</li>
+<li>Clone the <a href="https://github.com/BluEye-Robotics/blueye.sdk">blueye.sdk repository</a> to get the examples, or copy the script below into a file. In the examples folder you simply run <code>python foxglove_bez_to_mcap.py &lt;logfile.bez&gt; [output_filename.mcap]</code> to convert your .bez-file.</li>
+<li>Open foxglove, in the top left menu, click on <code>Open local file</code>, and pick your newly created .mcap-file.</li>
+<li>Click on <code>Add panel</code>, and <code>Raw message</code>, or <code>Plot</code> and select the signal you want to display.</li>
+<li>Start typing <code>DepthTel.depth.value</code> to get auto-complete on all available messages in the protocol.</li>
+<li>You can also get a nice overview of the logged messages with this command: <code>mcap info logfile.mcap</code> in your terminal.</li>
+</ol>
+<h3 id="example-of-a-websocket-bridge">Example of a websocket bridge</h3>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mcap_protobuf.writer</span><span class="w"> </span><span class="kn">import</span> <span class="n">Writer</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk.logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogStream</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_logfile</span><span class="p">(</span><span class="n">log</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LogStream</span><span class="p">:</span>
+    <span class="n">log_bytes</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">log</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">log_bytes</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">LogStream</span><span class="p">(</span><span class="n">log_bytes</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">logfile_path</span><span class="p">,</span> <span class="n">output_mcap_path</span><span class="p">):</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Converting </span><span class="si">{</span><span class="n">logfile_path</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">output_mcap_path</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Prepare MCAP writer</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_mcap_path</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">mcap_file</span><span class="p">:</span>
+        <span class="n">writer</span> <span class="o">=</span> <span class="n">Writer</span><span class="p">(</span><span class="n">mcap_file</span><span class="p">)</span>
+
+        <span class="c1"># Read messages from the log file, deserialize, and forward the protobuf object to the MCAP file.</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">logfile_path</span><span class="p">)</span>
+        <span class="n">log_stream</span> <span class="o">=</span> <span class="n">parse_logfile</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+        <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">unix_ts</span><span class="p">,</span> <span class="n">delta</span><span class="p">,</span> <span class="n">msg_type</span><span class="p">,</span> <span class="n">msg</span> <span class="ow">in</span> <span class="n">log_stream</span><span class="p">:</span>
+            <span class="n">writer</span><span class="o">.</span><span class="n">write_message</span><span class="p">(</span>
+                <span class="n">topic</span><span class="o">=</span><span class="n">msg_type</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+                <span class="n">message</span><span class="o">=</span><span class="n">msg</span><span class="o">.</span><span class="n">_pb</span><span class="p">,</span>
+                <span class="n">log_time</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">unix_ts</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span> <span class="o">*</span> <span class="mf">1e9</span><span class="p">),</span>
+                <span class="n">publish_time</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">unix_ts</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span> <span class="o">*</span> <span class="mf">1e9</span><span class="p">),</span>
+            <span class="p">)</span>
+            <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># Add indexes to the MCAP file</span>
+        <span class="n">writer</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MCAP file successfully created!&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total of messages written: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start_time</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="si">}</span><span class="s2"> seconds&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MCAP file name: </span><span class="si">{</span><span class="n">output_mcap_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MCAP file size: </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">output_mcap_path</span><span class="p">)</span><span class="o">/</span><span class="mi">1000000</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2"> MB&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Start of dive time: </span><span class="si">{</span><span class="n">unix_ts</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">delta</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Duration of dive log: </span><span class="si">{</span><span class="n">delta</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Usage: python bez_to_mcap.py &lt;logfile.bez&gt; [output_filename.mcap]&quot;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">logfile</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="k">else</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.bez&quot;</span><span class="p">,</span> <span class="s2">&quot;.mcap&quot;</span><span class="p">)</span>
+    <span class="n">main</span><span class="p">(</span><span class="n">logfile</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
 </code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drone</span>
-<span class="n">myDrone</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">myDrone</span><span class="o">.</span><span class="n">legacy_logs</span><span class="p">)</span>
-</code></pre></div>
-</div>
-</div>
-</div>
-<p>you should see something like the following lines be printed</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Binary logs</label><label for="__tabbed_2_2">Legacy logs</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<p><div class="highlight"><pre><span></span><code>Name                                Time                Max depth    Size
-BYEDP000000_ea9ac92e1817a1d4_00000  07. Aug 2023 12:10  7 m          217.1 KiB
-BYEDP000000_ea9ac92e1817a1d4_00001  08. Aug 2023 12:35  20 m         1.6 MiB
-BYEDP000000_ea9ac92e1817a1d4_00002  09. Aug 2023 14:20  100 m        3.8 MiB
-BYEDP000000_ea9ac92e1817a1d4_00003  10. Aug 2023 09:15  200 m        6.5 MiB
-BYEDP000000_ea9ac92e1817a1d4_00004  11. Aug 2023 15:01  300 m        10.2 MiB
-</code></pre></div>
-The first part of the filename (the part before the _) is the serial number of your drone, the second part is the unique ID of the drone, and the third part is the dive number. In addition we see the start time of the dive, the maximum depth reached, as well as the size of the log file.</p>
-<p>Max depth is rounded down to the nearest meter for dives up to 10 meters, rounded down to the nearest 10 meters for dives up to 100 meters, and rounded down to the nearest 100 meters for deeper dives.</p>
-</div>
-<div class="tabbed-block">
-<div class="highlight"><pre><span></span><code>Name                        Time                Max depth  Size
-ea9add4d40f69d4-00000.csv   24. Oct 2018 09:40  21.05 m    6.3 MiB
-ea9add4d40f69d4-00001.csv   25. Oct 2018 10:29  21.06 m    879.2 KiB
-ea9add4d40f69d4-00002.csv   31. Oct 2018 10:05  60.69 m    8.5 MiB
-ea9add4d40f69d4-00003.csv   31. Oct 2018 12:13  41.68 m    8.4 MiB
-ea9add4d40f69d4-00004.csv   02. Nov 2018 08:59  52.52 m    7.8 MiB
-</code></pre></div>
-<p>The first part of the filename (the part before the -) is the unique ID of your drone and second part is the dive number. In addition we see the start time of the dive, the maximum depth reached, as well as the size of the log file.</p>
-<p>The drone will by default filter out logs with a max depth below 20 cm. If you wish to list all logs you can do so by manually refreshing the log index with the <code>get_all_logs</code> parameter set to to <code>True</code>.</p>
-<div class="highlight"><pre><span></span><code><span class="n">myDrone</span><span class="o">.</span><span class="n">legacy_logs</span><span class="o">.</span><span class="n">refresh_log_index</span><span class="p">(</span><span class="n">get_all_logs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</code></pre></div>
-</div>
-</div>
-</div>
-<h2 id="selecting-a-log-file">Selecting a log file</h2>
-<p>There are multiple ways to select a log file from the logs index, here are some examples showing how to select by index, by name, and by slice.</p>
-<div class="admonition example">
-<p class="admonition-title">By index</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Binary logs</label><label for="__tabbed_3_2">Legacy logs</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="n">first_log</span><span class="p">:</span> <span class="n">LogFile</span> <span class="o">=</span> <span class="n">myDrone</span><span class="o">.</span><span class="n">logs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="n">last_log</span><span class="p">:</span> <span class="n">LogFile</span> <span class="o">=</span> <span class="n">myDrone</span><span class="o">.</span><span class="n">logs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-</code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="n">first_log</span><span class="p">:</span> <span class="n">LegacyLogFile</span> <span class="o">=</span> <span class="n">myDrone</span><span class="o">.</span><span class="n">legacy_logs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="n">last_log</span><span class="p">:</span> <span class="n">LegacyLogFile</span> <span class="o">=</span> <span class="n">myDrone</span><span class="o">.</span><span class="n">legacy_logs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-</code></pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="admonition example">
-<p class="admonition-title">By name</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Binary logs</label><label for="__tabbed_4_2">Legacy logs</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="n">log</span><span class="p">:</span> <span class="n">LogFile</span> <span class="o">=</span> <span class="n">myDrone</span><span class="o">.</span><span class="n">logs</span><span class="p">[</span><span class="s2">&quot;BYEDP000000_ea9ac92e1817a1d4_00000&quot;</span><span class="p">]</span>
-</code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="n">log</span><span class="p">:</span> <span class="n">LegacyLogFile</span> <span class="o">=</span> <span class="n">myDrone</span><span class="o">.</span><span class="n">legacy_logs</span><span class="p">[</span><span class="s2">&quot;ea9add4d40f69d4-00000.csv&quot;</span><span class="p">]</span>
-</code></pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="admonition example">
-<p class="admonition-title">By slice</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Binary logs</label><label for="__tabbed_5_2">Legacy logs</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="n">first_three_logs</span><span class="p">:</span> <span class="n">Logs</span> <span class="o">=</span> <span class="n">myDrone</span><span class="o">.</span><span class="n">logs</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
-<span class="n">every_other_log</span><span class="p">:</span> <span class="n">Logs</span> <span class="o">=</span> <span class="n">myDrone</span><span class="o">.</span><span class="n">logs</span><span class="p">[::</span><span class="mi">2</span><span class="p">]</span>
-</code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="n">first_three_logs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">LegacyLogFile</span><span class="p">]</span> <span class="o">=</span> <span class="n">myDrone</span><span class="o">.</span><span class="n">legacy_logs</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
-<span class="n">every_other_log</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">LegacyLogFile</span><span class="p">]</span> <span class="o">=</span> <span class="n">myDrone</span><span class="o">.</span><span class="n">legacy_logs</span><span class="p">[::</span><span class="mi">2</span><span class="p">]</span>
-</code></pre></div>
-</div>
-</div>
-</div>
-</div>
-<h2 id="downloading-a-log-file-to-your-computer">Downloading a log file to your computer</h2>
-<p>When you want to download a log file all you have to do is to call the <code>download()</code>
-method on the desired log and the file will be downloaded to your current folder.</p>
-<p>Following are some examples of how one can download log files.</p>
-<div class="admonition example">
-<p class="admonition-title">Downloading a single log file</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Binary logs</label><label for="__tabbed_6_2">Legacy logs</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<p>The following will download the first log with its default name to the current folder:
-<div class="highlight"><pre><span></span><code><span class="n">myDrone</span><span class="o">.</span><span class="n">logs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">download</span><span class="p">()</span>
-</code></pre></div></p>
-<p>If we wish to specify the name/path of the log file we can use the optional <code>output_path</code> parameter:
-<div class="highlight"><pre><span></span><code><span class="n">myDrone</span><span class="o">.</span><span class="n">logs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="n">output_path</span><span class="o">=</span><span class="s2">&quot;/tmp/my_log.bez&quot;</span><span class="p">)</span>
-</code></pre></div></p>
-</div>
-<div class="tabbed-block">
-<p><div class="highlight"><pre><span></span><code><span class="n">myDrone</span><span class="o">.</span><span class="n">legacy_logs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">download</span><span class="p">()</span>
-</code></pre></div>
-The <code>download()</code> method takes two optional parameters, <code>output_path</code> and <code>output_name</code>. These specify, respectively, which folder the log is downloaded to and what name it's stored with. So if we want to download the first log to the folder <code>/tmp</code> and name it <code>my_log</code> we can do</p>
-<div class="highlight"><pre><span></span><code><span class="n">myDrone</span><span class="o">.</span><span class="n">legacy_logs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="n">output_path</span><span class="o">=</span><span class="s2">&quot;/tmp&quot;</span><span class="p">,</span> <span class="n">output_name</span><span class="o">=</span><span class="s2">&quot;my_log&quot;</span><span class="p">)</span>
-</code></pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="admonition example">
-<p class="admonition-title">Downloading multiple log files</p>
-<p>Downloading multiple log files is solved by a simple Python for-loop. The example below shows how one can download the last 3 logs to the current folder:</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Binary logs</label><label for="__tabbed_7_2">Legacy logs</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="k">for</span> <span class="n">log</span> <span class="ow">in</span> <span class="n">myDrone</span><span class="o">.</span><span class="n">logs</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]:</span>
-    <span class="n">log</span><span class="o">.</span><span class="n">download</span><span class="p">()</span>
-</code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="k">for</span> <span class="n">log</span> <span class="ow">in</span> <span class="n">myDrone</span><span class="o">.</span><span class="n">legacy_logs</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]:</span>
-    <span class="n">log</span><span class="o">.</span><span class="n">download</span><span class="p">()</span>
-</code></pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="admonition example">
-<p class="admonition-title">Adding a prefix to log names</p>
-<p>The example code below shows how one can add a simple prefix to all log files when downloading:</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="8:2"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><input id="__tabbed_8_2" name="__tabbed_8" type="radio" /><div class="tabbed-labels"><label for="__tabbed_8_1">Binary logs</label><label for="__tabbed_8_2">Legacy logs</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="n">prefix</span> <span class="o">=</span> <span class="s2">&quot;pre_&quot;</span>
-<span class="k">for</span> <span class="n">log</span> <span class="ow">in</span> <span class="n">myDrone</span><span class="o">.</span><span class="n">logs</span><span class="p">:</span>
-    <span class="n">log</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="n">output_path</span><span class="o">=</span><span class="n">prefix</span><span class="o">+</span><span class="n">log</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot;.bez&quot;</span><span class="p">)</span>
-</code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="n">prefix</span> <span class="o">=</span> <span class="s2">&quot;pre_&quot;</span>
-<span class="k">for</span> <span class="n">log</span> <span class="ow">in</span> <span class="n">myDrone</span><span class="o">.</span><span class="n">logs</span><span class="p">:</span>
-    <span class="n">log</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="n">output_name</span><span class="o">=</span><span class="n">prefix</span><span class="o">+</span><span class="n">log</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-</code></pre></div>
-</div>
-</div>
-</div>
-</div>
 
 
 
@@ -1729,8 +1596,8 @@ The <code>download()</code> method takes two optional parameters, <code>output_p
   <nav class="md-footer__inner md-grid" aria-label="footer.title">
     
     
-    <a href="../../video/downloading/" class="md-footer__link md-footer__link--prev"
-      aria-label="Previous: Downloading videos and images" rel="prev">
+    <a href="../listing-and-downloading/" class="md-footer__link md-footer__link--prev"
+      aria-label="Previous: Listing and downloading log files" rel="prev">
       <div class="md-footer__button md-icon">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
       </div>
@@ -1739,21 +1606,21 @@ The <code>download()</code> method takes two optional parameters, <code>output_p
           <span class="md-footer__direction">
             Previous
           </span>
-          Downloading videos and images
+          Listing and downloading log files
         </div>
       </div>
     </a>
     
     
     
-    <a href="../foxglove-bez-to-mcap/" class="md-footer__link md-footer__link--next"
-      aria-label="Next: Visualize dive log data in Foxglove" rel="next">
+    <a href="../plotting/" class="md-footer__link md-footer__link--next"
+      aria-label="Next: Plotting log files" rel="next">
       <div class="md-footer__title">
         <div class="md-ellipsis">
           <span class="md-footer__direction">
             Next
           </span>
-          Visualize dive log data in Foxglove
+          Plotting log files
         </div>
       </div>
       <div class="md-footer__button md-icon">
