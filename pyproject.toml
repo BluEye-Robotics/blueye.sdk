@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "blueye.sdk"
-version = "2.5.1"
+version = "2.5.2"
 description = "SDK for controlling a Blueye underwater drone"
 authors = ["Sindre Hansen <sindre.hansen@blueye.no>",
            "Johannes Schrimpf <johannes.schrimpf@blueye.no>",
@@ -23,6 +23,7 @@ pandas = {version = "^2.2", optional = true}
 matplotlib = {version = "^3.10", optional = true}
 webdavclient3 = {version = "^3.14.6", optional = true}
 foxglove_websocket = {version= "^0.1.2", optional = true}
+mcap-protobuf-support = {version = "^0.5.3", optional = true}
 pyserial = {version = "^3.5", optional = true}
 requests = "^2.22.0"
 tabulate = "^0.9"
@@ -49,7 +50,7 @@ mkdocstrings = {version = "^0.27.0", extras = ["python"]}
 mkdocs-gen-files = "^0.5.0"
 
 [tool.poetry.extras]
-examples = ["inputs", "asciimatics", "pandas", "matplotlib", "webdavclient3", "foxglove_websocket", "pyserial"]
+examples = ["inputs", "asciimatics", "pandas", "matplotlib", "webdavclient3", "foxglove_websocket", "mcap-protobuf-support", "pyserial"]
 
 [tool.black]
 line-length = 100
