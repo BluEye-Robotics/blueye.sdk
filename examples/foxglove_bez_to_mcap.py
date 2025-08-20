@@ -14,7 +14,7 @@ def parse_logfile(log: Path) -> LogStream:
 
 
 def main(logfile_path, output_mcap_path):
-    start_time = time.time()
+    start_time_tic = time.time()
     print(f"Converting {logfile_path} to {output_mcap_path}...")
 
     # Prepare MCAP writer
@@ -23,15 +23,23 @@ def main(logfile_path, output_mcap_path):
 
         # Read messages from the log file, deserialize, and forward the protobuf object to the MCAP file.
         path = Path(logfile_path)
-        log_stream = parse_logfile(path)
+
+        # We need to get the last message's timestamp and delta in order to get the correct start time
+        # after the clock is set. The delta time is then added to the start time to get a continuous timeline in foxglove.
+        last_time = 0
+        last_delta = 0
+        for last_time, last_delta, _, _ in parse_logfile(path):
+            continue
+
+        start_time = last_time - last_delta
 
         count = 0
-        for unix_ts, delta, msg_type, msg in log_stream:
+        for unix_ts, delta, msg_type, msg in parse_logfile(path):
             writer.write_message(
                 topic=msg_type.__name__,
                 message=msg._pb,
-                log_time=int(unix_ts.timestamp() * 1e9),
-                publish_time=int(unix_ts.timestamp() * 1e9),
+                log_time=int((start_time + delta).timestamp() * 1e9),
+                publish_time=int((start_time + delta).timestamp() * 1e9),
             )
             count += 1
 
@@ -39,7 +47,7 @@ def main(logfile_path, output_mcap_path):
         writer.finish()
 
         print(f"MCAP file successfully created!")
-        print(f"Total of messages written: {count} in {round(time.time() - start_time, 3)} seconds")
+        print(f"Total of messages written: {count} in {round(time.time() - start_time_tic, 3)} seconds")
         print(f"MCAP file name: {output_mcap_path}")
         print(f"MCAP file size: {round(os.path.getsize(output_mcap_path)/1000000, 2)} MB")
         print(f"Start of dive time: {unix_ts - delta}")
