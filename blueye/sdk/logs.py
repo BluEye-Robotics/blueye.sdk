@@ -67,7 +67,6 @@ class LogStream:
             if len(msg_data) < msg_size:
                 raise EOFError("Not enough bytes to read message")
 
-
             self.pos = pos_msg_start + msg_size
             msg = bp.BinlogRecord.deserialize(msg_data)
             try:

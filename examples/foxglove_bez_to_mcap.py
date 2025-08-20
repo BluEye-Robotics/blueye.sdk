@@ -47,7 +47,9 @@ def main(logfile_path, output_mcap_path):
         writer.finish()
 
         print(f"MCAP file successfully created!")
-        print(f"Total of messages written: {count} in {round(time.time() - start_time_tic, 3)} seconds")
+        print(
+            f"Total of messages written: {count} in {round(time.time() - start_time_tic, 3)} seconds"
+        )
         print(f"MCAP file name: {output_mcap_path}")
         print(f"MCAP file size: {round(os.path.getsize(output_mcap_path)/1000000, 2)} MB")
         print(f"Start of dive time: {unix_ts - delta}")
