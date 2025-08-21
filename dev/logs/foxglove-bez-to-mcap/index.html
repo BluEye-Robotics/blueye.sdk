@@ -1520,7 +1520,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">logfile_path</span><span class="p">,</span> <span class="n">output_mcap_path</span><span class="p">):</span>
-    <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">start_time_tic</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Converting </span><span class="si">{</span><span class="n">logfile_path</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">output_mcap_path</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
 
     <span class="c1"># Prepare MCAP writer</span>
@@ -1529,15 +1529,23 @@
 
         <span class="c1"># Read messages from the log file, deserialize, and forward the protobuf object to the MCAP file.</span>
         <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">logfile_path</span><span class="p">)</span>
-        <span class="n">log_stream</span> <span class="o">=</span> <span class="n">parse_logfile</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+        <span class="c1"># We need to get the last message&#39;s timestamp and delta in order to get the correct start time</span>
+        <span class="c1"># after the clock is set. The delta time is then added to the start time to get a continuous timeline in foxglove.</span>
+        <span class="n">last_time</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">last_delta</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">last_time</span><span class="p">,</span> <span class="n">last_delta</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">parse_logfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+            <span class="k">continue</span>
+
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">last_time</span> <span class="o">-</span> <span class="n">last_delta</span>
 
         <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">for</span> <span class="n">unix_ts</span><span class="p">,</span> <span class="n">delta</span><span class="p">,</span> <span class="n">msg_type</span><span class="p">,</span> <span class="n">msg</span> <span class="ow">in</span> <span class="n">log_stream</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">unix_ts</span><span class="p">,</span> <span class="n">delta</span><span class="p">,</span> <span class="n">msg_type</span><span class="p">,</span> <span class="n">msg</span> <span class="ow">in</span> <span class="n">parse_logfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
             <span class="n">writer</span><span class="o">.</span><span class="n">write_message</span><span class="p">(</span>
                 <span class="n">topic</span><span class="o">=</span><span class="n">msg_type</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
                 <span class="n">message</span><span class="o">=</span><span class="n">msg</span><span class="o">.</span><span class="n">_pb</span><span class="p">,</span>
-                <span class="n">log_time</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">unix_ts</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span> <span class="o">*</span> <span class="mf">1e9</span><span class="p">),</span>
-                <span class="n">publish_time</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">unix_ts</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span> <span class="o">*</span> <span class="mf">1e9</span><span class="p">),</span>
+                <span class="n">log_time</span><span class="o">=</span><span class="nb">int</span><span class="p">((</span><span class="n">start_time</span> <span class="o">+</span> <span class="n">delta</span><span class="p">)</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span> <span class="o">*</span> <span class="mf">1e9</span><span class="p">),</span>
+                <span class="n">publish_time</span><span class="o">=</span><span class="nb">int</span><span class="p">((</span><span class="n">start_time</span> <span class="o">+</span> <span class="n">delta</span><span class="p">)</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span> <span class="o">*</span> <span class="mf">1e9</span><span class="p">),</span>
             <span class="p">)</span>
             <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
 
@@ -1545,7 +1553,9 @@
         <span class="n">writer</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
 
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MCAP file successfully created!&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total of messages written: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start_time</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="si">}</span><span class="s2"> seconds&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Total of messages written: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start_time_tic</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="si">}</span><span class="s2"> seconds&quot;</span>
+        <span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MCAP file name: </span><span class="si">{</span><span class="n">output_mcap_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MCAP file size: </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">output_mcap_path</span><span class="p">)</span><span class="o">/</span><span class="mi">1000000</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2"> MB&quot;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Start of dive time: </span><span class="si">{</span><span class="n">unix_ts</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">delta</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
