@@ -69,7 +69,12 @@ class LogStream:
 
             self.pos = pos_msg_start + msg_size
             msg = bp.BinlogRecord.deserialize(msg_data)
-            payload_type, payload_msg_deserialized = deserialize_any_to_message(msg.payload)
+            try:
+                payload_type, payload_msg_deserialized = deserialize_any_to_message(msg.payload)
+            except Exception as e:
+                logger.error(f"Failed to deserialize payload: {e}")
+                return self.__next__()  # Skip this message and continue with the next
+
             if self.start_monotonic == 0:
                 self.start_monotonic = msg.clock_monotonic
             return (
