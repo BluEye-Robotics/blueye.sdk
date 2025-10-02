@@ -88,19 +88,19 @@ The instructions below show the necessary steps to get started with the SDK on a
     ```
 
 ## Connect to the drone
-To use the SDK your computer must be connected to the drone via the surface unit WiFi. For a how-to
-on turning on the drone and surface unit you can watch the
+To use the SDK, your computer must be connected to the drone via the surface unit WiFi. For instructions
+on how to turn on the drone and surface unit, you can watch the
 [quick start video](https://support.blueye.no/hc/en-us/articles/360006901473-Quick-Start-Guide).
 
 ## Control the drone
-Most of the functionality is controlled using Python properties and we will illustrate the use of
+Most of the functionality is controlled using Python properties. We will illustrate the use of
 properties by showing how to control the lights:
 
 ``` python
 import time
 from blueye.sdk import Drone
 
-# When the Drone object is instantiatied a connection to the drone is established
+# When the Drone object is instantiated, a connection to the drone is established
 myDrone = Drone()
 
 # Setting the lights property to 0.1 (10 %)
@@ -121,29 +121,29 @@ The valid input ranges and descriptions of the different properties can also be 
 
 
 !!! Tip
-    You can explore the properties of the drone interactively using an interactive python interpreter like
-    [`iPython`](https://ipython.readthedocs.io/en/stable/interactive/tutorial.html), install it with:
+    You can explore the properties of the drone interactively using an interactive Python interpreter like
+    [`iPython`](https://ipython.readthedocs.io/en/stable/interactive/tutorial.html), which can be installed with:
     ```shell
     uv pip install ipython
     ```
-    By instantiating a Drone object and using the completion key (normally the `tab-key ↹`) you can get a interactive list of
-    the available properties on the drone, it is then easy to try setting and getting the different properties.
+    By instantiating a Drone object and using the completion key (normally the `tab-key ↹`), you can get an interactive list of
+    the available properties on the drone, making it easy to try setting and getting the different properties.
     ![`iPython`](https://blueyenostorage.blob.core.windows.net/sdkimages/ipython-exploration.gif)
 
 
 ### Watching the video stream
-The easiest way to open the  RTSP video stream is using [`VLC media player`](https://www.videolan.org/vlc/index.html).
-Once VLC is downloaded you can start the stream like this, the RTSP URL is: `rtsp://192.168.1.101:8554/test`
+The easiest way to open the RTSP video stream is by using [`VLC media player`](https://www.videolan.org/vlc/index.html).
+Once VLC is downloaded, you can start the stream like this. The RTSP URL is: `rtsp://192.168.1.101:8554/test`
 ![text](https://blueyenostorage.blob.core.windows.net/sdkimages/rtsp-in-vlc.gif)
 
 
-For lower latency streaming (on a PC) you can see the instructions on using
-[`Gstreamer`](video/gstreamer-for-video-streaming.md), or if you just want to watch a low
-latency stream you can download the Blueye Observer app.
+For lower latency streaming (on a PC), you can see the instructions on using
+[`Gstreamer`](video/gstreamer-for-video-streaming.md), or if you just want to watch a low-latency
+stream, you can download the Blueye Observer app.
 ([iOS](https://apps.apple.com/us/app/blueye-dive-buddy/id1453884806?ls=1) /
 [Android](https://play.google.com/store/apps/details?id=no.blueye.divebuddy))
 
-The normal Blueye app can not be used to spectate when controlling the drone from the SDK because
+The normal Blueye app cannot be used to spectate when controlling the drone from the SDK because
 it will interfere with the commands sent from the SDK. The Observer app, however, is only a
 spectator and can be used together with the SDK.
 
