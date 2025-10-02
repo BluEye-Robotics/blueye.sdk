@@ -19,16 +19,14 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: "3.13"
-      - name: Install Poetry
-        uses: abatilo/actions-poetry@v3.0.2
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
         with:
-          poetry-version: "2.0.1"
-      - name: Install dependencies
-        run: poetry install
+         version: "0.7.11"
       - name: Build HTTP documentation
         run: npx @redocly/cli build-docs http-api.yml --output docs/http-api.html
       - name: Build documentation
-        run: poetry run mkdocs build
+        run: uv run mkdocs build
       - uses: actions/upload-artifact@v4
         with:
           name: docs
@@ -45,18 +43,18 @@ jobs:
           git checkout -
       - name: Set variables
         run: |
-          full_version="v$(cut -d ' ' -f 2 <<< "$(poetry version)")"
+          full_version="v$(cut -d ' ' -f 2 <<< "$(uv version)")"
           major_minor="$(cut -d '.' -f 1 <<< "$full_version")"."$(cut -d '.' -f 2 <<< "$full_version")"
           echo "full_version=$full_version" >> $GITHUB_ENV
           echo "major_minor=$major_minor" >> $GITHUB_ENV
       - name: Deploy master
         if: github.ref == 'refs/heads/master'
         run: |
-          poetry run mike deploy dev
+          uv run mike deploy dev
       - name: Deploy release
         if: ${{ github.event_name == 'release' }}
         run: |
-          poetry run mike deploy --title ${{ env.full_version }} --update-aliases ${{ env.major_minor }} latest
+          uv run mike deploy --title ${{ env.full_version }} --update-aliases ${{ env.major_minor }} latest
       - name: Checkout gh-pages branch
         run: git checkout gh-pages
       - name: Push to gh-pages

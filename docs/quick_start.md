@@ -1,192 +1,106 @@
 ## Installation
-The SDK requires Python 3.10 or higher. Since many operating systems do not package the newest
-version of Python we recommend using [`pyenv`](https://github.com/pyenv/pyenv) or something similar
-for configuring multiple python versions on the same system. Pyenv also has the added benefit of
-managing your virtual environments for you, though you are of course free to use other tools for
-that as well.
+The SDK requires Python 3.10 or higher. We recommend using [`uv`](https://github.com/astral-sh/uv) to manage your Python versions and virtual environments. `uv` is an extremely fast Python package installer and resolver that simplifies project setup.
 
-The instructions below show the necessary steps to get started with the SDK on a fresh install:
+The instructions below show the necessary steps to get started with the SDK on a fresh install using `uv`.
 
 ??? abstract "Windows"
-    **Install Python**
+    **Install `uv`**
 
-    Install Python 3.10 or higher, you can find the latest python versions [here](https://www.python.org/downloads/).
-    Remember to check the option "Add Python to path" when installing.
-
-    **Install virtualenv for managing Python versions (optional)**
-
-    Using a virtual environment is not strictly necessary, but it greatly simplifies the
-    development of Python packages.
-    ```shell
-    # Upgrade pip version
-    python -m pip install --upgrade pip
-    pip install virtualenv
+    Open PowerShell and run the following command to install `uv`:
+    ```powershell
+    powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
     ```
+    Changing the execution policy allows running a script from the internet.
+    You may need to restart your terminal for the changes to take effect.
 
-    Next, we create a virtual environment
+    **Create a virtual environment**
 
-    ```shell
-    cd .\Desktop
+    Using a virtual environment is highly recommended to isolate project dependencies.
+    ```powershell
+    # Create a new project folder and navigate into it
     mkdir drone_project
     cd .\drone_project
-    # Replace "C:\Program Files\Python310\python.exe" with the path
-    # to the python version you want to use in the line below
-    virtualenv blueye_sdk_env -p "C:\Program Files\Python310\python.exe"
+
+    # Create a virtual environment using Python 3.13 (uv will download it if needed)
+    uv venv -p 3.13
     ```
-    activate the virtual environment
-    ```shell
-    .\blueye_sdk_env\Scripts\activate.bat
+    This will create a `.venv` folder in your project directory.
+
+    Activate the virtual environment:
+    ```powershell
+    .\.venv\Scripts\activate
     ```
-    if you are not allowed to activate the virtual environment, you might have to allow running unsigned scripts,
-    see [this link](http://tritoneco.com/2014/02/21/fix-for-powershell-script-not-digitally-signed/) for instructions.
 
     **Install the SDK**
 
-    Now we're ready to install the SDK, which should be as simple as
-
-    ```
-    pip install blueye.sdk
-    ```
-
-    or, if you want to include the dependencies required for running the examples shown in this
-    documentation you should run
-
-    ```
-    pip install "blueye.sdk[examples]"
-    ```
-
-??? abstract "Mac OS"
-
-    ** Install the necessary Python version**
-
-    Install pyenv, for more instructions see the [pyenv-installer](https://github.com/pyenv/pyenv-installer)
-
-    ```
-    curl https://pyenv.run | bash
-    pyenv update
-    ```
-
-    If you want pyenv to be loaded each time you open a new terminal you can add this to your .zshrc or the equivalent for your terminal
-    ```
-    export PATH="$HOME/.pyenv/bin:$PATH"
-    eval "$(pyenv init -)"
-    eval "$(pyenv virtualenv-init -)"
-    ```
-
-    The [Pyenv wiki](https://github.com/pyenv/pyenv/wiki#suggested-build-environment) recommends installing some
-    additional dependencies before building Python.
-
+    Now we're ready to install the SDK into our active virtual environment:
 
     ```shell
-    # optional, but recommended:
-    brew install openssl readline sqlite3 xz zlib
+    uv pip install blueye.sdk
     ```
 
-    When running Mojave or higher (10.14+) you will also need to install the additional SDK headers:
+    Or, to include the dependencies required for running the examples:
+
     ```shell
-    sudo installer -pkg /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg -target /
+    uv pip install "blueye.sdk[examples]"
     ```
-    Then build Python with pyenv
 
+??? abstract "macOS and Linux"
+
+    **Install `uv`**
+
+    Open your terminal and run the following command to install `uv`:
+    ```shell
+    curl -LsSf https://astral.sh/uv/install.sh | sh
     ```
-    pyenv install 3.12
-    ```
+    After installation, follow the instructions on the screen to add `uv` to your shell's `PATH`, or simply restart your terminal.
 
     **Create a virtual environment**
 
-    Using a virtual environment is not strictly necessary, but it greatly simplifies the
-    development of Python packages.
+    Using a virtual environment is highly recommended to isolate project dependencies.
+    ```shell
+    # Create a new project folder and navigate into it
+    mkdir drone_project
+    cd drone_project
 
-    Since we already have pyenv installed we'll use it to create a virtual environment,
-
+    # Create a virtual environment using Python 3.13 (uv will download it if needed)
+    uv venv -p 3.13
     ```
-    pyenv virtualenv 3.12 blueye.sdk
-    pyenv activate blueye.sdk
-    ```
+    This will create a `.venv` folder in your project directory.
 
-    **Install the SDK**
-
-    Now we're ready to install the SDK, which should be as simple as.
-
-    ```
-    pip install blueye.sdk
-    ```
-
-    or, if you want to include the dependencies required for running the examples shown in this
-    documentation you should run
-
-    ```
-    pip install "blueye.sdk[examples]"
-    ```
-
-
-
-??? abstract "Linux"
-    These instructions are directed at Ubuntu, but the process should be similar for other
-    distributions.
-
-    **Install the necessary Python version**
-
-    Install pyenv, for more instructions see the [pyenv-installer](https://github.com/pyenv/pyenv-installer)
-
-    ```
-    curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
-    pyenv update
-    ```
-
-    Install the needed dependencies for building python 3.12
-
-    ```
-    apt install -y make build-essential libssl-dev zlib1g-dev libbz2-dev \
-    libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
-    xz-utils tk-dev libffi-dev liblzma-dev python-openssl
-    ```
-    Then build python with pyenv
-    ```
-    pyenv install 3.12
-    ```
-
-    **Create a virtual environment**
-
-    Using a virtual environment is not strictly necessary, but it greatly simplifies the
-    development of Python packages.
-
-    Since we already have pyenv installed we'll use it to create a virtual environment,
-
-    ```
-    pyenv virtualenv 3.12 blueye.sdk
-    pyenv activate blueye.sdk
+    Activate the virtual environment:
+    ```shell
+    source .venv/bin/activate
     ```
 
     **Install the SDK**
 
-    Now we're ready to install the SDK, which should be as simple as
+    Now we're ready to install the SDK into our active virtual environment:
 
-    ```
-    pip install blueye.sdk
+    ```shell
+    uv pip install blueye.sdk
     ```
 
-    or, if you want to include the dependencies required for running the examples shown in this
-    documentation you should run
+    Or, to include the dependencies required for running the examples:
 
-    ```
-    pip install "blueye.sdk[examples]"
+    ```shell
+    uv pip install "blueye.sdk[examples]"
     ```
 
 ## Connect to the drone
-To use the SDK your computer must be connected to the drone via the surface unit WiFi. For a how-to
-on turning on the drone and surface unit you can watch the
+To use the SDK, your computer must be connected to the drone via the surface unit WiFi. For instructions
+on how to turn on the drone and surface unit, you can watch the
 [quick start video](https://support.blueye.no/hc/en-us/articles/360006901473-Quick-Start-Guide).
 
 ## Control the drone
-Most of the functionality is controlled using Python properties and we will illustrate the use of
+Most of the functionality is controlled using Python properties. We will illustrate the use of
 properties by showing how to control the lights:
 
 ``` python
 import time
 from blueye.sdk import Drone
 
-# When the Drone object is instantiatied a connection to the drone is established
+# When the Drone object is instantiated, a connection to the drone is established
 myDrone = Drone()
 
 # Setting the lights property to 0.1 (10 %)
@@ -207,29 +121,29 @@ The valid input ranges and descriptions of the different properties can also be 
 
 
 !!! Tip
-    You can explore the properties of the drone interactively using an interactive python interpreter like
-    [`iPython`](https://ipython.readthedocs.io/en/stable/interactive/tutorial.html), install it with:
+    You can explore the properties of the drone interactively using an interactive Python interpreter like
+    [`iPython`](https://ipython.readthedocs.io/en/stable/interactive/tutorial.html), which can be installed with:
     ```shell
-    pip install ipython
+    uv pip install ipython
     ```
-    By instantiating a Drone object and using the completion key (normally the `tab-key ↹`) you can get a interactive list of
-    the available properties on the drone, it is then easy to try setting and getting the different properties.
+    By instantiating a Drone object and using the completion key (normally the `tab-key ↹`), you can get an interactive list of
+    the available properties on the drone, making it easy to try setting and getting the different properties.
     ![`iPython`](https://blueyenostorage.blob.core.windows.net/sdkimages/ipython-exploration.gif)
 
 
 ### Watching the video stream
-The easiest way to open the  RTSP video stream is using [`VLC media player`](https://www.videolan.org/vlc/index.html).
-Once VLC is downloaded you can start the stream like this, the RTSP URL is: `rtsp://192.168.1.101:8554/test`
+The easiest way to open the RTSP video stream is by using [`VLC media player`](https://www.videolan.org/vlc/index.html).
+Once VLC is downloaded, you can start the stream like this. The RTSP URL is: `rtsp://192.168.1.101:8554/test`
 ![text](https://blueyenostorage.blob.core.windows.net/sdkimages/rtsp-in-vlc.gif)
 
 
-For lower latency streaming (on a PC) you can see the instructions on using
-[`Gstreamer`](video/gstreamer-for-video-streaming.md), or if you just want to watch a low
-latency stream you can download the Blueye Observer app.
+For lower latency streaming (on a PC), you can see the instructions on using
+[`Gstreamer`](video/gstreamer-for-video-streaming.md), or if you just want to watch a low-latency
+stream, you can download the Blueye Observer app.
 ([iOS](https://apps.apple.com/us/app/blueye-dive-buddy/id1453884806?ls=1) /
 [Android](https://play.google.com/store/apps/details?id=no.blueye.divebuddy))
 
-The normal Blueye app can not be used to spectate when controlling the drone from the SDK because
+The normal Blueye app cannot be used to spectate when controlling the drone from the SDK because
 it will interfere with the commands sent from the SDK. The Observer app, however, is only a
 spectator and can be used together with the SDK.
 
@@ -240,7 +154,7 @@ For further examples on how to use the SDK to control the drone have a look at t
 Remember to install the example dependencies before running the examples.
 
 ```shell
-pip install "blueye.sdk[examples]"
+uv pip install "blueye.sdk[examples]"
 ```
 
 ### Local documentation

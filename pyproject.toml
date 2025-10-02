@@ -1,56 +1,82 @@
-[tool.poetry]
+[project]
 name = "blueye.sdk"
-version = "2.5.2"
-description = "SDK for controlling a Blueye underwater drone"
-authors = ["Sindre Hansen <sindre.hansen@blueye.no>",
-           "Johannes Schrimpf <johannes.schrimpf@blueye.no>",
-           "Aksel Lenes <aksel.lenes@blueye.no>"]
-packages = [
-  { include = "blueye" }
+version = "2.6.0"
+license = { file = "LICENSE" }
+description = "SDK for controlling Blueye underwater drones"
+authors = [{ name = "Blueye Robotics", email = "contact@blueye.no" }]
+requires-python = ">=3.10, <4"
+readme = "README.md"
+keywords = [
+    "Blueye",
+    "Robotics",
+    "SDK",
+    "Software Development Kit",
+]
+dependencies = [
+    "requests>=2.22.0,<3",
+    "tabulate>=0.9,<0.10",
+    "packaging>=24.2",
+    "blueye.protocol>=3.1.0,<4",
+    "python-dateutil>=2.8.2,<3",
+    "pyzmq~=26.0",
+    "proto-plus>=1.22.2,<2",
 ]
 
-include= ["blueye.sdk_docs/**/*"]
-readme = "README.md"
-repository="https://github.com/blueye-robotics/blueye.sdk"
-homepage ="https://www.blueyerobotics.com"
-keywords = ["Blueye", "Pioneer", "Pro", "Robotics", "SDK", "Software Development Kit"]
+[project.optional-dependencies]
+# These are dependencies that are not necessary for the core functionality of the SDK, but are
+# necessary for some of the examples.
+examples = [
+    "inputs>=0.5,<0.6",
+    "asciimatics>=1.11.0,<2",
+    "pandas~=2.2",
+    "matplotlib~=3.10",
+    "webdavclient3>=3.14.6,<4",
+    "foxglove_websocket>=0.1.2,<0.2",
+    "pyserial~=3.5",
+    "mcap-protobuf-support>=0.5.3,<0.6",
+]
 
-[tool.poetry.dependencies]
-python = "^3.10"
-asciimatics = {version = "^1.11.0", optional = true}
-inputs = {version = "^0.5", optional = true}
-pandas = {version = "^2.2", optional = true}
-matplotlib = {version = "^3.10", optional = true}
-webdavclient3 = {version = "^3.14.6", optional = true}
-foxglove_websocket = {version= "^0.1.2", optional = true}
-mcap-protobuf-support = {version = "^0.5.3", optional = true}
-pyserial = {version = "^3.5", optional = true}
-requests = "^2.22.0"
-tabulate = "^0.9"
-packaging = ">=24.2"
-"blueye.protocol" = "^3.1.0"
-python-dateutil = "^2.8.2"
-pyzmq = "^26.0"
-proto-plus = "^1.22.2"
+[project.urls]
+Homepage = "https://www.blueyerobotics.com"
+Repository = "https://github.com/blueye-robotics/blueye.sdk"
 
-[tool.poetry.group.dev.dependencies]
-pytest = "^8.3"
-pytest-mock = "^3.11"
-mike = "^2.1"
-mkdocs = "^1.5"
-mkdocs-material = "^9.5"
-mkdocs-macros-plugin = "^1.0"
-pymdown-extensions = "^10.14"
-pre-commit = "^4.0"
-black = "^24.3"
-pytest-cov = "^6.0"
-requests-mock = "^1.11"
-freezegun = "^1.2"
-mkdocstrings = {version = "^0.27.0", extras = ["python"]}
-mkdocs-gen-files = "^0.5.0"
+[dependency-groups]
+dev = [
+    "pytest~=8.3",
+    "pytest-mock~=3.11",
+    "mike~=2.1",
+    "mkdocs~=1.5",
+    "mkdocs-material~=9.5",
+    "mkdocs-macros-plugin~=1.0",
+    "pymdown-extensions~=10.14",
+    "pre-commit~=4.0",
+    "black~=24.3",
+    "pytest-cov~=6.0",
+    "requests-mock~=1.11",
+    "freezegun~=1.2",
+    "mkdocstrings[python]>=0.27.0,<0.28",
+    "mkdocs-gen-files>=0.5.0,<0.6",
+]
 
-[tool.poetry.extras]
-examples = ["inputs", "asciimatics", "pandas", "matplotlib", "webdavclient3", "foxglove_websocket", "mcap-protobuf-support", "pyserial"]
+[tool.hatch.build.targets.sdist]
+include = [
+    "blueye",
+]
+artifacts = [
+    "blueye.sdk_docs/**/*",
+]
+
+[tool.hatch.build.targets.wheel]
+include = [
+    "blueye",
+]
+artifacts = [
+    "blueye.sdk_docs/**/*",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [tool.black]
 line-length = 100
@@ -60,9 +86,3 @@ target-version = ['py310', 'py311', 'py312', 'py313']
 markers = "connected_to_drone: a mark for test that can only be run when connected to a drone, useful when developing"
 
 addopts = "--cov=blueye --cov-report=xml:coverage.xml --cov-report=html --cov-append"
-
-filterwarnings = ["ignore::DeprecationWarning:blueye","ignore::DeprecationWarning:pkg_resources"]
-
-[build-system]
-requires = ["poetry>=2.0"]
-build-backend = "poetry.masonry.api"
