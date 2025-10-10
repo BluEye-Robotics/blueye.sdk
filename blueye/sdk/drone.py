@@ -422,12 +422,23 @@ class Drone:
         self.connected = True
         if disconnect_other_clients and not self.in_control and not connect_as_observer:
             self.take_control()
-        self._drone_info_cb_id = self.telemetry.add_msg_callback(
-            [blueye.protocol.DroneInfoTel],
-            Drone._drone_info_callback,
-            False,
-            drone=self,
-        )
+
+        # Try to get the GuestPortInfo message to populate the peripherals list
+        # If the message has not been received yet, register a callback to populate the list when
+        # the message is received
+        if "gpdrone" in self.features:
+            drone_info_tel = self.telemetry.get(blueye.protocol.DroneInfoTel)
+            if drone_info_tel is not None and drone_info_tel.drone_info.gp._pb.ByteSize() != 0:
+                self._create_peripherals_from_drone_info(drone_info_tel.drone_info.gp)
+            else:
+                self._drone_info_cb_id = self.telemetry.add_msg_callback(
+                    [blueye.protocol.DroneInfoTel],
+                    Drone._drone_info_callback,
+                    False,
+                    drone=self,
+                )
+        else:
+            self.peripherals = []
 
         self._last_notification_timestamp = None
         if log_notifications:
