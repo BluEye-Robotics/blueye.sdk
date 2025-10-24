@@ -264,3 +264,73 @@ class TestGzipDetection:
     def test_single_byte_not_detected(self):
         """Test that single byte data is handled gracefully"""
         assert is_gzip_compressed(b"\x1f") is False
+
+
+class TestStreamingDecompressor:
+    """Test the StreamingDecompressor class"""
+
+    def test_uncompressed_data_passthrough(self):
+        """Test that uncompressed data is passed through unchanged"""
+        test_data = b"Hello, world! This is test data."
+        decompressor = StreamingDecompressor(test_data)
+
+        # Read all data
+        result = decompressor.read(len(test_data))
+        assert result == test_data
+
+    def test_gzip_compressed_data_decompression(self):
+        """Test that gzip compressed data is correctly decompressed"""
+        original_data = b"Hello, world! This is test data for compression."
+        compressed_data = gzip.compress(original_data)
+
+        decompressor = StreamingDecompressor(compressed_data)
+
+        # Read all data
+        result = decompressor.read(len(original_data))
+        assert result == original_data
+
+    def test_partial_reads(self):
+        """Test that partial reads work correctly"""
+        test_data = b"Hello, world! This is a longer test message."
+        decompressor = StreamingDecompressor(test_data)
+
+        # Read data in chunks
+        chunk1 = decompressor.read(5)
+        chunk2 = decompressor.read(7)
+        chunk3 = decompressor.read(100)  # Read more than remaining
+
+        assert chunk1 == b"Hello"
+        assert chunk2 == b", world"
+        assert chunk3 == b"! This is a longer test message."
+
+    def test_read_beyond_end(self):
+        """Test that reading beyond end returns empty bytes"""
+        test_data = b"Short"
+        decompressor = StreamingDecompressor(test_data)
+
+        # Read all data
+        result1 = decompressor.read(len(test_data))
+        # Try to read more
+        result2 = decompressor.read(10)
+
+        assert result1 == test_data
+        assert result2 == b""
+
+    def test_gzip_incremental_decompression(self):
+        """Test that gzip data is decompressed incrementally"""
+        # Create a larger dataset to test chunked decompression
+        original_data = b"A" * 10000 + b"B" * 10000 + b"C" * 10000
+        compressed_data = gzip.compress(original_data)
+
+        decompressor = StreamingDecompressor(compressed_data)
+
+        # Read in smaller chunks
+        result = b""
+        chunk_size = 1000
+        while True:
+            chunk = decompressor.read(chunk_size)
+            if not chunk:
+                break
+            result += chunk
+
+        assert result == original_data
