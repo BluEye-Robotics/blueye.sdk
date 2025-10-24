@@ -508,3 +508,39 @@ class TestLogStream:
         # Should raise StopIteration for third record
         with pytest.raises(StopIteration):
             next(log_stream)
+
+
+class TestLogFileParseToStream:
+    """Test LogFile.parse_to_stream method"""
+
+    def test_parse_to_stream_returns_logstream(self, mocker):
+        """Test that parse_to_stream returns a LogStream instance"""
+        # Create real protobuf data for testing
+        depth_msg = create_test_depth_message(10.5)
+        test_log_data = create_real_binlog_record(1690979463, 1000, depth_msg)
+
+        # Mock the download method
+        mock_download = mocker.patch.object(LogFile, "download", return_value=test_log_data)
+
+        log_file = LogFile(
+            name="test_log",
+            is_dive=True,
+            filesize=1024,
+            start_time=1690979463,
+            max_depth_magnitude=10,
+            ip="192.168.1.101",
+        )
+
+        result = log_file.parse_to_stream()
+
+        # Verify it returns a LogStream
+        assert isinstance(result, LogStream)
+        # Verify download was called with correct parameters
+        mock_download.assert_called_once_with(write_to_file=False)
+
+        # Verify we can actually get data from the stream
+        record = next(result)
+        unix_timestamp, time_delta, payload_type, payload_msg = record
+        assert unix_timestamp.timestamp() == 1690979463
+        assert payload_type == bp.DepthTel
+        assert payload_msg.depth.value == 10.5
