@@ -544,3 +544,89 @@ class TestLogFileParseToStream:
         assert unix_timestamp.timestamp() == 1690979463
         assert payload_type == bp.DepthTel
         assert payload_msg.depth.value == 10.5
+
+
+class TestIntegration:
+    """Integration tests for the full pipeline from compressed data to parsed records"""
+
+    def test_end_to_end_streaming_with_real_gzip_data(self):
+        """Test the complete streaming pipeline with real gzipped protobuf data"""
+        # Create multiple real telemetry messages
+        records_data = []
+        messages = [
+            create_test_depth_message(5.5),
+            create_test_battery_message(0.75),
+            create_test_attitude_message(10.0, -5.0, 180.0),
+        ]
+
+        # Create BinlogRecord entries with different timestamps
+        for i, msg in enumerate(messages):
+            record = create_real_binlog_record(1690979463 + i, 1000 + i * 100, msg)
+            records_data.append(record)
+
+        # Combine all records
+        combined_data = b"".join(records_data)
+
+        # Compress the data
+        compressed_data = gzip.compress(combined_data)
+
+        # Test the complete pipeline
+        log_stream = LogStream(compressed_data, decompress=True)
+
+        # Verify we can iterate through all records
+        results = []
+        try:
+            for record in log_stream:
+                results.append(record)
+                if len(results) >= 3:  # Limit to avoid infinite iteration
+                    break
+        except StopIteration:
+            pass
+
+        # Verify we got the expected number of records
+        assert len(results) == 3
+
+        # Verify the structure of returned records
+        unix_timestamp_1, time_delta_1, payload_type_1, payload_msg_1 = results[0]
+        assert unix_timestamp_1.timestamp() == 1690979463
+        assert payload_type_1 == bp.DepthTel
+        assert payload_msg_1.depth.value == 5.5
+        assert time_delta_1.total_seconds() == 0  # First record has delta 0
+
+        unix_timestamp_2, time_delta_2, payload_type_2, payload_msg_2 = results[1]
+        assert unix_timestamp_2.timestamp() == 1690979464
+        assert payload_type_2 == bp.BatteryTel
+        assert abs(payload_msg_2.battery.level - 0.75) < 0.001  # Float precision
+        assert time_delta_2.total_seconds() == 100  # 100ms after first
+
+        unix_timestamp_3, time_delta_3, payload_type_3, payload_msg_3 = results[2]
+        assert unix_timestamp_3.timestamp() == 1690979465
+        assert payload_type_3 == bp.AttitudeTel
+        assert payload_msg_3.attitude.roll == 10.0
+        assert payload_msg_3.attitude.pitch == -5.0
+        assert payload_msg_3.attitude.yaw == 180.0
+        assert time_delta_3.total_seconds() == 200  # 200ms after first
+
+    def test_robustness_with_mixed_valid_invalid_data(self):
+        """Test that the streaming approach handles mixed valid/invalid data gracefully"""
+        # Create valid record, then invalid data
+        valid_depth_msg = create_test_depth_message(3.0)
+        valid_record = create_real_binlog_record(1690979463, 1000, valid_depth_msg)
+
+        # Add incomplete data that will cause early termination
+        incomplete_data = b"\x05" + b"bad"  # varint 5 but only 3 bytes (incomplete)
+
+        mixed_data = valid_record + incomplete_data
+
+        # Test with the mixed data
+        log_stream = LogStream(mixed_data, decompress=False)
+
+        # Should be able to get the first valid record
+        first_record = next(log_stream)
+        assert first_record[0].timestamp() == 1690979463  # unix_timestamp
+        assert first_record[2] == bp.DepthTel  # payload_type
+        assert first_record[3].depth.value == 3.0  # payload_msg
+
+        # The incomplete data should cause StopIteration when trying to read the next record
+        with pytest.raises(StopIteration):
+            next(log_stream)
