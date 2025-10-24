@@ -456,7 +456,7 @@ class Drone:
             time_formatted = datetime.fromtimestamp(current_time).strftime("%d. %b %Y %H:%M")
             logger.debug(f"Setting current time to {current_time} ({time_formatted})")
             self.config.set_drone_time(current_time)
-            logger.debug(f"Disabling thrusters")
+            logger.debug("Disabling thrusters")
             self.motion.send_thruster_setpoint(0, 0, 0, 0)
         logger.debug("Connected in {:.2f} seconds".format(time.time() - time_connection_start))
 
