@@ -1,9 +1,20 @@
+import gzip
+import io
 import json
 from datetime import datetime
 
 import pytest
 
-from blueye.sdk.logs import LegacyLogFile, LegacyLogs, Logs, human_readable_filesize
+from blueye.sdk.logs import (
+    LegacyLogFile,
+    LegacyLogs,
+    LogFile,
+    Logs,
+    LogStream,
+    StreamingDecompressor,
+    human_readable_filesize,
+    is_gzip_compressed,
+)
 
 
 @pytest.fixture
@@ -231,3 +242,25 @@ def test_legacy_divisor_parameter_is_passed_to_request(requests_mock, mocker, di
     mocker.patch("builtins.open", mocker.mock_open())
 
     dummylog.download(downsample_divisor=divisor)
+
+
+class TestGzipDetection:
+    """Test the is_gzip_compressed function"""
+
+    def test_gzip_magic_bytes_detected(self):
+        """Test that gzip magic bytes are correctly detected"""
+        gzip_data = b"\x1f\x8b" + b"some data"
+        assert is_gzip_compressed(gzip_data) is True
+
+    def test_non_gzip_data_not_detected(self):
+        """Test that non-gzip data is correctly identified"""
+        non_gzip_data = b"\x00\x01" + b"some data"
+        assert is_gzip_compressed(non_gzip_data) is False
+
+    def test_empty_data_not_detected(self):
+        """Test that empty data is handled gracefully"""
+        assert is_gzip_compressed(b"") is False
+
+    def test_single_byte_not_detected(self):
+        """Test that single byte data is handled gracefully"""
+        assert is_gzip_compressed(b"\x1f") is False
