@@ -66,12 +66,18 @@ class StreamingDecompressor:
             if chunk_size == 0:
                 # No more compressed data
                 if self.decompressor:
-                    # Finalize decompression
+                    # Finalize decompression. This can fail on corrupted data.
                     try:
                         final_data = self.decompressor.flush()
                         self.decompressed_buffer.extend(final_data)
-                    except Exception:
-                        pass
+                    except zlib.error as e:
+                        logger.warning(
+                            f"Decompression flush failed, likely due to corrupted data: {e}"
+                        )
+                    except (MemoryError, OverflowError) as e:
+                        logger.error(f"Decompression flush failed due to resource limits: {e}")
+                    except Exception as e:
+                        logger.error(f"Unexpected error during decompression flush: {e}")
                 self.eof = True
                 break
 
@@ -82,8 +88,18 @@ class StreamingDecompressor:
                 try:
                     decompressed_chunk = self.decompressor.decompress(chunk)
                     self.decompressed_buffer.extend(decompressed_chunk)
-                except Exception:
-                    # If decompression fails, we're probably done
+                except zlib.error as e:
+                    # If decompression fails, we're probably done. This can happen with
+                    # truncated or corrupted files.
+                    logger.warning(f"Decompression of chunk failed: {e}")
+                    self.eof = True
+                    break
+                except (MemoryError, OverflowError) as e:
+                    logger.error(f"Decompression failed due to resource limits: {e}")
+                    self.eof = True
+                    break
+                except Exception as e:
+                    logger.error(f"Unexpected error during decompression: {e}")
                     self.eof = True
                     break
 
