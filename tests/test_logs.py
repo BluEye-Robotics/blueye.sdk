@@ -1,9 +1,73 @@
+import gzip
+import io
 import json
 from datetime import datetime
 
+import blueye.protocol as bp
 import pytest
+from google.protobuf.any_pb2 import Any
+from google.protobuf.internal.encoder import _VarintBytes
+from google.protobuf.timestamp_pb2 import Timestamp
 
-from blueye.sdk.logs import LegacyLogFile, LegacyLogs, Logs, human_readable_filesize
+from blueye.sdk.logs import (
+    LegacyLogFile,
+    LegacyLogs,
+    LogFile,
+    Logs,
+    LogStream,
+    StreamingDecompressor,
+    human_readable_filesize,
+    is_gzip_compressed,
+)
+
+
+def create_real_binlog_record(unix_timestamp: int, clock_monotonic: int, payload_msg) -> bytes:
+    """Create a real BinlogRecord with actual protobuf serialization"""
+    # Serialize the payload message first
+    payload_serialized = payload_msg.__class__.serialize(payload_msg)
+
+    # Create an Any message manually with the correct type_url
+    payload_type_name = payload_msg.__class__.__name__
+    any_msg = Any(
+        type_url=f"type.googleapis.com/blueye.protocol.{payload_type_name}",
+        value=payload_serialized,
+    )
+
+    # Create Timestamp objects from the integer timestamps
+    unix_ts = Timestamp()
+    unix_ts.FromSeconds(unix_timestamp)
+
+    mono_ts = Timestamp()
+    mono_ts.FromSeconds(clock_monotonic)
+
+    # Create the BinlogRecord
+    binlog_record = bp.BinlogRecord(
+        unix_timestamp=unix_ts, clock_monotonic=mono_ts, payload=any_msg
+    )
+
+    # Serialize the record
+    serialized_record = bp.BinlogRecord.serialize(binlog_record)
+
+    # Create varint for the message size using Google's protobuf encoder
+    message_size = len(serialized_record)
+    varint_bytes = _VarintBytes(message_size)
+
+    return varint_bytes + serialized_record
+
+
+def create_test_depth_message(depth_value: float) -> bp.DepthTel:
+    """Create a test DepthTel message"""
+    return bp.DepthTel(depth={"value": depth_value})
+
+
+def create_test_battery_message(level: float) -> bp.BatteryTel:
+    """Create a test BatteryTel message"""
+    return bp.BatteryTel(battery={"level": level})
+
+
+def create_test_attitude_message(roll: float, pitch: float, yaw: float) -> bp.AttitudeTel:
+    """Create a test AttitudeTel message"""
+    return bp.AttitudeTel(attitude={"roll": roll, "pitch": pitch, "yaw": yaw})
 
 
 @pytest.fixture
@@ -231,3 +295,338 @@ def test_legacy_divisor_parameter_is_passed_to_request(requests_mock, mocker, di
     mocker.patch("builtins.open", mocker.mock_open())
 
     dummylog.download(downsample_divisor=divisor)
+
+
+class TestGzipDetection:
+    """Test the is_gzip_compressed function"""
+
+    def test_gzip_magic_bytes_detected(self):
+        """Test that gzip magic bytes are correctly detected"""
+        gzip_data = b"\x1f\x8b" + b"some data"
+        assert is_gzip_compressed(gzip_data) is True
+
+    def test_non_gzip_data_not_detected(self):
+        """Test that non-gzip data is correctly identified"""
+        non_gzip_data = b"\x00\x01" + b"some data"
+        assert is_gzip_compressed(non_gzip_data) is False
+
+    def test_empty_data_not_detected(self):
+        """Test that empty data is handled gracefully"""
+        assert is_gzip_compressed(b"") is False
+
+    def test_single_byte_not_detected(self):
+        """Test that single byte data is handled gracefully"""
+        assert is_gzip_compressed(b"\x1f") is False
+
+
+class TestStreamingDecompressor:
+    """Test the StreamingDecompressor class"""
+
+    def test_uncompressed_data_passthrough(self):
+        """Test that uncompressed data is passed through unchanged"""
+        test_data = b"Hello, world! This is test data."
+        decompressor = StreamingDecompressor(test_data)
+
+        # Read all data
+        result = decompressor.read(len(test_data))
+        assert result == test_data
+
+    def test_gzip_compressed_data_decompression(self):
+        """Test that gzip compressed data is correctly decompressed"""
+        original_data = b"Hello, world! This is test data for compression."
+        compressed_data = gzip.compress(original_data)
+
+        decompressor = StreamingDecompressor(compressed_data)
+
+        # Read all data
+        result = decompressor.read(len(original_data))
+        assert result == original_data
+
+    def test_partial_reads(self):
+        """Test that partial reads work correctly"""
+        test_data = b"Hello, world! This is a longer test message."
+        decompressor = StreamingDecompressor(test_data)
+
+        # Read data in chunks
+        chunk1 = decompressor.read(5)
+        chunk2 = decompressor.read(7)
+        chunk3 = decompressor.read(100)  # Read more than remaining
+
+        assert chunk1 == b"Hello"
+        assert chunk2 == b", world"
+        assert chunk3 == b"! This is a longer test message."
+
+    def test_read_beyond_end(self):
+        """Test that reading beyond end returns empty bytes"""
+        test_data = b"Short"
+        decompressor = StreamingDecompressor(test_data)
+
+        # Read all data
+        result1 = decompressor.read(len(test_data))
+        # Try to read more
+        result2 = decompressor.read(10)
+
+        assert result1 == test_data
+        assert result2 == b""
+
+    def test_gzip_incremental_decompression(self):
+        """Test that gzip data is decompressed incrementally"""
+        # Create a larger dataset to test chunked decompression
+        original_data = b"A" * 10000 + b"B" * 10000 + b"C" * 10000
+        compressed_data = gzip.compress(original_data)
+
+        decompressor = StreamingDecompressor(compressed_data)
+
+        # Read in smaller chunks
+        result = b""
+        chunk_size = 1000
+        while True:
+            chunk = decompressor.read(chunk_size)
+            if not chunk:
+                break
+            result += chunk
+
+        assert result == original_data
+
+
+class TestLogStream:
+    """Test the LogStream class with real protobuf data"""
+
+    def create_real_protobuf_data(self):
+        """Create real protobuf data for testing"""
+        # Create different telemetry messages
+        depth_msg = create_test_depth_message(5.25)
+        battery_msg = create_test_battery_message(0.87)
+
+        # Create BinlogRecord entries with different timestamps
+        record1 = create_real_binlog_record(1690979463, 1000, depth_msg)
+        record2 = create_real_binlog_record(1690979464, 1100, battery_msg)
+
+        return record1 + record2
+
+    def test_logstream_with_uncompressed_data(self):
+        """Test LogStream with uncompressed real protobuf data"""
+        test_data = self.create_real_protobuf_data()
+
+        # Test LogStream creation and iteration
+        log_stream = LogStream(test_data, decompress=False)
+
+        # Should be able to iterate without errors
+        assert hasattr(log_stream, "__iter__")
+        assert hasattr(log_stream, "__next__")
+
+        # Get the first record
+        record = next(log_stream)
+        unix_timestamp, time_delta, payload_type, payload_msg = record
+
+        # Verify the first record
+        assert unix_timestamp.timestamp() == 1690979463  # Convert datetime to timestamp
+        assert payload_type == bp.DepthTel
+        assert payload_msg.depth.value == 5.25
+
+    def test_logstream_with_gzip_compressed_data(self):
+        """Test LogStream with gzip compressed real protobuf data"""
+        test_data = self.create_real_protobuf_data()
+        compressed_data = gzip.compress(test_data)
+
+        # Test LogStream with compressed data
+        log_stream = LogStream(compressed_data, decompress=True)
+
+        # Verify it uses StreamingDecompressor
+        assert isinstance(log_stream.stream, StreamingDecompressor)
+
+        # Get the first record
+        record = next(log_stream)
+        unix_timestamp, time_delta, payload_type, payload_msg = record
+
+        # Verify the first record
+        assert unix_timestamp.timestamp() == 1690979463  # Convert datetime to timestamp
+        assert payload_type == bp.DepthTel
+        assert payload_msg.depth.value == 5.25
+
+    def test_logstream_varint_overflow_protection(self):
+        """Test that LogStream protects against malformed varint data"""
+        # Create data with malformed varint (all bytes have MSB=1)
+        malformed_data = b"\xff" * 15  # More than 10 bytes with MSB=1
+
+        log_stream = LogStream(malformed_data, decompress=False)
+
+        # Should raise StopIteration due to malformed varint protection
+        with pytest.raises(StopIteration):
+            next(log_stream)
+
+    def test_logstream_empty_stream(self):
+        """Test LogStream behavior with empty data"""
+        log_stream = LogStream(b"", decompress=False)
+
+        # Should raise StopIteration immediately
+        with pytest.raises(StopIteration):
+            next(log_stream)
+
+    def test_logstream_io_bytesio_fallback(self):
+        """Test that uncompressed data uses io.BytesIO"""
+        test_data = b"uncompressed_data"
+        log_stream = LogStream(test_data, decompress=False)
+
+        # Should use io.BytesIO for uncompressed data
+        assert isinstance(log_stream.stream, io.BytesIO)
+
+    def test_logstream_handles_deserialization_errors(self):
+        """Test that LogStream gracefully handles deserialization errors"""
+        # Create mock data that will pass varint parsing but fail BinlogRecord deserialization
+        mock_data = b"\x05hello"  # varint 5 + 5 bytes of data
+
+        log_stream = LogStream(mock_data, decompress=False)
+
+        # Should handle the exception and raise StopIteration
+        with pytest.raises(StopIteration):
+            next(log_stream)
+
+    def test_logstream_multiple_records(self):
+        """Test that LogStream can handle multiple real protobuf records"""
+        test_data = self.create_real_protobuf_data()
+        log_stream = LogStream(test_data, decompress=False)
+
+        # Get both records
+        record1 = next(log_stream)
+        record2 = next(log_stream)
+
+        # Verify first record (depth)
+        assert record1[0].timestamp() == 1690979463  # unix_timestamp
+        assert record1[2] == bp.DepthTel  # payload_type
+        assert record1[3].depth.value == 5.25  # payload_msg
+
+        # Verify second record (battery)
+        assert record2[0].timestamp() == 1690979464  # unix_timestamp
+        assert record2[2] == bp.BatteryTel  # payload_type
+        assert abs(record2[3].battery.level - 0.87) < 0.001  # payload_msg (float precision)
+
+        # Verify time deltas
+        assert record1[1].total_seconds() == 0  # First record has delta 0
+        assert record2[1].total_seconds() == 100  # Second record has delta 100
+
+        # Should raise StopIteration for third record
+        with pytest.raises(StopIteration):
+            next(log_stream)
+
+
+class TestLogFileParseToStream:
+    """Test LogFile.parse_to_stream method"""
+
+    def test_parse_to_stream_returns_logstream(self, mocker):
+        """Test that parse_to_stream returns a LogStream instance"""
+        # Create real protobuf data for testing
+        depth_msg = create_test_depth_message(10.5)
+        test_log_data = create_real_binlog_record(1690979463, 1000, depth_msg)
+
+        # Mock the download method
+        mock_download = mocker.patch.object(LogFile, "download", return_value=test_log_data)
+
+        log_file = LogFile(
+            name="test_log",
+            is_dive=True,
+            filesize=1024,
+            start_time=1690979463,
+            max_depth_magnitude=10,
+            ip="192.168.1.101",
+        )
+
+        result = log_file.parse_to_stream()
+
+        # Verify it returns a LogStream
+        assert isinstance(result, LogStream)
+        # Verify download was called with correct parameters
+        mock_download.assert_called_once_with(write_to_file=False)
+
+        # Verify we can actually get data from the stream
+        record = next(result)
+        unix_timestamp, time_delta, payload_type, payload_msg = record
+        assert unix_timestamp.timestamp() == 1690979463
+        assert payload_type == bp.DepthTel
+        assert payload_msg.depth.value == 10.5
+
+
+class TestIntegration:
+    """Integration tests for the full pipeline from compressed data to parsed records"""
+
+    def test_end_to_end_streaming_with_real_gzip_data(self):
+        """Test the complete streaming pipeline with real gzipped protobuf data"""
+        # Create multiple real telemetry messages
+        records_data = []
+        messages = [
+            create_test_depth_message(5.5),
+            create_test_battery_message(0.75),
+            create_test_attitude_message(10.0, -5.0, 180.0),
+        ]
+
+        # Create BinlogRecord entries with different timestamps
+        for i, msg in enumerate(messages):
+            record = create_real_binlog_record(1690979463 + i, 1000 + i * 100, msg)
+            records_data.append(record)
+
+        # Combine all records
+        combined_data = b"".join(records_data)
+
+        # Compress the data
+        compressed_data = gzip.compress(combined_data)
+
+        # Test the complete pipeline
+        log_stream = LogStream(compressed_data, decompress=True)
+
+        # Verify we can iterate through all records
+        results = []
+        try:
+            for record in log_stream:
+                results.append(record)
+                if len(results) >= 3:  # Limit to avoid infinite iteration
+                    break
+        except StopIteration:
+            pass
+
+        # Verify we got the expected number of records
+        assert len(results) == 3
+
+        # Verify the structure of returned records
+        unix_timestamp_1, time_delta_1, payload_type_1, payload_msg_1 = results[0]
+        assert unix_timestamp_1.timestamp() == 1690979463
+        assert payload_type_1 == bp.DepthTel
+        assert payload_msg_1.depth.value == 5.5
+        assert time_delta_1.total_seconds() == 0  # First record has delta 0
+
+        unix_timestamp_2, time_delta_2, payload_type_2, payload_msg_2 = results[1]
+        assert unix_timestamp_2.timestamp() == 1690979464
+        assert payload_type_2 == bp.BatteryTel
+        assert abs(payload_msg_2.battery.level - 0.75) < 0.001  # Float precision
+        assert time_delta_2.total_seconds() == 100  # 100ms after first
+
+        unix_timestamp_3, time_delta_3, payload_type_3, payload_msg_3 = results[2]
+        assert unix_timestamp_3.timestamp() == 1690979465
+        assert payload_type_3 == bp.AttitudeTel
+        assert payload_msg_3.attitude.roll == 10.0
+        assert payload_msg_3.attitude.pitch == -5.0
+        assert payload_msg_3.attitude.yaw == 180.0
+        assert time_delta_3.total_seconds() == 200  # 200ms after first
+
+    def test_robustness_with_mixed_valid_invalid_data(self):
+        """Test that the streaming approach handles mixed valid/invalid data gracefully"""
+        # Create valid record, then invalid data
+        valid_depth_msg = create_test_depth_message(3.0)
+        valid_record = create_real_binlog_record(1690979463, 1000, valid_depth_msg)
+
+        # Add incomplete data that will cause early termination
+        incomplete_data = b"\x05" + b"bad"  # varint 5 but only 3 bytes (incomplete)
+
+        mixed_data = valid_record + incomplete_data
+
+        # Test with the mixed data
+        log_stream = LogStream(mixed_data, decompress=False)
+
+        # Should be able to get the first valid record
+        first_record = next(log_stream)
+        assert first_record[0].timestamp() == 1690979463  # unix_timestamp
+        assert first_record[2] == bp.DepthTel  # payload_type
+        assert first_record[3].depth.value == 3.0  # payload_msg
+
+        # The incomplete data should cause StopIteration when trying to read the next record
+        with pytest.raises(StopIteration):
+            next(log_stream)

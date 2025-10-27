@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import io
 import logging
 import zlib
 from datetime import datetime, timedelta, timezone
@@ -30,9 +31,84 @@ def human_readable_filesize(binsize: int) -> str:
     return f"{num:.1f} Gi{suffix}"
 
 
-def decompress_log(log: bytes) -> bytes:
-    """Decompress a log file"""
-    return zlib.decompressobj(wbits=zlib.MAX_WBITS | 16).decompress(log)
+def is_gzip_compressed(data: bytes) -> bool:
+    """Check if data is gzip compressed by looking at the magic header bytes"""
+    return len(data) >= 2 and data[0] == 0x1F and data[1] == 0x8B
+
+
+class StreamingDecompressor:
+    """A streaming decompressor that handles gzip data incrementally"""
+
+    def __init__(self, compressed_data: bytes):
+        self.compressed_data = compressed_data
+        self.compressed_pos = 0
+        self.decompressor = None
+        self.decompressed_buffer = bytearray()
+        self.eof = False
+
+        if is_gzip_compressed(compressed_data):
+            # Initialize zlib decompressor for gzip data
+            self.decompressor = zlib.decompressobj(wbits=zlib.MAX_WBITS | 16)
+        else:
+            # Data is not compressed
+            self.decompressed_buffer = bytearray(compressed_data)
+            self.eof = True
+
+    def read(self, size: int) -> bytes:
+        """Read up to size bytes from the decompressed stream"""
+        if self.eof and len(self.decompressed_buffer) == 0:
+            return b""
+
+        # If we need more decompressed data and we're not at EOF
+        while len(self.decompressed_buffer) < size and not self.eof:
+            # Read a chunk from compressed data
+            chunk_size = min(8192, len(self.compressed_data) - self.compressed_pos)
+            if chunk_size == 0:
+                # No more compressed data
+                if self.decompressor:
+                    # Finalize decompression. This can fail on corrupted data.
+                    try:
+                        final_data = self.decompressor.flush()
+                        self.decompressed_buffer.extend(final_data)
+                    except zlib.error as e:
+                        logger.warning(
+                            f"Decompression flush failed, likely due to corrupted data: {e}"
+                        )
+                    except (MemoryError, OverflowError) as e:
+                        logger.error(f"Decompression flush failed due to resource limits: {e}")
+                    except Exception as e:
+                        logger.error(f"Unexpected error during decompression flush: {e}")
+                self.eof = True
+                break
+
+            chunk = self.compressed_data[self.compressed_pos : self.compressed_pos + chunk_size]
+            self.compressed_pos += chunk_size
+
+            if self.decompressor:
+                try:
+                    decompressed_chunk = self.decompressor.decompress(chunk)
+                    self.decompressed_buffer.extend(decompressed_chunk)
+                except zlib.error as e:
+                    # If decompression fails, we're probably done. This can happen with
+                    # truncated or corrupted files.
+                    logger.warning(f"Decompression of chunk failed: {e}")
+                    self.eof = True
+                    break
+                except (MemoryError, OverflowError) as e:
+                    logger.error(f"Decompression failed due to resource limits: {e}")
+                    self.eof = True
+                    break
+                except Exception as e:
+                    logger.error(f"Unexpected error during decompression: {e}")
+                    self.eof = True
+                    break
+
+        # Return requested amount of data
+        result_size = min(size, len(self.decompressed_buffer))
+        result = bytes(self.decompressed_buffer[:result_size])
+        self.decompressed_buffer = self.decompressed_buffer[result_size:]
+
+        return result
 
 
 class LogStream:
@@ -50,41 +126,62 @@ class LogStream:
         ]
     ]:
         if decompress:
-            self.decompressed_log = decompress_log(log)
+            self.stream = StreamingDecompressor(log)
         else:
-            self.decompressed_log = log
-        self.pos = 0
+            self.stream = io.BytesIO(log)
+
         self.start_monotonic: proto.datetime_helpers.DatetimeWithNanoseconds = 0
 
     def __iter__(self):
         return self
 
     def __next__(self):
-        if self.pos < len(self.decompressed_log):
-            msg_size, pos_msg_start = decodeVarint(self.decompressed_log, self.pos)
-            msg_data = self.decompressed_log[pos_msg_start : (pos_msg_start + msg_size)]
+        # Try to read the varint that indicates message size
+        try:
+            # Read bytes one by one until we have a complete varint
+            varint_bytes = bytearray()
+            while True:
+                byte_data = self.stream.read(1)  # Read one byte at a time
+                if not byte_data:
+                    raise StopIteration  # End of stream
+                varint_bytes.append(byte_data[0])  # Add byte to our varint buffer
 
+                # Check if this is the last byte of the varint (MSB is 0)
+                if byte_data[0] < 0x80:  # 0x80 = 128 = 10000000 binary
+                    break  # MSB is 0, so we're done
+
+                # Prevent infinite loop with malformed data
+                if len(varint_bytes) > 10:  # Max varint size for 64-bit
+                    logger.error("Malformed varint detected")
+                    raise StopIteration
+
+            # Use Google's protobuf decoder to decode the varint
+            msg_size, _ = decodeVarint(bytes(varint_bytes), 0)
+
+            # Read the message data
+            msg_data = self.stream.read(msg_size)
             if len(msg_data) < msg_size:
-                raise EOFError("Not enough bytes to read message")
+                raise StopIteration
 
-            self.pos = pos_msg_start + msg_size
-            msg = bp.BinlogRecord.deserialize(msg_data)
-            try:
-                payload_type, payload_msg_deserialized = deserialize_any_to_message(msg.payload)
-            except Exception as e:
-                logger.error(f"Failed to deserialize payload: {e}")
-                return self.__next__()  # Skip this message and continue with the next
-
-            if self.start_monotonic == 0:
-                self.start_monotonic = msg.clock_monotonic
-            return (
-                msg.unix_timestamp,
-                msg.clock_monotonic - self.start_monotonic,
-                payload_type,
-                payload_msg_deserialized,
-            )
-        else:
+        except (ValueError, IOError) as e:
+            logger.error(f"Error reading log stream: {e}")
             raise StopIteration
+
+        try:
+            msg = bp.BinlogRecord.deserialize(msg_data)
+            payload_type, payload_msg_deserialized = deserialize_any_to_message(msg.payload)
+        except Exception as e:
+            logger.error(f"Failed to deserialize payload: {e}")
+            return self.__next__()  # Skip this message and continue with the next
+
+        if self.start_monotonic == 0:
+            self.start_monotonic = msg.clock_monotonic
+        return (
+            msg.unix_timestamp,
+            msg.clock_monotonic - self.start_monotonic,
+            payload_type,
+            payload_msg_deserialized,
+        )
 
 
 class LogFile:
