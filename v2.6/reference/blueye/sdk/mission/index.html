@@ -1,0 +1,3110 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../utils/">
+      
+      
+        <link rel="next" href="../../protocol/overview/">
+      
+      
+      <link rel="icon" href="../../../../media/blueye_b.svg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.4">
+    
+    
+      
+        <title>blueye.sdk.mission - Blueye SDK</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.8608ea7d.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#blueye.sdk.mission" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      <!--
+  Copyright (c) 2016-2023 Martin Donath <martin.donath@squidfunk.com>
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to
+  deal in the Software without restriction, including without limitation the
+  rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+  sell copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+  IN THE SOFTWARE.
+-->
+
+<!-- Determine classes -->
+
+
+
+
+
+<!-- Header -->
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+
+    <!-- Link to home -->
+    <a href="../../../.." title="Blueye SDK"
+      class="md-header__button md-logo" aria-label="Blueye SDK" data-md-component="logo">
+      
+  <img src="../../../../media/blueye_sdk_logo_darkblue.svg" alt="logo">
+
+    </a>
+
+    <!-- Button to open drawer -->
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+
+    <!-- Header title -->
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+            blueye.sdk.mission
+            
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Color palette toggle -->
+    
+    
+    <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="blue"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="blue"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+    
+    
+
+    <!-- Site language selector -->
+    
+
+    <!-- Button to open search modal -->
+    
+    <label class="md-header__button md-icon" for="__search">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+    </label>
+
+    <!-- Search interface -->
+    <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    <!-- Repository information -->
+    
+    <div class="md-header__source">
+      <a href="https://github.com/BluEye-Robotics/blueye.sdk" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    
+  </div>
+</a>
+    </div>
+    
+  </nav>
+
+  <!-- Navigation tabs (sticky) -->
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <!--
+  Copyright (c) 2016-2023 Martin Donath <martin.donath@squidfunk.com>
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to
+  deal in the Software without restriction, including without limitation the
+  rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+  sell copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+  IN THE SOFTWARE.
+-->
+
+
+
+<!-- Determine classes -->
+
+
+
+
+<!-- Navigation -->
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+
+  <!-- Site title -->
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Blueye SDK"
+      class="md-nav__button md-logo" aria-label="Blueye SDK" data-md-component="logo">
+      
+  <img src="../../../../media/blueye_sdk_logo_darkblue.svg" alt="logo">
+
+    </a>
+  </label>
+
+  <!-- Repository information -->
+  
+  <div class="md-nav__source">
+    <a href="https://github.com/BluEye-Robotics/blueye.sdk" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    
+  </div>
+</a>
+  </div>
+  
+
+  <!-- Navigation list -->
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    About the Blueye Drones
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../quick_start/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Quick Start
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Movement
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Movement
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../movement/from-the-CLI/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Control from the CLI
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../movement/with-a-gamepad/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Control with a gamepad
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Video
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Video
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../video/gstreamer-for-video-streaming/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    GStreamer for video streaming
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../video/downloading/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Downloading videos and images
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Logs
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Logs
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../logs/listing-and-downloading/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Listing and downloading log files
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../logs/foxglove-bez-to-mcap/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Visualize dive log data in Foxglove
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../logs/plotting/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Plotting log files
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../logs/runtime-logs/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Runtime logs
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../logs/legacy-log-file-format/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Legacy log file format
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../configuration/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Configure drone parameters
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../telemetry-callback/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Subscribing to a telemetry message
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../peripherals/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Peripherals
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../foxglove-bridge/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Visualize live sensor data
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../nmea-publisher/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Forwarding positioning to NMEA
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../mission-planning/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mission Planning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../odometer-to-831l/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Odometer forwarding
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../migrating-to-v2/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Updating from v1 to v2
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../http-api.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    HTTP API
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_15" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_15" id="__nav_15_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Reference
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_15_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_15">
+            <span class="md-nav__icon md-icon"></span>
+            Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../battery/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    blueye.sdk.battery
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../camera/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    blueye.sdk.camera
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../connection/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    blueye.sdk.connection
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../constants/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    blueye.sdk.constants
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../drone/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    blueye.sdk.drone
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guestport/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    blueye.sdk.guestport
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../logs/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    blueye.sdk.logs
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../motion/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    blueye.sdk.motion
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utils/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    blueye.sdk.utils
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    blueye.sdk.mission
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    blueye.sdk.mission
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#blueye.sdk.mission" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;mission
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" mission">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#blueye.sdk.mission.Mission" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;Mission
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" Mission">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#blueye.sdk.mission.Mission.clear" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;clear
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#blueye.sdk.mission.Mission.get_active" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;get_active
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#blueye.sdk.mission.Mission.get_status" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;get_status
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#blueye.sdk.mission.Mission.load_and_run" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;load_and_run
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#blueye.sdk.mission.Mission.pause" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;pause
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#blueye.sdk.mission.Mission.run" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;run
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#blueye.sdk.mission.Mission.send_new" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;send_new
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#blueye.sdk.mission.create_waypoint_instruction" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;create_waypoint_instruction
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#blueye.sdk.mission.export_to_json" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;export_to_json
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#blueye.sdk.mission.import_from_json" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;import_from_json
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#blueye.sdk.mission.prepare_new_mission" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;prepare_new_mission
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_15_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_15_11" id="__nav_15_11_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    blueye.protocol
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_15_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_15_11">
+            <span class="md-nav__icon md-icon"></span>
+            blueye.protocol
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../protocol/overview/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../protocol/telemetry/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Telemetry
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../protocol/control/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Control
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../protocol/req_rep/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ReqRep
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../protocol/message_formats/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Message Formats
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../protocol/mission_planning/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mission Planning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../protocol/aquatroll/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Aquatroll
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#blueye.sdk.mission" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;mission
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" mission">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#blueye.sdk.mission.Mission" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;Mission
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" Mission">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#blueye.sdk.mission.Mission.clear" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;clear
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#blueye.sdk.mission.Mission.get_active" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;get_active
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#blueye.sdk.mission.Mission.get_status" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;get_status
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#blueye.sdk.mission.Mission.load_and_run" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;load_and_run
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#blueye.sdk.mission.Mission.pause" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;pause
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#blueye.sdk.mission.Mission.run" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;run
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#blueye.sdk.mission.Mission.send_new" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;send_new
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#blueye.sdk.mission.create_waypoint_instruction" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;create_waypoint_instruction
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#blueye.sdk.mission.export_to_json" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;export_to_json
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#blueye.sdk.mission.import_from_json" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;import_from_json
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#blueye.sdk.mission.prepare_new_mission" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;prepare_new_mission
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+  <h1>blueye.sdk.mission</h1>
+
+<div class="doc doc-object doc-module">
+
+
+
+<h2 id="blueye.sdk.mission" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-module"></code>            <span class="doc doc-object-name doc-module-name">mission</span>
+
+
+</h2>
+
+    <div class="doc doc-contents first">
+
+
+
+
+
+
+
+<p><span class="doc-section-title">Classes:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+          <b><code><a class="autorefs autorefs-internal" title="blueye.sdk.mission.Mission" href="#blueye.sdk.mission.Mission">Mission</a></code></b>
+          –
+          <div class="doc-md-description">
+            <p>Class for handling mission planning with the drone</p>
+          </div>
+        </li>
+    </ul>
+
+
+
+
+<p><span class="doc-section-title">Functions:</span></p>
+    <ul>
+          <li class="doc-section-item field-body">
+            <b><code><a class="autorefs autorefs-internal" title="blueye.sdk.mission.create_waypoint_instruction" href="#blueye.sdk.mission.create_waypoint_instruction">create_waypoint_instruction</a></code></b>
+            –
+            <div class="doc-md-description">
+              <p>Helper function to create waypoint instructions.</p>
+            </div>
+          </li>
+          <li class="doc-section-item field-body">
+            <b><code><a class="autorefs autorefs-internal" title="blueye.sdk.mission.export_to_json" href="#blueye.sdk.mission.export_to_json">export_to_json</a></code></b>
+            –
+            <div class="doc-md-description">
+              <p>Export the mission to a JSON file</p>
+            </div>
+          </li>
+          <li class="doc-section-item field-body">
+            <b><code><a class="autorefs autorefs-internal" title="blueye.sdk.mission.import_from_json" href="#blueye.sdk.mission.import_from_json">import_from_json</a></code></b>
+            –
+            <div class="doc-md-description">
+              <p>Import a mission from a JSON file</p>
+            </div>
+          </li>
+          <li class="doc-section-item field-body">
+            <b><code><a class="autorefs autorefs-internal" title="blueye.sdk.mission.prepare_new_mission" href="#blueye.sdk.mission.prepare_new_mission">prepare_new_mission</a></code></b>
+            –
+            <div class="doc-md-description">
+              <p>Creates a mission from a list of instructions</p>
+            </div>
+          </li>
+    </ul>
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="blueye.sdk.mission.Mission" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <span class="doc doc-object-name doc-class-name">Mission</span>
+
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">Mission</span><span class="p">(</span><span class="n">parent_drone</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="blueye.sdk.drone.Drone" href="../drone/#blueye.sdk.drone.Drone">Drone</a></span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+        <p>Class for handling mission planning with the drone</p>
+
+
+<details class="example-usage" open>
+  <summary>Example usage</summary>
+  <ol>
+<li>
+<p>Create some instructions
+    <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">blueye.protocol</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">bp</span>
+<span class="n">go_to_seabed</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">Instruction</span><span class="p">(</span><span class="n">go_to_seabed_command</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;desired_speed&quot;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">})</span>
+<span class="n">take_picture</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">Instruction</span><span class="p">(</span><span class="n">camera_command</span><span class="o">=</span><span class="p">{</span>
+    <span class="s2">&quot;camera_action&quot;</span><span class="p">:</span> <span class="n">bp</span><span class="o">.</span><span class="n">CameraAction</span><span class="o">.</span><span class="n">CAMERA_ACTION_TAKE_PHOTO</span>
+<span class="p">})</span>
+<span class="n">go_to_surface</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">Instruction</span><span class="p">(</span><span class="n">go_to_surface_command</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;desired_speed&quot;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">})</span>
+</code></pre></div></p>
+</li>
+<li>
+<p>Create a mission with the instructions
+    <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk.mission</span><span class="w"> </span><span class="kn">import</span> <span class="n">prepare_new_mission</span>
+<span class="n">mission</span> <span class="o">=</span> <span class="n">prepare_new_mission</span><span class="p">(</span>
+    <span class="n">instruction_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">go_to_seabed</span><span class="p">,</span> <span class="n">take_picture</span><span class="p">,</span> <span class="n">go_to_surface</span><span class="p">],</span>
+    <span class="n">mission_id</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">mission_name</span> <span class="o">=</span> <span class="s2">&quot;Go to seabed and take a picture&quot;</span><span class="p">,)</span>
+</code></pre></div></p>
+</li>
+<li>
+<p>Load and run the new mission
+    <div class="highlight"><pre><span></span><code><span class="n">drone</span><span class="o">.</span><span class="n">mission</span><span class="o">.</span><span class="n">load_and_run</span><span class="p">(</span><span class="n">mission</span><span class="p">)</span>
+</code></pre></div></p>
+</li>
+</ol>
+</details>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+            <b><code>parent_drone</code></b>
+              (<code><a class="autorefs autorefs-internal" title="blueye.sdk.drone.Drone" href="../drone/#blueye.sdk.drone.Drone">Drone</a></code>)
+          –
+          <div class="doc-md-description">
+            <p>The parent drone instance.</p>
+          </div>
+        </li>
+    </ul>
+
+
+
+
+
+
+
+
+
+<p><span class="doc-section-title">Methods:</span></p>
+    <ul>
+          <li class="doc-section-item field-body">
+            <b><code><a class="autorefs autorefs-internal" title="blueye.sdk.mission.Mission.clear" href="#blueye.sdk.mission.Mission.clear">clear</a></code></b>
+            –
+            <div class="doc-md-description">
+              <p>Clear the currently loaded mission.</p>
+            </div>
+          </li>
+          <li class="doc-section-item field-body">
+            <b><code><a class="autorefs autorefs-internal" title="blueye.sdk.mission.Mission.get_active" href="#blueye.sdk.mission.Mission.get_active">get_active</a></code></b>
+            –
+            <div class="doc-md-description">
+              <p>Get the current active mission.</p>
+            </div>
+          </li>
+          <li class="doc-section-item field-body">
+            <b><code><a class="autorefs autorefs-internal" title="blueye.sdk.mission.Mission.get_status" href="#blueye.sdk.mission.Mission.get_status">get_status</a></code></b>
+            –
+            <div class="doc-md-description">
+              <p>Get the current mission status.</p>
+            </div>
+          </li>
+          <li class="doc-section-item field-body">
+            <b><code><a class="autorefs autorefs-internal" title="blueye.sdk.mission.Mission.load_and_run" href="#blueye.sdk.mission.Mission.load_and_run">load_and_run</a></code></b>
+            –
+            <div class="doc-md-description">
+              <p>Clears any previous mission, loads the given mission, and runs it.</p>
+            </div>
+          </li>
+          <li class="doc-section-item field-body">
+            <b><code><a class="autorefs autorefs-internal" title="blueye.sdk.mission.Mission.pause" href="#blueye.sdk.mission.Mission.pause">pause</a></code></b>
+            –
+            <div class="doc-md-description">
+              <p>Pause the currently running mission.</p>
+            </div>
+          </li>
+          <li class="doc-section-item field-body">
+            <b><code><a class="autorefs autorefs-internal" title="blueye.sdk.mission.Mission.run" href="#blueye.sdk.mission.Mission.run">run</a></code></b>
+            –
+            <div class="doc-md-description">
+              <p>Run the currently loaded mission.</p>
+            </div>
+          </li>
+          <li class="doc-section-item field-body">
+            <b><code><a class="autorefs autorefs-internal" title="blueye.sdk.mission.Mission.send_new" href="#blueye.sdk.mission.Mission.send_new">send_new</a></code></b>
+            –
+            <div class="doc-md-description">
+              <p>Send a new mission to the drone.</p>
+            </div>
+          </li>
+    </ul>
+
+
+
+                  <details class="quote">
+                    <summary>Source code in <code>blueye/sdk/mission.py</code></summary>
+                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_drone</span><span class="p">:</span> <span class="s2">&quot;Drone&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize the Mission class.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        parent_drone: The parent drone instance.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_parent_drone</span> <span class="o">=</span> <span class="n">parent_drone</span>
+</code></pre></div></td></tr></table></div>
+                  </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="blueye.sdk.mission.Mission.clear" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">clear</span>
+
+
+</h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">clear</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Clear the currently loaded mission.</p>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code>RuntimeError</code>
+            –
+          <div class="doc-md-description">
+            <p>If the connected drone does not meet the required Blunux version.</p>
+          </div>
+        </li>
+    </ul>
+
+            <details class="quote">
+              <summary>Source code in <code>blueye/sdk/mission.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Clear the currently loaded mission.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        RuntimeError: If the connected drone does not meet the required Blunux version.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_parent_drone</span><span class="o">.</span><span class="n">_verify_required_blunux_version</span><span class="p">(</span><span class="s2">&quot;4.0.5&quot;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_parent_drone</span><span class="o">.</span><span class="n">_ctrl_client</span><span class="o">.</span><span class="n">clear_mission</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="blueye.sdk.mission.Mission.get_active" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">get_active</span>
+
+
+</h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">get_active</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="blueye.protocol.Mission" href="../../protocol/mission_planning/#blueye.protocol.types.mission_planning.Mission">Mission</a></span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Get the current active mission.</p>
+
+
+<p><span class="doc-section-title">Returns:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code><a class="autorefs autorefs-internal" title="blueye.protocol.Mission" href="../../protocol/mission_planning/#blueye.protocol.types.mission_planning.Mission">Mission</a></code>
+          –
+          <div class="doc-md-description">
+            <p>The current active mission. The mission will be empty if no mission is running.</p>
+          </div>
+        </li>
+    </ul>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code>RuntimeError</code>
+            –
+          <div class="doc-md-description">
+            <p>If the connected drone does not meet the required Blunux version.</p>
+          </div>
+        </li>
+    </ul>
+
+            <details class="quote">
+              <summary>Source code in <code>blueye/sdk/mission.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_active</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">bp</span><span class="o">.</span><span class="n">Mission</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the current active mission.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The current active mission. The mission will be empty if no mission is running.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        RuntimeError: If the connected drone does not meet the required Blunux version.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_parent_drone</span><span class="o">.</span><span class="n">_verify_required_blunux_version</span><span class="p">(</span><span class="s2">&quot;4.0.5&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent_drone</span><span class="o">.</span><span class="n">_req_rep_client</span><span class="o">.</span><span class="n">get_active_mission</span><span class="p">()</span><span class="o">.</span><span class="n">mission</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="blueye.sdk.mission.Mission.get_status" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">get_status</span>
+
+
+</h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">get_status</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n"><span title="typing.Optional">Optional</span></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-internal" title="blueye.protocol.MissionStatus" href="../../protocol/mission_planning/#blueye.protocol.types.mission_planning.MissionStatus">MissionStatus</a></span><span class="p">]</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Get the current mission status.</p>
+
+
+<p><span class="doc-section-title">Returns:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code><span title="typing.Optional">Optional</span>[<a class="autorefs autorefs-internal" title="blueye.protocol.MissionStatus" href="../../protocol/mission_planning/#blueye.protocol.types.mission_planning.MissionStatus">MissionStatus</a>]</code>
+          –
+          <div class="doc-md-description">
+            <p>The current mission status, or None if no telemetry data has been received.</p>
+          </div>
+        </li>
+    </ul>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code>RuntimeError</code>
+            –
+          <div class="doc-md-description">
+            <p>If the connected drone does not meet the required Blunux version.</p>
+          </div>
+        </li>
+    </ul>
+
+            <details class="quote">
+              <summary>Source code in <code>blueye/sdk/mission.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">bp</span><span class="o">.</span><span class="n">MissionStatus</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the current mission status.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The current mission status, or None if no telemetry data has been received.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        RuntimeError: If the connected drone does not meet the required Blunux version.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_parent_drone</span><span class="o">.</span><span class="n">_verify_required_blunux_version</span><span class="p">(</span><span class="s2">&quot;4.0.5&quot;</span><span class="p">)</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent_drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">bp</span><span class="o">.</span><span class="n">MissionStatusTel</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">msg</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">msg</span><span class="o">.</span><span class="n">mission_status</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="blueye.sdk.mission.Mission.load_and_run" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">load_and_run</span>
+
+
+</h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">load_and_run</span><span class="p">(</span><span class="n">mission</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="blueye.protocol.Mission" href="../../protocol/mission_planning/#blueye.protocol.types.mission_planning.Mission">Mission</a></span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Clears any previous mission, loads the given mission, and runs it.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+            <b><code>mission</code></b>
+              (<code><a class="autorefs autorefs-internal" title="blueye.protocol.Mission" href="../../protocol/mission_planning/#blueye.protocol.types.mission_planning.Mission">Mission</a></code>)
+          –
+          <div class="doc-md-description">
+            <p>The mission to load and run.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+            <b><code>timeout</code></b>
+              (<code>float</code>, default:
+                  <code>2.0</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>The maximum time to wait for the mission to be ready before raising an exception.</p>
+          </div>
+        </li>
+    </ul>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code>RuntimeError</code>
+            –
+          <div class="doc-md-description">
+            <p>If the connected drone does not meet the required Blunux version.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+              <code>TimeoutError</code>
+            –
+          <div class="doc-md-description">
+            <p>If the mission does not become ready within the specified timeout.</p>
+          </div>
+        </li>
+    </ul>
+
+            <details class="quote">
+              <summary>Source code in <code>blueye/sdk/mission.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span>
+<span class="normal">276</span>
+<span class="normal">277</span>
+<span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span>
+<span class="normal">290</span>
+<span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span>
+<span class="normal">294</span>
+<span class="normal">295</span>
+<span class="normal">296</span>
+<span class="normal">297</span>
+<span class="normal">298</span>
+<span class="normal">299</span>
+<span class="normal">300</span>
+<span class="normal">301</span>
+<span class="normal">302</span>
+<span class="normal">303</span>
+<span class="normal">304</span>
+<span class="normal">305</span>
+<span class="normal">306</span>
+<span class="normal">307</span>
+<span class="normal">308</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">load_and_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mission</span><span class="p">:</span> <span class="n">bp</span><span class="o">.</span><span class="n">Mission</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Clears any previous mission, loads the given mission, and runs it.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        mission: The mission to load and run.</span>
+<span class="sd">        timeout: The maximum time to wait for the mission to be ready before raising an exception.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        RuntimeError: If the connected drone does not meet the required Blunux version.</span>
+<span class="sd">        TimeoutError: If the mission does not become ready within the specified timeout.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_parent_drone</span><span class="o">.</span><span class="n">_verify_required_blunux_version</span><span class="p">(</span><span class="s2">&quot;4.0.5&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_status</span><span class="p">()</span><span class="o">.</span><span class="n">state</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span>
+        <span class="n">bp</span><span class="o">.</span><span class="n">MissionState</span><span class="o">.</span><span class="n">MISSION_STATE_INACTIVE</span><span class="p">,</span>
+        <span class="n">bp</span><span class="o">.</span><span class="n">MissionState</span><span class="o">.</span><span class="n">MISSION_STATE_COMPLETED</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="c1"># Clear the previous mission if it exists</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+        <span class="c1"># Wait until the mission state becomes MISSION_STATE_INACTIVE</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_status</span><span class="p">()</span><span class="o">.</span><span class="n">state</span> <span class="o">!=</span> <span class="n">bp</span><span class="o">.</span><span class="n">MissionState</span><span class="o">.</span><span class="n">MISSION_STATE_INACTIVE</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span> <span class="o">&gt;</span> <span class="n">timeout</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TimeoutError</span><span class="p">(</span>
+                    <span class="s2">&quot;Mission status did not become inactive within the timeout period.&quot;</span>
+                <span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+
+    <span class="c1"># Send the new mission</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">send_new</span><span class="p">(</span><span class="n">mission</span><span class="p">)</span>
+
+    <span class="c1"># Wait until the mission state becomes MISSION_STATE_READY</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_status</span><span class="p">()</span><span class="o">.</span><span class="n">state</span> <span class="o">!=</span> <span class="n">bp</span><span class="o">.</span><span class="n">MissionState</span><span class="o">.</span><span class="n">MISSION_STATE_READY</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span> <span class="o">&gt;</span> <span class="n">timeout</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TimeoutError</span><span class="p">(</span><span class="s2">&quot;Mission status did not become ready within the timeout period.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_status</span><span class="p">()</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">bp</span><span class="o">.</span><span class="n">MissionState</span><span class="o">.</span><span class="n">MISSION_STATE_FAILED_TO_LOAD_MISSION</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Failed to load the mission. Check the mission instructions.&quot;</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+
+    <span class="c1"># Run the mission</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="blueye.sdk.mission.Mission.pause" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">pause</span>
+
+
+</h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">pause</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Pause the currently running mission.</p>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code>RuntimeError</code>
+            –
+          <div class="doc-md-description">
+            <p>If the connected drone does not meet the required Blunux version.</p>
+          </div>
+        </li>
+    </ul>
+
+            <details class="quote">
+              <summary>Source code in <code>blueye/sdk/mission.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">pause</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Pause the currently running mission.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        RuntimeError: If the connected drone does not meet the required Blunux version.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_parent_drone</span><span class="o">.</span><span class="n">_verify_required_blunux_version</span><span class="p">(</span><span class="s2">&quot;4.0.5&quot;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_parent_drone</span><span class="o">.</span><span class="n">_ctrl_client</span><span class="o">.</span><span class="n">pause_mission</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="blueye.sdk.mission.Mission.run" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">run</span>
+
+
+</h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">run</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Run the currently loaded mission.</p>
+<p>The mission state must be MISSION_STATE_READY before calling this method.</p>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code>RuntimeError</code>
+            –
+          <div class="doc-md-description">
+            <p>If the connected drone does not meet the required Blunux version.</p>
+          </div>
+        </li>
+    </ul>
+
+            <details class="quote">
+              <summary>Source code in <code>blueye/sdk/mission.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Run the currently loaded mission.</span>
+
+<span class="sd">    The mission state must be MISSION_STATE_READY before calling this method.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        RuntimeError: If the connected drone does not meet the required Blunux version.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_parent_drone</span><span class="o">.</span><span class="n">_verify_required_blunux_version</span><span class="p">(</span><span class="s2">&quot;4.0.5&quot;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_parent_drone</span><span class="o">.</span><span class="n">_ctrl_client</span><span class="o">.</span><span class="n">run_mission</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="blueye.sdk.mission.Mission.send_new" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">send_new</span>
+
+
+</h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">send_new</span><span class="p">(</span><span class="n">mission</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="blueye.protocol.Mission" href="../../protocol/mission_planning/#blueye.protocol.types.mission_planning.Mission">Mission</a></span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Send a new mission to the drone.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+            <b><code>mission</code></b>
+              (<code><a class="autorefs autorefs-internal" title="blueye.protocol.Mission" href="../../protocol/mission_planning/#blueye.protocol.types.mission_planning.Mission">Mission</a></code>)
+          –
+          <div class="doc-md-description">
+            <p>The mission to send to the drone.</p>
+          </div>
+        </li>
+    </ul>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code>RuntimeError</code>
+            –
+          <div class="doc-md-description">
+            <p>If the connected drone does not meet the required Blunux version.</p>
+          </div>
+        </li>
+    </ul>
+
+            <details class="quote">
+              <summary>Source code in <code>blueye/sdk/mission.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">send_new</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mission</span><span class="p">:</span> <span class="n">bp</span><span class="o">.</span><span class="n">Mission</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Send a new mission to the drone.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        mission: The mission to send to the drone.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        RuntimeError: If the connected drone does not meet the required Blunux version.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_parent_drone</span><span class="o">.</span><span class="n">_verify_required_blunux_version</span><span class="p">(</span><span class="s2">&quot;4.0.5&quot;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_parent_drone</span><span class="o">.</span><span class="n">_req_rep_client</span><span class="o">.</span><span class="n">set_mission</span><span class="p">(</span><span class="n">mission</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="blueye.sdk.mission.create_waypoint_instruction" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">create_waypoint_instruction</span>
+
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">create_waypoint_instruction</span><span class="p">(</span>
+    <span class="n">waypoint_name</span><span class="p">:</span> <span class="n">str</span><span class="p">,</span>
+    <span class="n">latitude</span><span class="p">:</span> <span class="n">float</span><span class="p">,</span>
+    <span class="n">longitude</span><span class="p">:</span> <span class="n">float</span><span class="p">,</span>
+    <span class="n">depth</span><span class="p">:</span> <span class="n">float</span><span class="p">,</span>
+    <span class="n">speed_to_target</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span>
+    <span class="n">speed_to_depth</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">,</span>
+    <span class="n">circle_of_acceptance</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">waypoint_id</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="blueye.protocol.Instruction" href="../../protocol/mission_planning/#blueye.protocol.types.mission_planning.Instruction">Instruction</a></span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Helper function to create waypoint instructions.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+            <b><code>waypoint_name</code></b>
+              (<code>str</code>)
+          –
+          <div class="doc-md-description">
+            <p>The name of the waypoint.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+            <b><code>latitude</code></b>
+              (<code>float</code>)
+          –
+          <div class="doc-md-description">
+            <p>The latitude of the waypoint (WGS 84 decimal format). Needs to be in the
+              range [-90, 90].</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+            <b><code>longitude</code></b>
+              (<code>float</code>)
+          –
+          <div class="doc-md-description">
+            <p>The longitude of the waypoint (WGS 84 decimal format). Needs to be in the
+               range [-180, 180].</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+            <b><code>depth</code></b>
+              (<code>float</code>)
+          –
+          <div class="doc-md-description">
+            <p>The depth of the waypoint (meters below surface).</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+            <b><code>circle_of_acceptance</code></b>
+              (<code>float</code>, default:
+                  <code>1</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>The radius of the circle of acceptance (meters).</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+            <b><code>speed_to_target</code></b>
+              (<code>float</code>, default:
+                  <code>0.6</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>The speed to the waypoint (m/s).</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+            <b><code>waypoint_id</code></b>
+              (<code>int</code>, default:
+                  <code>0</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>The ID of the waypoint.</p>
+          </div>
+        </li>
+    </ul>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code>ValueError</code>
+            –
+          <div class="doc-md-description">
+            <p>If latitude or longitude are out of bounds.</p>
+          </div>
+        </li>
+    </ul>
+
+
+<p><span class="doc-section-title">Returns:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+<b><code>Instruction</code></b> (              <code><a class="autorefs autorefs-internal" title="blueye.protocol.Instruction" href="../../protocol/mission_planning/#blueye.protocol.types.mission_planning.Instruction">Instruction</a></code>
+)          –
+          <div class="doc-md-description">
+            <p>An Instruction object with the specified waypoint details.</p>
+          </div>
+        </li>
+    </ul>
+
+            <details class="quote">
+              <summary>Source code in <code>blueye/sdk/mission.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">create_waypoint_instruction</span><span class="p">(</span>
+    <span class="n">waypoint_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">latitude</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">longitude</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">depth</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">speed_to_target</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span>
+    <span class="n">speed_to_depth</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">,</span>
+    <span class="n">circle_of_acceptance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">waypoint_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">bp</span><span class="o">.</span><span class="n">Instruction</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Helper function to create waypoint instructions.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        waypoint_name (str): The name of the waypoint.</span>
+<span class="sd">        latitude (float): The latitude of the waypoint (WGS 84 decimal format). Needs to be in the</span>
+<span class="sd">                          range [-90, 90].</span>
+<span class="sd">        longitude (float): The longitude of the waypoint (WGS 84 decimal format). Needs to be in the</span>
+<span class="sd">                           range [-180, 180].</span>
+<span class="sd">        depth (float): The depth of the waypoint (meters below surface).</span>
+<span class="sd">        circle_of_acceptance: The radius of the circle of acceptance (meters).</span>
+<span class="sd">        speed_to_target: The speed to the waypoint (m/s).</span>
+<span class="sd">        waypoint_id: The ID of the waypoint.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If latitude or longitude are out of bounds.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Instruction: An Instruction object with the specified waypoint details.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="o">-</span><span class="mi">90</span> <span class="o">&lt;=</span> <span class="n">latitude</span> <span class="o">&lt;=</span> <span class="mi">90</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Latitude must be between -90 and 90 degrees, got </span><span class="si">{</span><span class="n">latitude</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="o">-</span><span class="mi">180</span> <span class="o">&lt;=</span> <span class="n">longitude</span> <span class="o">&lt;=</span> <span class="mi">180</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Longitude must be between -180 and 180 degrees, got </span><span class="si">{</span><span class="n">longitude</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">global_position</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">LatLongPosition</span><span class="p">()</span>
+    <span class="n">global_position</span><span class="o">.</span><span class="n">latitude</span> <span class="o">=</span> <span class="n">latitude</span>
+    <span class="n">global_position</span><span class="o">.</span><span class="n">longitude</span> <span class="o">=</span> <span class="n">longitude</span>
+
+    <span class="n">depth_set_point</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">DepthSetPoint</span><span class="p">()</span>
+    <span class="n">depth_set_point</span><span class="o">.</span><span class="n">depth</span> <span class="o">=</span> <span class="n">depth</span>
+    <span class="n">depth_set_point</span><span class="o">.</span><span class="n">depth_zero_reference</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">DepthZeroReference</span><span class="o">.</span><span class="n">DEPTH_ZERO_REFERENCE_SURFACE</span>
+    <span class="n">depth_set_point</span><span class="o">.</span><span class="n">speed_to_depth</span> <span class="o">=</span> <span class="n">speed_to_depth</span>
+
+    <span class="n">waypoint</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">Waypoint</span><span class="p">()</span>
+    <span class="n">waypoint</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">waypoint_id</span>
+    <span class="n">waypoint</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">waypoint_name</span>
+    <span class="n">waypoint</span><span class="o">.</span><span class="n">global_position</span> <span class="o">=</span> <span class="n">global_position</span>
+    <span class="n">waypoint</span><span class="o">.</span><span class="n">circle_of_acceptance</span> <span class="o">=</span> <span class="n">circle_of_acceptance</span>
+    <span class="n">waypoint</span><span class="o">.</span><span class="n">speed_to_target</span> <span class="o">=</span> <span class="n">speed_to_target</span>
+    <span class="n">waypoint</span><span class="o">.</span><span class="n">depth_set_point</span> <span class="o">=</span> <span class="n">depth_set_point</span>
+
+    <span class="n">waypoint_command</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">WaypointCommand</span><span class="p">(</span><span class="n">waypoint</span><span class="o">=</span><span class="n">waypoint</span><span class="p">)</span>
+
+    <span class="n">instruction</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">Instruction</span><span class="p">({</span><span class="s2">&quot;waypoint_command&quot;</span><span class="p">:</span> <span class="n">waypoint_command</span><span class="p">})</span>
+    <span class="k">return</span> <span class="n">instruction</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="blueye.sdk.mission.export_to_json" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">export_to_json</span>
+
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">export_to_json</span><span class="p">(</span>
+    <span class="n">mission</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="blueye.protocol.Mission" href="../../protocol/mission_planning/#blueye.protocol.types.mission_planning.Mission">Mission</a></span><span class="p">,</span>
+    <span class="n">output_path</span><span class="p">:</span> <span class="n"><span title="typing.Optional">Optional</span></span><span class="p">[</span><span class="n"><span title="pathlib.Path">Path</span></span> <span class="o">|</span> <span class="n">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Export the mission to a JSON file</p>
+<p>This allows you to save the mission to a file for later use or to share it with others.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+            <b><code>mission</code></b>
+              (<code><a class="autorefs autorefs-internal" title="blueye.protocol.Mission" href="../../protocol/mission_planning/#blueye.protocol.types.mission_planning.Mission">Mission</a></code>)
+          –
+          <div class="doc-md-description">
+            <p>The mission to export</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+            <b><code>output_path</code></b>
+              (<code><span title="typing.Optional">Optional</span>[<span title="pathlib.Path">Path</span> | str]</code>, default:
+                  <code>None</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>The path to write the JSON file to. If <code>None</code> the mission will be written to
+         the current directory with the name <code>BlueyeMission.json</code>. If the path is a
+         directory, the mission will be written to that directory with the name
+         <code>BlueyeMission.json</code>. Else the mission will be written to the specified file.</p>
+          </div>
+        </li>
+    </ul>
+
+            <details class="quote">
+              <summary>Source code in <code>blueye/sdk/mission.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">export_to_json</span><span class="p">(</span><span class="n">mission</span><span class="p">:</span> <span class="n">bp</span><span class="o">.</span><span class="n">Mission</span><span class="p">,</span> <span class="n">output_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span> <span class="o">|</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Export the mission to a JSON file</span>
+
+<span class="sd">    This allows you to save the mission to a file for later use or to share it with others.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        mission: The mission to export</span>
+<span class="sd">        output_path: The path to write the JSON file to. If `None` the mission will be written to</span>
+<span class="sd">                     the current directory with the name `BlueyeMission.json`. If the path is a</span>
+<span class="sd">                     directory, the mission will be written to that directory with the name</span>
+<span class="sd">                     `BlueyeMission.json`. Else the mission will be written to the specified file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">output_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">output_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;BlueyeMission.json&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
+            <span class="n">output_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">output_path</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+            <span class="n">output_path</span> <span class="o">=</span> <span class="n">output_path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;BlueyeMission.json&quot;</span><span class="p">)</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Exporting mission &quot;</span><span class="si">{</span><span class="n">mission</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&quot; to </span><span class="si">{</span><span class="n">output_path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">MessageToJson</span><span class="p">(</span><span class="n">mission</span><span class="o">.</span><span class="n">_pb</span><span class="p">))</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="blueye.sdk.mission.import_from_json" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">import_from_json</span>
+
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">import_from_json</span><span class="p">(</span><span class="n">input_path</span><span class="p">:</span> <span class="n"><span title="pathlib.Path">Path</span></span> <span class="o">|</span> <span class="n">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="blueye.protocol.Mission" href="../../protocol/mission_planning/#blueye.protocol.types.mission_planning.Mission">Mission</a></span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Import a mission from a JSON file</p>
+<p>This allows you to load a mission from a file that was previously exported.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+            <b><code>input_path</code></b>
+              (<code><span title="pathlib.Path">Path</span> | str</code>)
+          –
+          <div class="doc-md-description">
+            <p>The path to the JSON file to import</p>
+          </div>
+        </li>
+    </ul>
+
+
+<p><span class="doc-section-title">Returns:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code><a class="autorefs autorefs-internal" title="blueye.protocol.Mission" href="../../protocol/mission_planning/#blueye.protocol.types.mission_planning.Mission">Mission</a></code>
+          –
+          <div class="doc-md-description">
+            <p>The imported mission</p>
+          </div>
+        </li>
+    </ul>
+
+            <details class="quote">
+              <summary>Source code in <code>blueye/sdk/mission.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">import_from_json</span><span class="p">(</span><span class="n">input_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">bp</span><span class="o">.</span><span class="n">Mission</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Import a mission from a JSON file</span>
+
+<span class="sd">    This allows you to load a mission from a file that was previously exported.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        input_path: The path to the JSON file to import</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The imported mission</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">input_path</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">input_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">input_path</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Importing mission from </span><span class="si">{</span><span class="n">input_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">input_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">json_data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="n">mission</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">Mission</span><span class="p">()</span>
+        <span class="n">Parse</span><span class="p">(</span><span class="n">json_data</span><span class="p">,</span> <span class="n">mission</span><span class="o">.</span><span class="n">_pb</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">mission</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="blueye.sdk.mission.prepare_new_mission" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">prepare_new_mission</span>
+
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">prepare_new_mission</span><span class="p">(</span>
+    <span class="n">instruction_list</span><span class="p">:</span> <span class="n"><span title="typing.List">List</span></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-internal" title="blueye.protocol.Instruction" href="../../protocol/mission_planning/#blueye.protocol.types.mission_planning.Instruction">Instruction</a></span><span class="p">],</span>
+    <span class="n">mission_id</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">mission_name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="blueye.protocol.Mission" href="../../protocol/mission_planning/#blueye.protocol.types.mission_planning.Mission">Mission</a></span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Creates a mission from a list of instructions</p>
+<p>Automatically assigns an ID to each instruction based on the order they are in the list.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+            <b><code>mission_id</code></b>
+              (<code>int</code>, default:
+                  <code>0</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>ID of the mission</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+            <b><code>mission_name</code></b>
+              (<code>str</code>, default:
+                  <code>&#39;&#39;</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Name of the mission</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+            <b><code>instruction_list</code></b>
+              (<code><span title="typing.List">List</span>[<a class="autorefs autorefs-internal" title="blueye.protocol.Instruction" href="../../protocol/mission_planning/#blueye.protocol.types.mission_planning.Instruction">Instruction</a>]</code>)
+          –
+          <div class="doc-md-description">
+            <p>List of instructions to create the mission from</p>
+          </div>
+        </li>
+    </ul>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code>ValueError</code>
+            –
+          <div class="doc-md-description">
+            <p>If the number of instructions exceeds 50, which is the maximum allowed.</p>
+          </div>
+        </li>
+    </ul>
+
+
+<p><span class="doc-section-title">Returns:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code><a class="autorefs autorefs-internal" title="blueye.protocol.Mission" href="../../protocol/mission_planning/#blueye.protocol.types.mission_planning.Mission">Mission</a></code>
+          –
+          <div class="doc-md-description">
+            <p>A mission object with the instructions and their respective IDs</p>
+          </div>
+        </li>
+    </ul>
+
+            <details class="quote">
+              <summary>Source code in <code>blueye/sdk/mission.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">prepare_new_mission</span><span class="p">(</span>
+    <span class="n">instruction_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">bp</span><span class="o">.</span><span class="n">Instruction</span><span class="p">],</span>
+    <span class="n">mission_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">mission_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">bp</span><span class="o">.</span><span class="n">Mission</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates a mission from a list of instructions</span>
+
+<span class="sd">    Automatically assigns an ID to each instruction based on the order they are in the list.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        mission_id: ID of the mission</span>
+<span class="sd">        mission_name: Name of the mission</span>
+<span class="sd">        instruction_list: List of instructions to create the mission from</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If the number of instructions exceeds 50, which is the maximum allowed.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A mission object with the instructions and their respective IDs</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">instruction_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">50</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;A mission can only contain up to 50 instructions. &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Received </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">instruction_list</span><span class="p">)</span><span class="si">}</span><span class="s2"> instructions.&quot;</span>
+        <span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s1">&#39;Preparing the &quot;</span><span class="si">{</span><span class="n">mission_name</span><span class="si">}</span><span class="s1">&quot; mission, with ID </span><span class="si">{</span><span class="n">mission_id</span><span class="si">}</span><span class="s1"> and &#39;</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">instruction_list</span><span class="p">)</span><span class="si">}</span><span class="s2"> instructions&quot;</span>
+    <span class="p">)</span>
+    <span class="n">instruction_id</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="c1"># Deep copy the instructions to avoid modifying the original ones</span>
+    <span class="k">for</span> <span class="n">instruction</span> <span class="ow">in</span> <span class="n">instruction_list</span><span class="p">:</span>
+        <span class="n">instruction_copy</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">instruction</span><span class="p">)</span>
+        <span class="n">instruction_copy</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">instruction_id</span>
+        <span class="n">instruction_id</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">instruction_list</span><span class="p">[</span><span class="n">instruction_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">instruction</span><span class="p">)]</span> <span class="o">=</span> <span class="n">instruction_copy</span>
+    <span class="k">return</span> <span class="n">bp</span><span class="o">.</span><span class="n">Mission</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">mission_id</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">mission_name</span><span class="p">,</span> <span class="n">instructions</span><span class="o">=</span><span class="n">instruction_list</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+  <nav class="md-footer__inner md-grid" aria-label="footer.title">
+    
+    
+    <a href="../utils/" class="md-footer__link md-footer__link--prev"
+      aria-label="Previous: blueye.sdk.utils" rel="prev">
+      <div class="md-footer__button md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </div>
+      <div class="md-footer__title">
+        <div class="md-ellipsis">
+          <span class="md-footer__direction">
+            Previous
+          </span>
+          blueye.sdk.utils
+        </div>
+      </div>
+    </a>
+    
+    
+    
+    <a href="../../protocol/overview/" class="md-footer__link md-footer__link--next"
+      aria-label="Next: Overview" rel="next">
+      <div class="md-footer__title">
+        <div class="md-ellipsis">
+          <span class="md-footer__direction">
+            Next
+          </span>
+          Overview
+        </div>
+      </div>
+      <div class="md-footer__button md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+      </div>
+    </a>
+    
+  </nav>
+  
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../../..", "features": ["content.tabs.link", "navigation.top"], "search": "../../../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.f1b6f286.min.js"></script>
+      
+    
+  </body>
+</html>
