@@ -1493,6 +1493,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#blueye.protocol.types.control.FormatRemovableStorageDeviceCtrl" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;FormatRemovableStorageDeviceCtrl
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#blueye.protocol.types.control.GenericServoCtrl" class="md-nav__link">
     <span class="md-ellipsis">
       <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;GenericServoCtrl
@@ -1736,6 +1745,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#blueye.protocol.types.control.RecordCtrl.storage_location" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;storage_location
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1951,6 +1969,21 @@
       <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;TakePictureCtrl
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label=" TakePictureCtrl">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#blueye.protocol.types.control.TakePictureCtrl.storage_location" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;storage_location
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -2451,6 +2484,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#blueye.protocol.types.control.FormatRemovableStorageDeviceCtrl" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;FormatRemovableStorageDeviceCtrl
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#blueye.protocol.types.control.GenericServoCtrl" class="md-nav__link">
     <span class="md-ellipsis">
       <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;GenericServoCtrl
@@ -2694,6 +2736,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#blueye.protocol.types.control.RecordCtrl.storage_location" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;storage_location
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2909,6 +2960,21 @@
       <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;TakePictureCtrl
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label=" TakePictureCtrl">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#blueye.protocol.types.control.TakePictureCtrl.storage_location" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;storage_location
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -3185,6 +3251,13 @@
           </div>
         </li>
         <li class="doc-section-item field-body">
+          <b><code><a class="autorefs autorefs-internal" title="blueye.protocol.types.control.FormatRemovableStorageDeviceCtrl" href="#blueye.protocol.types.control.FormatRemovableStorageDeviceCtrl">FormatRemovableStorageDeviceCtrl</a></code></b>
+          –
+          <div class="doc-md-description">
+            <p>Message sent when the user wants to format a connected</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
           <b><code><a class="autorefs autorefs-internal" title="blueye.protocol.types.control.GenericServoCtrl" href="#blueye.protocol.types.control.GenericServoCtrl">GenericServoCtrl</a></code></b>
           –
           <div class="doc-md-description">
@@ -3258,7 +3331,7 @@
           <b><code><a class="autorefs autorefs-internal" title="blueye.protocol.types.control.RecordCtrl" href="#blueye.protocol.types.control.RecordCtrl">RecordCtrl</a></code></b>
           –
           <div class="doc-md-description">
-            <p>Issue a command to start video recording.</p>
+            <p>Issue a command to start video or multibeam recording.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -4023,6 +4096,39 @@ view.</p>
 
 
 
+<h3 id="blueye.protocol.types.control.FormatRemovableStorageDeviceCtrl" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <span class="doc doc-object-name doc-class-name">FormatRemovableStorageDeviceCtrl</span>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>Message sent when the user wants to format a connected
+removable storage device.
+The app will receive a RemovableStorageTel message with
+information about the newly formatted drive.</p>
+<p>Warning: The drone will delete any partitions and format the
+drive with a single exFat partition. Any data on the drive will
+be lost.</p>
+
+
+
+
+
+
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
 <h3 id="blueye.protocol.types.control.GenericServoCtrl" class="doc doc-heading">
 <code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <span class="doc doc-object-name doc-class-name">GenericServoCtrl</span>
 
@@ -4658,7 +4764,7 @@ or yaw direction.</p>
     <div class="doc doc-contents ">
 
 
-        <p>Issue a command to start video recording.</p>
+        <p>Issue a command to start video or multibeam recording.</p>
 
 
 
@@ -4693,6 +4799,30 @@ or yaw direction.</p>
 </h4>
 <div class="doc-signature highlight"><pre><span></span><code><span class="n">record_on</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="blueye.protocol.types.message_formats.RecordOn" href="../message_formats/#blueye.protocol.types.message_formats.RecordOn">RecordOn</a></span> <span class="o">=</span> <span class="n"><span title="proto.Field">Field</span></span><span class="p">(</span>
     <span class="n"><span title="proto.MESSAGE">MESSAGE</span></span><span class="p">,</span> <span class="n"><span title="proto.Field(number)">number</span></span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n"><span title="proto.Field(message)">message</span></span><span class="o">=</span><span class="n"><a class="autorefs autorefs-internal" title="blueye.protocol.types.message_formats.RecordOn" href="../message_formats/#blueye.protocol.types.message_formats.RecordOn">RecordOn</a></span>
+<span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="blueye.protocol.types.control.RecordCtrl.storage_location" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">storage_location</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">storage_location</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="blueye.protocol.types.message_formats.StorageLocation" href="../message_formats/#blueye.protocol.types.message_formats.StorageLocation">StorageLocation</a></span> <span class="o">=</span> <span class="n"><span title="proto.Field">Field</span></span><span class="p">(</span>
+    <span class="n"><span title="proto.ENUM">ENUM</span></span><span class="p">,</span> <span class="n"><span title="proto.Field(number)">number</span></span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n"><span title="proto.Field(enum)">enum</span></span><span class="o">=</span><span class="n"><a class="autorefs autorefs-internal" title="blueye.protocol.types.message_formats.StorageLocation" href="../message_formats/#blueye.protocol.types.message_formats.StorageLocation">StorageLocation</a></span>
 <span class="p">)</span>
 </code></pre></div>
 
@@ -5314,6 +5444,46 @@ view.</p>
 
 
 
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="blueye.protocol.types.control.TakePictureCtrl.storage_location" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">storage_location</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">storage_location</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="blueye.protocol.types.message_formats.StorageLocation" href="../message_formats/#blueye.protocol.types.message_formats.StorageLocation">StorageLocation</a></span> <span class="o">=</span> <span class="n"><span title="proto.Field">Field</span></span><span class="p">(</span>
+    <span class="n"><span title="proto.ENUM">ENUM</span></span><span class="p">,</span> <span class="n"><span title="proto.Field(number)">number</span></span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n"><span title="proto.Field(enum)">enum</span></span><span class="o">=</span><span class="n"><a class="autorefs autorefs-internal" title="blueye.protocol.types.message_formats.StorageLocation" href="../message_formats/#blueye.protocol.types.message_formats.StorageLocation">StorageLocation</a></span>
+<span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+    </div>
+
+</div>
+
+
+
+
+
+  </div>
 
     </div>
 
