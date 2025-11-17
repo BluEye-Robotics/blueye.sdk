@@ -1,18 +1,17 @@
 #!/usr/bin/env python3
-import time
-import logging
-
-from blueye.sdk import Drone
-
 import asyncio
-import time
 import base64
-from foxglove_websocket import run_cancellable
-from foxglove_websocket.server import FoxgloveServer
-import sys
 import inspect
+import logging
+import sys
+import time
+
+import click
+from foxglove_websocket.server import FoxgloveServer
 from google.protobuf import descriptor_pb2
-import blueye.protocol
+
+import blueye.sdk
+from blueye.sdk import Drone
 
 # Declare the global variable
 channel_ids = {}
@@ -98,13 +97,26 @@ def get_protobuf_descriptors(namespace):
     return descriptors
 
 
-async def main():
+@click.command(name="foxglove-bridge")
+@click.option("--host", default="0.0.0.0", help="Address to host the websocket server on.")
+@click.option("--port", default=8765, help="Port to host the websocket server on.")
+def main(host, port):
+    """
+    Starts a Foxglove WebSocket bridge for a Blueye drone.
+
+    The bridge listens for telemetry messages from the drone and forwards them to Foxglove Studio
+    with a channel for each message type.
+    """
+    asyncio.run(amain(host, port))
+
+
+async def amain(host, port):
     # Initialize the drone
     myDrone = Drone(connect_as_observer=True)
     myDrone.telemetry.add_msg_callback([], parse_message, raw=True)
 
     # Specify the server's host, port, and a human-readable name
-    async with FoxgloveServer("0.0.0.0", 8765, "Blueye SDK bridge") as server:
+    async with FoxgloveServer(host, port, "Blueye SDK bridge") as server:
         global global_server
         global_server = server
 
@@ -131,7 +143,3 @@ async def main():
         # Keep the server running
         while True:
             await asyncio.sleep(1)
-
-
-if __name__ == "__main__":
-    asyncio.run(main())
