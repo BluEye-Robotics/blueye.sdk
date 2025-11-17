@@ -1,9 +1,11 @@
 import os
 import time
-from mcap_protobuf.writer import Writer
-import sys
-from blueye.sdk.logs import LogStream
 from pathlib import Path
+
+import click
+from mcap_protobuf.writer import Writer
+
+from blueye.sdk.logs import LogStream
 
 
 def parse_logfile(log: Path) -> LogStream:
@@ -13,9 +15,25 @@ def parse_logfile(log: Path) -> LogStream:
     return LogStream(log_bytes)
 
 
+@click.command(name="bez-to-mcap")
+@click.argument("logfile_path", type=click.Path(exists=True))
+@click.option(
+    "--output",
+    "-o",
+    "output_mcap_path",
+    type=click.Path(),
+    help="The path to the output MCAP file.",
+)
 def main(logfile_path, output_mcap_path):
+    """Converts a Blueye log file (.bez) to an MCAP file.
+
+    Having the log as an mcap file makes it easy to visualize in Foxglove Studio.
+    """
+    if output_mcap_path is None:
+        output_mcap_path = logfile_path.replace(".bez", ".mcap")
+
     start_time_tic = time.time()
-    print(f"Converting {logfile_path} to {output_mcap_path}...")
+    click.echo(f"Converting {logfile_path} to {output_mcap_path}...")
 
     # Prepare MCAP writer
     with open(output_mcap_path, "wb") as mcap_file:
@@ -46,20 +64,11 @@ def main(logfile_path, output_mcap_path):
         # Add indexes to the MCAP file
         writer.finish()
 
-        print(f"MCAP file successfully created!")
-        print(
+        click.echo("MCAP file successfully created!")
+        click.echo(
             f"Total of messages written: {count} in {round(time.time() - start_time_tic, 3)} seconds"
         )
-        print(f"MCAP file name: {output_mcap_path}")
-        print(f"MCAP file size: {round(os.path.getsize(output_mcap_path)/1000000, 2)} MB")
-        print(f"Start of dive time: {unix_ts - delta}")
-        print(f"Duration of dive log: {delta}")
-
-
-if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Usage: python bez_to_mcap.py <logfile.bez> [output_filename.mcap]")
-        sys.exit(1)
-    logfile = sys.argv[1]
-    output = sys.argv[2] if len(sys.argv) > 2 else sys.argv[1].replace(".bez", ".mcap")
-    main(logfile, output)
+        click.echo(f"MCAP file name: {output_mcap_path}")
+        click.echo(f"MCAP file size: {round(os.path.getsize(output_mcap_path) / 1000000, 2)} MB")
+        click.echo(f"Start of dive time: {unix_ts - delta}")
+        click.echo(f"Duration of dive log: {delta}")
