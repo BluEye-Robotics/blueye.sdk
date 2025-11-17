@@ -83,6 +83,7 @@ version = "2.6.0"
 source = { editable = "." }
 dependencies = [
     { name = "blueye-protocol" },
+    { name = "click" },
     { name = "packaging" },
     { name = "proto-plus" },
     { name = "python-dateutil" },
@@ -125,6 +126,7 @@ dev = [
 requires-dist = [
     { name = "asciimatics", marker = "extra == 'examples'", specifier = ">=1.11.0,<2" },
     { name = "blueye-protocol", specifier = ">=3.2.0,<4" },
+    { name = "click", specifier = ">=8.1.8" },
     { name = "foxglove-websocket", marker = "extra == 'examples'", specifier = ">=0.1.2,<0.2" },
     { name = "inputs", marker = "extra == 'examples'", specifier = ">=0.5,<0.6" },
     { name = "matplotlib", marker = "extra == 'examples'", specifier = "~=3.10" },

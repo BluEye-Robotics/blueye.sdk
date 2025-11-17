@@ -20,6 +20,7 @@ dependencies = [
     "python-dateutil>=2.8.2,<3",
     "pyzmq~=26.0",
     "proto-plus>=1.22.2,<2",
+    "click>=8.1.8",
 ]
 
 [project.optional-dependencies]
@@ -39,6 +40,9 @@ examples = [
 [project.urls]
 Homepage = "https://www.blueyerobotics.com"
 Repository = "https://github.com/blueye-robotics/blueye.sdk"
+
+[project.scripts]
+blueye-cli = "blueye.sdk.scripts.entrypoint:main"
 
 [dependency-groups]
 dev = [
