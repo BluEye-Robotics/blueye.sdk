@@ -86,18 +86,26 @@ d.mission.load_and_run(mission)
 Here are some examples outlining how to use some of the mission planning features
 
 
-??? example "Tilt camera"
-    This is a simple example that tilts the camera up and down. Useful for testing with the drone out of the water.
+/// details | Tilt camera
+    type: example
 
-{{code_from_file("../examples/mission_tilt.py", flavor= "python", line_prefix="    ")}}
+This is a simple example that tilts the camera up and down. Useful for testing with the drone out of the water.
+
+{{code_from_file("../examples/mission_tilt.py", flavor= "python")}}
+///
+
+/// details | Go to seabed
+    type: example
+
+Another simple example outlining how to create some simple instructions and run them on the drone. This example goes to the seabed, takes a picture with the main camera, and returns to the surface.
+
+{{code_from_file("../examples/mission_seabed.py", flavor= "python")}}
+///
 
 
-??? example "Go to seabed"
-    Another simple example outlining how to create some simple instructions and run them on the drone. This example goes to the seabed, takes a picture with the main camera, and returns to the surface.
+/// details | Go to waypoints
+    type: example
 
-{{code_from_file("../examples/mission_seabed.py", flavor= "python", line_prefix="    ")}}
-
-
-??? example "Go to waypoints"
-    This example shows how one can create multiple waypoints and have the drone go to each of them in sequence.
-{{code_from_file("../examples/mission_go_to_waypoint.py", flavor= "python", line_prefix="    ")}}
+This example shows how one can create multiple waypoints and have the drone go to each of them in sequence.
+{{code_from_file("../examples/mission_go_to_waypoint.py", flavor= "python")}}
+///

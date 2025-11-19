@@ -42,7 +42,6 @@ markdown_extensions:
   - pymdownx.arithmatex
   - pymdownx.caret
   - pymdownx.critic
-  - pymdownx.details
   - pymdownx.inlinehilite
   - pymdownx.magiclink
   - pymdownx.mark
@@ -50,7 +49,9 @@ markdown_extensions:
   - pymdownx.superfences
   - pymdownx.tilde
   - pymdownx.snippets
-  - pymdownx.tabbed:
+  - pymdownx.blocks.details
+  - pymdownx.blocks.admonition
+  - pymdownx.blocks.tab:
       alternate_style: true
 
 theme:
