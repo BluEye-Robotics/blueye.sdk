@@ -1,6 +1,12 @@
 {% for tag, operations in handler.get_operations().items() %}
 ## <span class="api-tag">{{tag or "Endpoints"}}</span>
 
+{%- for tag_obj in tags -%}
+{%- if tag_obj.name == tag %}
+{{ read_dict(tag_obj, "description", default="") }}
+{%- endif -%}
+{%- endfor %}
+
 {% for path, definition in operations %}
 {%- for http_method, operation in definition.items() %}
 <hr class="operation-separator" />
