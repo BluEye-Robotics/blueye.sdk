@@ -31,6 +31,9 @@ plugins:
             signature_crossrefs: true
             summary: true
 
+extra_css:
+  - css/mkdocsoad.css
+
 markdown_extensions:
   - admonition
   - pymdownx.arithmatex
