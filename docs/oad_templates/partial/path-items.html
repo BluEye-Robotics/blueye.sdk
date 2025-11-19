@@ -42,7 +42,7 @@
 {%- set code_samples = operation.get('x-codeSamples') -%}
 {%- if code_samples %}
 
-??? example "{{texts.code_samples or 'Code Samples'}}"
+???+ example "{{texts.code_samples or 'Code Samples'}}"
     {% for sample in code_samples -%}
     ===  "{{ (sample.label or sample.lang) }}"
         ```{{ sample.lang }}
