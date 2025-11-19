@@ -18,7 +18,9 @@
 
 {%- if operation.deprecated %}
 
-!!! warning "Deprecated Endpoint"
+/// admonition | Deprecated Endpoint
+    type: warning
+///
 {%- endif %}
 
 {%- if operation.description %}
@@ -42,16 +44,20 @@
 {%- set code_samples = operation.get('x-codeSamples') -%}
 {%- if code_samples %}
 
-???+ example "{{texts.code_samples or 'Code Samples'}}"
-    {% for sample in code_samples -%}
-    ===  "{{ (sample.label or sample.lang) }}"
-        ```{{ sample.lang }}
-        {{ sample.source | indent(8, False) }}
-        ```
-    {% if not loop.last %}
+/// details | {{texts.code_samples or 'Code Samples'}}
+    open: True
+    type: example
+{% for sample in code_samples -%}
+//// tab | {{ (sample.label or sample.lang) }}
+```{{ sample.lang }}
+{{ sample.source  }}
+```
+{% if not loop.last %}
 
-    {% endif -%}
-    {% endfor %}
+{% endif -%}
+////
+{% endfor %}
+///
 {%- endif %}
 {% endfor %}
 {% endfor %}
