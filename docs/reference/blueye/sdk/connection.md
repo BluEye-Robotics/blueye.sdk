@@ -4,5 +4,4 @@
       show_symbol_type_heading: True
       members: True
       inherited_members: True
-      docstring_options:
-        show_if_no_docstrings: True
+      show_if_no_docstring: True
