@@ -5,6 +5,9 @@ plugins:
   - search
   - macros:
       module_name: doc_utils
+  - neoteroi.mkdocsoad:
+      use_pymdownx: true
+      templates_path: "docs/oad_templates"
   - mkdocstrings:
       handlers:
         python:
@@ -103,7 +106,7 @@ nav:
   - "Mission Planning": "mission-planning.md"
   - "Odometer forwarding": odometer-to-831l.md
   - "Updating from v1 to v2": "migrating-to-v2.md"
-  - "HTTP API": "http-api.html"
+  - "HTTP API": "http-api.md"
   - Reference:
       - blueye.sdk.battery: "reference/blueye/sdk/battery.md"
       - blueye.sdk.camera: "reference/blueye/sdk/camera.md"
