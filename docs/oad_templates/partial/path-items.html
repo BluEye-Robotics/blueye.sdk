@@ -14,7 +14,7 @@
 ### {% if "summary" in operation -%}{{operation.summary}}{%- else -%}<span
     class="http-{{http_method.lower()}}">{{http_method.upper()}}</span> {{path | route | safe}}{%- endif %}
 
-<span class="http-{{http_method.lower()}}">{{http_method.upper()}}</span> {{path | route | safe}}
+<span class="http-{{http_method.lower()}}">{{http_method.upper()}}</span> [{{path | route | safe}}]({{ servers[0].url if servers else '' }}{{path}})
 
 {%- if operation.deprecated %}
 
