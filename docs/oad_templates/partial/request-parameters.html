@@ -1,0 +1,8 @@
+
+**{{texts.parameters}}**
+
+| {{texts.parameter}} | {{texts.parameter_location}} | {{texts.type}} | {{texts.default}} | {{texts.nullable}} | {{texts.description}} |
+|---|---|---|---|---|---|
+{%- for param in parameters %}
+| `{{param.name}}` | {{param.in}} | {{read_dict(param, "schema", "type")}} | {{read_dict(param, "schema", "default", default="")}} | {{texts.get_yes_no(read_dict(param, "schema", "nullable", default=False))}} | {{read_dict(param, "description", default="") | replace("\n", "<br>")}} |
+{%- endfor %}
