@@ -175,7 +175,7 @@ provides-extras = ["examples"]
 [package.metadata.requires-dev]
 dev = [
     { name = "black", specifier = "~=24.3" },
-    { name = "essentials-openapi", git = "https://github.com/sindrehan/essentials-openapi?branch=add-template-overriding" },
+    { name = "essentials-openapi", specifier = ">=1.3.0,<2" },
     { name = "freezegun", specifier = "~=1.2" },
     { name = "mike", specifier = "~=2.1" },
     { name = "mkdocs", specifier = "~=1.5" },
@@ -692,11 +692,15 @@ wheels = [
 [[package]]
 name = "essentials-openapi"
 version = "1.3.0"
-source = { git = "https://github.com/sindrehan/essentials-openapi?branch=add-template-overriding#fe677d4e805e5898de93f74da3c4822e5b7a859e" }
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "essentials" },
     { name = "markupsafe" },
     { name = "pyyaml" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/2d/eb/0ec8f7f0e8fc84ae498e50724ce89d95991a0efb2299bc76197e4c2402a9/essentials_openapi-1.3.0.tar.gz", hash = "sha256:453327a0a847a431133f4472ced7e4a9180bf667437049b57381ddf88079e886", size = 34360, upload-time = "2025-11-19T20:41:27.889Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/61/d5/2b68c37d8b84f55127eddd6abf9ed8eff8bafb43f7fa73a3be1557f4e897/essentials_openapi-1.3.0-py3-none-any.whl", hash = "sha256:9c2a88531e2c70c565d5b526d74043941e46f60c114f7a0e3ae91e9e6bef4dae", size = 55232, upload-time = "2025-11-19T20:41:26.493Z" },
 ]
 
 [[package]]

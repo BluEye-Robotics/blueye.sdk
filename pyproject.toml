@@ -90,5 +90,4 @@ markers = "connected_to_drone: a mark for test that can only be run when connect
 addopts = "--cov=blueye --cov-report=xml:coverage.xml --cov-report=html --cov-append"
 
 [tool.uv.sources]
-essentials-openapi = { git = "https://github.com/sindrehan/essentials-openapi", branch = "add-template-overriding" }
 neoteroi-mkdocs = { git = "https://github.com/sindrehan/mkdocs-plugins", branch = "add-templates-config" }
