@@ -1,7 +1,21 @@
-{% for example in handler.get_content_examples(definition) %}
+{%- set examples = handler.get_content_examples(definition) | list -%}
+{%- if examples | length > 1 %}
+{% for example in examples -%}
+//// tab | {{ example.name or "Example " ~ loop.index }}
+
+{% if example.value -%}
+```json
+{{handler.write_content_example(example, content_type) | safe}}
+```
+{%- endif %}
+////
+{% endfor %}
+{%- else %}
+{% for example in examples %}
 {% if example.value %}
 ```json
 {{handler.write_content_example(example, content_type) | safe}}
 ```
 {% endif %}
 {% endfor %}
+{%- endif %}
