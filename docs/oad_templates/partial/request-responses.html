@@ -16,6 +16,9 @@
 
 /// details | {{admonition_title}}
     type: {{admonition_type}}
+{%- if code_num == 200 %}
+    open: True
+{% endif %}
 {%- if is_reference(definition) -%}
 {%- with type_name = definition["$ref"].replace("#/components/responses/", "") %}
     Refer to the common response description: [{{type_name}}](#{{type_name.lower() | link}})
