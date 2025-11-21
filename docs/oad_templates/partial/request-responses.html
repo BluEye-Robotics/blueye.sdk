@@ -29,6 +29,18 @@
 {%- with content = handler.simplify_content(definition.content) %}
 {% for content_type, content_definition in content.items() %}
 /// tab | {{content_type}}
+{%- if definition.description %}
+{{definition.description}}
+
+{%- endif -%}
+{%- if definition.content %}
+{%- for content_type, content_item in definition.content.items() %}
+{%- if content_item.schema and content_item.schema.description %}
+{{content_item.schema.description}}
+
+{%- endif -%}
+{%- endfor -%}
+{%- endif %}
 {% with definition = content_definition %}
 {% include "partial/content-examples.html" %}
 {% if "alt_types" in definition %}<em class="small-note alt-types">{{texts.other_possible_types}}: {{definition.alt_types | join(", ")}}</em>{% endif %}
