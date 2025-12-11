@@ -183,7 +183,7 @@ dev = [
     { name = "mkdocs-macros-plugin", specifier = "~=1.0" },
     { name = "mkdocs-material", specifier = "~=9.5" },
     { name = "mkdocstrings", extras = ["python"], specifier = ">=0.30.1,<0.31" },
-    { name = "neoteroi-mkdocs", git = "https://github.com/sindrehan/mkdocs-plugins?branch=add-templates-config" },
+    { name = "neoteroi-mkdocs", specifier = ">=1.2.0,<2" },
     { name = "pre-commit", specifier = "~=4.0" },
     { name = "pymdown-extensions", specifier = "~=10.14" },
     { name = "pytest", specifier = "~=8.3" },
@@ -1641,7 +1641,7 @@ wheels = [
 [[package]]
 name = "neoteroi-mkdocs"
 version = "1.2.0"
-source = { git = "https://github.com/sindrehan/mkdocs-plugins?branch=add-templates-config#2af891290a83610d179205471fc6316fe49b3845" }
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "click" },
     { name = "essentials-openapi" },
@@ -1649,6 +1649,10 @@ dependencies = [
     { name = "jinja2" },
     { name = "mkdocs" },
     { name = "rich" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/d2/36/7cc711922112a1293568b8bc2f94bfaae0104bf5c1e5b3cdcfd6068023c7/neoteroi_mkdocs-1.2.0.tar.gz", hash = "sha256:58e25cb1b9db093ffa8d12bdb33264bf567cac30fb964b56e0a493efa749ad6e", size = 25354, upload-time = "2025-11-23T10:49:23.44Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a3/e9/d365600c11aa84142b878e6655d23c0add7a056d3d6e28ff8f83d7dd2381/neoteroi_mkdocs-1.2.0-py3-none-any.whl", hash = "sha256:91b6aa95a4e46c9bb93e00e021d2044cb0c7d80c0b4600434ff8f440d613a0a8", size = 38485, upload-time = "2025-11-23T10:49:22.149Z" },
 ]
 
 [[package]]
