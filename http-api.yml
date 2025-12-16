@@ -3,7 +3,7 @@ info:
   title: Blueye HTTP API
   version: "1.0.1"
 servers:
-  - url: http://192.168.1.101/
+  - url: http://192.168.1.101
 
 tags:
   - name: "Diagnostics"
@@ -27,16 +27,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DroneInfo"
-      x-codeSamples:
-        - lang: "curl"
-          source: |
-            curl -X GET "http://192.168.1.101/diagnostics/drone_info"
-
-        - lang: "Python"
-          source: |
-            import requests
-            response = requests.get("http://192.168.1.101/diagnostics/drone_info")
-            print(response.json())
 
   /diagnostics/iperf:
     post:
@@ -55,6 +45,7 @@ paths:
           schema:
             type: integer
             default: 10
+            example: 5
       responses:
         "200":
           description: A JSON string with the performance test results.
@@ -62,17 +53,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/IperfResult"
-      x-codeSamples:
-        - lang: "curl"
-          source: |
-            curl -X POST "http://192.168.1.101/diagnostics/iperf" -d duration=5
-
-        - lang: "Python"
-          source: |
-            import requests
-            response = requests.post("http://192.168.1.101/diagnostics/iperf",
-                                      data={"duration": 5})
-            print(response.json())
 
   /logs:
     get:
@@ -91,15 +71,6 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/BinLog"
-      x-codeSamples:
-        - lang: "curl"
-          source: |
-            curl -X GET "http://192.168.1.101/logs"
-        - lang: "Python"
-          source: |
-            import requests
-            response = requests.get("http://192.168.1.101/logs")
-            print(response.json())
 
   /logs/{logname}/binlog:
     get:
@@ -114,7 +85,7 @@ paths:
           required: true
           schema:
             type: string
-          example: BYEDP070018_ea9add4d0c1961d4_00388
+            example: BYEDP070018_ea9add4d0c1961d4_00388
       responses:
         "200":
           description: Binary log file
@@ -123,18 +94,6 @@ paths:
               schema:
                 type: string
                 format: binary
-      x-codeSamples:
-        - lang: "curl"
-          source: |
-            # To get log with name BYEDP070018_ea9add4d0c1961d4_00388
-            curl -X GET "http://192.168.1.101/logs/BYEDP070018_ea9add4d0c1961d4_00388/binlog"
-        - lang: "Python"
-          source: |
-            import requests
-            logname = "BYEDP070018_ea9add4d0c1961d4_00388"
-            response = requests.get(f"http://192.168.1.101/logs/{logname}/binlog")
-            with open(f"{logname}.bez", "wb") as f:
-              f.write(response.content)
 
   /logs/{logname}/dive_info:
     get:
@@ -160,17 +119,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DiveInfo"
-      x-codeSamples:
-        - lang: "curl"
-          source: |
-            # To get info for log with name BYEDP070018_ea9add4d0c1961d4_00388
-            curl -X GET "http://192.168.1.101/logs/BYEDP070018_ea9add4d0c1961d4_00388/dive_info"
-        - lang: "Python"
-          source: |
-            import requests
-            logname = "BYEDP070018_ea9add4d0c1961d4_00388"
-            response = requests.get(f"http://192.168.1.101/logs/{logname}/dive_info")
-            print(response.json())
 
   /logcsv:
     get:
@@ -190,6 +138,7 @@ paths:
           required: false
           schema:
             type: any
+            example: ""
         - name: filter_depth_min_mm
           in: query
           description: |
@@ -210,16 +159,6 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Log"
-      x-codeSamples:
-        - lang: "curl"
-          source: |
-            curl -X GET "http://192.168.1.101/logcsv"
-
-        - lang: "Python"
-          source: |
-            import requests
-            response = requests.get("http://192.168.1.101/logcsv")
-            print(response.json())
 
   /logcsv/{filename}:
     get:
@@ -234,6 +173,7 @@ paths:
           required: true
           schema:
             type: string
+            example: "ea9ac92e1817a1d4-00090.csv"
         - name: divisor
           in: query
           description: Divisor to use when downsampling CSV before downloading. Set to 1 to get max resolution.
@@ -250,19 +190,6 @@ paths:
             text/csv:
               schema:
                 type: string
-      x-codeSamples:
-        - lang: "curl"
-          source: |
-            # To get log with filename ea9ac92e1817a1d4-00090.csv
-            curl -X GET "http://192.168.1.101/logcsv/ea9ac92e1817a1d4-00090.csv"
-
-        - lang: "Python"
-          source: |
-            import requests
-            logname = "ea9ac92e1817a1d4-00090.csv"
-            response = requests.get(f"http://192.168.1.101/logcsv/{logname}")
-            with open(logname, "wb") as f:
-              f.write(response.content)
 
   /logcsv/binary_logs.zip:
     get:
@@ -277,17 +204,6 @@ paths:
             application/zip:
               schema:
                 type: file
-      x-codeSamples:
-        - lang: "curl"
-          source: |
-            curl -X GET "http://192.168.1.101/logcsv/binary_logs.zip"
-
-        - lang: "Python"
-          source: |
-            import requests
-            response = requests.get(f"http://192.168.1.101/logcsv/binary_logs.zip")
-            with open(logname, "wb") as f:
-              f.write(response.content)
 
   /agisoft:
     get:
@@ -334,23 +250,7 @@ paths:
             text/csv:
               schema:
                 type: string
-      x-codeSamples:
-        - lang: "curl"
-          source: |
-            # To get log CSV for videofile video_BYEDP123456_2019-01-01_000001.mp4
-            curl -X GET "http://192.168.1.101/agisoft \
-              -d "file=video_BYEDP123456_2019-01-01_000001.mp4"
 
-        - lang: "Python"
-          source: |
-            import requests
-            fileName = "video_BYEDP123456_2019-01-01_000001"
-            parameters = {
-                          "file": f"{fileName}.mp4"
-                         }
-            response = requests.get(f"http://192.168.1.101/agisoft" params=parameters)
-            with open(f"{fileName}.csv", "wb") as f:
-              f.write(response.content)
   /srt:
     get:
       tags:
@@ -487,24 +387,6 @@ paths:
             text/srt:
               schema:
                 type: object
-      x-codeSamples:
-        - lang: "curl"
-          source: |
-            curl -X GET -G "http://192.168.1.101/srt" \
-              -d "file=video_BYEDP123456_2019-01-01_000001.mp4" \
-              -d "title=My title"
-
-        - lang: "Python"
-          source: |
-            import requests
-            videoName = "video_BYEDP123456_2019-01-01_000001"
-            parameters = {
-                          "file": f"{videoName}.mp4",
-                          "title": "My title"
-                         }
-            response = requests.get("http://192.168.1.101/srt", params=parameters)
-            with open(f"{videoName}.srt", "wb") as f:
-              f.write(response.content)
 
   /picture:
     get:
@@ -549,22 +431,6 @@ paths:
             image/jpeg:
               schema:
                 type: object
-      x-codeSamples:
-        - lang: "curl"
-          source: |
-            curl -X GET -G "http://192.168.1.101/picture" \
-              -d "file=picture_BYEDP123456_2019-01-01_000001.001.jpg"
-
-        - lang: "Python"
-          source: |
-            import requests
-            videoName = "picture_BYEDP123456_2019-01-01_000001.001"
-            parameters = {
-                          "file": f"{pictureName}.jpg"
-                         }
-            response = requests.get("http://192.168.1.101/picture", params=parameters)
-            with open(f"{pictureName}.jpg", "wb") as f:
-              f.write(response.content)
 
   /picture/thumbnail:
     get:
@@ -609,22 +475,6 @@ paths:
             image/jpeg:
               schema:
                 type: object
-      x-codeSamples:
-        - lang: "curl"
-          source: |
-            curl -X GET -G "http://192.168.1.101/picture/thumbnail" \
-              -d "file=picture_BYEDP123456_2019-01-01_000001.001.jpg"
-
-        - lang: "Python"
-          source: |
-            import requests
-            pictureName = "picture_BYEDP123456_2019-01-01_000001.001"
-            parameters = {
-                          "file": f"{pictureName}.jpg",
-                         }
-            response = requests.get("http://192.168.1.101/picture/thumbnail", params=parameters)
-            with open(f"{pictureName}.jpg", "wb") as f:
-              f.write(response.content)
 
   /picture/overlay:
     get:
@@ -821,22 +671,7 @@ paths:
             image/jpeg:
               schema:
                 type: object
-      x-codeSamples:
-        - lang: "curl"
-          source: |
-            curl -X GET -G "http://192.168.1.101/picture/overlay" \
-              -d "file=picture_BYEDP123456_2019-01-01_000001.001.jpg" \
 
-        - lang: "Python"
-          source: |
-            import requests
-            pictureName = "picture_BYEDP123456_2019-01-01_000001.001"
-            parameters = {
-                          "file": f"{pictureName}.jpg",
-                         }
-            response = requests.get("http://192.168.1.101/picture/overlay", params=parameters)
-            with open(f"{pictureName}_overlay.jpg", "wb") as f:
-              f.write(response.content)
   /asset/logo:
     post:
       tags:
@@ -876,20 +711,6 @@ paths:
                   - $ref: "#/components/schemas/ImageIsInvalid"
                   - $ref: "#/components/schemas/ImageResolutionTooHigh"
 
-      x-codeSamples:
-        - lang: "curl"
-          source: |
-            curl -X POST "http://192.168.1.101/asset/logo" --form 'image=@"logo.png"'
-
-        - lang: "Python"
-          source: |
-            import requests
-            url = "http://192.168.1.101/asset/logo"
-            files=[
-              ('image', ('logo.png', open('logo.png', 'rb'), 'image/png'))
-            ]
-            response = requests.post(url, files=files)
-            print(response.text)
     get:
       tags:
         - "Pictures"
@@ -916,18 +737,6 @@ paths:
                 type: string
                 description: No custom logo found!
 
-      x-codeSamples:
-        - lang: "curl"
-          source: |
-            curl -X GET "http://192.168.1.101/asset/logo"
-
-        - lang: "Python"
-          source: |
-            import requests
-            response = requests.get("http://192.168.1.101/asset/logo")
-            with open("logo.png", "wb") as f:
-              f.write(response.content)
-
     delete:
       tags:
         - "Pictures"
@@ -943,17 +752,6 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/LogoDeleted"
                   - $ref: "#/components/schemas/NoLogoToDelete"
-
-      x-codeSamples:
-        - lang: "curl"
-          source: |
-            curl -X DELETE "http://192.168.1.101/asset/logo"
-
-        - lang: "Python"
-          source: |
-            import requests
-            response = requests.delete("http://192.168.1.101/asset/logo")
-            print(response.text)
 
   /asset/logo/md5:
     get:
@@ -977,16 +775,6 @@ paths:
               schema:
                 type: string
                 description: No custom logo found!
-      x-codeSamples:
-        - lang: "curl"
-          source: |
-            curl -X GET "http://192.168.1.101/asset/logo/md5"
-
-        - lang: "Python"
-          source: |
-            import requests
-            response = requests.get("http://192.168.1.101/asset/logo/md5")
-            print(response.json())
 
   /surface_unit/version:
     get:
@@ -1006,11 +794,6 @@ paths:
                     $ref: "#/components/schemas/SurfaceUnitVersion"
                   installed_version:
                     $ref: "#/components/schemas/SurfaceUnitVersion"
-
-        x-codeSamples:
-          - lang: "curl"
-            source: |
-              curl -X GET "http://192.168.1.101/surface_unit/version"
 
   /surface_unit/update:
     post:
@@ -1033,17 +816,6 @@ paths:
           description: Update initialized
         "400":
           description: Invalid request type or unable to authorize with the surface unit
-      x-codeSamples:
-        - lang: "curl"
-          source: |
-            curl -X POST -F "update-file=@firmware.bin" "http://192.168.1.101/surface_unit/update"
-        - lang: "Python"
-          source: |
-            import requests
-            with open("firmware.bin", "rb") as f:
-              files = {'update-file': f}
-              response = requests.post("http://192.168.1.101/surface_unit/update", files=files)
-            print(response.status_code)
 
 components:
   schemas:
