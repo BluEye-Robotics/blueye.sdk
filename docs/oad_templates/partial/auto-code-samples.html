@@ -115,8 +115,8 @@ import requests
 # Query parameters
 params = {
 {%- for param in required_params %}
-"{{param.name}}": {{ read_dict(param, 'schema', 'example', default='"' + read_dict(param, 'schema', 'default',
-default='value') | string + '"') }},
+{%- set example_val = read_dict(param, 'schema', 'example', default=read_dict(param, 'schema', 'default', default='value')) %}
+"{{param.name}}": "{{ example_val }}",
 {%- endfor %}
 }
 response = requests.get(f"{{base_url}}{{full_path}}", params=params)
@@ -133,13 +133,13 @@ response = requests.post(f"{{base_url}}{{path}}", files=files)
 data = {
 {%- if has_request_body %}
 {%- for param in required_params %}
-"{{param.name}}": {{ read_dict(param, 'schema', 'example', default='"' + read_dict(param, 'schema', 'default',
-default='value') | string + '"') }},
+{%- set example_val = read_dict(param, 'schema', 'example', default=read_dict(param, 'schema', 'default', default='value')) %}
+"{{param.name}}": "{{ example_val }}",
 {%- endfor %}
 {%- elif query_params %}
 {%- for param in query_params %}
-"{{param.name}}": {{ read_dict(param, 'schema', 'example', default='"' + read_dict(param, 'schema', 'default',
-default='value') | string + '"') }},
+{%- set example_val = read_dict(param, 'schema', 'example', default=read_dict(param, 'schema', 'default', default='value')) %}
+"{{param.name}}": "{{ example_val }}",
 {%- endfor %}
 {%- endif %}
 }
