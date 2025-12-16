@@ -119,7 +119,7 @@ params = {
 "{{param.name}}": "{{ example_val }}",
 {%- endfor %}
 }
-response = requests.get(f"{{base_url}}{{full_path}}", params=params)
+response = requests.get(f"{{base_url}}{{path}}", params=params)
 {%- elif method == 'GET' and path_params %}
 
 response = requests.get(f"{{base_url}}{{path}}")
