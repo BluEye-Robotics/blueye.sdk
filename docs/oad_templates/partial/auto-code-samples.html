@@ -1,0 +1,172 @@
+{%- set method = http_method.upper() -%}
+{%- set base_url = servers[0].url if servers else 'http://192.168.1.101' -%}
+{%- set full_path = path -%}
+{%- set has_path_params = '{' in path -%}
+{%- set query_params = [] -%}
+{%- set path_params = [] -%}
+{%- set required_params = [] -%}
+{%- set optional_params = [] -%}
+{%- set ns = namespace(full_path=path) -%}
+
+{%- with parameters = handler.get_parameters(operation) -%}
+{%- if parameters -%}
+{%- for param in parameters -%}
+{%- if param.in == 'query' -%}
+{%- set _ = query_params.append(param) -%}
+{%- if param.required -%}
+{%- set _ = required_params.append(param) -%}
+{%- else -%}
+{%- set _ = optional_params.append(param) -%}
+{%- endif -%}
+{%- elif param.in == 'path' -%}
+{%- set _ = path_params.append(param) -%}
+{%- set example_val = read_dict(param, 'example', default=read_dict(param, 'schema', 'example', default=param.name + '_value')) -%}
+{%- set ns.full_path = ns.full_path.replace('{' + param.name + '}', example_val | string) -%}
+{%- endif -%}
+{%- endfor -%}
+{%- endif -%}
+{%- endwith -%}
+{%- set full_path = ns.full_path -%}
+
+{%- set has_request_body = operation.requestBody -%}
+{%- set content_type = '' -%}
+{%- if has_request_body -%}
+{%- set content_type = operation.requestBody.content.keys() | list | first -%}
+{%- endif -%}
+
+{%- set response_content_type = '' -%}
+{%- set is_json_response = true -%}
+{%- set file_extension = 'bin' -%}
+{%- if operation.responses and operation.responses.get('200') -%}
+{%- set response_200 = operation.responses.get('200') -%}
+{%- if response_200.content -%}
+{%- set response_content_type = response_200.content.keys() | list | first -%}
+{%- if 'json' not in response_content_type -%}
+{%- set is_json_response = false -%}
+{%- if 'zip' in response_content_type -%}
+{%- set file_extension = 'zip' -%}
+{%- elif 'octet' in response_content_type or 'binary' in response_content_type -%}
+{%- set file_extension = 'bez' -%}
+{%- elif 'csv' in response_content_type -%}
+{%- set file_extension = 'csv' -%}
+{%- elif 'png' in response_content_type -%}
+{%- set file_extension = 'png' -%}
+{%- elif 'jpeg' in response_content_type or 'jpg' in response_content_type -%}
+{%- set file_extension = 'jpg' -%}
+{%- elif 'srt' in response_content_type -%}
+{%- set file_extension = 'srt' -%}
+{%- elif 'text' in response_content_type or 'html' in response_content_type -%}
+{%- set file_extension = 'txt' -%}
+{%- endif -%}
+{%- endif -%}
+{%- endif -%}
+{%- endif %}
+//// tab | curl
+```Shell
+{%- if method == 'GET' and query_params %}
+curl -X GET -G "{{base_url}}{{full_path}}" \
+{%- for param in required_params %}
+-d "{{param.name}}={{ read_dict(param, 'schema', 'example', default=read_dict(param, 'schema', 'default',
+default='value')) }}"{% if not loop.last %} \{% endif %}
+{%- endfor %}
+{%- elif method == 'POST' and ('multipart/form-data' in content_type or has_request_body or query_params) %}
+curl -X POST "{{base_url}}{{full_path}}"{% if 'multipart/form-data' not in content_type and (has_request_body or query_params) %} \{% endif %}
+{%- if 'multipart/form-data' in content_type %}
+--form 'file=@"filename.ext"'
+{%- elif has_request_body %}
+{%- for param in required_params %}
+-d "{{param.name}}={{ read_dict(param, 'schema', 'example', default=read_dict(param, 'schema', 'default',
+default='value')) }}"{% if not loop.last %} \{% endif %}
+{%- endfor %}
+{%- elif query_params %}
+{%- for param in query_params %}
+-d "{{param.name}}={{ read_dict(param, 'schema', 'example', default=read_dict(param, 'schema', 'default',
+default='value')) }}"{% if not loop.last %} \{% endif %}
+{%- endfor %}
+{%- endif %}
+{%- else %}
+curl -X {{method}} "{{base_url}}{{full_path}}"
+{%- endif %}
+```
+////
+
+//// tab | Python
+```python
+import requests
+{%- if path_params %}
+
+# Path parameters
+{% for param in path_params %}
+{%- set example_value = param.name + '_value' -%}
+{%- if param.examples -%}
+{%- set first_example_key = param.examples.keys() | list | first -%}
+{%- set example_value = param.examples[first_example_key].value -%}
+{%- elif param.schema.example -%}
+{%- set example_value = param.schema.example -%}
+{%- elif param.schema.examples -%}
+{%- set first_example_key = param.schema.examples.keys() | list | first -%}
+{%- set example_value = param.schema.examples[first_example_key].value -%}
+{%- endif -%}
+{{param.name}} = "{{ example_value }}"
+{%- endfor %}
+{%- endif %}
+{%- if method == 'GET' and query_params %}
+
+# Query parameters
+params = {
+{%- for param in required_params %}
+"{{param.name}}": {{ read_dict(param, 'schema', 'example', default='"' + read_dict(param, 'schema', 'default',
+default='value') | string + '"') }},
+{%- endfor %}
+}
+response = requests.get(f"{{base_url}}{{full_path}}", params=params)
+{%- elif method == 'GET' and path_params %}
+
+response = requests.get(f"{{base_url}}{{path}}")
+{%- elif method == 'POST' and 'multipart/form-data' in content_type %}
+
+with open("filename.ext", "rb") as f:
+    files = {'file': f}
+response = requests.post(f"{{base_url}}{{path}}", files=files)
+{%- elif method == 'POST' and (has_request_body or query_params) %}
+
+data = {
+{%- if has_request_body %}
+{%- for param in required_params %}
+"{{param.name}}": {{ read_dict(param, 'schema', 'example', default='"' + read_dict(param, 'schema', 'default',
+default='value') | string + '"') }},
+{%- endfor %}
+{%- elif query_params %}
+{%- for param in query_params %}
+"{{param.name}}": {{ read_dict(param, 'schema', 'example', default='"' + read_dict(param, 'schema', 'default',
+default='value') | string + '"') }},
+{%- endfor %}
+{%- endif %}
+}
+response = requests.post(f"{{base_url}}{{path}}", data=data)
+{%- elif method == 'DELETE' and path_params %}
+
+response = requests.delete(f"{{base_url}}{{path}}")
+{%- elif method == 'DELETE' %}
+
+response = requests.delete("{{base_url}}{{full_path}}")
+{%- elif path_params %}
+
+response = requests.{{method.lower()}}(f"{{base_url}}{{path}}")
+{%- else %}
+
+response = requests.{{method.lower()}}("{{base_url}}{{full_path}}")
+{%- endif %}
+{%- if is_json_response %}
+print(response.json())
+{%- else %}
+{%- if path_params %}
+with open(f"{{'{'}}{{path_params[0].name}}{{'}'}}.{{file_extension}}", "wb") as f:
+    f.write(response.content)
+{%- else %}
+with open("output.{{file_extension}}", "wb") as f:
+    f.write(response.content)
+{%- endif %}
+{%- endif %}
+```
+////

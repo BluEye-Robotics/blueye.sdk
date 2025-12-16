@@ -42,11 +42,11 @@
 {%- include "partial/request-responses.html" %}
 {%- endif %}
 {%- set code_samples = operation.get('x-codeSamples') -%}
-{%- if code_samples %}
-
 /// details | {{texts.code_samples or 'Code Samples'}}
     open: True
     type: example
+
+{%- if code_samples %}
 {% for sample in code_samples -%}
 //// tab | {{ (sample.label or sample.lang) }}
 ```{{ sample.lang }}
@@ -57,8 +57,10 @@
 {% endif -%}
 ////
 {% endfor %}
-///
+{%- else %}
+{% include "partial/auto-code-samples.html" with context %}
 {%- endif %}
+///
 {% endfor %}
 {% endfor %}
 {% endfor %}
