@@ -172,7 +172,9 @@ response = requests.{{method.lower()}}(f"{{base_url}}{{path}}")
 
 response = requests.{{method.lower()}}("{{base_url}}{{full_path}}")
 {%- endif %}
-{%- if is_json_response %}
+{%- if method == 'DELETE' %}
+print(response.text)
+{%- elif is_json_response %}
 print(response.json())
 {%- elif method == 'POST' and 'multipart/form-data' in content_type %}
 print(response.text)
