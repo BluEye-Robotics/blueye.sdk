@@ -796,9 +796,33 @@ paths:
                 type: object
                 properties:
                   version_on_drone:
-                    $ref: "#/components/schemas/SurfaceUnitVersion"
+                    type: object
+                    properties:
+                      version:
+                        type: string
+                        description: |
+                          Version string for surface unit firmware. Format is
+                          {major}.{minor}.{patch}-{branch}.{build}
+                        example: "2.2.4-master.190"
+                      commit:
+                        type: string
+                        description: |
+                          Commit id of the surface unit firmware.
+                        example: "815cce8a95ea0d448a85996bcf82a241109d575b"
                   installed_version:
-                    $ref: "#/components/schemas/SurfaceUnitVersion"
+                    type: object
+                    properties:
+                      version:
+                        type: string
+                        description: |
+                          Version string for surface unit firmware. Format is
+                          {major}.{minor}.{patch}-{branch}.{build}
+                        example: "2.2.4-master.190"
+                      commit:
+                        type: string
+                        description: |
+                          Commit id of the surface unit firmware.
+                        example: "815cce8a95ea0d448a85996bcf82a241109d575b"
 
   /surface_unit/update:
     post:
@@ -824,20 +848,6 @@ paths:
 
 components:
   schemas:
-    SurfaceUnitVersion:
-      type: object
-      properties:
-        version:
-          type: string
-          description: |
-            Version string for surface unit firmware. Format is
-            {major}.{minor}.{patch}-{branch}.{build}
-          example: "2.2.4-master.190"
-        commit:
-          type: string
-          description: |
-            Commit id of the surface unit firmware.
-          example: "815cce8a95ea0d448a85996bcf82a241109d575b"
     DroneInfo:
       type: object
       properties:
