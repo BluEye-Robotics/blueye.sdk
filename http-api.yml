@@ -741,7 +741,7 @@ paths:
             text/html:
               schema:
                 type: string
-                description: No custom logo found!
+                example: No custom logo found!
 
     delete:
       tags:
