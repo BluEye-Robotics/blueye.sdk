@@ -61,7 +61,8 @@ paths:
       summary: Array of binary logs
       description: |
         Returns an array of binary logs from the drone. Each array item represents an available log
-        file on the drone. Use the /logs/{filename}/binlog endpoint to get the full log.
+        file on the drone. Use the [/logs/{filename}/binlog](#download-a-binary-log-file) endpoint
+        to get the full log.
       responses:
         "200":
           description: Array of binary logs
