@@ -833,18 +833,29 @@ paths:
         Updates the surface unit firmware. If a binary image is included in the request, it will use that image for the update. If not, it will use the version stored on the drone.
       requestBody:
         content:
-          application/octet-stream:
+          multipart/form-data:
             schema:
-              name: update-file
-              type: string
-              format: binary
-              description: Binary image for the update
+              type: object
+              properties:
+                update-file:
+                  type: string
+                  format: binary
+                  description: Binary image for the update.
+                  example: firmware.bin
         required: false
       responses:
         "200":
-          description: Update initialized
+          content:
+            text/html:
+              schema:
+                type: string
+                example: Update initialized
         "400":
-          description: Invalid request type or unable to authorize with the surface unit
+          content:
+            text/html:
+              schema:
+                type: string
+                example: Unable to authorize with the surface unit
 
 components:
   schemas:
