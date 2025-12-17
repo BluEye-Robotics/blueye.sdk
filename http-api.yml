@@ -395,7 +395,7 @@ paths:
         - "Pictures"
       summary: Download pictures
       description: |
-        Downloads a picture (jpg) if get param filename is specified. If no parameter is set you'll get a list of all images.
+        Downloads a picture (jpg) if the file parameter is specified. If no parameter is set you'll get a list of all images.
       parameters:
         - name: file
           in: query
