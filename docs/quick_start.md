@@ -3,89 +3,93 @@ The SDK requires Python 3.10 or higher. We recommend using [`uv`](https://github
 
 The instructions below show the necessary steps to get started with the SDK on a fresh install using `uv`.
 
-??? abstract "Windows"
-    **Install `uv`**
+/// details | Windows
+    type: abstract
+**Install `uv`**
 
-    Open PowerShell and run the following command to install `uv`:
-    ```powershell
-    powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
-    ```
-    Changing the execution policy allows running a script from the internet.
-    You may need to restart your terminal for the changes to take effect.
+Open PowerShell and run the following command to install `uv`:
+```powershell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+Changing the execution policy allows running a script from the internet.
+You may need to restart your terminal for the changes to take effect.
 
-    **Create a virtual environment**
+**Create a virtual environment**
 
-    Using a virtual environment is highly recommended to isolate project dependencies.
-    ```powershell
-    # Create a new project folder and navigate into it
-    mkdir drone_project
-    cd .\drone_project
+Using a virtual environment is highly recommended to isolate project dependencies.
+```powershell
+# Create a new project folder and navigate into it
+mkdir drone_project
+cd .\drone_project
 
-    # Create a virtual environment using Python 3.13 (uv will download it if needed)
-    uv venv -p 3.13
-    ```
-    This will create a `.venv` folder in your project directory.
+# Create a virtual environment using Python 3.13 (uv will download it if needed)
+uv venv -p 3.13
+```
+This will create a `.venv` folder in your project directory.
 
-    Activate the virtual environment:
-    ```powershell
-    .\.venv\Scripts\activate
-    ```
+Activate the virtual environment:
+```powershell
+.\.venv\Scripts\activate
+```
 
-    **Install the SDK**
+**Install the SDK**
 
-    Now we're ready to install the SDK into our active virtual environment:
+Now we're ready to install the SDK into our active virtual environment:
 
-    ```shell
-    uv pip install blueye.sdk
-    ```
+```shell
+uv pip install blueye.sdk
+```
 
-    Or, to include the dependencies required for running the examples:
+Or, to include the dependencies required for running the examples:
 
-    ```shell
-    uv pip install "blueye.sdk[examples]"
-    ```
+```shell
+uv pip install "blueye.sdk[examples]"
+```
+///
 
-??? abstract "macOS and Linux"
+/// details | macOS and Linux
+    type: abstract
 
-    **Install `uv`**
+**Install `uv`**
 
-    Open your terminal and run the following command to install `uv`:
-    ```shell
-    curl -LsSf https://astral.sh/uv/install.sh | sh
-    ```
-    After installation, follow the instructions on the screen to add `uv` to your shell's `PATH`, or simply restart your terminal.
+Open your terminal and run the following command to install `uv`:
+```shell
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+After installation, follow the instructions on the screen to add `uv` to your shell's `PATH`, or simply restart your terminal.
 
-    **Create a virtual environment**
+**Create a virtual environment**
 
-    Using a virtual environment is highly recommended to isolate project dependencies.
-    ```shell
-    # Create a new project folder and navigate into it
-    mkdir drone_project
-    cd drone_project
+Using a virtual environment is highly recommended to isolate project dependencies.
+```shell
+# Create a new project folder and navigate into it
+mkdir drone_project
+cd drone_project
 
-    # Create a virtual environment using Python 3.13 (uv will download it if needed)
-    uv venv -p 3.13
-    ```
-    This will create a `.venv` folder in your project directory.
+# Create a virtual environment using Python 3.13 (uv will download it if needed)
+uv venv -p 3.13
+```
+This will create a `.venv` folder in your project directory.
 
-    Activate the virtual environment:
-    ```shell
-    source .venv/bin/activate
-    ```
+Activate the virtual environment:
+```shell
+source .venv/bin/activate
+```
 
-    **Install the SDK**
+**Install the SDK**
 
-    Now we're ready to install the SDK into our active virtual environment:
+Now we're ready to install the SDK into our active virtual environment:
 
-    ```shell
-    uv pip install blueye.sdk
-    ```
+```shell
+uv pip install blueye.sdk
+```
 
-    Or, to include the dependencies required for running the examples:
+Or, to include the dependencies required for running the examples:
 
-    ```shell
-    uv pip install "blueye.sdk[examples]"
-    ```
+```shell
+uv pip install "blueye.sdk[examples]"
+```
+///
 
 ## Connect to the drone
 To use the SDK, your computer must be connected to the drone via the surface unit WiFi. For instructions
@@ -120,16 +124,17 @@ For an overview of the properties that are available for controlling and reading
 The valid input ranges and descriptions of the different properties can also be found there.
 
 
-!!! Tip
-    You can explore the properties of the drone interactively using an interactive Python interpreter like
-    [`iPython`](https://ipython.readthedocs.io/en/stable/interactive/tutorial.html), which can be installed with:
-    ```shell
-    uv pip install ipython
-    ```
-    By instantiating a Drone object and using the completion key (normally the `tab-key ↹`), you can get an interactive list of
-    the available properties on the drone, making it easy to try setting and getting the different properties.
-    ![`iPython`](https://blueyenostorage.blob.core.windows.net/sdkimages/ipython-exploration.gif)
-
+/// admonition | Tip
+    type: tip
+You can explore the properties of the drone interactively using an interactive Python interpreter like
+[`iPython`](https://ipython.readthedocs.io/en/stable/interactive/tutorial.html), which can be installed with:
+```shell
+uv pip install ipython
+```
+By instantiating a Drone object and using the completion key (normally the `tab-key ↹`), you can get an interactive list of
+the available properties on the drone, making it easy to try setting and getting the different properties.
+![`iPython`](https://blueyenostorage.blob.core.windows.net/sdkimages/ipython-exploration.gif)
+///
 
 ### Watching the video stream
 The easiest way to open the RTSP video stream is by using [`VLC media player`](https://www.videolan.org/vlc/index.html).

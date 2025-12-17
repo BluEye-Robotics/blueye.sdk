@@ -1,0 +1,66 @@
+{% for tag, operations in handler.get_operations().items() %}
+## <span class="api-tag">{{tag or "Endpoints"}}</span>
+
+{%- for tag_obj in tags -%}
+{%- if tag_obj.name == tag %}
+{{ read_dict(tag_obj, "description", default="") }}
+{%- endif -%}
+{%- endfor %}
+
+{% for path, definition in operations %}
+{%- for http_method, operation in definition.items() %}
+<hr class="operation-separator" />
+
+### {% if "summary" in operation -%}{{operation.summary}}{%- else -%}<span
+    class="http-{{http_method.lower()}}">{{http_method.upper()}}</span> {{path | route | safe}}{%- endif %}
+
+<span class="http-{{http_method.lower()}}">{{http_method.upper()}}</span> [{{path | route | safe}}]({{ servers[0].url if servers else '' }}{{path}})
+
+{%- if operation.deprecated %}
+
+/// admonition | Deprecated Endpoint
+    type: warning
+///
+{%- endif %}
+
+{%- if operation.description %}
+
+{{operation.description | wordwrap(80)}}
+{% endif %}
+
+{%- with parameters = handler.get_parameters(operation) -%}
+{%- if parameters %}
+{% include "partial/request-parameters.html" %}
+{%- endif -%}
+{%- endwith -%}
+
+{%- if operation.requestBody %}
+{% include "partial/request-body.html" %}
+{%- endif %}
+
+{%- if operation.responses %}
+{%- include "partial/request-responses.html" %}
+{%- endif %}
+{%- set code_samples = operation.get('x-codeSamples') -%}
+/// details | {{texts.code_samples or 'Code Samples'}}
+    open: True
+    type: example
+
+{%- if code_samples %}
+{% for sample in code_samples -%}
+//// tab | {{ (sample.label or sample.lang) }}
+```{{ sample.lang }}
+{{ sample.source  }}
+```
+{% if not loop.last %}
+
+{% endif -%}
+////
+{% endfor %}
+{%- else %}
+{% include "partial/auto-code-samples.html" with context %}
+{%- endif %}
+///
+{% endfor %}
+{% endfor %}
+{% endfor %}
