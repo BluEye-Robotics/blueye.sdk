@@ -680,15 +680,20 @@ paths:
       description: |
         Upload user selectable logo for watermarking videos and pictures.
         Allowed filetype: JPG or PNG. Max resolution: 2000px. Max file size: 5MB.
-      parameters:
-        - name: image
-          in: query
-          description: "JPG or PNG, <5MB, <2000px"
-          required: true
-          content:
-            image:
-              schema:
-                type: object
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  example: logo.png
+                  format: binary
+                  description: |-
+                    The logo image file to upload (PNG, JPG). <5MB, <2000px. Will be converted to
+                    PNG.
 
       responses:
         "200":
@@ -697,7 +702,7 @@ paths:
             text/html:
               schema:
                 type: string
-                description: Image upload successful!
+                example: Image upload successful!
 
         "400":
           description: Upload failed

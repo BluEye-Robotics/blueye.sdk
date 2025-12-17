@@ -61,6 +61,21 @@
 {%- endif -%}
 {%- endif -%}
 {%- endif %}
+
+{%- set ns_file = namespace(param_name='file', param_example='filename.ext') -%}
+{%- if 'multipart/form-data' in content_type and operation.requestBody and operation.requestBody.content -%}
+{%- set multipart_content = operation.requestBody.content['multipart/form-data'] -%}
+{%- if multipart_content and multipart_content.schema and multipart_content.schema.properties -%}
+{%- for prop_name, prop_value in multipart_content.schema.properties.items() -%}
+{%- if prop_value.format == 'binary' -%}
+{%- set ns_file.param_name = prop_name -%}
+{%- if prop_value.example -%}
+{%- set ns_file.param_example = prop_value.example -%}
+{%- endif -%}
+{%- endif -%}
+{%- endfor -%}
+{%- endif -%}
+{%- endif %}
 //// tab | curl
 ```Shell
 {%- if method == 'GET' and query_params %}
@@ -72,7 +87,7 @@ default='value')) }}"{% if not loop.last %} \{% endif %}
 {%- elif method == 'POST' and ('multipart/form-data' in content_type or has_request_body or query_params) %}
 curl -X POST "{{base_url}}{{full_path}}"{% if 'multipart/form-data' not in content_type and (has_request_body or query_params) %} \{% endif %}
 {%- if 'multipart/form-data' in content_type %}
---form 'file=@"filename.ext"'
+--form '{{ns_file.param_name}}=@"{{ns_file.param_example}}"'
 {%- elif has_request_body %}
 {%- for param in required_params %}
 -d "{{param.name}}={{ read_dict(param, 'schema', 'example', default=read_dict(param, 'schema', 'default',
@@ -125,9 +140,9 @@ response = requests.get(f"{{base_url}}{{path}}", params=params)
 response = requests.get(f"{{base_url}}{{path}}")
 {%- elif method == 'POST' and 'multipart/form-data' in content_type %}
 
-with open("filename.ext", "rb") as f:
-    files = {'file': f}
-response = requests.post(f"{{base_url}}{{path}}", files=files)
+with open("{{ns_file.param_example}}", "rb") as f:
+    files = {'{{ns_file.param_name}}': f}
+    response = requests.post(f"{{base_url}}{{path}}", files=files)
 {%- elif method == 'POST' and (has_request_body or query_params) %}
 
 data = {
@@ -159,6 +174,8 @@ response = requests.{{method.lower()}}("{{base_url}}{{full_path}}")
 {%- endif %}
 {%- if is_json_response %}
 print(response.json())
+{%- elif method == 'POST' and 'multipart/form-data' in content_type %}
+print(response.text)
 {%- else %}
 {%- if path_params %}
 with open(f"{{'{'}}{{path_params[0].name}}{{'}'}}.{{file_extension}}", "wb") as f:
