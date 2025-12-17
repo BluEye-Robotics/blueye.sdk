@@ -128,7 +128,7 @@ paths:
       summary: Array of logs
       description: |
         Returns an array of logs from the drone. Each array item represents an available log file on
-        the drone. Use the /logcsv/{filename} endpoint to get the full log.
+        the drone. Use the [/logcsv/{filename}](#csv-log-file) endpoint to get the full log.
       parameters:
         - name: all
           in: query
