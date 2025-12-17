@@ -112,7 +112,7 @@ paths:
           required: true
           schema:
             type: string
-          example: BYEDP070018_ea9add4d0c1961d4_00388
+            example: BYEDP070018_ea9add4d0c1961d4_00388
       responses:
         "200":
           description: Dive info
