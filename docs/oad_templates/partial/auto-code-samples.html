@@ -6,6 +6,7 @@
 {%- set path_params = [] -%}
 {%- set required_params = [] -%}
 {%- set optional_params = [] -%}
+{%- set example_params = [] -%}
 {%- set ns = namespace(full_path=path) -%}
 
 {%- with parameters = handler.get_parameters(operation) -%}
@@ -17,6 +18,9 @@
 {%- set _ = required_params.append(param) -%}
 {%- else -%}
 {%- set _ = optional_params.append(param) -%}
+{%- if read_dict(param, 'schema', 'example') is not none -%}
+{%- set _ = example_params.append(param) -%}
+{%- endif -%}
 {%- endif -%}
 {%- elif param.in == 'path' -%}
 {%- set _ = path_params.append(param) -%}
@@ -79,8 +83,8 @@
 //// tab | curl
 ```Shell
 {%- if method == 'GET' and query_params %}
-curl -X GET -G "{{base_url}}{{full_path}}" \
-{%- for param in required_params %}
+curl -X GET -G "{{base_url}}{{full_path}}"{% if required_params or example_params %} \{% endif %}
+{%- for param in required_params + example_params %}
 -d "{{param.name}}={{ read_dict(param, 'schema', 'example', default=read_dict(param, 'schema', 'default',
 default='value')) }}"{% if not loop.last %} \{% endif %}
 {%- endfor %}
@@ -129,7 +133,7 @@ import requests
 
 # Query parameters
 params = {
-{%- for param in required_params %}
+{%- for param in required_params + example_params %}
 {%- set example_val = read_dict(param, 'schema', 'example', default=read_dict(param, 'schema', 'default', default='value')) %}
 "{{param.name}}": "{{ example_val }}",
 {%- endfor %}
