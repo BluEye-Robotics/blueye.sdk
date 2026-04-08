@@ -95,8 +95,12 @@
 {%- set ns_file = namespace(param_name='file', param_example='filename.ext') -%}
 {%- if 'multipart/form-data' in content_type and operation.requestBody and operation.requestBody.content -%}
 {%- set multipart_content = operation.requestBody.content['multipart/form-data'] -%}
-{%- if multipart_content and multipart_content.schema and multipart_content.schema.properties -%}
-{%- for prop_name, prop_value in multipart_content.schema.properties.items() -%}
+{%- set multipart_schema = multipart_content.schema if multipart_content else none -%}
+{%- if multipart_schema and is_reference(multipart_schema) -%}
+{%- set multipart_schema = handler.resolve_reference(multipart_schema) -%}
+{%- endif -%}
+{%- if multipart_schema and multipart_schema.properties -%}
+{%- for prop_name, prop_value in multipart_schema.properties.items() -%}
 {%- if prop_value.format == 'binary' -%}
 {%- set ns_file.param_name = prop_name -%}
 {%- if prop_value.example -%}
