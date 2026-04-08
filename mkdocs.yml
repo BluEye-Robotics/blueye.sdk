@@ -37,6 +37,9 @@ plugins:
 extra_css:
   - css/mkdocsoad.css
 
+extra_javascript:
+  - js/deprecated-toc.js
+
 markdown_extensions:
   - admonition
   - pymdownx.arithmatex
