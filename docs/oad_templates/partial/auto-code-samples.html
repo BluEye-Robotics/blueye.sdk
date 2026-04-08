@@ -40,13 +40,24 @@
 
 {%- set body_fields = [] -%}
 {%- if has_request_body and content_type and 'multipart/form-data' not in content_type -%}
-{%- set body_schema = read_dict(operation.requestBody, 'content', content_type, 'schema') -%}
+{%- set media_type_obj = read_dict(operation.requestBody, 'content', content_type) -%}
+{%- set body_schema = read_dict(media_type_obj, 'schema') -%}
+{%- if body_schema and is_reference(body_schema) -%}
+{%- set body_schema = handler.resolve_reference(body_schema) -%}
+{%- endif -%}
+{%- set media_examples = read_dict(media_type_obj, 'examples') -%}
+{%- set first_media_example = none -%}
+{%- if media_examples -%}
+{%- set first_media_example_key = media_examples.keys() | list | first -%}
+{%- set first_media_example = read_dict(media_examples, first_media_example_key, 'value') -%}
+{%- endif -%}
 {%- if body_schema and body_schema.properties -%}
 {%- for prop_name, prop_value in body_schema.properties.items() -%}
 {%- set prop_example = read_dict(prop_value, 'example') -%}
 {%- set prop_default = read_dict(prop_value, 'default') -%}
-{%- if prop_example is not none or prop_default is not none -%}
-{%- set field_value = prop_example if prop_example is not none else prop_default -%}
+{%- set media_example_val = read_dict(first_media_example, prop_name) if first_media_example else none -%}
+{%- if prop_example is not none or prop_default is not none or media_example_val is not none -%}
+{%- set field_value = prop_example if prop_example is not none else (prop_default if prop_default is not none else media_example_val) -%}
 {%- set _ = body_fields.append({'name': prop_name, 'value': field_value}) -%}
 {%- endif -%}
 {%- endfor -%}
