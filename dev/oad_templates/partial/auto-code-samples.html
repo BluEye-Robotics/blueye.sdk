@@ -6,6 +6,7 @@
 {%- set path_params = [] -%}
 {%- set required_params = [] -%}
 {%- set optional_params = [] -%}
+{%- set example_params = [] -%}
 {%- set ns = namespace(full_path=path) -%}
 
 {%- with parameters = handler.get_parameters(operation) -%}
@@ -17,6 +18,9 @@
 {%- set _ = required_params.append(param) -%}
 {%- else -%}
 {%- set _ = optional_params.append(param) -%}
+{%- if read_dict(param, 'schema', 'example') is not none -%}
+{%- set _ = example_params.append(param) -%}
+{%- endif -%}
 {%- endif -%}
 {%- elif param.in == 'path' -%}
 {%- set _ = path_params.append(param) -%}
@@ -32,6 +36,32 @@
 {%- set content_type = '' -%}
 {%- if has_request_body -%}
 {%- set content_type = operation.requestBody.content.keys() | list | first -%}
+{%- endif -%}
+
+{%- set body_fields = [] -%}
+{%- if has_request_body and content_type and 'multipart/form-data' not in content_type -%}
+{%- set media_type_obj = read_dict(operation.requestBody, 'content', content_type) -%}
+{%- set body_schema = read_dict(media_type_obj, 'schema') -%}
+{%- if body_schema and is_reference(body_schema) -%}
+{%- set body_schema = handler.resolve_reference(body_schema) -%}
+{%- endif -%}
+{%- set media_examples = read_dict(media_type_obj, 'examples') -%}
+{%- set first_media_example = none -%}
+{%- if media_examples -%}
+{%- set first_media_example_key = media_examples.keys() | list | first -%}
+{%- set first_media_example = read_dict(media_examples, first_media_example_key, 'value') -%}
+{%- endif -%}
+{%- if body_schema and body_schema.properties -%}
+{%- for prop_name, prop_value in body_schema.properties.items() -%}
+{%- set prop_example = read_dict(prop_value, 'example') -%}
+{%- set prop_default = read_dict(prop_value, 'default') -%}
+{%- set media_example_val = read_dict(first_media_example, prop_name) if first_media_example else none -%}
+{%- if prop_example is not none or prop_default is not none or media_example_val is not none -%}
+{%- set field_value = prop_example if prop_example is not none else (prop_default if prop_default is not none else media_example_val) -%}
+{%- set _ = body_fields.append({'name': prop_name, 'value': field_value}) -%}
+{%- endif -%}
+{%- endfor -%}
+{%- endif -%}
 {%- endif -%}
 
 {%- set response_content_type = '' -%}
@@ -65,8 +95,12 @@
 {%- set ns_file = namespace(param_name='file', param_example='filename.ext') -%}
 {%- if 'multipart/form-data' in content_type and operation.requestBody and operation.requestBody.content -%}
 {%- set multipart_content = operation.requestBody.content['multipart/form-data'] -%}
-{%- if multipart_content and multipart_content.schema and multipart_content.schema.properties -%}
-{%- for prop_name, prop_value in multipart_content.schema.properties.items() -%}
+{%- set multipart_schema = multipart_content.schema if multipart_content else none -%}
+{%- if multipart_schema and is_reference(multipart_schema) -%}
+{%- set multipart_schema = handler.resolve_reference(multipart_schema) -%}
+{%- endif -%}
+{%- if multipart_schema and multipart_schema.properties -%}
+{%- for prop_name, prop_value in multipart_schema.properties.items() -%}
 {%- if prop_value.format == 'binary' -%}
 {%- set ns_file.param_name = prop_name -%}
 {%- if prop_value.example -%}
@@ -79,19 +113,18 @@
 //// tab | curl
 ```Shell
 {%- if method == 'GET' and query_params %}
-curl -X GET -G "{{base_url}}{{full_path}}" \
-{%- for param in required_params %}
+curl -X GET -G "{{base_url}}{{full_path}}"{% if required_params or example_params %} \{% endif %}
+{%- for param in required_params + example_params %}
 -d "{{param.name}}={{ read_dict(param, 'schema', 'example', default=read_dict(param, 'schema', 'default',
 default='value')) }}"{% if not loop.last %} \{% endif %}
 {%- endfor %}
 {%- elif method == 'POST' and ('multipart/form-data' in content_type or has_request_body or query_params) %}
-curl -X POST "{{base_url}}{{full_path}}"{% if 'multipart/form-data' not in content_type and (has_request_body or query_params) %} \{% endif %}
+curl -X POST "{{base_url}}{{full_path}}"{% if 'multipart/form-data' not in content_type and (body_fields or required_params or query_params) %} \{% endif %}
 {%- if 'multipart/form-data' in content_type %}
 --form '{{ns_file.param_name}}=@"{{ns_file.param_example}}"'
 {%- elif has_request_body %}
-{%- for param in required_params %}
--d "{{param.name}}={{ read_dict(param, 'schema', 'example', default=read_dict(param, 'schema', 'default',
-default='value')) }}"{% if not loop.last %} \{% endif %}
+{%- for field in body_fields %}
+-d "{{field.name}}={{ field.value }}"{% if not loop.last %} \{% endif %}
 {%- endfor %}
 {%- elif query_params %}
 {%- for param in query_params %}
@@ -129,7 +162,7 @@ import requests
 
 # Query parameters
 params = {
-{%- for param in required_params %}
+{%- for param in required_params + example_params %}
 {%- set example_val = read_dict(param, 'schema', 'example', default=read_dict(param, 'schema', 'default', default='value')) %}
 "{{param.name}}": "{{ example_val }}",
 {%- endfor %}
@@ -147,9 +180,8 @@ with open("{{ns_file.param_example}}", "rb") as f:
 
 data = {
 {%- if has_request_body %}
-{%- for param in required_params %}
-{%- set example_val = read_dict(param, 'schema', 'example', default=read_dict(param, 'schema', 'default', default='value')) %}
-"{{param.name}}": "{{ example_val }}",
+{%- for field in body_fields %}
+"{{field.name}}": "{{ field.value }}",
 {%- endfor %}
 {%- elif query_params %}
 {%- for param in query_params %}
@@ -172,10 +204,10 @@ response = requests.{{method.lower()}}(f"{{base_url}}{{path}}")
 
 response = requests.{{method.lower()}}("{{base_url}}{{full_path}}")
 {%- endif %}
-{%- if method == 'DELETE' %}
-print(response.text)
-{%- elif is_json_response %}
+{%- if is_json_response %}
 print(response.json())
+{%- elif method == 'DELETE' %}
+print(response.text)
 {%- elif method == 'POST' and 'multipart/form-data' in content_type %}
 print(response.text)
 {%- else %}
