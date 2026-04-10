@@ -1,18 +1,54 @@
-{% for tag, operations in handler.get_operations().items() %}
-## <span class="api-tag">{{tag or "Endpoints"}}</span>
+{%- set tag_groups = handler.doc.get('x-tagGroups', []) -%}
+{%- set all_operations = handler.get_operations() -%}
+{%- set has_groups = tag_groups | length > 0 -%}
+{%- set rendered_tags = [] -%}
+
+{#- Build ordered render list: (group_name or none, tag, operations) -#}
+{%- set render_list = [] -%}
+{%- for group in tag_groups -%}
+{%- for group_tag in group.tags -%}
+{%- if group_tag in all_operations -%}
+{%- set _ = render_list.append({'group': group.name, 'tag': group_tag, 'operations': all_operations[group_tag]}) -%}
+{%- set _ = rendered_tags.append(group_tag) -%}
+{%- endif -%}
+{%- endfor -%}
+{%- endfor -%}
+{%- for tag, operations in all_operations.items() -%}
+{%- if tag not in rendered_tags -%}
+{%- set _ = render_list.append({'group': none, 'tag': tag, 'operations': operations}) -%}
+{%- endif -%}
+{%- endfor -%}
+
+{%- set ns = namespace(current_group='__unset__') -%}
+{%- for entry in render_list -%}
+
+{#- Emit group heading when entering a new group -#}
+{%- if has_groups and entry.group and entry.group != ns.current_group -%}
+{%- set ns.current_group = entry.group %}
+
+## {{ entry.group }}
+{% endif -%}
+
+{%- if has_groups and entry.group %}
+### <span class="api-tag">{{entry.tag}}</span>
+{%- else %}
+## <span class="api-tag">{{entry.tag or "Other"}}</span>
+{%- endif %}
 
 {%- for tag_obj in tags -%}
-{%- if tag_obj.name == tag %}
+{%- if tag_obj.name == entry.tag %}
 {{ read_dict(tag_obj, "description", default="") }}
 {%- endif -%}
 {%- endfor %}
 
-{% for path, definition in operations %}
+{#- Set heading prefix for endpoints based on whether we're inside a group -#}
+{%- set ep_heading = '####' if (has_groups and entry.group) else '###' %}
+{% for path, definition in entry.operations %}
 {%- for http_method, operation in definition.items() %}
 <hr class="operation-separator" />
 
-### {% if "summary" in operation -%}{{operation.summary}}{%- else -%}<span
-    class="http-{{http_method.lower()}}">{{http_method.upper()}}</span> {{path | route | safe}}{%- endif %}
+{{ep_heading}} {% if "summary" in operation -%}{{operation.summary}}{%- else -%}<span
+    class="http-{{http_method.lower()}}">{{http_method.upper()}}</span> {{path | route | safe}}{%- endif %}{% if operation.deprecated %} <span class="deprecated-marker" hidden></span>{% endif %}
 
 <span class="http-{{http_method.lower()}}">{{http_method.upper()}}</span> [{{path | route | safe}}]({{ servers[0].url if servers else '' }}{{path}})
 
@@ -63,4 +99,4 @@
 ///
 {% endfor %}
 {% endfor %}
-{% endfor %}
+{%- endfor %}

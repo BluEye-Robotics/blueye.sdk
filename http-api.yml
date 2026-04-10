@@ -1,732 +1,85 @@
-openapi: "3.0.2"
+openapi: 3.0.3
 info:
   title: Blueye HTTP API
-  version: "1.0.1"
-servers:
-  - url: http://192.168.1.101
-
-tags:
-  - name: "Diagnostics"
-  - name: "Subtitles"
-  - name: "Dive data"
-  - name: "Pictures"
-
+  version: 1.1.0
+  description: API for Blueye drone diagnostics and system management
 paths:
-  /diagnostics/drone_info:
-    get:
-      tags:
-        - "Diagnostics"
-      summary: Drone information
-      description: |
-        Returns a JSON string of drone information. Using this endpoint is the easiest way to check
-        if there is a drone connected to your network.
-      responses:
-        "200":
-          description: A JSON string of drone information.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/DroneInfo"
-
-  /diagnostics/iperf:
-    post:
-      tags:
-        - "Diagnostics"
-      summary: Tether bandwidth test
-      description: |
-        Performs a bandwidth test on the connection between the surface unit and the drone. Set the
-        test duration with the "duration"-parameter. A longer duration should yield a more accurate
-        result.
-      parameters:
-        - in: query
-          name: "duration"
-          description: Duration of the test to perform. Unit is seconds.
-          required: false
-          schema:
-            type: integer
-            default: 10
-            example: 5
-      responses:
-        "200":
-          description: A JSON string with the performance test results.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/IperfResult"
-
-  /logs:
-    get:
-      tags:
-        - "Dive data"
-      summary: Array of binary logs
-      description: |
-        Returns an array of binary logs from the drone. Each array item represents an available log
-        file on the drone. Use the [/logs/{filename}/binlog](#download-a-binary-log-file) endpoint
-        to get the full log.
-      responses:
-        "200":
-          description: Array of binary logs
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/BinLog"
-
-  /logs/{logname}/binlog:
-    get:
-      tags:
-        - "Dive data"
-      summary: Download a binary log file
-      description: Returns the binary content of the requested log
-      parameters:
-        - name: logname
-          in: path
-          description: Name of the log to download
-          required: true
-          schema:
-            type: string
-            example: BYEDP070018_ea9add4d0c1961d4_00388
-      responses:
-        "200":
-          description: Binary log file
-          content:
-            application/octet-stream:
-              schema:
-                type: string
-                format: binary
-
-  /logs/{logname}/dive_info:
-    get:
-      tags:
-        - "Dive data"
-      summary: Get dive info for binlog
-      description: |
-        Returns extended meta data for the requested log. This endpoint is mostly useful for Blunux
-        < 3.3, as the dive info is included with the output of the /logs endpoint from 3.3 and
-        onwards.
-      parameters:
-        - name: logname
-          in: path
-          description: Name of the log to download info for
-          required: true
-          schema:
-            type: string
-            example: BYEDP070018_ea9add4d0c1961d4_00388
-      responses:
-        "200":
-          description: Dive info
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/DiveInfo"
-
-  /logcsv:
-    get:
-      tags:
-        - "Dive data"
-      summary: Array of logs
-      description: |
-        Returns an array of logs from the drone. Each array item represents an available log file on
-        the drone. Use the [/logcsv/{filename}](#csv-log-file) endpoint to get the full log.
-      parameters:
-        - name: all
-          in: query
-          description: |
-            Add `all` to the parameter list to show logs that are not classified as dives (no auto
-            functions enabled, and max depth < 0.25m). All logs will be shown regardless of the
-            content of the all parameter (even false, 0, etc).
-          required: false
-          schema:
-            type: any
-            example: ""
-        - name: filter_depth_min_mm
-          in: query
-          description: |
-            Filter the minimum depth of the listed logs. Will be ignored if `all` is included in
-            parameter list.
-          required: false
-          schema:
-            type: integer
-            example: 1000
-            default: 250
-
-      responses:
-        "200":
-          description: Array of logs
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Log"
-
-  /logcsv/{filename}:
-    get:
-      tags:
-        - "Dive data"
-      summary: CSV log-file
-      description: Downloads a comma-separated-value (CSV) log-file with the requested name.
-      parameters:
-        - name: filename
-          in: path
-          description: Filename of log to download
-          required: true
-          schema:
-            type: string
-            example: "ea9ac92e1817a1d4-00090.csv"
-        - name: divisor
-          in: query
-          description: Divisor to use when downsampling CSV before downloading. Set to 1 to get max resolution.
-          required: false
-          schema:
-            type: integer
-            example: 1
-            default: 10
-
-      responses:
-        "200":
-          description: Comma-separated-value file with log data
-          content:
-            text/csv:
-              schema:
-                type: string
-
-  /logcsv/binary_logs.zip:
-    get:
-      tags:
-        - "Dive data"
-      summary: "Zipped CSV log files"
-      description: "Download all CSV log files as a zlib compressed zip file"
-      responses:
-        "200":
-          description:
-          content:
-            application/zip:
-              schema:
-                type: file
-
   /agisoft:
     get:
-      tags:
-        - "Dive data"
+      operationId: agisoft_retrieve
+      description: Download CSV file with data for creating scaled 3D models in Agisoft
       summary: Download CSV file with data for creating scaled 3D models
-      description: |
-        Download CSV file with data for creating scaled 3D models in Agisoft
       parameters:
-        - name: file
-          in: query
-          description: "Name of the video file to download data for"
-          required: true
-          schema:
-            type: string
-            example: "video_BYEDP123456_2019-01-01_000001.mp4"
-        - name: frame-step
-          in: query
-          description: "Amout of steps between each frame grab"
-          required: false
-          schema:
-            type: integer
-            example: "20"
-        - name: mag-dist
-          in: query
-          description: |
-            Expected compass variance induced from magnetic disturbance in degrees.
-
-            The most important data for an accurate 3D model are roll and pitch, which are not
-            affected by magnetic disturbance, so the default is set quite high (180). If you trust
-            that the data has not been skewed by magnetic interference you can set this to a
-            medium (60) or even low (10) value.
-          required: false
-          schema:
-            type: integer
-            default: "180"
-            minimum: 1
-            maximum: 360
-            example: 180
+      - in: query
+        name: file
+        schema:
+          type: string
+          example: video_BYEDP123456_2019-01-01_000001.mp4
+        description: Name of the video file to download data for
+        required: true
+      - in: query
+        name: frame-step
+        schema:
+          type: integer
+          default: 1
+        description: Amount of steps between each frame grab
+      - in: query
+        name: mag-dist
+        schema:
+          type: integer
+          default: 180
+        description: |-
+          Expected compass variance induced from magnetic disturbance in degrees.
+          The most important data for an accurate 3D model are roll and pitch, which are not affected by
+          magnetic disturbance, so the default is set quite high (180). If you trust that the data has not
+          been skewed by magnetic interference you can set this to a medium (60) or even low (10) value.
+      - in: query
+        name: no-file-check
+        schema:
+          type: boolean
+        description: Skip video file existence check
+      - in: query
+        name: title
+        schema:
+          type: string
+          default: frame
+        description: Prefix title for each frame. Frame number and .png will be appended.
+      tags:
+      - Photogrammetry
       responses:
-        "200":
-          description: Comma-separated-value file with log data
+        '200':
           content:
             text/csv:
               schema:
                 type: string
-
-  /srt:
-    get:
-      tags:
-        - "Subtitles"
-      summary: Download subtitle file
-      description: |
-        Downloads a subtitle file (srt) for a video file containing log data from the dive. The data
-        is gathered from the videos accompanying logfile. By passing in varius queries it is
-        possible to select which data one wants displayed, and where to display it.
-      parameters:
-        - name: file
-          in: query
-          description: "Name of the videofile to download subtitle file for."
-          required: true
-          schema:
-            type: string
-            example: "video_BYEDP123456_2019-01-01_000001.mp4"
-        - name: title
-          in: query
-          description: "Title of the video."
-          required: false
-          schema:
-            type: string
-            default: ""
-        - name: length-units
-          in: query
-          description: Unit to use for depth. Use "meter" for metric units, and "feet" for imperial.
-          required: false
-          schema:
-            type: string
-            default: "meter"
-            enum:
-              - "meter"
-              - "feet"
-        - name: temp-units
-          in: query
-          description: |
-            Unit to use for temperature. Use "celsius" for metric units, and "fahrenheit" for
-            imperial.
-          required: false
-          schema:
-            type: string
-            default: "celsius"
-        - name: placement
-          in: query
-          description: |
-            Where to place the subtitle. Use "top" for placing on the top, "bottom" for placing on
-            the bottom, and "" for using the player default.
-          required: false
-          schema:
-            type: string
-            default: "top"
-            enum:
-              - "top"
-              - "bottom"
-              - ""
-        - name: field-date
-          in: query
-          description: Enable or disable the date field. "1" to enable, "0" to disable.
-          required: false
-          schema:
-            type: integer
-            default: 0
-            enum:
-              - 0
-              - 1
-        - name: field-depth
-          in: query
-          description: Enable or disable the depth field. "1" to enable, "0" to disable.
-          required: false
-          schema:
-            type: integer
-            default: 1
-            enum:
-              - 0
-              - 1
-        - name: field-heading
-          in: query
-          description: Enable or disable the heading field. "1" to enable, "0" to disable.
-          required: false
-          schema:
-            type: integer
-            default: 1
-            enum:
-              - 0
-              - 1
-        - name: field-temp
-          in: query
-          description: Enable or disable the temperature field. "1" to enable, "0" to disable.
-          required: false
-          schema:
-            type: integer
-            default: 1
-            enum:
-              - 0
-              - 1
-        - name: date-format
-          in: query
-          description: "Format of the date/time."
-          required: false
-          schema:
-            type: string
-            default: "%Y-%m-%d %H:%M:%S"
-            externalDocs:
-              description: Python3 documentation for datetime formatting
-              url: https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior
-        - name: tz-offset
-          in: query
-          description: |
-            The drone stores all time in UTC+0, so if you were diving in another timezone and want
-            to correct for that in the displayed time you can add a timezone offset here. The unit
-            is minutes and both positive and negative values are supported.
-          required: false
-          schema:
-            type: integer
-            default: 0
-            format: int32
-        - name: format
-          in: query
-          description: |
-            Subtitles can also be retrived in the WEBVTT format. Use format=vtt to get a .vtt file instead of a .srt file.
-          required: false
-          schema:
-            type: string
-            default: "srt"
-            enum:
-              - "srt"
-              - "vtt"
-
-      responses:
-        "200":
-          description: Subtitle file for the requested video file
+                description: CSV file with data for Agisoft
+                example: |-
+                  Label;X;Y;Z;X Accuracy;Y Accuracy;Z Accuracy;Yaw;Pitch;Roll;Yaw Accuracy;Pitch Accuracy;Roll Accuracy;Enable
+                  frame0.png;0.0;0.0;0.253;10.0;10.0;0.05;0.7;82.7;1.0;180.0;5.0;5.0;1
+          description: ''
+        '400':
           content:
-            text/srt:
-              schema:
-                type: object
-
-  /picture:
-    get:
-      tags:
-        - "Pictures"
-      summary: Download pictures
-      description: |
-        Downloads a picture (jpg) if the file parameter is specified. If no parameter is set you'll get a list of all images.
-      parameters:
-        - name: file
-          in: query
-          description: "Name of the image file to download"
-          required: false
-          schema:
-            type: string
-            example: "picture_BYEDP123456_2019-01-01_000001.001.jpg"
-        - name: logo
-          in: query
-          description: "Add logo to picture. 0 = No logo, 1 = Drone default logo, 2 = User uploaded logo"
-          required: false
-          schema:
-            type: integer
-            example: "2"
-        - name: tz-offset
-          in: query
-          description: |
-            Add timezone offset to the picture EXIF data in minutes, can also be negative number.
-            For example in Norway during summer time the correct value would be 60, while it would be -180 in Chile
-          required: false
-          schema:
-            type: integer
-            example: "-180"
-      responses:
-        "200":
-          description: Picture
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Picture"
-            image/jpeg:
-              schema:
-                type: object
-
-  /picture/thumbnail:
-    get:
-      tags:
-        - "Pictures"
-      summary: Download a thumbnail of a picture
-      description: |
-        Downloads a picture (jpg) with EXIF metadata from when the photo was captured.
-      parameters:
-        - name: file
-          in: query
-          description: "Name of the image file to download"
-          required: true
-          schema:
-            type: string
-            example: "picture_BYEDP123456_2019-01-01_000001.001.jpg"
-        - name: width
-          in: query
-          description: "Width of the thumbnail in pixels."
-          required: false
-          schema:
-            type: integer
-            default: 1024
-        - name: height
-          in: query
-          description: "Height of the thumbnail in pixels."
-          required: false
-          schema:
-            type: integer
-            default: 576
-        - name: quality
-          in: query
-          description: "JPG compression level, 0-100. 100 is best quality, 0 is worst quality."
-          required: false
-          schema:
-            type: integer
-            default: 85
-      responses:
-        "200":
-          description: Picture thumbnail
-          content:
-            image/jpeg:
-              schema:
-                type: object
-
-  /picture/overlay:
-    get:
-      tags:
-        - "Pictures"
-      summary: Download pictures with metadata overlay
-      description: |
-        Downloads a picture (jpg) with metadata from when the photo was captured.
-      parameters:
-        - name: file
-          in: query
-          description: "Name of the image file to download"
-          required: true
-          schema:
-            type: string
-            example: "picture_BYEDP123456_2019-01-01_000001.001.jpg"
-        - name: title
-          in: query
-          description: "Title of the image."
-          required: false
-          schema:
-            type: string
-            default: ""
-        - name: subtitle
-          in: query
-          description: "Subtitle of the image"
-          required: false
-          schema:
-            type: string
-            default: ""
-        - name: length-units
-          in: query
-          description: |
-            Unit to use for all distance/length measurements such as depth, altitude, distance etc.
-            For shorter lengths `mm` or `inches` will be used accordingly.
-            * `meter` - Metric unit
-            * `feet` - Imperial unit
-          required: false
-          schema:
-            type: string
-            default: "meter"
-        - name: temp-units
-          in: query
-          description: |
-            Unit to use for the temperature field and any temperature related measurements.
-            * `celsius` - Metric unit
-            * `fahrenheit` - Imperial unit
-          required: false
-          schema:
-            type: string
-            default: "celsius"
-        - name: field-date
-          in: query
-          description: |
-            Enable or disable the date field.
-            * `1` - Enable
-            * `0` - Disable
-          required: false
-          schema:
-            type: integer
-            default: 1
-            enum:
-              - 0
-              - 1
-        - name: field-depth
-          in: query
-          description: |
-            Display water depth in the image overlay.
-            * `1` - Enable
-            * `0` - Disable
-          required: false
-          schema:
-            type: integer
-            default: 1
-            enum:
-              - 0
-              - 1
-        - name: field-heading
-          in: query
-          description: |
-            Display compass heading in the image overlay.
-            * `1` - Enable
-            * `0` - Disable
-          required: false
-          schema:
-            type: integer
-            default: 1
-            enum:
-              - 0
-              - 1
-        - name: field-temp
-          in: query
-          description: |
-            Display water temperature in the image overlay.
-            * `1` - Enable
-            * `0` - Disable
-          required: false
-          schema:
-            type: integer
-            default: 1
-            enum:
-              - 0
-              - 1
-        - name: field-tilt
-          in: query
-          description: |
-            Display camera tilt angle in the image overlay.
-            * `1` - Enable
-            * `0` - Disable
-          required: false
-          schema:
-            type: integer
-            default: 0
-            enum:
-              - 0
-              - 1
-        - name: date-format
-          in: query
-          description: "Format of the date/time."
-          required: false
-          schema:
-            type: string
-            default: "%Y-%m-%d %H:%M:%S"
-            externalDocs:
-              description: Python3 documentation for datetime formatting
-              url: https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior
-        - name: tz-offset
-          in: query
-          description: |
-            The drone stores all time in UTC+0, so if you were diving in another timezone and want
-            to correct for that in the displayed time you can add a timezone offset here. The unit
-            is minutes and both positive and negative values are supported.
-          required: false
-          schema:
-            type: integer
-            default: 0
-            example: "60"
-            format: int32
-        - name: logo
-          in: query
-          description: |
-            Which logo to overlay.
-            * `0` - No logo
-            * `1` - Drone default logo
-            * `2` - User uploaded logo
-          required: false
-          schema:
-            type: integer
-            default: 0
-            enum: [0, 1, 2]
-        - name: ignore-exif-titles
-          in: query
-          description: |
-            Ignore title and subtitle set by the app during the dive. If `title` and `subtitle` is
-            not specified, the title and/or subtitle selected for the video overlay will be written
-            unless this parameter is enabled.
-            * `1` - Ignore exif titles
-            * `0` - Use title from exif
-          required: false
-          schema:
-            type: integer
-            default: 0
-            enum: [0, 1]
-        - name: field-guestport
-          in: query
-          description: |
-            Display data from connected guestport sensors in the image overlay.
-            * `1` - Enable
-            * `0` - Disable
-          required: false
-          schema:
-            type: integer
-            default: 1
-            enum: [0, 1]
-        - name: field-gps
-          in: query
-          description: |
-            Display GPS coordinates (decimal degrees) in the image overlay.
-            Requires Blunux 3.0 or newer.
-            If a positioning system is used, the coordinates of the drone is shown, else the operator
-            position reported by the app is shown.
-            * `1` - Enable
-            * `0` - Disable
-          required: false
-          schema:
-            type: integer
-            default: 0
-            enum: [0, 1]
-
-      responses:
-        "200":
-          description: Picture with overlay metadata
-          content:
-            image/jpeg:
-              schema:
-                type: object
-
-  /asset/logo:
-    post:
-      tags:
-        - "Pictures"
-      summary: Upload logo
-      description: |
-        Upload user selectable logo for watermarking videos and pictures.
-        Allowed filetype: JPG or PNG. Max resolution: 2000px. Max file size: 5MB.
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                image:
-                  type: string
-                  example: logo.png
-                  format: binary
-                  description: |-
-                    The logo image file to upload (PNG, JPG). <5MB, <2000px. Will be converted to
-                    PNG.
-
-      responses:
-        "200":
-          description: Upload sucessful
-          content:
-            text/html:
+            text/plain:
               schema:
                 type: string
-                example: Image upload successful!
-
-        "400":
-          description: Upload failed
+                description: No videoname or invalid options
+          description: ''
+        '404':
           content:
-            text/html:
+            text/plain:
               schema:
-                oneOf:
-                  - $ref: "#/components/schemas/FileNotPresent"
-                  - $ref: "#/components/schemas/FileSizeTooLarge"
-                  - $ref: "#/components/schemas/ImageIsCorrupt"
-                  - $ref: "#/components/schemas/ImageIsInvalid"
-                  - $ref: "#/components/schemas/ImageResolutionTooHigh"
-
+                type: string
+                description: Log file not found or not valid
+          description: ''
+  /asset/logo:
     get:
-      tags:
-        - "Pictures"
+      operationId: asset_logo_retrieve
+      description: Download the original user uploaded logo (PNG or JPG)
       summary: Download logo
-      description: |
-        Download the original user uploaded logo (PNG or JPG)
-
+      tags:
+      - Logos
       responses:
-        "200":
-          description: Logo as an image file PNG/JPG
+        '200':
           content:
             image/png:
               schema:
@@ -734,63 +87,1296 @@ paths:
             image/jpeg:
               schema:
                 type: object
-
-        "404":
-          description: No logo found
+          description: ''
+        '404':
           content:
-            text/html:
+            text/plain:
               schema:
                 type: string
-                example: No custom logo found!
-
-    delete:
-      tags:
-        - "Pictures"
-      summary: Delete logo
+                description: No custom logo found!
+          description: ''
+    post:
+      operationId: asset_logo_create
       description: |
-        Delete the uploaded logo
+        Upload user selectable logo for watermarking videos and pictures.
+        Allowed filetype: JPG or PNG. Max resolution: 2000px. Max file size: 5MB.
+      summary: Upload logo
+      tags:
+      - Logos
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LogoUploadRequest'
+        required: true
       responses:
-        "200":
-          description: Deletes the uploaded logo file
+        '200':
           content:
-            text/html:
+            text/plain:
+              schema:
+                type: string
+                description: Image upload successful!
+          description: ''
+        '507':
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: Not enough storage space left on the drone
+          description: ''
+        '400':
+          content:
+            text/plain:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/LogoDeleted"
-                  - $ref: "#/components/schemas/NoLogoToDelete"
-
+                - type: object
+                  properties:
+                    text/plain:
+                      type: string
+                      description: File not present in POST request
+                - type: object
+                  properties:
+                    text/plain:
+                      type: string
+                      description: File size is too large
+                - type: object
+                  properties:
+                    text/plain:
+                      type: string
+                      description: Image is corrupt
+                - type: object
+                  properties:
+                    text/plain:
+                      type: string
+                      description: Invalid image file
+                - type: object
+                  properties:
+                    text/plain:
+                      type: string
+                      description: Image resolution is too high
+          description: ''
+    delete:
+      operationId: asset_logo_destroy
+      description: Delete the uploaded logo
+      summary: Delete logo
+      tags:
+      - Logos
+      responses:
+        '200':
+          content:
+            text/plain:
+              schema:
+                oneOf:
+                - type: object
+                  properties:
+                    text/plain:
+                      type: string
+                      description: Custom logo deleted!
+                - type: object
+                  properties:
+                    text/plain:
+                      type: string
+                      description: No logo found to delete!
+          description: ''
   /asset/logo/md5:
     get:
+      operationId: asset_logo_md5_retrieve
+      description: |-
+        Get the MD5 checksum of the currently uploaded logo, can be used to verify that
+        the logo was uploaded correctly.
+      summary: Get MD5 checksum of uploaded logo
       tags:
-        - "Pictures"
-      summary: Get logo md5sum
-      description: |
-        Returns uploaded logo md5sum
+      - Pictures
       responses:
-        "200":
-          description: A JSON with the user defined logo MD5 checksum
+        '200':
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Md5"
-
-        "404":
-          description: No custom logo found!
+                type: object
+                properties:
+                  md5sum:
+                    type: string
+                    description: MD5 checksum
+                    example: 10194c9eb82fd0237342ce80a2747ed2
+          description: ''
+        '404':
           content:
             text/html:
               schema:
                 type: string
                 description: No custom logo found!
+          description: ''
+  /diagnostics/drone_info:
+    get:
+      operationId: diagnostics_drone_info_retrieve
+      description: |
+        Returns a JSON string of drone information. Using this endpoint is the easiest
+        way to check if there is a drone connected to your network.
+      summary: Drone information
+      tags:
+      - Diagnostics
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DroneInfoResponse'
+              examples:
+                SuccessfulDroneInfoResponse:
+                  value:
+                    commit_id_csys: 299238949a
+                    depth_sensor: MS5837_30BA26
+                    features: tilt,gpdrone
+                    hardware_id: ea9ac92e1817a1d4
+                    manufacturer: Blueye Robotics
+                    model_description: X3 Underwater Drone
+                    model_name: Blueye X3
+                    model_url: https://www.blueyerobotics.com
+                    operating_system: blunux
+                    serial_number: BYEDP123456
+                    sw_version: 1.4.7-warrior-master
+                    services:
+                    - type: videostream
+                      options:
+                        primary: true
+                        url: rtsp://192.168.1.101:8554/test
+                    persistent_storage:
+                      acc_calibration: true
+                      binlog: true
+                      compass_calibration: true
+                      control_system_log: true
+                      gyro_calibration: true
+                      images: true
+                      multibeam: true
+                      videos: true
+                      webserver_log: true
+                    required_app_version:
+                      android: '3.10'
+                      ios: '3.10'
+                    guest_port_info:
+                      gp1:
+                        device_list:
+                          devices:
+                          - depth_rating: 700
+                            name: Blueye Blind Plug
+                            manufacturer: Blueye Robotics
+                            serial_number: BP00-00000
+                        guest_port_number: GUEST_PORT_NUMBER_PORT_1
+                      gp2:
+                        error: GUEST_PORT_ERROR_NOT_FLASHED
+                      gp3:
+                        error: GUEST_PORT_ERROR_NOT_FLASHED
+                  summary: Successful drone info response
+                  description: Complete drone information with all available fields
+                MinimalDroneInfoResponse:
+                  value:
+                    commit_id_csys: abc123def4
+                    depth_sensor: Keller_PA7LD
+                    features: tilt
+                    hardware_id: 12345678abcdef90
+                    manufacturer: Blueye Robotics
+                    model_description: Pioneer Underwater Drone
+                    model_name: Pioneer
+                    model_url: https://www.blueyerobotics.com
+                    operating_system: blunux
+                    serial_number: BYEDP000123
+                    sw_version: 2.1.0-dunfell-release
+                    services:
+                    - type: videostream
+                      options:
+                        primary: true
+                        url: rtsp://192.168.1.101:8554/test
+                    persistent_storage:
+                      acc_calibration: true
+                      binlog: true
+                      compass_calibration: false
+                      control_system_log: true
+                      gyro_calibration: true
+                      images: false
+                      multibeam: false
+                      videos: true
+                      webserver_log: true
+                    required_app_version:
+                      android: '3.10'
+                      ios: '3.10'
+                  summary: Minimal drone info response
+                  description: Drone information without guest ports
+          description: ''
+  /diagnostics/iperf:
+    get:
+      operationId: diagnostics_iperf_retrieve
+      description: |
+        Use POST method instead.
 
+        Performs a bandwidth test on the connection between the surface unit and the
+        drone. Always uses a fixed duration of 10 seconds.
+      summary: Tether bandwidth test
+      tags:
+      - Diagnostics
+      deprecated: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  received_Mbps:
+                    type: number
+                    format: float
+                    description: Bandwidth from surface unit to drone. Unit is Mbps.
+                    example: 79.55458795899487
+                  sent_Mbps:
+                    type: number
+                    format: float
+                    description: Bandwidth from drone to surface unit. Unit is Mbps.
+                    example: 80.37122746322603
+                  success:
+                    type: boolean
+                    description: If the test was succesful or not.
+                    enum:
+                    - true
+                    - false
+                    example: true
+          description: ''
+    post:
+      operationId: diagnostics_iperf_create
+      description: |
+        Performs a bandwidth test on the connection between the surface unit and the
+        drone. Set the test duration with the "duration"-parameter. A longer duration should yield a more
+        accurate result.
+      summary: Tether bandwidth test
+      tags:
+      - Diagnostics
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                duration:
+                  type: integer
+                  description: Test duration
+                  default: 10
+                  minimum: 0
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  received_Mbps:
+                    type: number
+                    format: float
+                    description: Bandwidth from surface unit to drone. Unit is Mbps.
+                    example: 79.55458795899487
+                  sent_Mbps:
+                    type: number
+                    format: float
+                    description: Bandwidth from drone to surface unit. Unit is Mbps.
+                    example: 80.37122746322603
+                  success:
+                    type: boolean
+                    description: If the test was succesful or not.
+                    enum:
+                    - true
+                    - false
+                    example: true
+          description: ''
+  /logcsv/:
+    get:
+      operationId: logcsv_retrieve
+      description: |
+        Returns an array of logs from the drone. Each array item represents an available
+        log file on the drone. Use the /logcsv/{filename} endpoint to get the full log.
+      summary: Array of logs
+      parameters:
+      - in: query
+        name: all
+        schema:
+          type: string
+        description: |-
+          Add `all` to the parameter list to show logs that are not classified as
+          dives (no auto functions enabled, and max depth < 0.25m). All logs will be shown regardless of the
+          content of the all parameter (even false, 0, etc).
+      - in: query
+        name: filter_depth_min_mm
+        schema:
+          type: integer
+          default: 250
+        description: |-
+          Filter the minimum depth of the listed logs. Will be ignored if `all` is
+          included in parameter list.
+      tags:
+      - Legacy logs
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      description: |-
+                        Name of the logfile. First part is the drones unique id,
+                        second part is the dive count.
+                      example: ea9ac92e1817a1d4-00073.csv
+                    binsize:
+                      type: integer
+                      description: Size of the log file. Unit is bytes.
+                      example: 1099448
+                    timestamp:
+                      type: string
+                      description: |-
+                        Start time of the dive. Unit is ISO8601 datetime without
+                        timezone data.
+                      example: '2019-01-01T00:00:00.000001'
+                    maxdepth:
+                      type: number
+                      format: float
+                      description: |-
+                        Maximum depth reached during the dive. Unit is
+                        millimeters.
+                      example: 21050
+          description: ''
+  /logcsv/{filename}:
+    get:
+      operationId: logcsv_download
+      description: Downloads a comma-separated-value (CSV) log-file with the requested
+        name.
+      summary: CSV log-file
+      externalDocs:
+        description: Legacy log file format documentation
+        url: https://blueye-robotics.github.io/blueye.sdk/latest/logs/legacy-log-file-format/
+      parameters:
+      - in: query
+        name: divisor
+        schema:
+          type: integer
+          default: 10
+        description: |-
+          Divisor to use when downsampling CSV before downloading. Set to 1 to get
+          max resolution.
+      - in: path
+        name: filename
+        schema:
+          type: string
+          example: ea9ac92e1817a1d4-00090
+        description: 'Filename of log to download (format: {machineid}-{logid})'
+        required: true
+      tags:
+      - Legacy logs
+      responses:
+        '200':
+          content:
+            text/csv:
+              schema:
+                type: string
+          description: ''
+  /logcsv/binary_logs.zip:
+    get:
+      operationId: logcsv_binary_logs.zip_retrieve
+      description: Download all CSV log files as a zlib compressed zip file
+      summary: Zipped CSV log files
+      tags:
+      - Legacy logs
+      responses:
+        '200':
+          content:
+            application/zip:
+              schema:
+                type: string
+                format: binary
+                description: All the csv log files compressed into one archive
+          description: ''
+  /logs/:
+    get:
+      operationId: logs_retrieve
+      description: |
+        Returns an array of binary logs from the drone. Each array item represents an
+        available log file on the drone. Use the /logs/{filename}/binlog endpoint to get the full log.
+      summary: Array of binary logs
+      tags:
+      - Logs
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      description: |-
+                        Name of the logfile. First part is the drones serial number,
+                                               seconds is the unique hardware ID, and the last part is the dive number.
+                                               Note: Unlike the csv logs there is no extension in this name.
+                      example: BYEDP070018_ea9add4d0c1961d4_00386
+                    log_number:
+                      type: integer
+                      description: Number of the log. This is the same as the number
+                        in the filename.
+                    is_open:
+                      type: boolean
+                      description: If this log is currently being written to.
+                    has_binlog:
+                      type: boolean
+                      description: |-
+                        If this log has a binlog or not. Unless something unexpected
+                                              has occured this should be True.
+                    is_dive:
+                      type: boolean
+                      description: |-
+                        If this log is a dive or not. If maximum depth has exceeded
+                                              0.25m or if any of the auto functions have been used the log will be
+                                              classified as a dive.
+                    videos:
+                      description: List of paths to videos recorded during the dive.
+                      type: array
+                      items:
+                        type: string
+                      example:
+                      - /videos/video_BYEDP070018_2023-07-31_125743.mp4
+                      - /videos/video_BYEDP070018_2023-07-31_125743_cam2.mp4
+                    pictures:
+                      description: List of paths to pictures taken during the dive.
+                      type: array
+                      items:
+                        type: string
+                      example:
+                      - /videos/picture_BYEDP070018_2023-07-31_125743.mp4
+                      - /videos/picture_BYEDP070018_2023-07-31_125743_cam2.mp4
+                    multibeam_recordings:
+                      description: List of paths to multibeam recordings taken during
+                        the dive.
+                      type: array
+                      items:
+                        type: string
+                      example:
+                      - /videos/multibeam_BYEDP070018_2023-07-31_123743.mbez
+                      - /videos/multibeam_BYEDP070018_2023-07-31_125743.mbez
+                    binlog_size:
+                      type: integer
+                      description: Size of binary log file in bytes
+                      example: 1099448
+                    has_dive_info:
+                      type: boolean
+                      description: |-
+                        If this log has dive info or not. Unless something unexpected
+                                              has occured this should be True.
+                    start_time:
+                      type: integer
+                      description: Unix timestamp of the start of the dive.
+                      example: 1692002908
+                    blunux_version:
+                      type: string
+                      description: |-
+                        Version of the Blunux operating system running on the drone.
+                                                              Format is $(Major).$(Minor).$(Build)-$(Yocto version)-$(Branch)
+                      example: 3.0.47-honister-master
+                    model_name:
+                      type: string
+                      description: Drone model name
+                      enum:
+                      - Pioneer
+                      - Pro
+                      - X1
+                      - X3
+                      - X3 Ultra
+                    max_depth_magnitude:
+                      type: integer
+                      description: |-
+                        Maximum depth of the dive, rounded down to the nearest meter
+                                              for dives up to 10 meters, rounded down to the nearest 10 meters for dives up
+                                              to 100 meters, and rounded down to the nearest 100 meters for deeper dives.
+                  required:
+                  - name
+                  - log_number
+                  - is_open
+                  - has_binlog
+                  - is_dive
+                  - videos
+                  - pictures
+                  - multibeam_recordings
+                  - binlog_size
+                  - has_dive_info
+                  - start_time
+                  - blunux_version
+                  - model_name
+                  - max_depth_magnitude
+          description: ''
+  /logs/{logname}/binlog:
+    get:
+      operationId: logs_binlog_retrieve
+      description: Returns the binary content of the requested log
+      summary: Download protobuf binary log file
+      parameters:
+      - in: path
+        name: logname
+        schema:
+          type: string
+          example: BYEDP070018_ea9add4d0c1961d4_00386
+        description: Name of the log to download
+        required: true
+      tags:
+      - Logs
+      responses:
+        '200':
+          content:
+            application/octet:
+              schema:
+                type: object
+                description: |-
+                  Binary log file. See
+                                https://blueye-robotics.github.io/blueye.sdk/latest/logs/plotting/ for instructions on
+                                how to parse the file.
+          description: ''
+        '404':
+          content:
+            text/html:
+              schema:
+                description: No log found
+          description: ''
+  /logs/{logname}/dive_info:
+    get:
+      operationId: logs_dive_info_retrieve
+      description: Returns extended meta data for the requested log.
+      summary: Get dive info for binlog
+      parameters:
+      - in: path
+        name: logname
+        schema:
+          type: string
+          example: BYEDP070018_ea9add4d0c1961d4_00386
+        description: Name of the log to download info for
+        required: true
+      tags:
+      - Logs
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  blunux_version:
+                    type: string
+                    description: |
+                      Version of the Blunux operating system running on the drone.
+                      Format is $(Major).$(Minor).$(Build)-$(Yocto version)-$(Branch)
+                    example: 3.0.47-honister-master
+                  is_dive:
+                    type: boolean
+                    description: |-
+                      If this log is a dive or not. If maximum depth has exceeded
+                      0.25m or if any of the auto functions have been used the log will be classified as a dive.
+                  is_valid:
+                    type: boolean
+                    description: |-
+                      If this log is valid or not. Unless something unexpected has
+                      occured this should be True.
+                  log_name:
+                    type: string
+                    description: |-
+                      Name of the logfile. First part is the drones serial number,
+                      the second part is the unique hardware ID, and the last part is the dive number.
+                      Note: Unlike the csv logs there is no extension in this name.
+                    example: BYEDP070018_ea9add4d0c1961d4_00386
+                  max_depth_magnitude:
+                    type: integer
+                    description: |
+                      Maximum depth of the dive,  rounded down to the nearest meter
+                      for dives up to 10 meters, rounded down to the nearest 10 meters for dives up to 100 meters, and
+                      rounded down to the nearest 100 meters for deeper dives.
+                  model_name:
+                    type: string
+                    description: Name of the drone model.
+                    enum:
+                    - Pioneer
+                    - Pro
+                    - X1
+                    - X3
+                    - X3 Ultra
+                  start_time:
+                    type: integer
+                    description: Unix timestamp of the start of the dive.
+                    example: 1692002908
+                  videos:
+                    description: List of paths to videos recorded during the dive.
+                    type: array
+                    items:
+                      type: string
+                    example:
+                    - /videos/video_BYEDP070018_2023-07-31_125743.mp4
+                    - /videos/video_BYEDP070018_2023-07-31_125743_cam2.mp4
+                  pictures:
+                    description: List of paths to pictures taken during the dive.
+                    type: array
+                    items:
+                      type: string
+                    example:
+                    - /videos/picture_BYEDP070027_2025-10-13_155525.759.jpg
+                    - /videos/picture_BYEDP070027_2025-10-13_155527.231.jpg
+                  multibeam_recordings:
+                    type: array
+                    items:
+                      type: string
+                    description: List of associated multibeam recordings
+                    example:
+                    - /videos/multibeam_BYEDP070027_2025-10-15_140613.mbez
+                    - /videos/multibeam_BYEDP070027_2025-10-15_141043.mbez
+                  error_flags:
+                    type: array
+                    items:
+                      type: string
+                    description: List of error flags
+                  gp_info:
+                    type: object
+                    properties:
+                      gp1:
+                        oneOf:
+                        - type: object
+                          properties:
+                            device_list:
+                              type: object
+                              properties:
+                                devices:
+                                  type: array
+                                  items:
+                                    type: object
+                                    properties:
+                                      depth_rating:
+                                        type: integer
+                                        example: '700'
+                                      name:
+                                        type: string
+                                        example: Blueye Blind Plug
+                                      manufacturer:
+                                        type: string
+                                        example: Blueye Robotics
+                                      serial_number:
+                                        type: string
+                                        example: BP00-00000
+                            guest_port_number:
+                              type: string
+                              enum:
+                              - GUEST_PORT_NUMBER_PORT_1
+                              - GUEST_PORT_NUMBER_PORT_2
+                              - GUEST_PORT_NUMBER_PORT_3
+                              example: GUEST_PORT_NUMBER_PORT_1
+                        - type: object
+                          properties:
+                            error:
+                              type: string
+                              description: |-
+                                Error code for what went wrong with
+                                the guest port
+                              example: GUEST_PORT_ERROR_NOT_FLASHED
+                      gp2:
+                        oneOf:
+                        - type: object
+                          properties:
+                            device_list:
+                              type: object
+                              properties:
+                                devices:
+                                  type: array
+                                  items:
+                                    type: object
+                                    properties:
+                                      depth_rating:
+                                        type: integer
+                                        example: '700'
+                                      name:
+                                        type: string
+                                        example: Blueye Blind Plug
+                                      manufacturer:
+                                        type: string
+                                        example: Blueye Robotics
+                                      serial_number:
+                                        type: string
+                                        example: BP00-00000
+                            guest_port_number:
+                              type: string
+                              enum:
+                              - GUEST_PORT_NUMBER_PORT_1
+                              - GUEST_PORT_NUMBER_PORT_2
+                              - GUEST_PORT_NUMBER_PORT_3
+                              example: GUEST_PORT_NUMBER_PORT_2
+                        - type: object
+                          properties:
+                            error:
+                              type: string
+                              description: |-
+                                Error code for what went wrong with
+                                the guest port
+                              example: GUEST_PORT_ERROR_NOT_FLASHED
+                      gp3:
+                        oneOf:
+                        - type: object
+                          properties:
+                            device_list:
+                              type: object
+                              properties:
+                                devices:
+                                  type: array
+                                  items:
+                                    type: object
+                                    properties:
+                                      depth_rating:
+                                        type: integer
+                                        example: '700'
+                                      name:
+                                        type: string
+                                        example: Blueye Blind Plug
+                                      manufacturer:
+                                        type: string
+                                        example: Blueye Robotics
+                                      serial_number:
+                                        type: string
+                                        example: BP00-00000
+                            guest_port_number:
+                              type: string
+                              enum:
+                              - GUEST_PORT_NUMBER_PORT_1
+                              - GUEST_PORT_NUMBER_PORT_2
+                              - GUEST_PORT_NUMBER_PORT_3
+                              example: GUEST_PORT_NUMBER_PORT_3
+                        - type: object
+                          properties:
+                            error:
+                              type: string
+                              description: |-
+                                Error code for what went wrong with
+                                the guest port
+                              example: GUEST_PORT_ERROR_NOT_FLASHED
+          description: ''
+        '404':
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: No dive info found
+          description: ''
+  /picture:
+    get:
+      operationId: picture_retrieve
+      description: Get a picture file or list all pictures if no file specified
+      summary: Download a picture
+      parameters:
+      - in: query
+        name: file
+        schema:
+          type: string
+          example: picture_BYEDP123456_2019-01-01_000001.001.jpg
+        description: Picture filename (optional - if not provided, returns list)
+      - in: query
+        name: logo
+        schema:
+          type: integer
+          enum:
+          - 0
+          - 1
+          - 2
+          default: 0
+        description: |
+          Add logo to picture.
+          * `0` - No logo
+          * `1` - Drone default logo
+          * `2` - User uploaded logo
+      - in: query
+        name: tz-offset
+        schema:
+          type: integer
+        description: |-
+          Add timezone offset to the picture EXIF data in minutes, can also be a
+          negative number. For example in Norway during summer time the correct value would be 60, while it
+          would be -180 in Chile
+      tags:
+      - Pictures
+      responses:
+        '200':
+          content:
+            image/jpg:
+              schema:
+                type: string
+                format: binary
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    filename:
+                      type: string
+                      description: Picture filename
+                description: |-
+                  If no file parameter is given, returns a list of all available
+                  pictures
+                example: |-
+                  {'filename': 'picture_BYEDP070027_2025-10-13_155527.231.jpg'},
+                                            {'filename': 'picture_BYEDP070027_2025-10-13_155528.166.jpg'}]
+          description: ''
+        '400':
+          content:
+            text:
+              schema:
+                type: string
+                description: Invalid logo parameter
+          description: ''
+        '404':
+          content:
+            text:
+              schema:
+                type: string
+                description: Picture file not found
+          description: ''
+  /picture/overlay:
+    get:
+      operationId: picture_overlay_retrieve
+      description: Generate picture with telemetry data overlay
+      summary: Download pictures with metadata overlay
+      parameters:
+      - in: query
+        name: date-format
+        schema:
+          type: string
+          default: '%Y-%m-%d %H:%M:%S'
+        description: Format of the date/time.
+      - in: query
+        name: field-date
+        schema:
+          type: integer
+          enum:
+          - 0
+          - 1
+          default: 1
+        description: |
+          Enable or disable the date field.
+
+          * `1` - Enable
+          * `0` - Disable
+      - in: query
+        name: field-depth
+        schema:
+          type: integer
+          enum:
+          - 0
+          - 1
+          default: 1
+        description: |
+          Display water depth in the image overlay.
+          * `1` - Enable
+          * `0` - Disable
+      - in: query
+        name: field-gps
+        schema:
+          type: integer
+          enum:
+          - 0
+          - 1
+          default: 0
+        description: |
+          Display GPS coordinates (decimal degrees) in the image overlay. Requires
+          Blunux 3.0 or newer. If a positioning system is used, the coordinates of the drone is shown, else
+          the operator position reported by the app is shown.
+
+          * `1` - Enable
+          * `0` - Disable
+      - in: query
+        name: field-guestport
+        schema:
+          type: integer
+          enum:
+          - 0
+          - 1
+          default: 1
+        description: |
+          Display data from connected guestport sensors in the image overlay.
+          * `1` - Enable
+          * `0` - Disable
+      - in: query
+        name: field-heading
+        schema:
+          type: integer
+          enum:
+          - 0
+          - 1
+          default: 1
+        description: |
+          Display compass heading in the image overlay.
+          * `1` - Enable
+          * `0` - Disable
+      - in: query
+        name: field-temp
+        schema:
+          type: integer
+          enum:
+          - 0
+          - 1
+          default: 1
+        description: |
+          Display water temperature in the image overlay.
+          * `1` - Enable
+          * `0` - Disable
+      - in: query
+        name: field-tilt
+        schema:
+          type: integer
+          enum:
+          - 0
+          - 1
+          default: 0
+        description: |
+          Display camera tilt angle in the image overlay.
+          * `1` - Enable
+          * `0` - Disable
+      - in: query
+        name: file
+        schema:
+          type: string
+          example: picture_BYEDP123456_2019-01-01_000001.001.jpg
+        description: Name of the image file to download.
+        required: true
+      - in: query
+        name: ignore-exif-titles
+        schema:
+          type: integer
+          enum:
+          - 0
+          - 1
+          default: 0
+        description: |
+          Ignore title and subtitle set by the app during the dive. If `title` and
+          `subtitle` is not specified, the title and/or subtitle selected for the video overlay will be
+          written unless this parameter is enabled.
+
+          * `1` - Ignore exif titles
+          * `0` - Use title from exif
+      - in: query
+        name: length-units
+        schema:
+          type: string
+          enum:
+          - feet
+          - meter
+          default: meter
+        description: |
+          Unit to use for all distance/length measurements such as depth, altitude,
+          distance etc. For shorter lengths `mm` or `inches` will be used accordingly.
+
+          * `meter` - Metric unit
+          * `feet` - Imperial unit
+      - in: query
+        name: logo
+        schema:
+          type: integer
+          enum:
+          - 0
+          - 1
+          - 2
+          default: 0
+        description: |
+          Which logo to overlay.
+          * `0` - No logo
+          * `1` - Drone default logo
+          * `2` - User uploaded logo
+      - in: query
+        name: subtitle
+        schema:
+          type: string
+          default: ''
+        description: Subtitle of the image. Maximum 72 characters.
+      - in: query
+        name: temp-units
+        schema:
+          type: string
+          enum:
+          - celsius
+          - fahrenheit
+          default: celsius
+        description: |
+          Unit to use for the temperature field and any temperature related
+          measurements.
+
+          * `celsius` - Metric unit
+          * `fahrenheit` - Imperial unit
+      - in: query
+        name: title
+        schema:
+          type: string
+          example: My title
+          default: ''
+        description: Title of the image. Maximum 24 characters.
+      - in: query
+        name: tz-offset
+        schema:
+          type: integer
+          default: 0
+        description: |-
+          The drone stores all time in UTC+0, so if you were diving in another
+          timezone and want
+          to correct for that in the displayed time you can add a timezone offset here. The
+          unit is minutes and both positive and negative values are supported.
+      tags:
+      - Pictures
+      responses:
+        '200':
+          content:
+            image/jpeg:
+              schema:
+                type: object
+          description: ''
+        '400':
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: Invalid parameters were provided
+                example: 'Invalid parameter temp_unit: Kelvin'
+          description: ''
+        '404':
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: A picture with the provided file name was not found.
+                example: Picture file not found or not valid
+          description: ''
+  /picture/thumbnail:
+    get:
+      operationId: picture_thumbnail_retrieve
+      description: |-
+        Downloads a picture (jpg) with EXIF metadata from when the photo was
+        captured.
+      summary: Download a thumbnail of a picture
+      parameters:
+      - in: query
+        name: file
+        schema:
+          type: string
+          example: picture_BYEDP123456_2019-01-01_000001.001.jpg
+        description: Name of the image file to download
+        required: true
+      - in: query
+        name: height
+        schema:
+          type: integer
+          default: 576
+        description: Height of the thumbnail in pixels.
+      - in: query
+        name: quality
+        schema:
+          type: integer
+          default: 85
+        description: JPG compression level, 0-100. 100 is best quality, 0 is worst
+          quality.
+      - in: query
+        name: width
+        schema:
+          type: integer
+          default: 1024
+        description: Width of the thumbnail in pixels.
+      tags:
+      - Pictures
+      responses:
+        '200':
+          content:
+            image/jpg:
+              schema:
+                type: string
+                format: binary
+          description: ''
+        '400':
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: Invalid options were provided
+                example: Options not valid
+          description: ''
+        '404':
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: A picture with the provided file name was not found.
+                example: Picture file not found or not valid
+          description: ''
+  /srt:
+    get:
+      operationId: srt_retrieve
+      description: |
+        Downloads a subtitle file (srt) for a video file containing log data from the
+        dive. The data is gathered from the videos accompanying logfile. By passing in varius queries it is
+        possible to select which data one wants displayed, and where to display it.
+      summary: Download subtitle file
+      parameters:
+      - in: query
+        name: date-format
+        schema:
+          type: string
+          default: '%Y-%m-%d %H:%M:%S'
+        description: Format of the date/time.
+      - in: query
+        name: field-date
+        schema:
+          type: integer
+          default: 0
+        description: Enable or disable the date field. "1" to enable, "0" to disable.
+      - in: query
+        name: field-depth
+        schema:
+          type: integer
+          default: 1
+        description: Enable or disable the depth field. "1" to enable, "0" to disable.
+      - in: query
+        name: field-heading
+        schema:
+          type: integer
+          default: 1
+        description: Enable or disable the heading field. "1" to enable, "0" to disable.
+      - in: query
+        name: field-temp
+        schema:
+          type: integer
+          default: 1
+        description: Enable or disable the temperature field. "1" to enable, "0" to
+          disable.
+      - in: query
+        name: field-tilt
+        schema:
+          type: integer
+          default: 0
+        description: Enable or disable the tilt field. "1" to enable, "0" to disable.
+      - in: query
+        name: file
+        schema:
+          type: string
+          example: video_BYEDP123456_2019-01-01_000001.mp4
+        description: Name of the videofile to download subtitle file for.
+        required: true
+      - in: query
+        name: format
+        schema:
+          type: string
+          default: srt
+        description: |-
+          Subtitles can also be retrived in the WEBVTT format. Use format=vtt to
+          get a .vtt file instead of a .srt file.
+      - in: query
+        name: length-units
+        schema:
+          type: string
+          default: meter
+        description: |-
+          Unit to use for length. Use "meter" for metric units, and "feet" for
+          imperial.
+      - in: query
+        name: placement
+        schema:
+          type: string
+          default: top
+        description: |-
+          Where to place the subtitle. Use "top" for placing on the top, "bottom"
+          for placing on the bottom, and "" for using the player default.
+      - in: query
+        name: temp-units
+        schema:
+          type: string
+          default: celsius
+        description: |-
+          Unit to use for temperature. Use "celsius" for metric units, and
+          "fahrenheit" for imperial.
+      - in: query
+        name: title
+        schema:
+          type: string
+          example: My title
+          default: ''
+        description: Title of the video.
+      - in: query
+        name: tz-offset
+        schema:
+          type: integer
+          default: 0
+        description: |-
+          The drone stores all time in UTC+0, so if you were diving in another
+          timezone and want to correct for that in the displayed time you can add a timezone offset here. The
+          unit is minutes and both positive and negative values are supported.
+      tags:
+      - Subtitles
+      responses:
+        '200':
+          content:
+            text/srt:
+              schema:
+                type: object
+                description: Subtitle file for the requested video file
+          description: ''
+        '400':
+          content:
+            text/plain:
+              schema:
+                description: No video file given or other bad request
+          description: ''
+        '404':
+          content:
+            text/plain:
+              schema:
+                description: Log file not found or invalid format/placement
+          description: ''
+  /surface_unit/update:
+    post:
+      operationId: surface_unit_update_create
+      description: |
+        Updates the surface unit firmware. If a binary image is included in the request, it will use that image for the update. If not, it will use the version stored on the drone.
+      summary: Update the surface unit firmware
+      tags:
+      - Surface unit
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                update-file:
+                  type: string
+                  format: binary
+                  description: The upgrade file for the surface unit.
+                  example: firmware.bin
+      responses:
+        '200':
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: Update initialized successfully.
+          description: ''
+        '400':
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: Invalid request type or unable to authorize with the
+                  surface unit
+          description: ''
   /surface_unit/version:
     get:
-      tags:
-        - "Surface unit"
+      operationId: surface_unit_version_retrieve
+      description: Get version of update file stored on drone and the version installed
+        on the surface unit
       summary: Get current version(s)
-      description: Get version of update file stored on drone and the version installed on the surface unit
+      tags:
+      - Surface unit
       responses:
-        "200":
-          description: A JSON with the version of the update file stored on the drone and the version installed on the surface unit
+        '200':
           content:
             application/json:
               schema:
@@ -804,343 +1390,219 @@ paths:
                         description: |
                           Version string for surface unit firmware. Format is
                           {major}.{minor}.{patch}-{branch}.{build}
-                        example: "2.2.4-master.190"
+                        example: 2.2.4-master.190
                       commit:
                         type: string
                         description: |
                           Commit id of the surface unit firmware.
-                        example: "815cce8a95ea0d448a85996bcf82a241109d575b"
+                        example: 815cce8a95ea0d448a85996bcf82a241109d575b
                   installed_version:
                     type: object
                     properties:
                       version:
                         type: string
-                        description: |
+                        description: |-
                           Version string for surface unit firmware. Format is
                           {major}.{minor}.{patch}-{branch}.{build}
-                        example: "2.2.4-master.190"
+                        example: 2.2.4-master.190
                       commit:
                         type: string
-                        description: |
-                          Commit id of the surface unit firmware.
-                        example: "815cce8a95ea0d448a85996bcf82a241109d575b"
-
-  /surface_unit/update:
-    post:
-      tags:
-        - "Surface unit"
-      summary: Update the surface unit firmware
-      description: |
-        Updates the surface unit firmware. If a binary image is included in the request, it will use that image for the update. If not, it will use the version stored on the drone.
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                update-file:
-                  type: string
-                  format: binary
-                  description: Binary image for the update.
-                  example: firmware.bin
-        required: false
-      responses:
-        "200":
-          content:
-            text/html:
-              schema:
-                type: string
-                example: Update initialized
-        "400":
-          content:
-            text/html:
-              schema:
-                type: string
-                example: Unable to authorize with the surface unit
-
+                        description: Commit id of the surface unit firmware.
+                        example: 815cce8a95ea0d448a85996bcf82a241109d575b
+          description: ''
 components:
   schemas:
-    DroneInfo:
+    DroneInfoResponse:
       type: object
+      description: Response serializer for drone_info endpoint
       properties:
         commit_id_csys:
           type: string
           description: Commit-id of the software currently running on the drone.
-          example: "299238949a"
         depth_sensor:
           type: string
-          description: |
-            Name of the depth sensor, f. ex. MS5837_30BA26, Keller_PA7LD.
+          description: Name of the depth sensor, f. ex. MS5837_30BA26, Keller_PA7LD.
             Available from Blunux 2.3
-          example: "MS5837_30BA26"
         features:
           type: string
           description: Comma-separated list of available features on the drone.
-          example: "lasers,jetpack"
         hardware_id:
           type: string
           description: Unique hardware id of the built-in single board computer.
-          example: ea9ac92e1817a1d4
         manufacturer:
           type: string
-          example: "Blueye Robotics"
         model_description:
           type: string
-          example: "Blueye Pioneer Underwater Drone"
+          description: Description of the drone model.
         model_name:
-          type: string
-          example: "Blueye Pioneer"
+          $ref: '#/components/schemas/ModelNameEnum'
         model_url:
           type: string
-          example: "https://www.blueyerobotics.com"
         operating_system:
           type: string
-          example: "blunux"
+          description: The operating system currently running on the drone.
         serial_number:
           type: string
           description: Serial number for the whole drone package as it left the factory.
-          example: "BYEDP123456"
         sw_version:
           type: string
-          description: |
-            Human-friendly name of software running on the drone.
-            Format is $(Major).$(Minor).$(Build)-$(Yocto version)-$(Branch)
-          example: "1.4.7-warrior-master"
-
-    IperfResult:
-      type: object
-      properties:
-        received_Mbps:
-          type: number
-          format: float
-          description: Bandwidth from surface unit to drone. Unit is Mbps.
-          example: 79.55458795899487
-        sent_Mbps:
-          type: number
-          format: float
-          description: Bandwidth from drone to surface unit. Unit is Mbps.
-          example: 80.37122746322603
-        success:
-          type: boolean
-          description: If the test was succesful or not.
-          enum:
-            - true
-            - false
-          example: true
-
-    BinLog:
-      type: object
-      properties:
-        binlog_size:
-          type: integer
-          description: Size of the log file. Unit is bytes.
-          example: 1099448
-        blunux_version:
-          type: string
-          description: |
-            Version of the Blunux operating system running on the drone.
-            Format is $(Major).$(Minor).$(Build)-$(Yocto version)-$(Branch)
-          example: "3.0.47-honister-master"
-        has_binlog:
-          type: boolean
-          description: |
-            If this log has a binlog or not. Unless something unexpected has occured this should be
-            True.
-        has_dive_info:
-          type: boolean
-          description: |
-            If this log has dive info or not. Unless something unexpected has occured this should be
-            True.
-        is_dive:
-          type: boolean
-          description: |
-            If this log is a dive or not. If maximum depth has exceeded 0.25m or if any of the auto
-            function have been used the log will be classified as a dive.
-        is_open:
-          type: boolean
-          description: If this is the log currently being written to.
-        log_number:
-          type: integer
-          description: |
-            Number of the log. This is the same as the number in the filename.
-        max_depth_magnitude:
-          type: integer
-          description: |
-            Maximum depth of the dive,  rounded down to the nearest meter for dives up to 10 meters,
-            rounded down to the nearest 10 meters for dives up to 100 meters, and rounded down to
-            the nearest 100 meters for deeper dives.
-        model_name:
-          type: string
-          description: |
-            Name of the drone model.
-          enum:
-            - Blueye Pioneer
-            - Blueye Pro
-            - Blueye X3
-        name:
-          type: string
-          description: |
-            Name of the logfile. First part is the drones serial number, seconds is the unique
-            hardware ID, and the last part is the dive number.
-            Note: Unlike the csv logs there is no extension in this name.
-          example: BYEDP070018_ea9add4d0c1961d4_00386
-        start_time:
-          type: integer
-          description: Unix timestamp of the start of the dive.
-          example: 1692002908
-        videos:
-          description: |
-            List of paths to videos recorded during the dive.
+          description: Human-friendly name of software running on the drone. Format
+            is $(Major).$(Minor).$(Build)-$(Yocto version)-$(Branch)
+        services:
           type: array
           items:
-            type: string
-          example:
-            [
-              "/videos/video_BYEDP070018_2023-07-31_125743.mp4",
-              "/videos/video_BYEDP070018_2023-07-31_125743_cam2.mp4",
-            ]
-
-    DiveInfo:
+            $ref: '#/components/schemas/Service'
+        persistent_storage:
+          $ref: '#/components/schemas/PersistentStorage'
+        required_app_version:
+          $ref: '#/components/schemas/RequiredAppVersion'
+        guest_port_info:
+          $ref: '#/components/schemas/GuestPortInfo'
+      required:
+      - commit_id_csys
+      - depth_sensor
+      - features
+      - hardware_id
+      - manufacturer
+      - model_description
+      - model_name
+      - model_url
+      - operating_system
+      - persistent_storage
+      - required_app_version
+      - serial_number
+      - services
+      - sw_version
+    GuestPortInfo:
       type: object
+      description: Serializer for guest port information
       properties:
-        blunux_version:
+        gp1: {}
+        gp2: {}
+        gp3: {}
+    LogoUploadRequest:
+      type: object
+      description: Serializer for the logo image upload.
+      properties:
+        image:
           type: string
-          description: |
-            Version of the Blunux operating system running on the drone.
-            Format is $(Major).$(Minor).$(Build)-$(Yocto version)-$(Branch)
-          example: "3.0.47-honister-master"
-        is_dive:
+          format: binary
+          example: logo.png
+          description: |-
+            The logo image file to upload (PNG, JPG). <5MB, <2000px Will be converted to
+            PNG.
+      required:
+      - image
+    ModelNameEnum:
+      enum:
+      - Pioneer
+      - Pro
+      - X1
+      - X3
+      - X3 Ultra
+      type: string
+      description: |-
+        * `Pioneer` - Pioneer
+        * `Pro` - Pro
+        * `X1` - X1
+        * `X3` - X3
+        * `X3 Ultra` - X3 Ultra
+    PersistentStorage:
+      type: object
+      description: Serializer for persistent storage settings
+      properties:
+        acc_calibration:
           type: boolean
-          description: |
-            If this log is a dive or not. If maximum depth has exceeded 0.25m or if any of the auto
-            function have been used the log will be classified as a dive.
-        is_valid:
+        binlog:
           type: boolean
-          description: |
-            If this log is valid or not. Unless something unexpected has occured this should be
-            True.
-        log_name:
-          type: string
-          description: |
-            Name of the logfile. First part is the drones serial number, seconds is the unique
-            hardware ID, and the last part is the dive number.
-            Note: Unlike the csv logs there is no extension in this name.
-          example: BYEDP070018_ea9add4d0c1961d4_00386
-        max_depth_magnitude:
-          type: integer
-          description: |
-            Maximum depth of the dive,  rounded down to the nearest meter for dives up to 10 meters,
-            rounded down to the nearest 10 meters for dives up to 100 meters, and rounded down to
-            the nearest 100 meters for deeper dives.
-        model_name:
-          type: string
-          description: |
-            Name of the drone model.
-          enum:
-            - Blueye Pioneer
-            - Blueye Pro
-            - Blueye X3
-        start_time:
-          type: integer
-          description: Unix timestamp of the start of the dive.
-          example: 1692002908
+        compass_calibration:
+          type: boolean
+        control_system_log:
+          type: boolean
+        gyro_calibration:
+          type: boolean
+        images:
+          type: boolean
+        multibeam:
+          type: boolean
         videos:
-          description: |
-            List of paths to videos recorded during the dive.
-          type: array
-          items:
-            type: string
-          example:
-            [
-              "/videos/video_BYEDP070018_2023-07-31_125743.mp4",
-              "/videos/video_BYEDP070018_2023-07-31_125743_cam2.mp4",
-            ]
-
-    Log:
+          type: boolean
+        webserver_log:
+          type: boolean
+      required:
+      - acc_calibration
+      - binlog
+      - compass_calibration
+      - control_system_log
+      - gyro_calibration
+      - images
+      - multibeam
+      - videos
+      - webserver_log
+    RequiredAppVersion:
       type: object
+      description: Serializer for required app versions
       properties:
-        name:
+        android:
           type: string
-          description: |
-            Name of the logfile. First part is the drones unique id, second part is the dive count.
-          example: ea9ac92e1817a1d4-00073.csv
-        binsize:
-          type: integer
-          description: Size of the log file. Unit is bytes.
-          example: 1099448
-        timestamp:
+        ios:
           type: string
-          description: Start time of the dive. Unit is ISO8601 datetime without timezone data.
-          example: "2019-01-01T00:00:00.000001"
-        maxdepth:
-          type: number
-          format: float
-          description: Maximum depth reached during the dive. Unit is millimeters.
-          example: 21050
-
-    Picture:
+      required:
+      - android
+      - ios
+    Service:
       type: object
+      description: Serializer for services in drone info
       properties:
-        name:
+        type:
           type: string
-          description: |
-            Filename of the picture. Stored in the format "picture_DRONEID_TIMESTAMP.jpg"
-          example: picture_BYEDP123456_2019-01-01_000001.001.jpg
-
-    Md5:
+        options:
+          $ref: '#/components/schemas/ServiceOptions'
+      required:
+      - options
+      - type
+    ServiceOptions:
       type: object
+      description: Serializer for service options
       properties:
-        md5sum:
+        primary:
+          type: boolean
+        url:
           type: string
-          description: |
-            MD5 checksum
-          example: "10194c9eb82fd0237342ce80a2747ed2"
-
-    FileNotPresent:
-      type: object
-      properties:
-        text/html:
-          type: string
-          description: File not present
-
-    FileSizeTooLarge:
-      type: object
-      properties:
-        text/html:
-          type: string
-          description: File size is too large
-
-    ImageIsCorrupt:
-      type: object
-      properties:
-        text/html:
-          type: string
-          description: Image is corrupt
-
-    ImageResolutionTooHigh:
-      type: object
-      properties:
-        text/html:
-          type: string
-          description: Image resolution is too high
-
-    ImageIsInvalid:
-      type: object
-      properties:
-        text/html:
-          type: string
-          description: Invalid image file
-
-    LogoDeleted:
-      type: object
-      properties:
-        text/html:
-          type: string
-          description: Custom logo deleted!
-
-    NoLogoToDelete:
-      type: object
-      properties:
-        text/html:
-          type: string
-          description: No logo found to delete!
+x-tagGroups:
+- name: Media
+  tags:
+  - Pictures
+  - Logos
+  - Subtitles
+  - Media
+- name: Dive data
+  tags:
+  - Logs
+  - Legacy logs
+  - Photogrammetry
+- name: System
+  tags:
+  - Diagnostics
+  - Licenses
+servers:
+- url: http://192.168.1.101
+tags:
+- name: Media
+  description: |-
+    The drone includes a WebDav server for media file access, and that
+    should be used for management of media files where possible. See the [SDK documentation](https://blueye-robotics.github.io/blueye.sdk/latest/video/downloading/) for details.
+- name: Pictures
+  description: Picture processing and download
+- name: Subtitles
+  description: Video subtitle generation
+- name: Logs
+  description: Binary log file operations
+- name: Legacy logs
+  description: CSV log file operations
+- name: Photogrammetry
+  description: Dive-specific data extraction
+- name: Diagnostics
+  description: System diagnostics and health monitoring
+- name: Licenses
+  description: License information
