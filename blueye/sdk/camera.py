@@ -1052,6 +1052,75 @@ class Camera:
         self._parent_drone._req_rep_client.set_camera_parameters(self._camera_parameters)
 
     @property
+    def recording_codec(self) -> blueye.protocol.RecordingCodec:
+        """Set or get the recording video codec.
+
+        Args:
+            codec (blueye.protocol.RecordingCodec): Set the recording codec.
+                RECORDING_CODEC_UNSPECIFIED uses the platform default (H.264).
+                RECORDING_CODEC_H265 is only available on Ultra.
+
+        Returns:
+            The current recording codec setting.
+        """
+        self._update_camera_parameters()
+        return self._camera_parameters.recording_codec
+
+    @recording_codec.setter
+    def recording_codec(self, codec: blueye.protocol.RecordingCodec):
+        if not isinstance(codec, blueye.protocol.RecordingCodec):
+            raise ValueError(f"{codec} is not a valid RecordingCodec type")
+        if self._camera_parameters is None:
+            self._update_camera_parameters()
+        self._camera_parameters.recording_codec = codec
+        self._parent_drone._req_rep_client.set_camera_parameters(self._camera_parameters)
+
+    @property
+    def recording_bitrate(self) -> int:
+        """Set or get the recording bitrate in bits per second.
+
+        A value of 0 means the drone will auto-compute a default bitrate based on the current
+        resolution, framerate, and codec.
+
+        Args:
+            bitrate (int): Set the recording bitrate in bits per second. Use 0 for automatic.
+
+        Returns:
+            The current recording bitrate in bits per second (0 if automatic).
+        """
+        self._update_camera_parameters()
+        return self._camera_parameters.recording_bitrate
+
+    @recording_bitrate.setter
+    def recording_bitrate(self, bitrate: int):
+        if self._camera_parameters is None:
+            self._update_camera_parameters()
+        self._camera_parameters.recording_bitrate = bitrate
+        self._parent_drone._req_rep_client.set_camera_parameters(self._camera_parameters)
+
+    @property
+    def streaming_protocol(self) -> blueye.protocol.StreamingProtocol:
+        """Set or get the streaming protocol (codec used for the RTSP stream).
+
+        Args:
+            protocol (blueye.protocol.StreamingProtocol): Set the streaming protocol.
+
+        Returns:
+            The current streaming protocol.
+        """
+        self._update_camera_parameters()
+        return self._camera_parameters.streaming_protocol
+
+    @streaming_protocol.setter
+    def streaming_protocol(self, protocol: blueye.protocol.StreamingProtocol):
+        if not isinstance(protocol, blueye.protocol.StreamingProtocol):
+            raise ValueError(f"{protocol} is not a valid StreamingProtocol type")
+        if self._camera_parameters is None:
+            self._update_camera_parameters()
+        self._camera_parameters.streaming_protocol = protocol
+        self._parent_drone._req_rep_client.set_camera_parameters(self._camera_parameters)
+
+    @property
     def record_time(self) -> Optional[int]:
         """Get the duration of the current camera recording.
 
