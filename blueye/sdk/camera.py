@@ -749,6 +749,44 @@ class Overlay:
 class Camera:
     """Handles the camera functionality for the Blueye drone."""
 
+    class _ParamsBatch:
+        """Context manager for batching camera parameter changes.
+
+        Changes are accumulated and sent as a single request on scope exit.
+
+        Usage::
+
+            with drone.camera.modify_params() as params:
+                params.recording_codec = bp.RecordingCodec.RECORDING_CODEC_H265
+                params.recording_bitrate = 20_000_000
+                params.framerate = bp.Framerate.FRAMERATE_FPS_30
+            # All three fields are sent in one set_camera_parameters call here.
+        """
+
+        def __init__(self, camera: Camera):
+            self._camera = camera
+            self._camera._update_camera_parameters()
+            self._params = camera._camera_parameters
+
+        def __getattr__(self, name):
+            return getattr(self._params, name)
+
+        def __setattr__(self, name, value):
+            if name.startswith("_"):
+                super().__setattr__(name, value)
+            else:
+                setattr(self._params, name, value)
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc_val, exc_tb):
+            if exc_type is None:
+                self._camera._parent_drone._req_rep_client.set_camera_parameters(
+                    self._params
+                )
+            return False
+
     def __init__(self, parent_drone: Drone, is_guestport_camera: bool = False):
         """Initialize the Camera class.
 
@@ -779,6 +817,22 @@ class Camera:
         self._camera_parameters = self._parent_drone._req_rep_client.get_camera_parameters(
             camera=self._camera_type
         )
+
+    def modify_params(self) -> _ParamsBatch:
+        """Return a context manager for batching camera parameter changes.
+
+        All attribute assignments on the returned object are accumulated and sent as a single
+        ``set_camera_parameters`` request when the ``with`` block exits.  If an exception is
+        raised inside the block the changes are discarded.
+
+        Usage::
+
+            with drone.camera.modify_params() as params:
+                params.recording_codec = bp.RecordingCodec.RECORDING_CODEC_H265
+                params.recording_bitrate = 20_000_000
+            # sent here
+        """
+        return self._ParamsBatch(self)
 
     @property
     def is_recording(self) -> Optional[bool]:
