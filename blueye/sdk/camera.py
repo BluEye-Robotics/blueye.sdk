@@ -756,16 +756,17 @@ class Camera:
 
         Usage::
 
-            with drone.camera.modify_params() as params:
+            with drone.camera.configure() as params:
                 params.recording_codec = bp.RecordingCodec.RECORDING_CODEC_H265
                 params.recording_bitrate = 20_000_000
                 params.framerate = bp.Framerate.FRAMERATE_FPS_30
             # All three fields are sent in one set_camera_parameters call here.
         """
 
-        def __init__(self, camera: Camera):
+        def __init__(self, camera: Camera, timeout: float = 0.5):
             self._camera = camera
-            self._camera._update_camera_parameters()
+            self._timeout = timeout
+            self._camera._update_camera_parameters(timeout=timeout)
             self._params = camera._camera_parameters
 
         def __getattr__(self, name):
@@ -783,7 +784,7 @@ class Camera:
         def __exit__(self, exc_type, exc_val, exc_tb):
             if exc_type is None:
                 self._camera._parent_drone._req_rep_client.set_camera_parameters(
-                    self._params
+                    self._params, timeout=self._timeout
                 )
             return False
 
@@ -813,26 +814,30 @@ class Camera:
         else:
             return None
 
-    def _update_camera_parameters(self):
+    def _update_camera_parameters(self, timeout: float = 0.5):
         self._camera_parameters = self._parent_drone._req_rep_client.get_camera_parameters(
-            camera=self._camera_type
+            camera=self._camera_type, timeout=timeout
         )
 
-    def modify_params(self) -> _ParamsBatch:
+    def configure(self, timeout: float = 0.5) -> _ParamsBatch:
         """Return a context manager for batching camera parameter changes.
 
         All attribute assignments on the returned object are accumulated and sent as a single
         ``set_camera_parameters`` request when the ``with`` block exits.  If an exception is
         raised inside the block the changes are discarded.
 
+        Args:
+            timeout (float, optional): Timeout in seconds for the request. Increase when changing
+                parameters that trigger pipeline restarts (e.g. codec, resolution).
+
         Usage::
 
-            with drone.camera.modify_params() as params:
+            with drone.camera.configure() as params:
                 params.recording_codec = bp.RecordingCodec.RECORDING_CODEC_H265
                 params.recording_bitrate = 20_000_000
             # sent here
         """
-        return self._ParamsBatch(self)
+        return self._ParamsBatch(self, timeout=timeout)
 
     @property
     def is_recording(self) -> Optional[bool]:
