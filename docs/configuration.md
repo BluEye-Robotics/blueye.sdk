@@ -50,7 +50,9 @@ myDrone.config.water_density = 1234
 ```
 
 ### Configure camera parameters
-There are 6 different camera parameters that can be set. For a full list of camera parameters and their possible values see the [`camera reference`](reference/blueye/sdk/camera.md) section. For example you could set the bit rate like this
+There are several camera parameters that can be set. For a full list of camera parameters and their possible values see the [`camera reference`](reference/blueye/sdk/camera.md) section.
+
+To change a single parameter you can set it directly:
 
 ```python
 from blueye.sdk import Drone
@@ -59,5 +61,23 @@ myDrone = Drone()
 
 myDrone.camera.bitrate = 8_000_000 # 8 Mbit bitrate
 ```
+
+To change multiple parameters at once, use the `configure()` context manager. This batches all changes into a single request, avoiding multiple pipeline restarts:
+
+```python
+import blueye.protocol as bp
+from blueye.sdk import Drone
+
+myDrone = Drone()
+
+with myDrone.camera.configure(timeout=5.0) as params:
+    params.stream_resolution = bp.Resolution.RESOLUTION_FULLHD_1080P
+    params.framerate = bp.Framerate.FRAMERATE_FPS_30
+    params.h264_bitrate = 4_000_000
+# All changes are sent in one request when the block exits.
+# If an exception occurs inside the block, changes are discarded.
+```
+
+The `timeout` parameter (default: 0.5s) controls how long to wait for the drone to respond. Increase it when changing parameters that trigger pipeline restarts (e.g. codec, resolution).
 
 Due to a bug in the camera streaming on the drone a camera stream has to have been opened at least once before camera parameters can be set on the drone, see issue [#67](https://github.com/BluEye-Robotics/blueye.sdk/issues/67). For instructions on how to start a video stream see, the [`Quick Start Guide`](quick_start.md#watching-the-video-stream).

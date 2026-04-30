@@ -749,6 +749,45 @@ class Overlay:
 class Camera:
     """Handles the camera functionality for the Blueye drone."""
 
+    class _ParamsBatch:
+        """Context manager for batching camera parameter changes.
+
+        Changes are accumulated and sent as a single request on scope exit.
+
+        Usage::
+
+            with drone.camera.configure() as params:
+                params.recording_codec = bp.RecordingCodec.RECORDING_CODEC_H265
+                params.recording_bitrate = 20_000_000
+                params.framerate = bp.Framerate.FRAMERATE_FPS_30
+            # All three fields are sent in one set_camera_parameters call here.
+        """
+
+        def __init__(self, camera: Camera, timeout: float = 0.5):
+            self._camera = camera
+            self._timeout = timeout
+            self._camera._update_camera_parameters(timeout=timeout)
+            self._params = camera._camera_parameters
+
+        def __getattr__(self, name):
+            return getattr(self._params, name)
+
+        def __setattr__(self, name, value):
+            if name.startswith("_"):
+                super().__setattr__(name, value)
+            else:
+                setattr(self._params, name, value)
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc_val, exc_tb):
+            if exc_type is None:
+                self._camera._parent_drone._req_rep_client.set_camera_parameters(
+                    self._params, timeout=self._timeout
+                )
+            return False
+
     def __init__(self, parent_drone: Drone, is_guestport_camera: bool = False):
         """Initialize the Camera class.
 
@@ -775,10 +814,30 @@ class Camera:
         else:
             return None
 
-    def _update_camera_parameters(self):
+    def _update_camera_parameters(self, timeout: float = 0.5):
         self._camera_parameters = self._parent_drone._req_rep_client.get_camera_parameters(
-            camera=self._camera_type
+            camera=self._camera_type, timeout=timeout
         )
+
+    def configure(self, timeout: float = 0.5) -> _ParamsBatch:
+        """Return a context manager for batching camera parameter changes.
+
+        All attribute assignments on the returned object are accumulated and sent as a single
+        ``set_camera_parameters`` request when the ``with`` block exits.  If an exception is
+        raised inside the block the changes are discarded.
+
+        Args:
+            timeout (float, optional): Timeout in seconds for the request. Increase when changing
+                parameters that trigger pipeline restarts (e.g. codec, resolution).
+
+        Usage::
+
+            with drone.camera.configure() as params:
+                params.recording_codec = bp.RecordingCodec.RECORDING_CODEC_H265
+                params.recording_bitrate = 20_000_000
+            # sent here
+        """
+        return self._ParamsBatch(self, timeout=timeout)
 
     @property
     def is_recording(self) -> Optional[bool]:
@@ -1049,6 +1108,75 @@ class Camera:
             self._camera_parameters.framerate = blueye.protocol.Framerate.FRAMERATE_FPS_25
         elif framerate == 30:
             self._camera_parameters.framerate = blueye.protocol.Framerate.FRAMERATE_FPS_30
+        self._parent_drone._req_rep_client.set_camera_parameters(self._camera_parameters)
+
+    @property
+    def recording_codec(self) -> blueye.protocol.RecordingCodec:
+        """Set or get the recording video codec.
+
+        Args:
+            codec (blueye.protocol.RecordingCodec): Set the recording codec.
+                RECORDING_CODEC_UNSPECIFIED uses the platform default (H.264).
+                RECORDING_CODEC_H265 is only available on Ultra.
+
+        Returns:
+            The current recording codec setting.
+        """
+        self._update_camera_parameters()
+        return self._camera_parameters.recording_codec
+
+    @recording_codec.setter
+    def recording_codec(self, codec: blueye.protocol.RecordingCodec):
+        if not isinstance(codec, blueye.protocol.RecordingCodec):
+            raise ValueError(f"{codec} is not a valid RecordingCodec type")
+        if self._camera_parameters is None:
+            self._update_camera_parameters()
+        self._camera_parameters.recording_codec = codec
+        self._parent_drone._req_rep_client.set_camera_parameters(self._camera_parameters)
+
+    @property
+    def recording_bitrate(self) -> int:
+        """Set or get the recording bitrate in bits per second.
+
+        A value of 0 means the drone will auto-compute a default bitrate based on the current
+        resolution, framerate, and codec.
+
+        Args:
+            bitrate (int): Set the recording bitrate in bits per second. Use 0 for automatic.
+
+        Returns:
+            The current recording bitrate in bits per second (0 if automatic).
+        """
+        self._update_camera_parameters()
+        return self._camera_parameters.recording_bitrate
+
+    @recording_bitrate.setter
+    def recording_bitrate(self, bitrate: int):
+        if self._camera_parameters is None:
+            self._update_camera_parameters()
+        self._camera_parameters.recording_bitrate = bitrate
+        self._parent_drone._req_rep_client.set_camera_parameters(self._camera_parameters)
+
+    @property
+    def streaming_protocol(self) -> blueye.protocol.StreamingProtocol:
+        """Set or get the streaming protocol (codec used for the RTSP stream).
+
+        Args:
+            protocol (blueye.protocol.StreamingProtocol): Set the streaming protocol.
+
+        Returns:
+            The current streaming protocol.
+        """
+        self._update_camera_parameters()
+        return self._camera_parameters.streaming_protocol
+
+    @streaming_protocol.setter
+    def streaming_protocol(self, protocol: blueye.protocol.StreamingProtocol):
+        if not isinstance(protocol, blueye.protocol.StreamingProtocol):
+            raise ValueError(f"{protocol} is not a valid StreamingProtocol type")
+        if self._camera_parameters is None:
+            self._update_camera_parameters()
+        self._camera_parameters.streaming_protocol = protocol
         self._parent_drone._req_rep_client.set_camera_parameters(self._camera_parameters)
 
     @property

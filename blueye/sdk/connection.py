@@ -537,7 +537,7 @@ class ReqRepClient(threading.Thread):
         return self._send_request_get_response(request, blueye.protocol.PingRep, timeout)
 
     def get_camera_parameters(
-        self, camera: blueye.protocol.Camera, timeout: float = 0.05
+        self, camera: blueye.protocol.Camera, timeout: float = 0.5
     ) -> blueye.protocol.CameraParameters:
         """Get the camera parameters.
 
@@ -557,7 +557,7 @@ class ReqRepClient(threading.Thread):
     def set_camera_parameters(
         self,
         parameters: blueye.protocol.CameraParameters,
-        timeout: float = 0.05,
+        timeout: float = 0.5,
     ) -> blueye.protocol.SetCameraParametersRep:
         """Set the camera parameters.
 
