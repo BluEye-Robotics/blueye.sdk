@@ -1153,9 +1153,12 @@ paths:
     get:
       operationId: picture_thumbnail_retrieve
       description: |-
+        **Deprecated.**
+
         Downloads a picture (jpg) with EXIF metadata from when the photo was
         captured.
       summary: Download a thumbnail of a picture
+      deprecated: true
       parameters:
       - in: query
         name: file
