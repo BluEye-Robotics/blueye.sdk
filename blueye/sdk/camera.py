@@ -1127,6 +1127,7 @@ class Camera:
 
     @recording_codec.setter
     def recording_codec(self, codec: blueye.protocol.RecordingCodec):
+        self._parent_drone._verify_required_blunux_version("5.0.0")
         if not isinstance(codec, blueye.protocol.RecordingCodec):
             raise ValueError(f"{codec} is not a valid RecordingCodec type")
         if self._camera_parameters is None:
@@ -1152,6 +1153,7 @@ class Camera:
 
     @recording_bitrate.setter
     def recording_bitrate(self, bitrate: int):
+        self._parent_drone._verify_required_blunux_version("5.0.0")
         if self._camera_parameters is None:
             self._update_camera_parameters()
         self._camera_parameters.recording_bitrate = bitrate
