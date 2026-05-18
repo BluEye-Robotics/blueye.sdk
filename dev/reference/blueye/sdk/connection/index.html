@@ -7297,7 +7297,7 @@ This represents the Thread ID as reported by the kernel.</p>
 
 </h4>
 <div class="doc-signature highlight"><pre><span></span><code><span class="nf">get_camera_parameters</span><span class="p">(</span>
-    <span class="n">camera</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            Camera (blueye.protocol.Camera)" href="../../protocol/message_formats/#blueye.protocol.types.message_formats.Camera">Camera</a></span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="n"><span title="float">float</span></span> <span class="o">=</span> <span class="mf">0.05</span>
+    <span class="n">camera</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            Camera (blueye.protocol.Camera)" href="../../protocol/message_formats/#blueye.protocol.types.message_formats.Camera">Camera</a></span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="n"><span title="float">float</span></span> <span class="o">=</span> <span class="mf">0.5</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="            CameraParameters (blueye.protocol.CameraParameters)" href="../../protocol/message_formats/#blueye.protocol.types.message_formats.CameraParameters">CameraParameters</a></span>
 </code></pre></div>
 
@@ -7319,7 +7319,7 @@ This represents the Thread ID as reported by the kernel.</p>
         <li class="doc-section-item field-body">
             <b><code>timeout</code></b>
               (<code><span title="float">float</span></code>, default:
-                  <code>0.05</code>
+                  <code>0.5</code>
 )
           –
           <div class="doc-md-description">
@@ -7360,7 +7360,7 @@ This represents the Thread ID as reported by the kernel.</p>
 <span class="normal">553</span>
 <span class="normal">554</span>
 <span class="normal">555</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_camera_parameters</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span> <span class="n">camera</span><span class="p">:</span> <span class="n">blueye</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">Camera</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.05</span>
+    <span class="bp">self</span><span class="p">,</span> <span class="n">camera</span><span class="p">:</span> <span class="n">blueye</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">Camera</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">blueye</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">CameraParameters</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the camera parameters.</span>
 
@@ -7984,7 +7984,7 @@ exception.</p>
 
 </h4>
 <div class="doc-signature highlight"><pre><span></span><code><span class="nf">set_camera_parameters</span><span class="p">(</span>
-    <span class="n">parameters</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            CameraParameters (blueye.protocol.CameraParameters)" href="../../protocol/message_formats/#blueye.protocol.types.message_formats.CameraParameters">CameraParameters</a></span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="n"><span title="float">float</span></span> <span class="o">=</span> <span class="mf">0.05</span>
+    <span class="n">parameters</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            CameraParameters (blueye.protocol.CameraParameters)" href="../../protocol/message_formats/#blueye.protocol.types.message_formats.CameraParameters">CameraParameters</a></span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="n"><span title="float">float</span></span> <span class="o">=</span> <span class="mf">0.5</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="            SetCameraParametersRep (blueye.protocol.SetCameraParametersRep)" href="../../protocol/req_rep/#blueye.protocol.types.req_rep.SetCameraParametersRep">SetCameraParametersRep</a></span>
 </code></pre></div>
 
@@ -8006,7 +8006,7 @@ exception.</p>
         <li class="doc-section-item field-body">
             <b><code>timeout</code></b>
               (<code><span title="float">float</span></code>, default:
-                  <code>0.05</code>
+                  <code>0.5</code>
 )
           –
           <div class="doc-md-description">
@@ -8050,7 +8050,7 @@ exception.</p>
 <span class="normal">574</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_camera_parameters</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">parameters</span><span class="p">:</span> <span class="n">blueye</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">CameraParameters</span><span class="p">,</span>
-    <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span>
+    <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">blueye</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">SetCameraParametersRep</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the camera parameters.</span>
 

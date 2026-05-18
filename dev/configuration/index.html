@@ -1815,13 +1815,28 @@
 <span class="n">myDrone</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">water_density</span> <span class="o">=</span> <span class="mi">1234</span>
 </code></pre></div>
 <h3 id="configure-camera-parameters">Configure camera parameters</h3>
-<p>There are 6 different camera parameters that can be set. For a full list of camera parameters and their possible values see the <a href="../reference/blueye/sdk/camera/"><code>camera reference</code></a> section. For example you could set the bit rate like this</p>
+<p>There are several camera parameters that can be set. For a full list of camera parameters and their possible values see the <a href="../reference/blueye/sdk/camera/"><code>camera reference</code></a> section.</p>
+<p>To change a single parameter you can set it directly:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drone</span>
 
 <span class="n">myDrone</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">()</span>
 
 <span class="n">myDrone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">bitrate</span> <span class="o">=</span> <span class="mi">8_000_000</span> <span class="c1"># 8 Mbit bitrate</span>
 </code></pre></div>
+<p>To change multiple parameters at once, use the <code>configure()</code> context manager. This batches all changes into a single request, avoiding multiple pipeline restarts:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">blueye.protocol</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">bp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drone</span>
+
+<span class="n">myDrone</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">()</span>
+
+<span class="k">with</span> <span class="n">myDrone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mf">5.0</span><span class="p">)</span> <span class="k">as</span> <span class="n">params</span><span class="p">:</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">stream_resolution</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">RESOLUTION_FULLHD_1080P</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">framerate</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">Framerate</span><span class="o">.</span><span class="n">FRAMERATE_FPS_30</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">h264_bitrate</span> <span class="o">=</span> <span class="mi">4_000_000</span>
+<span class="c1"># All changes are sent in one request when the block exits.</span>
+<span class="c1"># If an exception occurs inside the block, changes are discarded.</span>
+</code></pre></div>
+<p>The <code>timeout</code> parameter (default: 0.5s) controls how long to wait for the drone to respond. Increase it when changing parameters that trigger pipeline restarts (e.g. codec, resolution).</p>
 <p>Due to a bug in the camera streaming on the drone a camera stream has to have been opened at least once before camera parameters can be set on the drone, see issue <a href="https://github.com/BluEye-Robotics/blueye.sdk/issues/67">#67</a>. For instructions on how to start a video stream see, the <a href="../quick_start/#watching-the-video-stream"><code>Quick Start Guide</code></a>.</p>
 
 
