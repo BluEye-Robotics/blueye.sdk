@@ -772,10 +772,19 @@ class Camera:
         def __getattr__(self, name):
             return getattr(self._params, name)
 
+        _VERSION_GATED_PARAMS = {
+            "recording_bitrate": "5.0.0",
+            "recording_codec": "5.0.0",
+        }
+
         def __setattr__(self, name, value):
             if name.startswith("_"):
                 super().__setattr__(name, value)
             else:
+                if name in self._VERSION_GATED_PARAMS:
+                    self._camera._parent_drone._verify_required_blunux_version(
+                        self._VERSION_GATED_PARAMS[name]
+                    )
                 setattr(self._params, name, value)
 
         def __enter__(self):
