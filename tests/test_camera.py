@@ -95,3 +95,58 @@ def test_old_drones_use_resolution_field(mocked_camera):
 
     assert mocked_camera.recording_resolution == bp.Resolution.RESOLUTION_FULLHD_1080P
     assert mocked_camera.stream_resolution == bp.Resolution.RESOLUTION_FULLHD_1080P
+
+
+def test_configure_batches_changes(mocked_camera):
+    """configure() should fetch current params, accumulate changes, and send once on exit."""
+    initial_params = bp.CameraParameters(
+        stream_resolution=bp.Resolution.RESOLUTION_HD_720P,
+        framerate=bp.Framerate.FRAMERATE_FPS_25,
+    )
+    mocked_camera._parent_drone._req_rep_client.get_camera_parameters.return_value = initial_params
+
+    with mocked_camera.configure() as params:
+        params.stream_resolution = bp.Resolution.RESOLUTION_FULLHD_1080P
+        params.framerate = bp.Framerate.FRAMERATE_FPS_30
+
+    # Should have called get once (on enter) and set once (on exit)
+    mocked_camera._parent_drone._req_rep_client.get_camera_parameters.assert_called_once()
+    mocked_camera._parent_drone._req_rep_client.set_camera_parameters.assert_called_once()
+
+    # The sent params should contain both changes
+    sent_params = mocked_camera._parent_drone._req_rep_client.set_camera_parameters.call_args[0][0]
+    assert sent_params.stream_resolution == bp.Resolution.RESOLUTION_FULLHD_1080P
+    assert sent_params.framerate == bp.Framerate.FRAMERATE_FPS_30
+
+
+def test_configure_discards_on_exception(mocked_camera):
+    """configure() should not send changes if an exception occurs inside the block."""
+    initial_params = bp.CameraParameters(
+        stream_resolution=bp.Resolution.RESOLUTION_HD_720P,
+    )
+    mocked_camera._parent_drone._req_rep_client.get_camera_parameters.return_value = initial_params
+
+    with pytest.raises(ValueError):
+        with mocked_camera.configure() as params:
+            params.stream_resolution = bp.Resolution.RESOLUTION_FULLHD_1080P
+            raise ValueError("abort")
+
+    mocked_camera._parent_drone._req_rep_client.set_camera_parameters.assert_not_called()
+
+
+def test_configure_passes_timeout(mocked_camera):
+    """configure(timeout=X) should pass the timeout to both get and set calls."""
+    initial_params = bp.CameraParameters()
+    mocked_camera._parent_drone._req_rep_client.get_camera_parameters.return_value = initial_params
+
+    with mocked_camera.configure(timeout=5.0) as params:
+        params.framerate = bp.Framerate.FRAMERATE_FPS_30
+
+    mocked_camera._parent_drone._req_rep_client.get_camera_parameters.assert_called_once_with(
+        camera=mocked_camera._camera_type, timeout=5.0
+    )
+    mocked_camera._parent_drone._req_rep_client.set_camera_parameters.assert_called_once()
+    assert (
+        mocked_camera._parent_drone._req_rep_client.set_camera_parameters.call_args[1]["timeout"]
+        == 5.0
+    )
