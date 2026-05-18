@@ -1,6 +1,7 @@
 There are settings on the drone that are remotely configurable from the Blueye mobile app. These can also be set directly from the SDK.
 
 ### Configure time and date
+
 The drone does not keep track of time internally. The SDK sets the time on the drone automatically when you connect initially. But you can also configure time and date manually like this
 
 ```python
@@ -29,6 +30,7 @@ myDrone.config.set_drone_time(int(unix_timestamp))
 ```
 
 ### Calibrate pressure sensor for water density
+
 The water density on the drone default to a reasonable density for salt water: 1025 grams per liter. For more accurate depth readings, the water density can be configured manually to suit your local conditions
 
 ```python
@@ -50,6 +52,7 @@ myDrone.config.water_density = 1234
 ```
 
 ### Configure camera parameters
+
 There are several camera parameters that can be set. For a full list of camera parameters and their possible values see the [`camera reference`](reference/blueye/sdk/camera.md) section.
 
 To change a single parameter you can set it directly:
