@@ -39,16 +39,16 @@ from blueye.sdk import Drone, WaterDensities
 myDrone = Drone()
 
 # Salt water
-myDrone.config.water_density = WaterDensities.salty  # 1025 g/L
+myDrone.config.set_water_density(WaterDensities.salty)  # 1025 g/L
 
 # Brackish water
-myDrone.config.water_density = WaterDensities.brackish  # 1011 g/L
+myDrone.config.set_water_density(WaterDensities.brackish)  # 1011 g/L
 
 # Fresh water
-myDrone.config.water_density = WaterDensities.fresh  # 997 g/L
+myDrone.config.set_water_density(WaterDensities.fresh)  # 997 g/L
 
 # Can also be set to arbitrary values
-myDrone.config.water_density = 1234
+myDrone.config.set_water_density(1234)
 ```
 
 ### Configure camera parameters
@@ -62,7 +62,7 @@ from blueye.sdk import Drone
 
 myDrone = Drone()
 
-myDrone.camera.bitrate = 8_000_000 # 8 Mbit bitrate
+myDrone.camera.set_bitrate(8_000_000)  # 8 Mbit bitrate
 ```
 
 To change multiple parameters at once, use the `configure()` context manager. This batches all changes into a single request, avoiding multiple pipeline restarts:

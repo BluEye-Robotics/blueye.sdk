@@ -14,10 +14,10 @@ If the drone has a camera attached, the `Drone` class will have an `external_cam
 drone.external_camera.take_picture()
 
 # Set bitrate for external camera to 2 Mbps
-drone.external_camera.bitrate = 2_000_000
+drone.external_camera.set_bitrate(2_000_000)
 
 # Start recording video from the external camera
-drone.external_camera.is_recording = True
+drone.external_camera.set_recording(True)
 ```
 
 ## External light
@@ -45,20 +45,20 @@ drone.laser.set_intensity(0.5)
 ## Gripper
 If the drone has a gripper attached, the `Drone` class will have a `gripper` attribute that is a [`Gripper`][blueye.sdk.guestport.Gripper] object. This object can be used to control the grip and rotation of the gripper.
 
-If the connected gripper does not support rotation, the `rotation_velocity` property will be ignored.
+If the connected gripper does not support rotation, the rotation velocity will be ignored.
 
 ```python
 # Open the gripper
-drone.gripper.grip_velocity = 1.0
+drone.gripper.set_grip_velocity(1.0)
 
 # Close the gripper
-drone.gripper.grip_velocity = -1.0
+drone.gripper.set_grip_velocity(-1.0)
 
 # Rotate the gripper clockwise
-drone.gripper.rotation_velocity = 1.0
+drone.gripper.set_rotation_velocity(1.0)
 
 # Rotate the gripper counterclockwise
-drone.gripper.rotation_velocity = -1.0
+drone.gripper.set_rotation_velocity(-1.0)
 ```
 
 ## Servo
