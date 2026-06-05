@@ -97,8 +97,8 @@ on how to turn on the drone and surface unit, you can watch the
 [quick start video](https://support.blueye.no/hc/en-us/articles/360006901473-Quick-Start-Guide).
 
 ## Control the drone
-Most of the functionality is controlled using Python properties. We will illustrate the use of
-properties by showing how to control the lights:
+Most of the functionality is controlled using getter and setter methods. We will illustrate their
+use by showing how to control the lights:
 
 ``` python
 import time
@@ -107,32 +107,32 @@ from blueye.sdk import Drone
 # When the Drone object is instantiated, a connection to the drone is established
 myDrone = Drone()
 
-# Setting the lights property to 0.1 (10 %)
-myDrone.lights = 0.1
+# Setting the lights to 0.1 (10 %)
+myDrone.set_lights(0.1)
 
 time.sleep(2)
 
-# We can also get the current brightness of the lights through the lights property
-print(f"Current light intensity: {myDrone.lights}")
-myDrone.lights = 0
+# We can also get the current brightness of the lights with the get_lights method
+print(f"Current light intensity: {myDrone.get_lights()}")
+myDrone.set_lights(0)
 
-# Properties can also be used for reading telemetry data from the drone
-print(f"Current depth in meters: {myDrone.depth}")
+# Getter methods are also used for reading telemetry data from the drone
+print(f"Current depth in meters: {myDrone.get_depth()}")
 ```
-For an overview of the properties that are available for controlling and reading data from the drone, go to the
+For an overview of the methods that are available for controlling and reading data from the drone, go to the
 [`Reference section`](reference/blueye/sdk/drone.md) of the documentation.
-The valid input ranges and descriptions of the different properties can also be found there.
+The valid input ranges and descriptions of the different methods can also be found there.
 
 
 /// admonition | Tip
     type: tip
-You can explore the properties of the drone interactively using an interactive Python interpreter like
+You can explore the methods of the drone interactively using an interactive Python interpreter like
 [`iPython`](https://ipython.readthedocs.io/en/stable/interactive/tutorial.html), which can be installed with:
 ```shell
 uv pip install ipython
 ```
 By instantiating a Drone object and using the completion key (normally the `tab-key ↹`), you can get an interactive list of
-the available properties on the drone, making it easy to try setting and getting the different properties.
+the available methods on the drone, making it easy to try setting and getting the different values.
 ![`iPython`](https://blueyenostorage.blob.core.windows.net/sdkimages/ipython-exploration.gif)
 ///
 
