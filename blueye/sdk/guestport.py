@@ -5,6 +5,7 @@ import blueye.protocol as bp
 from packaging import version
 
 from .camera import Camera
+from .utils import deprecated_property
 
 if TYPE_CHECKING:
     from .drone import Drone
@@ -118,23 +119,23 @@ class Gripper(Peripheral):
         self._grip_velocity = 0
         self._rotation_velocity = 0
 
-    @property
-    def grip_velocity(self) -> float:
-        """Get or set the current grip velocity of the Gripper.
+    def get_grip_velocity(self) -> float:
+        """Get the current grip velocity of the Gripper.
+
+        Returns:
+            The current grip velocity of the Gripper.
+        """
+        return self._grip_velocity
+
+    def set_grip_velocity(self, value: float):
+        """Set the current grip velocity of the Gripper.
 
         Args:
             value (float): The new grip velocity to set. Must be a float between -1.0 and 1.0.
 
-        Returns:
-            The current grip velocity of the Gripper.
-
         Raises:
             ValueError: If the grip velocity is not between -1.0 and 1.0.
         """
-        return self._grip_velocity
-
-    @grip_velocity.setter
-    def grip_velocity(self, value: float):
         if value < -1.0 or value > 1.0:
             raise ValueError("Grip velocity must be between -1.0 and 1.0.")
         self._grip_velocity = value
@@ -142,29 +143,33 @@ class Gripper(Peripheral):
             self._grip_velocity, self._rotation_velocity
         )
 
-    @property
-    def rotation_velocity(self) -> float:
-        """Get or set the current rotation velocity of the Gripper.
+    grip_velocity = deprecated_property("get_grip_velocity", "set_grip_velocity")
+
+    def get_rotation_velocity(self) -> float:
+        """Get the current rotation velocity of the Gripper.
+
+        Returns:
+            The current rotation velocity of the Gripper.
+        """
+        return self._rotation_velocity
+
+    def set_rotation_velocity(self, value: float):
+        """Set the current rotation velocity of the Gripper.
 
         Args:
             value (float): The new rotation velocity to set. Must be a float between -1.0 and 1.0.
 
-        Returns:
-            The current rotation velocity of the Gripper.
-
         Raises:
             ValueError: If the rotation velocity is not between -1.0 and 1.0.
         """
-        return self._rotation_velocity
-
-    @rotation_velocity.setter
-    def rotation_velocity(self, value: float):
         if value < -1.0 or value > 1.0:
             raise ValueError("Rotation velocity must be between -1.0 and 1.0.")
         self._rotation_velocity = value
         self.parent_drone._ctrl_client.set_gripper_velocities(
             self._grip_velocity, self._rotation_velocity
         )
+
+    rotation_velocity = deprecated_property("get_rotation_velocity", "set_rotation_velocity")
 
 
 class Laser(Peripheral):
