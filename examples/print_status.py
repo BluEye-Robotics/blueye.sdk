@@ -10,16 +10,21 @@ from blueye.sdk import Drone
 
 def print_state(screen: ManagedScreen, drone: Drone):
     """Updates and prints some of the information from the drone"""
-    screen.print_at(f"Lights: {drone.lights * 100:5.1f} %", 2, 1)
+    screen.print_at(f"Lights: {drone.get_lights() * 100:5.1f} %", 2, 1)
 
-    screen.print_at(f"Auto-depth: {'On' if drone.motion.auto_depth_active else 'Off':>5}", 2, 3)
-    screen.print_at(f"Auto-heading: {'On' if drone.motion.auto_heading_active else 'Off':>3}", 2, 4)
+    screen.print_at(
+        f"Auto-depth: {'On' if drone.motion.is_auto_depth_active() else 'Off':>5}", 2, 3
+    )
+    screen.print_at(
+        f"Auto-heading: {'On' if drone.motion.is_auto_heading_active() else 'Off':>3}", 2, 4
+    )
 
-    screen.print_at(f"Depth: {drone.depth:3.3f} m ", 2, 6)
+    screen.print_at(f"Depth: {drone.get_depth():3.3f} m ", 2, 6)
 
-    screen.print_at(f"Roll: {drone.pose['roll']:7.2f}°", 2, 8)
-    screen.print_at(f"Pitch: {drone.pose['pitch']:6.2f}°", 2, 9)
-    screen.print_at(f"Yaw: {drone.pose['yaw']:8.2f}°", 2, 10)
+    pose = drone.get_pose()
+    screen.print_at(f"Roll: {pose['roll']:7.2f}°", 2, 8)
+    screen.print_at(f"Pitch: {pose['pitch']:6.2f}°", 2, 9)
+    screen.print_at(f"Yaw: {pose['yaw']:8.2f}°", 2, 10)
 
 
 def state_printer(drone: Drone):
