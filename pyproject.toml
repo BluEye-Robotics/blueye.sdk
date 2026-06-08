@@ -1,6 +1,6 @@
 [project]
 name = "blueye.sdk"
-version = "2.7.0"
+version = "2.7.1"
 license = { file = "LICENSE" }
 description = "SDK for controlling Blueye underwater drones"
 authors = [{ name = "Blueye Robotics", email = "contact@blueye.no" }]
@@ -50,7 +50,7 @@ dev = [
     "mkdocs-macros-plugin~=1.0",
     "pymdown-extensions~=10.14",
     "pre-commit~=4.0",
-    "black~=24.3",
+    "black~=26.5",
     "pytest-cov~=6.0",
     "requests-mock~=1.11",
     "freezegun~=1.2",
@@ -82,7 +82,7 @@ build-backend = "hatchling.build"
 
 [tool.black]
 line-length = 100
-target-version = ['py310', 'py311', 'py312', 'py313']
+target-version = ['py310', 'py311', 'py312', 'py313', 'py314']
 
 [tool.pytest.ini_options]
 markers = "connected_to_drone: a mark for test that can only be run when connected to a drone, useful when developing"

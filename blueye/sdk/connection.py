@@ -26,8 +26,8 @@ class WatchdogPublisher(threading.Thread):
     def __init__(self, parent_drone: "blueye.sdk.Drone", context: zmq.Context = None):
         super().__init__(daemon=True)
         self._parent_drone = parent_drone
-        self._context = context or zmq.Context().instance()
-        self._socket = self._context.socket(zmq.PUB)
+        self._zmq_context = context or zmq.Context().instance()
+        self._socket = self._zmq_context.socket(zmq.PUB)
         self._socket.connect(f"tcp://{self._parent_drone._ip}:5557")
         self._exit_flag = threading.Event()
 
@@ -90,8 +90,8 @@ class TelemetryClient(threading.Thread):
         """
         super().__init__(daemon=True)
         self._parent_drone = parent_drone
-        self._context = context or zmq.Context().instance()
-        self._socket = self._context.socket(zmq.SUB)
+        self._zmq_context = context or zmq.Context().instance()
+        self._socket = self._zmq_context.socket(zmq.SUB)
         self._socket.connect(f"tcp://{self._parent_drone._ip}:5555")
         self._socket.setsockopt_string(zmq.SUBSCRIBE, "")
         self._exit_flag = threading.Event()
@@ -204,9 +204,9 @@ class CtrlClient(threading.Thread):
             context (zmq.Context, optional): The ZeroMQ context.
         """
         super().__init__(daemon=True)
-        self._context = context or zmq.Context().instance()
+        self._zmq_context = context or zmq.Context().instance()
         self._parent_drone = parent_drone
-        self._drone_pub_socket = self._context.socket(zmq.PUB)
+        self._drone_pub_socket = self._zmq_context.socket(zmq.PUB)
         self._drone_pub_socket.connect(f"tcp://{self._parent_drone._ip}:5557")
         self._messages_to_send = queue.Queue()
         self._exit_flag = threading.Event()
@@ -430,9 +430,9 @@ class ReqRepClient(threading.Thread):
             context (zmq.Context, optional): The ZeroMQ context.
         """
         super().__init__(daemon=True)
-        self._context = context or zmq.Context().instance()
+        self._zmq_context = context or zmq.Context().instance()
         self._parent_drone = parent_drone
-        self._socket = self._context.socket(zmq.REQ)
+        self._socket = self._zmq_context.socket(zmq.REQ)
         self._socket.connect(f"tcp://{self._parent_drone._ip}:5556")
         self._requests_to_send = queue.Queue()
         self._exit_flag = threading.Event()
