@@ -1,0 +1,71 @@
+{% for code, definition in operation.responses.items() %}
+{%- set code_num = code | int if code != "default" else 0 -%}
+{%- if code == "default" -%}
+{%- set admonition_type = "warning" -%}
+{%- set admonition_title = texts.other_responses -%}
+{%- elif code_num >= 200 and code_num < 300 -%}
+{%- set admonition_type = "success" -%}
+{%- set admonition_title = "Response " + code + ((" " + get_http_status_phrase(code)) if get_http_status_phrase(code) else "") -%}
+{%- elif code_num >= 400 -%}
+{%- set admonition_type = "danger" -%}
+{%- set admonition_title = "Response " + code + ((" " + get_http_status_phrase(code)) if get_http_status_phrase(code) else "") -%}
+{%- else -%}
+{%- set admonition_type = "info" -%}
+{%- set admonition_title = "Response " + code + ((" " + get_http_status_phrase(code)) if get_http_status_phrase(code) else "") -%}
+{%- endif %}
+
+/// details | {{admonition_title}}
+    type: {{admonition_type}}
+{%- if code_num == 200 %}
+    open: True
+{% endif %}
+{%- if is_reference(definition) -%}
+{%- with type_name = definition["$ref"].replace("#/components/responses/", "") %}
+    Refer to the common response description: [{{type_name}}](#{{type_name.lower() | link}})
+{%- endwith -%}
+{%- endif -%}
+
+{%- if definition.content %}
+{%- with content = handler.simplify_content(definition.content) %}
+{% for content_type, content_definition in content.items() %}
+/// tab | {{content_type}}
+{%- if definition.description %}
+{{definition.description}}
+
+{%- endif -%}
+{%- if definition.content %}
+{%- for content_type, content_item in definition.content.items() %}
+{%- if content_item.schema and content_item.schema.description %}
+{{content_item.schema.description}}
+
+{%- endif -%}
+{%- endfor -%}
+{%- endif %}
+{% with definition = content_definition %}
+{% include "partial/content-examples.html" %}
+{% if "alt_types" in definition %}<em class="small-note alt-types">{{texts.other_possible_types}}: {{definition.alt_types | join(", ")}}</em>{% endif %}
+
+//// details | Schema
+    type: hint
+```json
+{{handler.write_content_schema(definition) | safe}}
+```
+////
+{% endwith %}
+///
+{% endfor %}
+{%- endwith -%}
+{%- endif -%}
+
+{%- if definition.headers %}
+
+    **{{texts.response_headers}}**
+
+    | {{texts.name}} | {{texts.description}} | {{texts.schema}} |
+    |---|---|---|
+{%- for header_name, header_definition in definition.headers.items() %}
+    | `{{header_name}}` | {{header_definition.description}} | {%- with schema = header_definition.schema -%}{%- include "partial/schema-repr.html" -%}{%- endwith -%} |
+{%- endfor %}
+{%- endif %}
+///
+{% endfor %}
