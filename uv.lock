@@ -118,7 +118,7 @@ wheels = [
 
 [[package]]
 name = "blueye-sdk"
-version = "2.7.1"
+version = "2.7.0"
 source = { editable = "." }
 dependencies = [
     { name = "blueye-protocol" },
