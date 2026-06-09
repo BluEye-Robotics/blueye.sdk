@@ -996,31 +996,45 @@ class Camera:
         """Set or get the camera resolution.
 
         Args:
-            resolution (int): Set the camera in vertical pixels. Valid values are 720 or 1080.
+            resolution (int): Set the camera in vertical pixels. Valid values are 480, 720, 1080,
+                1440 or 2160.
 
         Returns:
             The camera resolution.
         """
         self._update_camera_parameters()
-        if self._camera_parameters.resolution == blueye.protocol.Resolution.RESOLUTION_HD_720P:
+        if self._camera_parameters.resolution == blueye.protocol.Resolution.RESOLUTION_VGA_480P:
+            return 480
+        elif self._camera_parameters.resolution == blueye.protocol.Resolution.RESOLUTION_HD_720P:
             return 720
         elif (
             self._camera_parameters.resolution == blueye.protocol.Resolution.RESOLUTION_FULLHD_1080P
         ):
             return 1080
+        elif self._camera_parameters.resolution == blueye.protocol.Resolution.RESOLUTION_QHD_2K:
+            return 1440
+        elif self._camera_parameters.resolution == blueye.protocol.Resolution.RESOLUTION_UHD_4K:
+            return 2160
 
     @resolution.setter
     def resolution(self, resolution: int):
-        if resolution not in (720, 1080):
+        if resolution not in (480, 720, 1080, 1440, 2160):
             raise ValueError(
-                f"{resolution} is not a valid resolution. Valid values are 720 or 1080"
+                f"{resolution} is not a valid resolution. "
+                "Valid values are 480, 720, 1080, 1440 or 2160"
             )
         if self._camera_parameters is None:
             self._update_camera_parameters()
-        if resolution == 720:
+        if resolution == 480:
+            self._camera_parameters.resolution = blueye.protocol.Resolution.RESOLUTION_VGA_480P
+        elif resolution == 720:
             self._camera_parameters.resolution = blueye.protocol.Resolution.RESOLUTION_HD_720P
         elif resolution == 1080:
             self._camera_parameters.resolution = blueye.protocol.Resolution.RESOLUTION_FULLHD_1080P
+        elif resolution == 1440:
+            self._camera_parameters.resolution = blueye.protocol.Resolution.RESOLUTION_QHD_2K
+        elif resolution == 2160:
+            self._camera_parameters.resolution = blueye.protocol.Resolution.RESOLUTION_UHD_4K
 
         self._parent_drone._req_rep_client.set_camera_parameters(self._camera_parameters)
 
