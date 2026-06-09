@@ -8,7 +8,6 @@ import time
 import blueye.protocol as bp
 from blueye.sdk import Drone
 
-
 # Configure the COM port
 COM_PORT = "COM2"  # Change this to your COM port
 BAUD_RATE = 9600  # Set the baud rate (ensure it matches your COM port configuration)
