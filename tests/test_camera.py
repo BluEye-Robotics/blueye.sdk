@@ -84,6 +84,71 @@ def test_recording_resolution_invalid_type(mocked_camera):
         mocked_camera.recording_resolution = "invalid_resolution"
 
 
+@pytest.mark.parametrize(
+    "enum_value, expected",
+    [
+        (bp.Resolution.RESOLUTION_VGA_480P, 480),
+        (bp.Resolution.RESOLUTION_HD_720P, 720),
+        (bp.Resolution.RESOLUTION_FULLHD_1080P, 1080),
+        (bp.Resolution.RESOLUTION_QHD_2K, 1440),
+        (bp.Resolution.RESOLUTION_UHD_4K, 2160),
+    ],
+)
+def test_resolution_getter(mocked_camera, enum_value, expected):
+    mocked_camera._parent_drone._req_rep_client.get_camera_parameters.return_value = (
+        bp.CameraParameters(resolution=enum_value)
+    )
+    assert mocked_camera.resolution == expected
+
+
+@pytest.mark.parametrize(
+    "value, expected_enum",
+    [
+        (480, bp.Resolution.RESOLUTION_VGA_480P),
+        (720, bp.Resolution.RESOLUTION_HD_720P),
+        (1080, bp.Resolution.RESOLUTION_FULLHD_1080P),
+        (1440, bp.Resolution.RESOLUTION_QHD_2K),
+        (2160, bp.Resolution.RESOLUTION_UHD_4K),
+    ],
+)
+def test_resolution_setter(mocked_camera, value, expected_enum):
+    mocked_camera._camera_parameters = bp.CameraParameters()
+    mocked_camera.resolution = value
+    assert mocked_camera._camera_parameters.resolution == expected_enum
+    mocked_camera._parent_drone._req_rep_client.set_camera_parameters.assert_called_once_with(
+        mocked_camera._camera_parameters
+    )
+
+
+def test_resolution_setter_invalid_value(mocked_camera):
+    with pytest.raises(ValueError):
+        mocked_camera.resolution = 600
+
+
+def test_streaming_protocol_getter(mocked_camera):
+    mocked_camera._parent_drone._req_rep_client.get_camera_parameters.return_value = (
+        bp.CameraParameters(streaming_protocol=bp.StreamingProtocol.STREAMING_PROTOCOL_RTSP_H264)
+    )
+    assert mocked_camera.streaming_protocol == bp.StreamingProtocol.STREAMING_PROTOCOL_RTSP_H264
+
+
+def test_streaming_protocol_setter(mocked_camera):
+    mocked_camera._camera_parameters = bp.CameraParameters()
+    mocked_camera.streaming_protocol = bp.StreamingProtocol.STREAMING_PROTOCOL_RTSP_MJPEG
+    assert (
+        mocked_camera._camera_parameters.streaming_protocol
+        == bp.StreamingProtocol.STREAMING_PROTOCOL_RTSP_MJPEG
+    )
+    mocked_camera._parent_drone._req_rep_client.set_camera_parameters.assert_called_once_with(
+        mocked_camera._camera_parameters
+    )
+
+
+def test_streaming_protocol_invalid_type(mocked_camera):
+    with pytest.raises(ValueError):
+        mocked_camera.streaming_protocol = "invalid_protocol"
+
+
 def test_old_drones_use_resolution_field(mocked_camera):
     # Set the version to a value that does not support separate recording resolution
     mocked_camera._parent_drone.software_version_short = "4.3"
