@@ -543,7 +543,10 @@ class Drone:
             The intensity of the drone light (0..1). `None` if no telemetry message has been
             received.
         """
-        return self.telemetry.get(blueye.protocol.LightsTel).lights.value
+        lights_tel = self.telemetry.get(blueye.protocol.LightsTel)
+        if lights_tel is None:
+            return None
+        return lights_tel.lights.value
 
     def set_lights(self, brightness: float):
         """Set the intensity of the drone lights.
