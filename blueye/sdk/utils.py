@@ -26,8 +26,8 @@ class deprecated_property:
     """Property shim that warns and delegates to the new getter/setter methods.
 
     `fget`/`fset` are the *names* of the replacement methods on the owning class. This is always a
-    data descriptor (it defines `__set__`) so that a typo'd assignment to a read-only property still
-    raises an AttributeError instead of silently shadowing the descriptor with an instance attribute.
+    data descriptor (it defines `__set__`) so that assignments to read-only deprecated properties
+    raise an AttributeError instead of silently shadowing the descriptor with an instance attribute.
     """
 
     def __init__(self, fget: str, fset: Optional[str] = None, doc: Optional[str] = None):
