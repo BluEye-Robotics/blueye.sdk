@@ -4,6 +4,8 @@ from typing import TYPE_CHECKING, Optional
 
 import blueye.protocol
 
+from .utils import deprecated_property
+
 # Necessary to avoid cyclic imports
 if TYPE_CHECKING:
     from .drone import Drone
@@ -19,8 +21,7 @@ class Battery:
             parent_drone (Drone): The parent drone instance."""
         self._parent_drone = parent_drone
 
-    @property
-    def state_of_charge(self) -> Optional[float]:
+    def get_state_of_charge(self) -> Optional[float]:
         """Get the battery state of charge.
 
         Returns:
@@ -31,3 +32,5 @@ class Battery:
             return battery_tel.battery.level
         else:
             return None
+
+    state_of_charge = deprecated_property("get_state_of_charge")

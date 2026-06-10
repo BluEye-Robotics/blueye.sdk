@@ -30,7 +30,7 @@ from .guestport import (
 from .logs import LegacyLogs, Logs
 from .mission import Mission
 from .motion import Motion
-from .utils import deserialize_any_to_message, is_scalar_type
+from .utils import deprecated_property, deserialize_any_to_message, is_scalar_type
 
 logger = logging.getLogger(__name__)
 
@@ -47,9 +47,19 @@ class Config:
         self._parent_drone = parent_drone
         self._water_density = WaterDensities.salty
 
-    @property
-    def water_density(self):
-        """Get or set the current water density for increased pressure sensor accuracy.
+    def get_water_density(self) -> float:
+        """Get the water density used for increased pressure sensor accuracy.
+
+        The [WaterDensities][blueye.sdk.constants.WaterDensities] class contains typical densities
+        for salty-, brackish-, and fresh water (these are the same values that the Blueye app uses).
+
+        Returns:
+            The currently configured water density in grams per liter.
+        """
+        return self._water_density
+
+    def set_water_density(self, density: float):
+        """Set the current water density for increased pressure sensor accuracy.
 
         Older software versions will assume a water density of 1025 grams per liter.
 
@@ -59,12 +69,10 @@ class Config:
         Args:
             density (float): The water density to set.
         """
-        return self._water_density
-
-    @water_density.setter
-    def water_density(self, density: float):
         self._water_density = density
         self._parent_drone._ctrl_client.set_water_density(density)
+
+    water_density = deprecated_property("get_water_density", "set_water_density")
 
     def set_drone_time(self, time: int):
         """Set the system time for the drone.
@@ -480,8 +488,7 @@ class Drone:
 
         self.connected = False
 
-    @property
-    def connected_clients(self) -> Optional[List[blueye.protocol.ConnectedClient]]:
+    def get_connected_clients(self) -> Optional[List[blueye.protocol.ConnectedClient]]:
         """Get a list of connected clients.
 
         Returns:
@@ -493,8 +500,9 @@ class Drone:
         else:
             return list(clients_tel.connected_clients)
 
-    @property
-    def client_in_control(self) -> Optional[int]:
+    connected_clients = deprecated_property("get_connected_clients")
+
+    def get_client_in_control(self) -> Optional[int]:
         """Get the client ID of the client in control of the drone.
 
         Returns:
@@ -505,6 +513,8 @@ class Drone:
             return None
         else:
             return clients_tel.client_id_in_control
+
+    client_in_control = deprecated_property("get_client_in_control")
 
     def take_control(self, timeout=1):
         """Take control of the drone, disconnecting other clients.
@@ -518,7 +528,7 @@ class Drone:
             RuntimeError: If the client could not take control of the drone in the given time.
         """
         start_time = time.time()
-        client_in_control = self.client_in_control
+        client_in_control = self.get_client_in_control()
         while self.client_id != client_in_control:
             if time.time() - start_time > timeout:
                 raise RuntimeError("Could not take control of the drone in the given time")
@@ -526,30 +536,34 @@ class Drone:
             client_in_control = resp.client_id_in_control
         self.in_control = True
 
-    @property
-    def lights(self) -> Optional[float]:
-        """Get or set the intensity of the drone lights.
-
-        Args:
-            brightness (float): Set the intensity of the drone light (0..1).
+    def get_lights(self) -> Optional[float]:
+        """Get the intensity of the drone lights.
 
         Returns:
             The intensity of the drone light (0..1). `None` if no telemetry message has been
             received.
+        """
+        lights_tel = self.telemetry.get(blueye.protocol.LightsTel)
+        if lights_tel is None:
+            return None
+        return lights_tel.lights.value
+
+    def set_lights(self, brightness: float):
+        """Set the intensity of the drone lights.
+
+        Args:
+            brightness (float): Set the intensity of the drone light (0..1).
 
         Raises:
-            ValueError: If the brightness is not in the range
+            ValueError: If the brightness is not in the range (0..1).
         """
-        return self.telemetry.get(blueye.protocol.LightsTel).lights.value
-
-    @lights.setter
-    def lights(self, brightness: float):
         if not 0 <= brightness <= 1:
             raise ValueError("Error occurred while trying to set lights to: " f"{brightness}")
         self._ctrl_client.set_lights(brightness)
 
-    @property
-    def depth(self) -> Optional[float]:
+    lights = deprecated_property("get_lights", "set_lights")
+
+    def get_depth(self) -> Optional[float]:
         """Get the current depth in meters.
 
         Returns:
@@ -561,8 +575,9 @@ class Drone:
         else:
             return depth_tel.depth.value
 
-    @property
-    def pose(self) -> Optional[Dict[str, float]]:
+    depth = deprecated_property("get_depth")
+
+    def get_pose(self) -> Optional[Dict[str, float]]:
         """Get the current orientation of the drone.
 
         Returns:
@@ -579,11 +594,12 @@ class Drone:
         }
         return pose
 
-    @property
-    def altitude(self) -> Optional[float]:
+    pose = deprecated_property("get_pose")
+
+    def get_altitude(self) -> Optional[float]:
         """Get the current altitude in meters.
 
-        If the drone has a DVL or a positioning system with a valid reading, this property will
+        If the drone has a DVL or a positioning system with a valid reading, this method will
         return the current altitude.
 
         Returns:
@@ -595,8 +611,9 @@ class Drone:
         else:
             return altitude_tel.altitude.value
 
-    @property
-    def error_flags(self) -> Dict[str, bool]:
+    altitude = deprecated_property("get_altitude")
+
+    def get_error_flags(self) -> Dict[str, bool]:
         """Get the error flags.
 
         Returns:
@@ -612,8 +629,9 @@ class Drone:
             error_flags[flag] = getattr(error_flags_msg, flag)
         return error_flags
 
-    @property
-    def active_video_streams(self) -> Dict[str, int]:
+    error_flags = deprecated_property("get_error_flags")
+
+    def get_active_video_streams(self) -> Dict[str, int]:
         """Get the number of currently active connections to the video stream.
 
         Every client connected to the RTSP stream (does not matter if it's directly from GStreamer,
@@ -629,6 +647,8 @@ class Drone:
         n_streamers_msg = n_streamers_msg_tel.n_streamers
         return {"main": n_streamers_msg.main, "guestport": n_streamers_msg.guestport}
 
+    active_video_streams = deprecated_property("get_active_video_streams")
+
     def ping(self, timeout: float = 1.0):
         """Ping the drone.
 
@@ -641,8 +661,7 @@ class Drone:
         """
         self._req_rep_client.ping(timeout)
 
-    @property
-    def water_temperature(self) -> Optional[float]:
+    def get_water_temperature(self) -> Optional[float]:
         """Get the water temperature in degrees Celsius.
 
         Returns:
@@ -653,8 +672,9 @@ class Drone:
             return None
         return water_temperature_tel.temperature.value
 
-    @property
-    def dive_time(self) -> Optional[int]:
+    water_temperature = deprecated_property("get_water_temperature")
+
+    def get_dive_time(self) -> Optional[int]:
         """Get the amount of time the drone has been submerged.
 
         The drone starts incrementing this value when the depth is above 250 mm.
@@ -667,3 +687,5 @@ class Drone:
             return None
         else:
             return dive_time_tel.dive_time.value
+
+    dive_time = deprecated_property("get_dive_time")

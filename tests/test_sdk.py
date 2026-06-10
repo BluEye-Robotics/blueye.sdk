@@ -16,7 +16,7 @@ class TestLights:
         lights_tel = bp.LightsTel(lights={"value": 0})
         lights_tel_serialized = lights_tel.__class__.serialize(lights_tel)
         mocked_drone._telemetry_watcher._state[bp.LightsTel] = lights_tel_serialized
-        assert mocked_drone.lights == 0
+        assert mocked_drone.get_lights() == 0
 
 
 class TestPose:
@@ -27,7 +27,7 @@ class TestPose:
         )
         attitude_tel_serialized = attitude_tel.__class__.serialize(attitude_tel)
         mocked_drone._telemetry_watcher._state[bp.AttitudeTel] = attitude_tel_serialized
-        pose = mocked_drone.pose
+        pose = mocked_drone.get_pose()
         assert pose["roll"] == new_angle
         assert pose["pitch"] == new_angle
         assert pose["yaw"] == new_angle
@@ -96,14 +96,14 @@ def test_depth_reading(mocked_drone):
     depthTel = bp.DepthTel(depth={"value": depth})
     depthTel_serialized = depthTel.__class__.serialize(depthTel)
     mocked_drone._telemetry_watcher._state[bp.DepthTel] = depthTel_serialized
-    assert mocked_drone.depth == depth
+    assert mocked_drone.get_depth() == depth
 
 
 def test_error_flags(mocked_drone):
     error_flags_tel = bp.ErrorFlagsTel(error_flags={"depth_read": True})
     error_flags_serialized = error_flags_tel.__class__.serialize(error_flags_tel)
     mocked_drone._telemetry_watcher._state[bp.ErrorFlagsTel] = error_flags_serialized
-    assert mocked_drone.error_flags["depth_read"] == True
+    assert mocked_drone.get_error_flags()["depth_read"] == True
 
 
 def test_battery_state_of_charge_reading(mocked_drone):
@@ -111,7 +111,7 @@ def test_battery_state_of_charge_reading(mocked_drone):
     batteryTel = bp.BatteryTel(battery={"level": SoC})
     batteryTel_msg = batteryTel.__class__.serialize(batteryTel)
     mocked_drone._telemetry_watcher._state[bp.BatteryTel] = batteryTel_msg
-    assert mocked_drone.battery.state_of_charge == pytest.approx(SoC)
+    assert mocked_drone.battery.get_state_of_charge() == pytest.approx(SoC)
 
 
 def test_still_picture_works(mocked_drone):
@@ -140,8 +140,8 @@ def test_active_video_streams_return_correct_number(mocked_drone: Drone):
     NStreamersTel_serialized = NStreamersTel.__class__.serialize(NStreamersTel)
     mocked_drone._telemetry_watcher._state[bp.NStreamersTel] = NStreamersTel_serialized
 
-    assert mocked_drone.active_video_streams["main"] == 1
-    assert mocked_drone.active_video_streams["guestport"] == 2
+    assert mocked_drone.get_active_video_streams()["main"] == 1
+    assert mocked_drone.get_active_video_streams()["guestport"] == 2
 
 
 class TestTilt:
@@ -150,11 +150,11 @@ class TestTilt:
         with pytest.raises(RuntimeError):
             mocked_drone.camera.tilt.set_velocity(0)
         with pytest.raises(RuntimeError):
-            _ = mocked_drone.camera.tilt.angle
+            _ = mocked_drone.camera.tilt.get_angle()
         with pytest.raises(RuntimeError):
-            _ = mocked_drone.camera.tilt.stabilization_enabled
+            _ = mocked_drone.camera.tilt.is_stabilization_enabled()
         with pytest.raises(RuntimeError):
-            mocked_drone.camera.tilt.stabilization_enabled = True
+            mocked_drone.camera.tilt.enable_stabilization(True)
 
     @pytest.mark.parametrize(
         "tilt_velocity",
@@ -183,7 +183,7 @@ class TestTilt:
         TiltAngleTel = bp.TiltAngleTel(angle={"value": expected_angle})
         TiltAngleTel_serialized = bp.TiltAngleTel.serialize(TiltAngleTel)
         mocked_drone._telemetry_watcher._state[bp.TiltAngleTel] = TiltAngleTel_serialized
-        assert mocked_drone.camera.tilt.angle == expected_angle
+        assert mocked_drone.camera.tilt.get_angle() == expected_angle
 
     @pytest.mark.parametrize(
         "expected_state",
@@ -199,24 +199,24 @@ class TestTilt:
         mocked_drone._telemetry_watcher._state[bp.TiltStabilizationTel] = (
             TiltStabilizationTel_serialized
         )
-        assert mocked_drone.camera.tilt.stabilization_enabled == expected_state
+        assert mocked_drone.camera.tilt.is_stabilization_enabled() == expected_state
 
     def test_set_tilt_stabilization(self, mocked_drone: Drone):
         mocked_drone.features = ["tilt"]
-        mocked_drone.camera.tilt.stabilization_enabled = True
+        mocked_drone.camera.tilt.enable_stabilization(True)
         assert mocked_drone._ctrl_client.set_tilt_stabilization.call_count == 1
 
 
 class TestConfig:
-    def test_water_density_property_returns_correct_value(self, mocked_drone: Drone):
+    def test_water_density_returns_correct_value(self, mocked_drone: Drone):
         mocked_drone.config._water_density = 1000.0
-        assert mocked_drone.config.water_density == 1000.0
+        assert mocked_drone.config.get_water_density() == 1000.0
 
     def test_setting_density(self, mocked_drone: Drone):
-        old_value = mocked_drone.config.water_density
+        old_value = mocked_drone.config.get_water_density()
         new_value = old_value + 10
-        mocked_drone.config.water_density = new_value
-        assert mocked_drone.config.water_density == new_value
+        mocked_drone.config.set_water_density(new_value)
+        assert mocked_drone.config.get_water_density() == new_value
         mocked_drone._ctrl_client.set_water_density.assert_called_once()
 
     def test_set_drone_time_is_called_on_connection(self, mocked_drone: Drone):
@@ -230,18 +230,18 @@ def test_altitude_is_none_on_invalid_readings(mocked_drone):
     mocked_drone._telemetry_watcher._state[bp.AltitudeTel] = bp.AltitudeTel.serialize(
         bp.AltitudeTel(altitude={"value": 10, "is_valid": False})
     )
-    assert mocked_drone.altitude is None
+    assert mocked_drone.get_altitude() is None
 
 
 def test_altitude_is_none_on_missing_readings(mocked_drone):
-    assert mocked_drone.altitude is None
+    assert mocked_drone.get_altitude() is None
 
 
 def test_altitude_is_correct_on_valid_readings(mocked_drone):
     mocked_drone._telemetry_watcher._state[bp.AltitudeTel] = bp.AltitudeTel.serialize(
         bp.AltitudeTel(altitude={"value": 10.5, "is_valid": True})
     )
-    assert mocked_drone.altitude == 10.5
+    assert mocked_drone.get_altitude() == 10.5
 
 
 def test_gp_cam_recording(mocked_drone):
@@ -252,7 +252,7 @@ def test_gp_cam_recording(mocked_drone):
     mocked_drone._telemetry_watcher._state[bp.RecordStateTel] = bp.RecordStateTel.serialize(
         record_state_tel
     )
-    mocked_drone.gp_cam.is_recording = True
+    mocked_drone.gp_cam.set_recording(True)
     mocked_drone._ctrl_client.set_recording_state.assert_called_with(False, True)
 
 
@@ -295,22 +295,22 @@ def test_water_temperature_returns_expected_value(mocked_drone):
     water_temp_tel = bp.WaterTemperatureTel(temperature={"value": water_temp})
     water_temp_tel_serialized = bp.WaterTemperatureTel.serialize(water_temp_tel)
     mocked_drone._telemetry_watcher._state[bp.WaterTemperatureTel] = water_temp_tel_serialized
-    assert mocked_drone.water_temperature == water_temp
+    assert mocked_drone.get_water_temperature() == water_temp
 
 
 def test_water_temperature_returns_none_on_missing_telemetry(mocked_drone):
-    assert mocked_drone.water_temperature is None
+    assert mocked_drone.get_water_temperature() is None
 
 
 def test_dive_time_returns_expected_value(mocked_drone):
     dive_time_tel = bp.DiveTimeTel(dive_time={"value": 10})
     dive_time_tel_serialized = bp.DiveTimeTel.serialize(dive_time_tel)
     mocked_drone._telemetry_watcher._state[bp.DiveTimeTel] = dive_time_tel_serialized
-    assert mocked_drone.dive_time == 10
+    assert mocked_drone.get_dive_time() == 10
 
 
 def test_dive_time_returns_none_on_missing_telemetry(mocked_drone):
-    assert mocked_drone.dive_time is None
+    assert mocked_drone.get_dive_time() is None
 
 
 def test_connect_as_observer(mocked_drone_not_connected):
