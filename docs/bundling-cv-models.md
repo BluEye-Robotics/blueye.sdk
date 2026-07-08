@@ -49,7 +49,8 @@ name, tracking algorithm, and the runtime configuration for the drone:
   GPU for other work. Models with layers the DLA cannot run (NMS-in-graph,
   transformers) get `tensorrt` recommended instead. You can always pick any device.
 - **Inference rate** — maximum rate in Hz, defaulting to unlimited.
-- **Autolaunch** — whether the drone should start this model automatically.
+- **Autolaunch** — whether the drone should start this model automatically. Defaults
+  to enabled; pass `--no-runtime-enabled` to bundle the package disabled.
 
 The result is a zip with `model.onnx` and `model_meta.json` at its root.
 

@@ -81,8 +81,10 @@ def add_parser(subparsers) -> None:
     parser.add_argument("--runtime-hz", help='Maximum inference rate in Hz, or "max" for unlimited')
     parser.add_argument(
         "--runtime-enabled",
-        action="store_true",
-        help="Autolaunch this package on the drone (runtime.enabled=true)",
+        action=argparse.BooleanOptionalAction,
+        default=None,
+        help="Autolaunch this package on the drone (default: enabled; use "
+        "--no-runtime-enabled to bundle it disabled)",
     )
     parser.add_argument("--template-size", type=int, help="SOT template crop size (px)")
     parser.add_argument("--search-size", type=int, help="SOT search region size (px)")
@@ -214,9 +216,14 @@ def _resolve_runtime(args, dla, prompter):
         else:
             hz = float(answer)
 
-    enabled = args.runtime_enabled or prompter.confirm(
-        "Autolaunch this package on the drone (runtime.enabled)?", False, "--runtime-enabled"
-    )
+    if args.runtime_enabled is not None:
+        enabled = args.runtime_enabled
+    else:
+        enabled = prompter.confirm(
+            "Autolaunch this package on the drone (runtime.enabled)?",
+            True,
+            "--runtime-enabled/--no-runtime-enabled",
+        )
     return device, hz, enabled
 
 

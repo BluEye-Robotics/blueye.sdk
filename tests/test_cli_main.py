@@ -99,7 +99,8 @@ def test_bundle_end_to_end(yolov8_model, fake_prompter, tmp_path):
     assert meta["detection"]["num_classes"] == 80
     assert meta["detection"]["input_width"] == 640
     assert len(meta["labels"]) == 80
-    assert meta["runtime"]["enabled"] is False
+    # Packages default to autolaunching on the drone.
+    assert meta["runtime"]["enabled"] is True
 
 
 def test_dry_run_writes_nothing(yolov8_model, fake_prompter, tmp_path, capsys):
@@ -175,6 +176,17 @@ def test_runtime_flags_flow_into_meta(yolov8_model, fake_prompter, tmp_path):
         meta = json.loads(archive.read("model_meta.json"))
     assert meta["runtime"] == {"enabled": True, "device": "tensorrt-dla1", "hz": 10.0}
     assert meta["tracking"]["algorithm"] == "byte_track"
+
+
+def test_no_runtime_enabled_flag_disables_autolaunch(yolov8_model, fake_prompter, tmp_path):
+    output = tmp_path / "bundle.zip"
+    exit_code = main(
+        ["bundle-model", str(yolov8_model), "--yes", "-o", str(output), "--no-runtime-enabled"]
+    )
+    assert exit_code == 0
+    with zipfile.ZipFile(output) as archive:
+        meta = json.loads(archive.read("model_meta.json"))
+    assert meta["runtime"]["enabled"] is False
 
 
 def test_runtime_hz_max_is_unlimited(yolov8_model, fake_prompter, tmp_path):
