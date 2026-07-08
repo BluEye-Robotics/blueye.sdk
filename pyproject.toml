@@ -18,7 +18,9 @@ dependencies = [
     "packaging>=24.2",
     "blueye.protocol>=3.3.0,<4",
     "python-dateutil>=2.8.2,<3",
-    "pyzmq~=26.0",
+    # 27.x ships an abi3 Windows wheel that covers Python 3.14+; 26.x tops out at
+    # cp313 and has to be compiled from source on newer interpreters.
+    "pyzmq>=26,<28",
     "proto-plus>=1.22.2,<2",
 ]
 
