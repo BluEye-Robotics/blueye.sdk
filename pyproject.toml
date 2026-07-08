@@ -22,7 +22,17 @@ dependencies = [
     "proto-plus>=1.22.2,<2",
 ]
 
+[project.scripts]
+blueye = "blueye.sdk.cli:main"
+
 [project.optional-dependencies]
+# Dependencies for the `blueye` command line interface (e.g. `blueye bundle-model`). Install
+# with: pip install "blueye.sdk[cli]"
+cli = [
+    "onnx>=1.16,<2",
+    "rich>=13,<15",
+    "questionary>=2.0,<3",
+]
 # These are dependencies that are not necessary for the core functionality of the SDK, but are
 # necessary for some of the examples.
 examples = [
@@ -42,6 +52,10 @@ Repository = "https://github.com/blueye-robotics/blueye.sdk"
 
 [dependency-groups]
 dev = [
+    # The CLI extra, repeated here so the test suite can exercise the CLI modules.
+    "onnx>=1.16,<2",
+    "rich>=13,<15",
+    "questionary>=2.0,<3",
     "pytest~=8.3",
     "pytest-mock~=3.11",
     "mike~=2.1",

@@ -1,0 +1,98 @@
+"""Interactive prompting seam for the `blueye bundle-model` CLI.
+
+All user questions go through the :class:`Prompter` protocol so the orchestration can
+be tested with a fake, and so non-interactive runs (``--yes`` or no TTY) resolve every
+question to its default — or fail with a message naming the flag to pass.
+"""
+
+from __future__ import annotations
+
+import logging
+from typing import Protocol, Sequence
+
+import questionary
+
+from .main import CliError
+
+logger = logging.getLogger(__name__)
+
+
+class PromptAborted(Exception):
+    """The user cancelled a prompt (Ctrl+C / EOF)."""
+
+
+class Prompter(Protocol):
+    """The questions the bundler can ask. Implementations decide how."""
+
+    def select(
+        self, question: str, choices: Sequence[str], default: str | None, flag: str
+    ) -> str: ...
+
+    def text(self, question: str, default: str, flag: str) -> str: ...
+
+    def confirm(self, question: str, default: bool, flag: str) -> bool: ...
+
+    def path(self, question: str, default: str | None, flag: str) -> str: ...
+
+
+def _require(answer: object) -> object:
+    """Translate questionary's None (Ctrl+C) into PromptAborted."""
+    if answer is None:
+        raise PromptAborted()
+    return answer
+
+
+class QuestionaryPrompter:
+    """Interactive prompts with arrow-key selection and path autocompletion."""
+
+    def select(self, question: str, choices: Sequence[str], default: str | None, flag: str) -> str:
+        default_choice = default if default in choices else None
+        return str(
+            _require(
+                questionary.select(
+                    question,
+                    choices=list(choices),
+                    default=default_choice,
+                    use_search_filter=True,
+                    use_jk_keys=False,
+                ).ask()
+            )
+        )
+
+    def text(self, question: str, default: str, flag: str) -> str:
+        return str(_require(questionary.text(question, default=default).ask()))
+
+    def confirm(self, question: str, default: bool, flag: str) -> bool:
+        return bool(_require(questionary.confirm(question, default=default).ask()))
+
+    def path(self, question: str, default: str | None, flag: str) -> str:
+        return str(_require(questionary.path(question, default=default or "").ask()))
+
+
+class NonInteractivePrompter:
+    """Prompt resolution for ``--yes`` runs and non-TTY environments.
+
+    Every question resolves to its default. A question without a usable default is a
+    hard error that names the command line flag which would have answered it.
+    """
+
+    def select(self, question: str, choices: Sequence[str], default: str | None, flag: str) -> str:
+        if default is None:
+            raise CliError(
+                f"Cannot answer '{question}' non-interactively — pass {flag} "
+                f"(one of: {', '.join(choices)})."
+            )
+        return default
+
+    def text(self, question: str, default: str, flag: str) -> str:
+        if not default:
+            raise CliError(f"Cannot answer '{question}' non-interactively — pass {flag}.")
+        return default
+
+    def confirm(self, question: str, default: bool, flag: str) -> bool:
+        return default
+
+    def path(self, question: str, default: str | None, flag: str) -> str:
+        if not default:
+            raise CliError(f"Cannot answer '{question}' non-interactively — pass {flag}.")
+        return default
