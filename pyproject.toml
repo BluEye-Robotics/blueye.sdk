@@ -34,6 +34,8 @@ cli = [
     "onnx>=1.16,<2",
     "rich>=13,<15",
     "questionary>=2.0,<3",
+    # TOML parser for reading third-party tools' PEP 723 metadata; stdlib from 3.11.
+    "tomli>=2,<3; python_version < '3.11'",
 ]
 # These are dependencies that are not necessary for the core functionality of the SDK, but are
 # necessary for some of the examples.
@@ -58,6 +60,7 @@ dev = [
     "onnx>=1.16,<2",
     "rich>=13,<15",
     "questionary>=2.0,<3",
+    "tomli>=2,<3; python_version < '3.11'",
     "pytest~=8.3",
     "pytest-mock~=3.11",
     "mike~=2.1",

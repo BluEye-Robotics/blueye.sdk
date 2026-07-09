@@ -2,13 +2,13 @@ from pathlib import Path
 
 import pytest
 
-from blueye.sdk.cli.heuristics import (
+from blueye.sdk.cli.commands.bundle_model.heuristics import (
     UnsupportedModelError,
     assess_dla_fitness,
     infer,
     parse_ultralytics_metadata,
 )
-from blueye.sdk.cli.introspect import FLOAT16, FLOAT32, ModelInfo, TensorSpec
+from blueye.sdk.cli.commands.bundle_model.introspect import FLOAT16, FLOAT32, ModelInfo, TensorSpec
 
 
 def make_info(inputs, outputs, metadata=None, op_histogram=None):

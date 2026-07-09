@@ -1,4 +1,4 @@
-from blueye.sdk.cli.meta import (
+from blueye.sdk.cli.commands.bundle_model.meta import (
     IMAGENET_MEAN,
     IMAGENET_STD,
     SCALE_1_OVER_255,

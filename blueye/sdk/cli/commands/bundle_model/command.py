@@ -14,6 +14,8 @@ import re
 import sys
 from pathlib import Path
 
+from ...errors import CliError
+
 logger = logging.getLogger(__name__)
 
 _DEVICES = ("cpu", "cuda", "tensorrt", "tensorrt-dla0", "tensorrt-dla1", "coreml")
@@ -110,15 +112,11 @@ def _sanitize_name(name: str) -> str:
 def _parse_input_size(value: str):
     match = re.fullmatch(r"(\d+)[xX](\d+)", value.strip())
     if not match:
-        from .main import CliError
-
         raise CliError(f'--input-size must look like "640x640", got "{value}"')
     return int(match.group(1)), int(match.group(2))
 
 
 def _parse_anchors(value: str) -> list[list[float]]:
-    from .main import CliError
-
     anchors = []
     for pair in value.replace(";", " ").split():
         parts = pair.split(",")
@@ -129,8 +127,6 @@ def _parse_anchors(value: str) -> list[list[float]]:
 
 
 def _parse_float_list(value: str, flag: str) -> list[float]:
-    from .main import CliError
-
     try:
         return [float(part) for part in value.split(",") if part.strip()]
     except ValueError as error:
@@ -138,8 +134,6 @@ def _parse_float_list(value: str, flag: str) -> list[float]:
 
 
 def _read_labels_file(path: Path) -> list[str]:
-    from .main import CliError
-
     if not path.is_file():
         raise CliError(f"Labels file not found: {path}")
     labels = [line.strip() for line in path.read_text(encoding="utf-8").splitlines()]
@@ -148,8 +142,6 @@ def _read_labels_file(path: Path) -> list[str]:
 
 def _resolve_labels(args, config, prompter, console) -> list[str]:
     """Resolve the labels list from flags, embedded metadata, or prompts."""
-    from .main import CliError
-
     if args.labels:
         labels = _read_labels_file(Path(args.labels))
     elif config.labels and config.kind != "sot":
@@ -229,8 +221,8 @@ def _resolve_runtime(args, dla, prompter):
 
 def run(args: argparse.Namespace) -> int:
     """Run the bundle-model subcommand. Returns the process exit code."""
-    from . import bundle, heuristics, introspect, meta, prompts, ui
-    from .main import CliError
+    from ... import prompts, ui
+    from . import bundle, heuristics, introspect, meta
 
     console = ui.make_console(quiet=args.quiet)
     interactive = not args.yes and sys.stdin.isatty() and sys.stdout.isatty()

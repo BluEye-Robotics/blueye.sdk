@@ -2,7 +2,9 @@
 
 Only the standard library may be imported at module level: the umbrella command and
 `--help` must work (and print install guidance) when the optional `[cli]` extra is not
-installed. Subcommand implementations are imported lazily after the dependency gate.
+installed. First-party commands come from the registry in
+:mod:`blueye.sdk.cli.commands`; third-party tools are discovered from the tools
+directory (see :mod:`blueye.sdk.cli.external`) and dispatched before argparse runs.
 """
 
 from __future__ import annotations
@@ -12,29 +14,27 @@ import logging
 import sys
 
 from . import deps
+from .commands import CommandSpec, all_commands
+
+# Back-compat re-export; the canonical location is blueye.sdk.cli.errors.
+from .errors import CliError  # noqa: F401
 
 logger = logging.getLogger(__name__)
 
 
-class CliError(Exception):
-    """A user-facing CLI error: printed as a message, never as a traceback."""
-
-
-def _build_parser() -> argparse.ArgumentParser:
-    """Build the root `blueye` parser with all subcommands registered."""
+def _build_parser(
+    commands: dict[str, CommandSpec], tools_epilog: str | None
+) -> argparse.ArgumentParser:
+    """Build the root `blueye` parser with all first-party commands registered."""
     parser = argparse.ArgumentParser(
         prog="blueye",
         description="Command line tools for Blueye underwater drones.",
+        epilog=tools_epilog,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     subparsers = parser.add_subparsers(dest="command", metavar="COMMAND")
-
-    # Subcommand argument definitions live in their own modules, but only argument
-    # *definitions* — anything importing optional dependencies stays behind the gate in
-    # main(). bundle_model.add_parser only uses argparse.
-    from . import bundle_model
-
-    bundle_model.add_parser(subparsers)
-
+    for spec in commands.values():
+        spec.add_parser(subparsers)
     return parser
 
 
@@ -46,33 +46,47 @@ def main(argv: list[str] | None = None) -> int:
 
     Returns:
         The process exit code (0 success, 1 user-facing error, 2 missing dependencies,
-        130 interrupted).
+        130 interrupted; third-party tools propagate their own exit code).
     """
     logging.basicConfig(level=logging.WARNING, format="%(levelname)s %(name)s: %(message)s")
+    argv = list(sys.argv[1:] if argv is None else argv)
 
-    parser = _build_parser()
+    commands = {spec.name: spec for spec in all_commands()}
+
+    from .external import discovery, execution
+
+    tools = discovery.discover_tools(frozenset(commands))
+
+    # Third-party tools bypass argparse entirely: their arguments belong to the tool,
+    # and argparse's REMAINDER cannot forward leading-dash arguments from a subparser.
+    # Builtins always win a name collision (checked first). Invocation is strictly
+    # `blueye <tool-name> args...` — root-level flags before the tool name are not
+    # supported.
+    if argv and not argv[0].startswith("-") and argv[0] not in commands and argv[0] in tools:
+        try:
+            return execution.run_tool(tools[argv[0]], argv[1:])
+        except KeyboardInterrupt:
+            print("\nCancelled.", file=sys.stderr)
+            return 130
+
+    parser = _build_parser(commands, discovery.format_tools_epilog(tools))
     args = parser.parse_args(argv)
 
     if args.command is None:
         parser.print_help()
         return 0
 
-    missing = deps.missing_cli_deps()
+    spec = commands[args.command]
+    missing = deps.missing(spec.requires)
     if missing:
         deps.print_install_guidance(missing)
         return 2
 
     try:
-        if args.command == "bundle-model":
-            from . import bundle_model
-
-            return bundle_model.run(args)
+        return spec.run(args)
     except CliError as error:
         print(f"Error: {error}", file=sys.stderr)
         return 1
     except KeyboardInterrupt:
         print("\nCancelled.", file=sys.stderr)
         return 130
-
-    parser.print_help()
-    return 0

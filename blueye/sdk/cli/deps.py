@@ -12,24 +12,24 @@ import importlib.util
 import logging
 import shutil
 import sys
+from typing import Iterable
 
 logger = logging.getLogger(__name__)
-
-#: Distributions required by the CLI, in import-name form.
-CLI_DEPENDENCIES = ("onnx", "rich", "questionary")
 
 #: Newest CPython minor version the `onnx` project publishes prebuilt wheels for. Kept
 #: conservative; only used to print a hint, never to block.
 _NEWEST_PYTHON_WITH_ONNX_WHEELS = (3, 13)
 
 
-def missing_cli_deps() -> list[str]:
-    """Return the CLI dependencies that are not importable in this environment.
+def missing(names: Iterable[str]) -> list[str]:
+    """Return the import names in `names` with no importable module.
 
-    Returns:
-        The subset of :data:`CLI_DEPENDENCIES` for which no importable module was found.
+    Used by `main` to gate each command's declared optional dependencies (its
+    CommandSpec.requires) before running it. All currently gateable dependencies ship
+    in the `[cli]` extra; if a future command needs a different extra, the guidance
+    below needs a name-to-extra map.
     """
-    return [name for name in CLI_DEPENDENCIES if importlib.util.find_spec(name) is None]
+    return [name for name in names if importlib.util.find_spec(name) is None]
 
 
 def _install_command() -> str:

@@ -1,6 +1,6 @@
 import pytest
 
-from blueye.sdk.cli.main import CliError
+from blueye.sdk.cli.errors import CliError
 from blueye.sdk.cli.prompts import NonInteractivePrompter
 
 
@@ -40,7 +40,7 @@ class TestDepsGuidance:
 
         find_spec = mocker.patch("importlib.util.find_spec")
         find_spec.side_effect = lambda name: None if name == "onnx" else object()
-        assert deps.missing_cli_deps() == ["onnx"]
+        assert deps.missing(("onnx", "rich", "questionary")) == ["onnx"]
 
     def test_guidance_prefers_uv_when_available(self, mocker, capsys):
         from blueye.sdk.cli import deps

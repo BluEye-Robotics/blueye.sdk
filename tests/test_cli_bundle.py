@@ -3,7 +3,7 @@ import zipfile
 
 import pytest
 
-from blueye.sdk.cli.bundle import BundleError, bundle_size, write_bundle
+from blueye.sdk.cli.commands.bundle_model.bundle import BundleError, bundle_size, write_bundle
 
 META = {"format_version": 1, "model_file": "model.onnx", "labels": ["x"]}
 

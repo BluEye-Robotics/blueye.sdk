@@ -6,7 +6,8 @@ import onnx.helper
 import pytest
 
 from blueye.sdk.cli import main as cli_main_module
-from blueye.sdk.cli.main import CliError, main
+from blueye.sdk.cli.errors import CliError
+from blueye.sdk.cli.main import main
 
 
 class FakePrompter:
@@ -77,7 +78,7 @@ def test_no_command_prints_help(capsys):
 
 
 def test_missing_deps_prints_guidance(mocker, capsys):
-    mocker.patch("blueye.sdk.cli.deps.missing_cli_deps", return_value=["onnx"])
+    mocker.patch("blueye.sdk.cli.deps.missing", return_value=["onnx"])
     exit_code = main(["bundle-model", "whatever.onnx"])
     assert exit_code == 2
     output = capsys.readouterr().out
@@ -233,5 +234,5 @@ def test_labels_file_flag(yolov8_model, fake_prompter, tmp_path):
 def test_cli_module_importable_without_optional_deps(mocker):
     """The dependency gate must run before any optional import."""
     # Simulate the extra being missing; parsing + gate must still work.
-    mocker.patch("blueye.sdk.cli.deps.missing_cli_deps", return_value=["rich", "questionary"])
+    mocker.patch("blueye.sdk.cli.deps.missing", return_value=["rich", "questionary"])
     assert main(["bundle-model", "x.onnx"]) == 2

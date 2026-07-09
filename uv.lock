@@ -136,6 +136,7 @@ cli = [
     { name = "onnx" },
     { name = "questionary" },
     { name = "rich" },
+    { name = "tomli", marker = "python_full_version < '3.11'" },
 ]
 examples = [
     { name = "asciimatics" },
@@ -169,6 +170,7 @@ dev = [
     { name = "questionary" },
     { name = "requests-mock" },
     { name = "rich" },
+    { name = "tomli", marker = "python_full_version < '3.11'" },
 ]
 
 [package.metadata]
@@ -190,6 +192,7 @@ requires-dist = [
     { name = "requests", specifier = ">=2.22.0,<3" },
     { name = "rich", marker = "extra == 'cli'", specifier = ">=13,<15" },
     { name = "tabulate", specifier = ">=0.9,<0.10" },
+    { name = "tomli", marker = "python_full_version < '3.11' and extra == 'cli'", specifier = ">=2,<3" },
     { name = "webdavclient3", marker = "extra == 'examples'", specifier = ">=3.14.6,<4" },
 ]
 provides-extras = ["cli", "examples"]
@@ -215,6 +218,7 @@ dev = [
     { name = "questionary", specifier = ">=2.0,<3" },
     { name = "requests-mock", specifier = "~=1.11" },
     { name = "rich", specifier = ">=13,<15" },
+    { name = "tomli", marker = "python_full_version < '3.11'", specifier = ">=2,<3" },
 ]
 
 [[package]]

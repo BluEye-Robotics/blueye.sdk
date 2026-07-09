@@ -12,7 +12,7 @@ from typing import Protocol, Sequence
 
 import questionary
 
-from .main import CliError
+from .errors import CliError
 
 logger = logging.getLogger(__name__)
 

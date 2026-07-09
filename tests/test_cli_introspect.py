@@ -4,7 +4,7 @@ import onnx
 import onnx.helper
 import pytest
 
-from blueye.sdk.cli.introspect import (
+from blueye.sdk.cli.commands.bundle_model.introspect import (
     FLOAT16,
     FLOAT32,
     IntrospectionError,
