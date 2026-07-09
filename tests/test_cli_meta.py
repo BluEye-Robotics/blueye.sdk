@@ -165,3 +165,13 @@ class TestValidateMeta:
         )
         meta = build_meta(options)
         assert any("template_size" in error for error in validate_meta(meta))
+
+
+class TestDetectionLabelsNotDefaulted:
+    def test_detection_without_labels_fails_validation(self):
+        # A detection model must never silently receive the SOT ["tracked"] default:
+        # for a 1-class model that would VALIDATE with a nonsense label.
+        options = detection_options(num_classes=1, labels=[])
+        meta = build_meta(options)
+        assert meta["labels"] == []
+        assert any("labels" in error for error in validate_meta(meta))

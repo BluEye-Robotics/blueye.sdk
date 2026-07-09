@@ -35,14 +35,11 @@ def missing(names: Iterable[str]) -> list[str]:
 def _install_command() -> str:
     """Return the install command best matching the user's environment."""
     package_spec = "blueye.sdk[cli]"
-    on_windows = sys.platform.startswith("win")
-    if shutil.which("uv") is not None:
-        return f'uv pip install "{package_spec}"'
-    if on_windows:
-        # cmd.exe needs no quotes; PowerShell treats brackets specially, so single quotes
-        # are the safe recommendation.
-        return f"python -m pip install '{package_spec}'"
-    return f'python -m pip install "{package_spec}"'
+    # cmd.exe needs no quotes but PowerShell treats brackets specially, so single
+    # quotes are the safe recommendation on Windows; POSIX shells prefer double quotes.
+    quote = "'" if sys.platform.startswith("win") else '"'
+    installer = "uv pip install" if shutil.which("uv") is not None else "python -m pip install"
+    return f"{installer} {quote}{package_spec}{quote}"
 
 
 def print_install_guidance(missing: list[str]) -> None:

@@ -75,3 +75,10 @@ def test_progress_reports_all_bytes(onnx_file, tmp_path):
         progress=seen.append,
     )
     assert sum(seen) == bundle_size(onnx_file, ["model.onnx_data"])
+
+
+def test_bundle_size_raises_for_missing_external_file(onnx_file):
+    # bundle_size runs before write_bundle's checks; it must not leak a
+    # FileNotFoundError past the BundleError handler.
+    with pytest.raises(BundleError, match="not found"):
+        bundle_size(onnx_file, ["model.onnx_data"])

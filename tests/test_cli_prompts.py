@@ -63,3 +63,12 @@ class TestDepsGuidance:
         mocker.patch("sys.platform", "win32")
         deps.print_install_guidance(["onnx"])
         assert "PowerShell" in capsys.readouterr().out
+
+    def test_guidance_uses_single_quotes_with_uv_on_windows(self, mocker, capsys):
+        from blueye.sdk.cli import deps
+
+        mocker.patch("shutil.which", return_value="C:\\uv.exe")
+        mocker.patch("sys.platform", "win32")
+        deps.print_install_guidance(["onnx"])
+        out = capsys.readouterr().out
+        assert "uv pip install 'blueye.sdk[cli]'" in out

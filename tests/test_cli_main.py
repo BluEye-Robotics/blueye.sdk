@@ -236,3 +236,51 @@ def test_cli_module_importable_without_optional_deps(mocker):
     # Simulate the extra being missing; parsing + gate must still work.
     mocker.patch("blueye.sdk.cli.deps.missing", return_value=["rich", "questionary"])
     assert main(["bundle-model", "x.onnx"]) == 2
+
+
+class TestReviewRegressions:
+    """Regression tests for the PR review findings: user input errors must exit
+    cleanly, never with a traceback."""
+
+    def test_bad_anchor_values_error_cleanly(self, yolov8_model, fake_prompter, capsys):
+        # --anchors is only consumed on the yolov2_grid path, so force the format.
+        exit_code = main(
+            [
+                "bundle-model",
+                str(yolov8_model),
+                "--yes",
+                "--format",
+                "yolov2_grid",
+                "--grid-size",
+                "13",
+                "--anchors",
+                "1.0,abc",
+                "--dry-run",
+            ]
+        )
+        assert exit_code == 1
+        assert "numbers" in capsys.readouterr().err
+
+    def test_bad_runtime_hz_flag_errors_cleanly(self, yolov8_model, fake_prompter, capsys):
+        exit_code = main(
+            ["bundle-model", str(yolov8_model), "--yes", "--runtime-hz", "fast", "--dry-run"]
+        )
+        assert exit_code == 1
+        assert "must be a number" in capsys.readouterr().err
+
+    def test_bad_custom_rate_answer_errors_cleanly(self, yolov8_model, fake_prompter, capsys):
+        fake_prompter.answers["Maximum inference rate?"] = "custom..."
+        fake_prompter.answers["Rate in Hz"] = "warp-speed"
+        exit_code = main(["bundle-model", str(yolov8_model), "--yes", "--dry-run"])
+        assert exit_code == 1
+        assert "must be a number" in capsys.readouterr().err
+
+    def test_yes_without_force_does_not_overwrite(
+        self, yolov8_model, fake_prompter, tmp_path, capsys
+    ):
+        output = tmp_path / "bundle.zip"
+        output.write_bytes(b"existing")
+        exit_code = main(["bundle-model", str(yolov8_model), "--yes", "-o", str(output)])
+        assert exit_code == 1
+        assert output.read_bytes() == b"existing"
+        assert "--force" in capsys.readouterr().err

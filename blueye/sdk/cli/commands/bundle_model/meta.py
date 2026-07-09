@@ -186,7 +186,14 @@ def build_meta(options: MetaOptions) -> dict:
             runtime["hz"] = options.runtime_hz
         meta["runtime"] = runtime
 
-    meta["labels"] = options.labels if options.labels else ["tracked"]
+    # Only SOT packages default their label; a detection model without labels must
+    # fail validation loudly instead of shipping a nonsense ["tracked"] label list.
+    if options.labels:
+        meta["labels"] = options.labels
+    elif options.kind == "sot":
+        meta["labels"] = ["tracked"]
+    else:
+        meta["labels"] = []
     return meta
 
 

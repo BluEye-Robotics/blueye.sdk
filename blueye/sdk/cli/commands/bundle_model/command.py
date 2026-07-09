@@ -122,8 +122,20 @@ def _parse_anchors(value: str) -> list[list[float]]:
         parts = pair.split(",")
         if len(parts) != 2:
             raise CliError(f'--anchors pairs must be "w,h", got "{pair}"')
-        anchors.append([float(parts[0]), float(parts[1])])
+        try:
+            anchors.append([float(parts[0]), float(parts[1])])
+        except ValueError as error:
+            raise CliError(f'--anchors values must be numbers, got "{pair}"') from error
     return anchors
+
+
+def _parse_hz(value: str, flag: str) -> float:
+    try:
+        return float(value)
+    except ValueError as error:
+        raise CliError(
+            f'{flag} must be a number (or "max" for unlimited), got "{value}"'
+        ) from error
 
 
 def _parse_float_list(value: str, flag: str) -> list[float]:
@@ -196,7 +208,9 @@ def _resolve_runtime(args, dla, prompter):
         device = answer.replace(" (recommended)", "")
 
     if args.runtime_hz:
-        hz = None if args.runtime_hz.lower() == "max" else float(args.runtime_hz)
+        hz = (
+            None if args.runtime_hz.lower() == "max" else _parse_hz(args.runtime_hz, "--runtime-hz")
+        )
     else:
         answer = prompter.select(
             "Maximum inference rate?", list(_RATE_PRESETS), _RATE_PRESETS[0], "--runtime-hz"
@@ -204,9 +218,9 @@ def _resolve_runtime(args, dla, prompter):
         if answer.startswith("max"):
             hz = None
         elif answer == "custom...":
-            hz = float(prompter.text("Rate in Hz:", "10", "--runtime-hz"))
+            hz = _parse_hz(prompter.text("Rate in Hz:", "10", "--runtime-hz"), "the rate")
         else:
-            hz = float(answer)
+            hz = _parse_hz(answer, "--runtime-hz")
 
     if args.runtime_enabled is not None:
         enabled = args.runtime_enabled
@@ -386,10 +400,12 @@ def run(args: argparse.Namespace) -> int:
         output_path = Path(
             args.output or prompter.text("Output zip path:", default_output, "--output")
         ).expanduser()
+        # Overwriting is destructive: non-interactive runs (--yes / no TTY) must opt
+        # in explicitly with --force; interactively the confirm defaults to No.
         if output_path.exists() and not args.force:
-            if not prompter.confirm(
-                f"{output_path} exists — overwrite?", bool(args.yes), "--force"
-            ):
+            if not interactive:
+                raise CliError(f"{output_path} already exists (pass --force to overwrite it).")
+            if not prompter.confirm(f"{output_path} exists — overwrite?", False, "--force"):
                 raise CliError(f"{output_path} already exists (use --force to overwrite).")
 
         external_files = list(info.external_data_files)

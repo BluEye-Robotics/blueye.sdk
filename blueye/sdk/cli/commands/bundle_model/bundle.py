@@ -50,11 +50,36 @@ def bundle_size(onnx_path: Path, external_files: list[str]) -> int:
     Args:
         onnx_path: Path to the .onnx file.
         external_files: External-data file names living next to the .onnx.
+
+    Raises:
+        BundleError: When an external file is missing or otherwise unusable — sizing
+            runs before :func:`write_bundle`, so it validates too instead of leaking a
+            FileNotFoundError.
     """
+    _validate_external_files(onnx_path, external_files)
     total = onnx_path.stat().st_size
     for name in external_files:
         total += (onnx_path.parent / name).stat().st_size
     return total
+
+
+def _validate_external_files(onnx_path: Path, external_files: list[str]) -> None:
+    """Check every external-data reference is bundleable; raise BundleError if not."""
+    for name in external_files:
+        if "/" in name or "\\" in name:
+            raise BundleError(
+                f"External data location '{name}' contains a path separator. Re-save the "
+                "model with all tensors in one file next to it, e.g.:\n"
+                "  onnx.save(onnx.load(p), out, save_as_external_data=True,\n"
+                "            all_tensors_to_one_file=True, location='model.onnx_data')"
+            )
+        if name in (MODEL_FILE_NAME, META_FILE_NAME):
+            raise BundleError(f"External data file '{name}' collides with a reserved bundle name.")
+        if not (onnx_path.parent / name).is_file():
+            raise BundleError(
+                f"The model references external data file '{name}', but it was not found "
+                f"next to {onnx_path.name}. Copy it into {onnx_path.parent} first."
+            )
 
 
 def write_bundle(
@@ -82,21 +107,7 @@ def write_bundle(
     """
     progress = progress or (lambda _byte_count: None)
 
-    for name in external_files:
-        if "/" in name or "\\" in name:
-            raise BundleError(
-                f"External data location '{name}' contains a path separator. Re-save the "
-                "model with all tensors in one file next to it, e.g.:\n"
-                "  onnx.save(onnx.load(p), out, save_as_external_data=True,\n"
-                "            all_tensors_to_one_file=True, location='model.onnx_data')"
-            )
-        if name in (MODEL_FILE_NAME, META_FILE_NAME):
-            raise BundleError(f"External data file '{name}' collides with a reserved bundle name.")
-        if not (onnx_path.parent / name).is_file():
-            raise BundleError(
-                f"The model references external data file '{name}', but it was not found "
-                f"next to {onnx_path.name}. Copy it into {onnx_path.parent} first."
-            )
+    _validate_external_files(onnx_path, external_files)
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     partial_path = output_path.with_suffix(output_path.suffix + ".part")
