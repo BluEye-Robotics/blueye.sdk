@@ -108,10 +108,13 @@ class TestFailureHandling:
 
 
 class TestInteractive:
-    def test_interactive_checkbox_download(self, drone, mocker, tmp_path):
+    def test_interactive_checkbox_download(self, drone, mocker, tmp_path, capsys):
+        seen_choices = []
+
         class FakePrompter:
             def checkbox(self, question, choices, flag):
-                return [choices[0]]  # Select the first log.
+                seen_choices.extend(choices)
+                return [choices[0]]  # Select the first (newest) log.
 
             def text(self, question, default, flag):
                 return str(tmp_path)
@@ -126,6 +129,15 @@ class TestInteractive:
         assert main(["logs"]) == 0
         LogFile.download.assert_called_once()
         assert LogFile.download.call_args.kwargs["output_path"] == tmp_path
+        # Sorted descending alphabetically: _00001 before _00000.
+        assert "BYEDP000000_aaaa_00001" in seen_choices[0]
+        assert "BYEDP000000_aaaa_00000" in seen_choices[1]
+        # The choices themselves are the table rows (name + time + size columns).
+        assert "KiB" in seen_choices[0]
+        # No duplicated full table before the picker — only the header line.
+        out = capsys.readouterr().out
+        assert "MAX DEPTH" not in out
+        assert "NAME" in out
 
     def test_interactive_empty_selection(self, drone, mocker, capsys):
         class FakePrompter:
@@ -234,3 +246,105 @@ class TestMcapConversion:
 
         assert main(["logs"]) == 0
         convert.assert_called_once()
+
+
+class TestFilters:
+    def test_dives_only(self, drone, capsys):
+        assert main(["logs", "list", "--dives-only"]) == 0
+        out = capsys.readouterr().out
+        assert "BYEDP000000_aaaa_00000" in out  # is_dive=True
+        assert "BYEDP000000_aaaa_00001" not in out  # is_dive=False
+
+    def test_since_filters_older_logs(self, drone, capsys):
+        # Log _00001 starts at 1700100000 (~2023-11-16); _00000 at 1700000000 (~11-14).
+        assert main(["logs", "list", "--since", "2023-11-16"]) == 0
+        out = capsys.readouterr().out
+        assert "BYEDP000000_aaaa_00001" in out
+        assert "BYEDP000000_aaaa_00000" not in out
+
+    def test_until_filters_newer_logs(self, drone, capsys):
+        assert main(["logs", "list", "--until", "2023-11-15"]) == 0
+        out = capsys.readouterr().out
+        assert "BYEDP000000_aaaa_00000" in out
+        assert "BYEDP000000_aaaa_00001" not in out
+
+    def test_bad_date_errors_cleanly(self, drone, capsys):
+        assert main(["logs", "list", "--since", "tomorrow"]) == 1
+        err = capsys.readouterr().err
+        assert "--since must be a date" in err  # The message names the expected format.
+
+    def test_filters_apply_to_download_all(self, drone, tmp_path):
+        assert main(["logs", "download", "--all", "--dives-only", "-o", str(tmp_path)]) == 0
+        assert LogFile.download.call_count == 1
+
+    def test_no_match_message(self, drone, capsys):
+        assert main(["logs", "list", "--since", "2030-01-01"]) == 0
+        assert "No logs match the filters" in capsys.readouterr().out
+
+
+class TestSorting:
+    def test_list_sorted_descending(self, drone, capsys):
+        assert main(["logs", "list"]) == 0
+        out = capsys.readouterr().out
+        assert out.index("BYEDP000000_aaaa_00001") < out.index("BYEDP000000_aaaa_00000")
+
+
+class TestConvert:
+    @pytest.fixture
+    def bez_on_disk(self, tmp_path):
+        path = tmp_path / "mydive.bez"
+        path.write_bytes(b"bez-bytes")
+        return path
+
+    def test_convert_writes_sibling_mcap(self, drone, mocker, bez_on_disk, capsys):
+        convert = mocker.patch(
+            "blueye.sdk.cli.commands.logs.mcap.convert_bez_to_mcap", return_value=7
+        )
+        assert main(["logs", "convert", str(bez_on_disk)]) == 0
+        convert.assert_called_once_with(bez_on_disk, bez_on_disk.parent / "mydive.mcap")
+        assert "7 messages" in capsys.readouterr().out
+        # Purely local: the Drone class must never be constructed.
+        drone._drone_cls.assert_not_called()
+
+    def test_convert_with_output_dir(self, drone, mocker, bez_on_disk, tmp_path):
+        convert = mocker.patch(
+            "blueye.sdk.cli.commands.logs.mcap.convert_bez_to_mcap", return_value=7
+        )
+        out_dir = tmp_path / "converted"
+        assert main(["logs", "convert", str(bez_on_disk), "-o", str(out_dir)]) == 0
+        convert.assert_called_once_with(bez_on_disk, out_dir / "mydive.mcap")
+        assert out_dir.is_dir()
+
+    def test_convert_multiple_files(self, drone, mocker, tmp_path):
+        convert = mocker.patch(
+            "blueye.sdk.cli.commands.logs.mcap.convert_bez_to_mcap", return_value=1
+        )
+        files = []
+        for name in ("a.bez", "b.bez"):
+            path = tmp_path / name
+            path.write_bytes(b"x")
+            files.append(str(path))
+        assert main(["logs", "convert", *files]) == 0
+        assert convert.call_count == 2
+
+    def test_convert_missing_file_errors(self, drone, tmp_path, capsys):
+        assert main(["logs", "convert", str(tmp_path / "nope.bez")]) == 1
+        assert "No such file" in capsys.readouterr().err
+
+    def test_convert_missing_dependency_guidance(self, drone, mocker, bez_on_disk, capsys):
+        def fake_missing(names):
+            return [name for name in names if name == "mcap_protobuf"]
+
+        mocker.patch("blueye.sdk.cli.deps.missing", side_effect=fake_missing)
+        assert main(["logs", "convert", str(bez_on_disk)]) == 1
+        assert "blueye.sdk[cli]" in capsys.readouterr().out
+
+
+class TestSearchFilterEnabled:
+    def test_questionary_checkbox_gets_search_filter(self, mocker):
+        from blueye.sdk.cli.prompts import QuestionaryPrompter
+
+        checkbox = mocker.patch("questionary.checkbox")
+        checkbox.return_value.ask.return_value = []
+        QuestionaryPrompter().checkbox("Pick:", ["a", "b"], "--flag")
+        assert checkbox.call_args.kwargs["use_search_filter"] is True

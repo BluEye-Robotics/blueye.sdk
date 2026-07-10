@@ -71,7 +71,21 @@ class QuestionaryPrompter:
         return str(_require(questionary.path(question, default=default or "").ask()))
 
     def checkbox(self, question: str, choices: Sequence[str], flag: str) -> list[str]:
-        answer = _require(questionary.checkbox(question, choices=list(choices)).ask())
+        answer = _require(
+            questionary.checkbox(
+                question,
+                choices=list(choices),
+                use_search_filter=True,
+                use_jk_keys=False,
+                # questionary 2.1.1's default instruction wrongly shows <ctrl-a> for
+                # both actions when the search filter is on; the real bindings are
+                # ctrl-a = toggle all and ctrl-i (tab) = invert.
+                instruction=(
+                    "(use arrow keys to move, <space> to select, <ctrl-a> to toggle "
+                    "all, <tab> to invert, type to filter)"
+                ),
+            ).ask()
+        )
         return [str(item) for item in answer]
 
 
