@@ -152,6 +152,17 @@ The normal Blueye app cannot be used to spectate when controlling the drone from
 it will interfere with the commands sent from the SDK. The Observer app, however, is only a
 spectator and can be used together with the SDK.
 
+### Try the command line interface
+The SDK also installs a [`blueye` command](cli.md) for common tasks straight from the
+terminal — for example, grabbing the newest dive log from the drone:
+
+```shell
+blueye logs download --latest 1
+```
+
+Run `blueye --help` to see everything it can do, or read more on
+[the blueye CLI page](cli.md).
+
 ### Explore the examples
 For further examples on how to use the SDK to control the drone have a look at the
 [motion examples](movement/from-the-CLI.md).

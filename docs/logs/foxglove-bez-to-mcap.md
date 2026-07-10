@@ -2,8 +2,8 @@
 With some simple steps you can visualize dive log data with ease in Foxglove. This is a great tool to play back and visualize control signals and estimated states and other sensor data from the dive.
 
 !!! tip "One-step download and convert"
-    The `blueye` CLI (installed with `pip install "blueye.sdk[cli]"`) can download and
-    convert in one go:
+    The [`blueye` CLI](../cli.md) (installed with the SDK) can download and convert
+    in one go:
 
     ```shell
     blueye logs download --latest 1 --mcap

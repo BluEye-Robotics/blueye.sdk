@@ -8,8 +8,8 @@ When the drone is powered on a new log file is created, where it stores telemetr
 
 ## From the command line
 
-The binary logs are also available through the `blueye` CLI (installed with the
-SDK's `[cli]` extra), which connects to the drone as an observer — taking no control:
+The binary logs are also available through the [`blueye` CLI](../cli.md), which is
+installed with the SDK and connects to the drone as an observer — taking no control:
 
 ```shell
 blueye logs list                       # table of logs on the drone
