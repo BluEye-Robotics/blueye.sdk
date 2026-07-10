@@ -120,15 +120,25 @@ class TestFilterScopedBulkActions:
 
     def test_rebinding_attaches_to_real_prompt(self):
         """The workaround must find the control and replace both key bindings."""
+        import contextlib
+
         import questionary
+        from prompt_toolkit.application import create_app_session
+        from prompt_toolkit.input import create_pipe_input
         from prompt_toolkit.keys import Keys
+        from prompt_toolkit.output import DummyOutput
 
         from blueye.sdk.cli.prompts import _scope_bulk_bindings_to_filter
 
-        prompt = questionary.checkbox(
-            "Pick:", choices=["a", "b"], use_search_filter=True, use_jk_keys=False
-        )
-        _scope_bulk_bindings_to_filter(prompt)
+        with contextlib.ExitStack() as stack:
+            # Windows CI has no console; give prompt_toolkit a pipe input and a
+            # dummy output so the prompt can be constructed headlessly.
+            pipe_input = stack.enter_context(create_pipe_input())
+            stack.enter_context(create_app_session(input=pipe_input, output=DummyOutput()))
+            prompt = questionary.checkbox(
+                "Pick:", choices=["a", "b"], use_search_filter=True, use_jk_keys=False
+            )
+            _scope_bulk_bindings_to_filter(prompt)
         bindings = prompt.application.key_bindings
 
         def exact(keys):
