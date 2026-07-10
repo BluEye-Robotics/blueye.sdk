@@ -1,9 +1,9 @@
 """Optional-dependency detection and install guidance for the `blueye` CLI.
 
 This module must only import from the standard library: it runs precisely when the
-optional `[cli]` extra (onnx, rich, questionary) is not installed, and its job is to
-tell the user how to install it on their platform instead of failing with an
-ImportError.
+optional `[cli]` extra (the heavyweight onnx dependency used by `bundle-model`) is
+not installed, and its job is to tell the user how to install it on their platform
+instead of failing with an ImportError.
 """
 
 from __future__ import annotations

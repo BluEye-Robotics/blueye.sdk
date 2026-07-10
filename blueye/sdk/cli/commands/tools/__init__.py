@@ -8,7 +8,7 @@ from .command import add_parser, run
 COMMAND = CommandSpec(
     name="tools",
     help="List, validate, install, and uninstall third-party CLI tools",
-    requires=(),  # The bootstrap surface must run with zero optional extras.
+    requires=(),
     add_parser=add_parser,
     run=run,
 )
