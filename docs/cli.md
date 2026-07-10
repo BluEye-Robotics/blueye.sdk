@@ -21,7 +21,7 @@ instead of failing.
 
 ## Bundling CV models — `blueye bundle-model`
 
-Blueye drones with an onboard GPU can run your own computer vision models: object
+The Blueye X3 Ultra can run your own computer vision models: object
 detection, instance segmentation, and single-object tracking. The drone's vision
 pipeline consumes **model packages** — a zip containing an ONNX model and a
 `model_meta.json` file that describes how to preprocess frames and decode the model's

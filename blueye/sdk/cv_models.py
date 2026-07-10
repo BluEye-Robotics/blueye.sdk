@@ -1,6 +1,6 @@
 """Manage the computer vision model packages installed on the drone.
 
-Drones with an onboard GPU run CV model packages (an ONNX model plus a
+The Blueye X3 Ultra runs CV model packages (an ONNX model plus a
 `model_meta.json`, see the "Bundling CV models" documentation). This module wraps the
 drone's HTTP API for managing those packages: listing, uploading, deleting,
 downloading, configuring (autolaunch/device/rate), and pre-building inference engines.
