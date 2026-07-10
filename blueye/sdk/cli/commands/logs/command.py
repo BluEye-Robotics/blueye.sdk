@@ -218,10 +218,15 @@ def _run_convert(console, args) -> int:
 
 def _select_downloads(args, log_files) -> list:
     """Resolve the download selection from names/--latest/--all."""
+    selectors = [bool(args.names), args.latest is not None, args.all]
+    if sum(selectors) > 1:
+        raise CliError("Pass only one of log names, --latest N, or --all.")
     by_name = {log.name: log for log in log_files}
     if args.all:
         return list(log_files)
     if args.latest is not None:
+        if args.latest < 1:
+            raise CliError("--latest must be a positive number of logs.")
         newest_first = sorted(log_files, key=lambda log: log.start_time, reverse=True)
         return newest_first[: args.latest]
     if args.names:

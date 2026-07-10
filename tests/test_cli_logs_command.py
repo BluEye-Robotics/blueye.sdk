@@ -90,6 +90,24 @@ class TestDownload:
         assert main(["logs", "download"]) == 1
         assert "--latest" in capsys.readouterr().err
 
+    def test_combined_selectors_error(self, drone, capsys):
+        assert main(["logs", "download", "BYEDP000000_aaaa_00000", "--all"]) == 1
+        assert "only one of" in capsys.readouterr().err
+        LogFile.download.assert_not_called()
+
+    def test_latest_with_names_errors(self, drone, capsys):
+        assert main(["logs", "download", "BYEDP000000_aaaa_00000", "--latest", "1"]) == 1
+        assert "only one of" in capsys.readouterr().err
+        LogFile.download.assert_not_called()
+
+    def test_latest_zero_errors(self, drone, capsys):
+        assert main(["logs", "download", "--latest", "0"]) == 1
+        assert "--latest must be a positive number" in capsys.readouterr().err
+
+    def test_latest_negative_errors(self, drone, capsys):
+        assert main(["logs", "download", "--latest", "-1"]) == 1
+        assert "--latest must be a positive number" in capsys.readouterr().err
+
 
 class TestFailureHandling:
     def test_unreachable_drone_is_friendly(self, drone, capsys):
