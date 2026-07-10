@@ -72,3 +72,71 @@ class TestDepsGuidance:
         deps.print_install_guidance(["onnx"])
         out = capsys.readouterr().out
         assert "uv pip install 'blueye.sdk[cli]'" in out
+
+
+class _StubChoice:
+    def __init__(self, value, disabled=False):
+        self.value = value
+        self.disabled = disabled
+
+
+class _StubControl:
+    """Mimics questionary's InquirerControl selection state for the bulk helpers."""
+
+    def __init__(self, visible, selected=()):
+        self.filtered_choices = [_StubChoice(value) for value in visible]
+        self.selected_options = list(selected)
+
+
+class TestFilterScopedBulkActions:
+    def test_toggle_all_selects_only_visible(self):
+        from blueye.sdk.cli.prompts import _toggle_all_visible
+
+        control = _StubControl(visible=["a", "b"], selected=["hidden"])
+        _toggle_all_visible(control)
+        assert sorted(control.selected_options) == ["a", "b", "hidden"]
+
+    def test_toggle_all_deselects_when_all_visible_selected(self):
+        from blueye.sdk.cli.prompts import _toggle_all_visible
+
+        control = _StubControl(visible=["a", "b"], selected=["a", "b", "hidden"])
+        _toggle_all_visible(control)
+        assert control.selected_options == ["hidden"]
+
+    def test_invert_only_touches_visible(self):
+        from blueye.sdk.cli.prompts import _invert_visible
+
+        control = _StubControl(visible=["a", "b"], selected=["a", "hidden"])
+        _invert_visible(control)
+        assert sorted(control.selected_options) == ["b", "hidden"]
+
+    def test_disabled_choices_are_skipped(self):
+        from blueye.sdk.cli.prompts import _toggle_all_visible
+
+        control = _StubControl(visible=["a"])
+        control.filtered_choices.append(_StubChoice("locked", disabled=True))
+        _toggle_all_visible(control)
+        assert control.selected_options == ["a"]
+
+    def test_rebinding_attaches_to_real_prompt(self):
+        """The workaround must find the control and replace both key bindings."""
+        import questionary
+        from prompt_toolkit.keys import Keys
+
+        from blueye.sdk.cli.prompts import _scope_bulk_bindings_to_filter
+
+        prompt = questionary.checkbox(
+            "Pick:", choices=["a", "b"], use_search_filter=True, use_jk_keys=False
+        )
+        _scope_bulk_bindings_to_filter(prompt)
+        bindings = prompt.application.key_bindings
+
+        def exact(keys):
+            # get_bindings_for_keys also returns the <any> search-character catch-all;
+            # only the exact-key binding handles the shortcut at dispatch time.
+            return [b for b in bindings.get_bindings_for_keys(keys) if b.keys == keys]
+
+        toggle = exact((Keys.ControlA,))
+        invert = exact((Keys.ControlI,))
+        assert len(toggle) == 1 and toggle[0].handler.__name__ == "_toggle_all"
+        assert len(invert) == 1 and invert[0].handler.__name__ == "_invert"

@@ -346,5 +346,8 @@ class TestSearchFilterEnabled:
 
         checkbox = mocker.patch("questionary.checkbox")
         checkbox.return_value.ask.return_value = []
+        # The binding rework runs on the real prompt object; not exercisable on a Mock.
+        scope = mocker.patch("blueye.sdk.cli.prompts._scope_bulk_bindings_to_filter")
         QuestionaryPrompter().checkbox("Pick:", ["a", "b"], "--flag")
         assert checkbox.call_args.kwargs["use_search_filter"] is True
+        scope.assert_called_once_with(checkbox.return_value)
