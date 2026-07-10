@@ -116,6 +116,9 @@ class TestInteractive:
             def text(self, question, default, flag):
                 return str(tmp_path)
 
+            def confirm(self, question, default, flag):
+                return default  # Decline the .mcap conversion.
+
         mocker.patch("sys.stdin.isatty", return_value=True)
         mocker.patch("sys.stdout.isatty", return_value=True)
         mocker.patch("blueye.sdk.cli.prompts.QuestionaryPrompter", return_value=FakePrompter())
@@ -136,3 +139,98 @@ class TestInteractive:
         assert main(["logs"]) == 0
         LogFile.download.assert_not_called()
         assert "Nothing selected" in capsys.readouterr().out
+
+
+class TestMcapConversion:
+    @pytest.fixture
+    def bez_file(self, tmp_path):
+        """A tiny real .bez (uncompressed binlog records) built with protobuf."""
+        import blueye.protocol as bp
+
+        from tests.test_logs import create_real_binlog_record
+
+        records = b""
+        for seconds in (100, 101, 102):
+            payload = bp.DepthTel(depth=bp.Depth(value=float(seconds)))
+            records += create_real_binlog_record(1700000000 + seconds, seconds, payload)
+        path = tmp_path / "dive.bez"
+        path.write_bytes(records)
+        return path
+
+    def test_convert_writes_valid_mcap(self, bez_file, tmp_path):
+        from blueye.sdk.cli.commands.logs.mcap import convert_bez_to_mcap
+
+        mcap_path = tmp_path / "dive.mcap"
+        count = convert_bez_to_mcap(bez_file, mcap_path)
+        assert count == 3
+        content = mcap_path.read_bytes()
+        assert content.startswith(b"\x89MCAP")  # MCAP magic bytes.
+        assert len(content) > 100
+
+    def test_convert_empty_log_errors(self, tmp_path):
+        from blueye.sdk.cli.commands.logs.mcap import convert_bez_to_mcap
+        from blueye.sdk.cli.errors import CliError
+
+        empty = tmp_path / "empty.bez"
+        empty.write_bytes(b"")
+        with pytest.raises(CliError, match="no readable log records"):
+            convert_bez_to_mcap(empty, tmp_path / "empty.mcap")
+
+    def test_download_mcap_flag_converts(self, drone, mocker, tmp_path):
+        convert = mocker.patch(
+            "blueye.sdk.cli.commands.logs.mcap.convert_bez_to_mcap", return_value=5
+        )
+        assert (
+            main(
+                [
+                    "logs",
+                    "download",
+                    "BYEDP000000_aaaa_00000",
+                    "-o",
+                    str(tmp_path),
+                    "--mcap",
+                ]
+            )
+            == 0
+        )
+        convert.assert_called_once_with(
+            tmp_path / "BYEDP000000_aaaa_00000.bez", tmp_path / "BYEDP000000_aaaa_00000.mcap"
+        )
+
+    def test_download_without_mcap_flag_does_not_convert(self, drone, mocker, tmp_path):
+        convert = mocker.patch("blueye.sdk.cli.commands.logs.mcap.convert_bez_to_mcap")
+        assert main(["logs", "download", "--all", "-o", str(tmp_path)]) == 0
+        convert.assert_not_called()
+
+    def test_missing_mcap_dependency_gives_guidance(self, drone, mocker, tmp_path, capsys):
+        def fake_missing(names):
+            return [name for name in names if name == "mcap_protobuf"]
+
+        mocker.patch("blueye.sdk.cli.deps.missing", side_effect=fake_missing)
+        exit_code = main(["logs", "download", "--all", "-o", str(tmp_path), "--mcap"])
+        assert exit_code == 1
+        captured = capsys.readouterr()
+        assert "blueye.sdk[cli]" in captured.out
+        assert "mcap" in captured.err
+
+    def test_interactive_offers_mcap_conversion(self, drone, mocker, tmp_path):
+        convert = mocker.patch(
+            "blueye.sdk.cli.commands.logs.mcap.convert_bez_to_mcap", return_value=5
+        )
+
+        class FakePrompter:
+            def checkbox(self, question, choices, flag):
+                return [choices[0]]
+
+            def text(self, question, default, flag):
+                return str(tmp_path)
+
+            def confirm(self, question, default, flag):
+                return "mcap" in question  # Say yes to the conversion confirm.
+
+        mocker.patch("sys.stdin.isatty", return_value=True)
+        mocker.patch("sys.stdout.isatty", return_value=True)
+        mocker.patch("blueye.sdk.cli.prompts.QuestionaryPrompter", return_value=FakePrompter())
+
+        assert main(["logs"]) == 0
+        convert.assert_called_once()

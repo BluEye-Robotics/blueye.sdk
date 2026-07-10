@@ -14,6 +14,7 @@ SDK's `[cli]` extra), which connects to the drone as an observer — taking no c
 ```shell
 blueye logs list                       # table of logs on the drone
 blueye logs download --latest 1        # newest log to the current directory
+blueye logs download --latest 1 --mcap # ...and convert it for Foxglove
 blueye logs download BYEDP000000_ea9ac92e1817a1d4_00002 -o ~/dives
 blueye logs                            # interactive: pick logs to download
 ```

@@ -1,6 +1,17 @@
 # Visualize dive log sensor data with Foxglove
 With some simple steps you can visualize dive log data with ease in Foxglove. This is a great tool to play back and visualize control signals and estimated states and other sensor data from the dive.
 
+!!! tip "One-step download and convert"
+    The `blueye` CLI (installed with `pip install "blueye.sdk[cli]"`) can download and
+    convert in one go:
+
+    ```shell
+    blueye logs download --latest 1 --mcap
+    ```
+
+    This fetches the newest log from the drone and writes both the `.bez` and a
+    Foxglove-ready `.mcap` next to it. Then continue from step 5 below.
+
 1. Download foxglove [here](https://foxglove.dev/download) and create an account.
 2. Download a divelog from the drone as shown [here](https://blueye-robotics.github.io/blueye.sdk/latest/logs/listing-and-downloading/).
 3. Run `pip install "blueye.sdk[examples]"` to get the necessary dependencies, if you have not done so already.

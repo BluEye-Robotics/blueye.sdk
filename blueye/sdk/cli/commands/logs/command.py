@@ -52,6 +52,11 @@ def add_parser(subparsers) -> None:
         help="Download the N most recent logs",
     )
     download.add_argument("--all", action="store_true", help="Download every log")
+    download.add_argument(
+        "--mcap",
+        action="store_true",
+        help="Also convert each downloaded log to .mcap (for Foxglove)",
+    )
 
 
 def _connect(args):
@@ -87,8 +92,24 @@ def _print_logs_table(console, log_files) -> None:
     console.print(table)
 
 
-def _download_logs(console, log_files, output_dir: Path, timeout: float) -> None:
+def _ensure_mcap_support() -> None:
+    """Gate the --mcap path on its optional dependency, with install guidance."""
+    from ... import deps
+
+    missing = deps.missing(("mcap_protobuf",))
+    if missing:
+        deps.print_install_guidance(missing)
+        raise CliError("Converting to .mcap requires the mcap-protobuf-support package.")
+
+
+def _download_logs(
+    console, log_files, output_dir: Path, timeout: float, convert_mcap: bool = False
+) -> None:
     from blueye.sdk.logs import human_readable_filesize
+
+    if convert_mcap:
+        _ensure_mcap_support()
+        from .mcap import convert_bez_to_mcap
 
     output_dir.mkdir(parents=True, exist_ok=True)
     for log in log_files:
@@ -98,6 +119,14 @@ def _download_logs(console, log_files, output_dir: Path, timeout: float) -> None
             f"Downloaded {log.name}.bez ({human_readable_filesize(log.filesize)}) "
             f"to {output_dir}"
         )
+        if convert_mcap:
+            bez_path = output_dir / f"{log.name}.bez"
+            mcap_path = output_dir / f"{log.name}.mcap"
+            with console.status(f"[cyan]Converting {log.name} to .mcap..."):
+                message_count = convert_bez_to_mcap(bez_path, mcap_path)
+            console.print(
+                f"Converted to {mcap_path.name} ({message_count} messages) — open it in " "Foxglove"
+            )
 
 
 def _select_downloads(args, log_files) -> list:
@@ -139,7 +168,14 @@ def _run_interactive(console, args, prompter, drone) -> int:
         console.print("Nothing selected.")
         return 0
     output_dir = Path(prompter.text("Download to directory:", ".", "--output")).expanduser()
-    _download_logs(console, [by_label[label] for label in selected], output_dir, args.timeout)
+    convert_mcap = prompter.confirm("Also convert to .mcap for Foxglove?", False, "--mcap")
+    _download_logs(
+        console,
+        [by_label[label] for label in selected],
+        output_dir,
+        args.timeout,
+        convert_mcap=convert_mcap,
+    )
     return 0
 
 
@@ -155,7 +191,13 @@ def run(args: argparse.Namespace) -> int:
         if action == "download":
             log_files = _log_rows(drone.logs)
             selection = _select_downloads(args, log_files)
-            _download_logs(console, selection, Path(args.output).expanduser(), args.timeout)
+            _download_logs(
+                console,
+                selection,
+                Path(args.output).expanduser(),
+                args.timeout,
+                convert_mcap=args.mcap,
+            )
             return 0
 
         if action is None and sys.stdin.isatty() and sys.stdout.isatty():
