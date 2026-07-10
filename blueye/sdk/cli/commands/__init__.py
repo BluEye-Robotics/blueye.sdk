@@ -52,6 +52,7 @@ class CommandSpec:
 def all_commands() -> tuple[CommandSpec, ...]:
     """Return every built-in command, in the order shown in ``blueye --help``."""
     from .bundle_model import COMMAND as bundle_model_command
+    from .models import COMMAND as models_command
     from .tools import COMMAND as tools_command
 
-    return (bundle_model_command, tools_command)
+    return (bundle_model_command, models_command, tools_command)

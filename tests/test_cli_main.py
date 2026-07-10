@@ -284,3 +284,87 @@ class TestReviewRegressions:
         assert exit_code == 1
         assert output.read_bytes() == b"existing"
         assert "--force" in capsys.readouterr().err
+
+
+class TestPushToDrone:
+    @pytest.fixture
+    def mocked_drone_upload(self, mocker):
+        from blueye.sdk.cv_models import CvModel
+
+        client = mocker.Mock()
+        client.upload.return_value = CvModel(
+            name="Test YOLO",
+            directory="test-yolo",
+            type="detection",
+            output_format="yolov8_flat",
+            size_bytes=1,
+            labels=["x"],
+            enabled=True,
+            raw={},
+        )
+        drone_cls = mocker.patch("blueye.sdk.Drone", autospec=True)
+        drone_cls.return_value.cv_models = client
+        client._drone_cls = drone_cls
+        return client
+
+    def test_push_uploads_and_reports(
+        self, yolov8_model, fake_prompter, mocked_drone_upload, tmp_path, capsys
+    ):
+        output = tmp_path / "bundle.zip"
+        exit_code = main(["bundle-model", str(yolov8_model), "--yes", "-o", str(output), "--push"])
+        assert exit_code == 0
+        mocked_drone_upload.upload.assert_called_once_with(output)
+        out = capsys.readouterr().out
+        assert "test-yolo" in out
+
+    def test_drone_ip_flag_reaches_constructor(
+        self, yolov8_model, fake_prompter, mocked_drone_upload, tmp_path
+    ):
+        output = tmp_path / "bundle.zip"
+        main(
+            [
+                "bundle-model",
+                str(yolov8_model),
+                "--yes",
+                "-o",
+                str(output),
+                "--push",
+                "--drone-ip",
+                "192.168.1.42",
+            ]
+        )
+        assert mocked_drone_upload._drone_cls.call_args.kwargs["ip"] == "192.168.1.42"
+
+    def test_unreachable_drone_fails_gracefully_keeping_bundle(
+        self, yolov8_model, fake_prompter, mocked_drone_upload, tmp_path, capsys
+    ):
+        import requests
+
+        mocked_drone_upload.upload.side_effect = requests.exceptions.ConnectionError("refused")
+        output = tmp_path / "bundle.zip"
+        exit_code = main(["bundle-model", str(yolov8_model), "--yes", "-o", str(output), "--push"])
+        assert exit_code == 1
+        assert zipfile.is_zipfile(output)  # The bundle itself was written.
+        err = capsys.readouterr().err
+        assert "Could not reach the drone" in err
+        assert str(output) in err
+
+    def test_drone_rejection_surfaces_reason(
+        self, yolov8_model, fake_prompter, mocked_drone_upload, tmp_path, capsys
+    ):
+        import requests
+
+        mocked_drone_upload.upload.side_effect = requests.exceptions.HTTPError(
+            "400 error: model_meta.json not found in zip archive."
+        )
+        output = tmp_path / "bundle.zip"
+        exit_code = main(["bundle-model", str(yolov8_model), "--yes", "-o", str(output), "--push"])
+        assert exit_code == 1
+        assert "rejected" in capsys.readouterr().err
+
+    def test_yes_without_push_does_not_upload(
+        self, yolov8_model, fake_prompter, mocked_drone_upload, tmp_path
+    ):
+        output = tmp_path / "bundle.zip"
+        assert main(["bundle-model", str(yolov8_model), "--yes", "-o", str(output)]) == 0
+        mocked_drone_upload.upload.assert_not_called()

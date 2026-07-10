@@ -88,11 +88,41 @@ names.
 The model must take float32 image input; models with a clearly unsupported structure
 (image classifiers, float16 inputs, non-image inputs) are rejected with an explanation.
 
-## Deploying
+## Deploying to the drone
 
-Unzip the package into a directory on the drone (for example under
-`/videos/cv-models/`) and it can be launched by the onboard vision pipeline:
+The easiest way is to push the package directly: interactive runs offer it after the
+zip is written, and scripts pass `--push` (with `--drone-ip` if the drone is not at
+the default `192.168.1.101`):
 
 ```shell
-unzip yolov8n_package.zip -d /videos/cv-models/yolov8n_package
+blueye bundle-model yolov8n.onnx --yes --push
 ```
+
+If the drone cannot be reached, the command fails with a clear message — the zip is
+still written and can be pushed later.
+
+Installed models are managed with the `blueye models` command (or interactively by
+running it without arguments on a terminal):
+
+```shell
+blueye models list
+blueye models enable yolov8n-coco
+blueye models set-device yolov8n-coco tensorrt-dla0
+blueye models warmup yolov8n-coco      # pre-build the TensorRT engine
+```
+
+The same operations are available programmatically through the SDK:
+
+```python
+import blueye.sdk
+
+drone = blueye.sdk.Drone(auto_connect=False)  # HTTP only, takes no control
+model = drone.cv_models.upload("yolov8n_package.zip")
+drone.cv_models.set_enabled(model.directory, True)
+```
+
+Note: the `enabled` state is the autolaunch configuration; the API does not expose a
+live "running" status.
+
+Manual alternative: use the Blunux Web App — open `http://192.168.1.101` in a
+browser and upload the zip from the Computer Vision tab.

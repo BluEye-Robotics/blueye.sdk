@@ -93,6 +93,14 @@ def add_parser(subparsers) -> None:
     parser.add_argument(
         "-y", "--yes", action="store_true", help="Accept all inferred defaults, no prompts"
     )
+    parser.add_argument(
+        "--push", action="store_true", help="Upload the bundle to the drone after writing it"
+    )
+    parser.add_argument(
+        "--drone-ip",
+        default="192.168.1.101",
+        help="Drone address used by --push (default: %(default)s)",
+    )
     parser.add_argument("--force", action="store_true", help="Overwrite an existing zip")
     parser.add_argument(
         "--dry-run", action="store_true", help="Print the generated model_meta.json and stop"
@@ -231,6 +239,38 @@ def _resolve_runtime(args, dla, prompter):
             "--runtime-enabled/--no-runtime-enabled",
         )
     return device, hz, enabled
+
+
+def _push_to_drone(console, zip_path: Path, ip: str) -> None:
+    """Upload the bundle to the drone, translating failures into CliErrors."""
+    import requests
+
+    from blueye.sdk import Drone
+
+    drone = Drone(ip=ip, auto_connect=False)  # HTTP only; takes no control of the drone.
+    try:
+        with console.status(f"[cyan]Uploading to the drone at {ip}..."):
+            model = drone.cv_models.upload(zip_path)
+    except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as error:
+        raise CliError(
+            f"Could not reach the drone at {ip} — is it connected? The bundle was written "
+            f"to {zip_path}; connect to the drone and re-run with --push, use "
+            "`blueye models upload`, or upload it in the drone's web UI."
+        ) from error
+    except requests.exceptions.HTTPError as error:
+        raise CliError(
+            f"The drone rejected the package: {error}. The bundle was written to {zip_path}."
+        ) from error
+
+    state = "enabled" if model.enabled else "disabled"
+    console.print(
+        f"[green bold]Uploaded to the drone:[/green bold] '{model.name}' installed as "
+        f"'{model.directory}' (autolaunch {state})"
+    )
+    console.print(
+        f"[dim]Tip: `blueye models warmup {model.directory}` pre-builds the inference "
+        "engine so the first launch is instant.[/dim]"
+    )
 
 
 def run(args: argparse.Namespace) -> int:
@@ -425,10 +465,21 @@ def run(args: argparse.Namespace) -> int:
         console.print()
         console.print(f"[green bold]Bundle written:[/green bold] {output_path} ({size_mb:.1f} MB)")
         console.print(f"[dim]Contents: {contents}[/dim]")
-        console.print(
-            "[dim]Deploy: unzip into a directory on the drone and run "
-            "`be-cv <package_dir> --input <source>`[/dim]"
+
+        # Stage 6 — optionally push the package to the drone.
+        push = args.push or (
+            interactive
+            and prompter.confirm(
+                f"Upload the package to the drone at {args.drone_ip} now?", False, "--push"
+            )
         )
+        if push:
+            _push_to_drone(console, output_path, args.drone_ip)
+        else:
+            console.print(
+                f"[dim]Deploy: re-run with --push (drone at {args.drone_ip}), use "
+                "`blueye models upload`, or upload the zip in the drone's web UI.[/dim]"
+            )
         return 0
 
     except (introspect.IntrospectionError, heuristics.UnsupportedModelError) as error:
