@@ -6,6 +6,18 @@ When the drone is powered on a new log file is created, where it stores telemetr
 
  Every entry in the binary log is a [BinlogRecord][blueye.protocol.types.message_formats.BinlogRecord] Protobuf message, which in turn contains a unix timestamp in UTC, the monotonic timestamp (time since boot), and an Any message wrapping the Blueye telemetry message. The telemetry messages are documented in the [telemetry proto][blueye.protocol.types.telemetry].
 
+## From the command line
+
+The binary logs are also available through the `blueye` CLI (installed with the
+SDK's `[cli]` extra), which connects to the drone as an observer — taking no control:
+
+```shell
+blueye logs list                       # table of logs on the drone
+blueye logs download --latest 1        # newest log to the current directory
+blueye logs download BYEDP000000_ea9ac92e1817a1d4_00002 -o ~/dives
+blueye logs                            # interactive: pick logs to download
+```
+
 ## Listing the log files
 If your drone has completed 5 dives and you do
 

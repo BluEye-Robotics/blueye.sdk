@@ -22,7 +22,7 @@ class PromptAborted(Exception):
 
 
 class Prompter(Protocol):
-    """The questions the bundler can ask. Implementations decide how."""
+    """The questions the CLI commands can ask. Implementations decide how."""
 
     def select(
         self, question: str, choices: Sequence[str], default: str | None, flag: str
@@ -33,6 +33,8 @@ class Prompter(Protocol):
     def confirm(self, question: str, default: bool, flag: str) -> bool: ...
 
     def path(self, question: str, default: str | None, flag: str) -> str: ...
+
+    def checkbox(self, question: str, choices: Sequence[str], flag: str) -> list[str]: ...
 
 
 def _require(answer: object) -> object:
@@ -68,6 +70,10 @@ class QuestionaryPrompter:
     def path(self, question: str, default: str | None, flag: str) -> str:
         return str(_require(questionary.path(question, default=default or "").ask()))
 
+    def checkbox(self, question: str, choices: Sequence[str], flag: str) -> list[str]:
+        answer = _require(questionary.checkbox(question, choices=list(choices)).ask())
+        return [str(item) for item in answer]
+
 
 class NonInteractivePrompter:
     """Prompt resolution for ``--yes`` runs and non-TTY environments.
@@ -96,3 +102,6 @@ class NonInteractivePrompter:
         if not default:
             raise CliError(f"Cannot answer '{question}' non-interactively — pass {flag}.")
         return default
+
+    def checkbox(self, question: str, choices: Sequence[str], flag: str) -> list[str]:
+        raise CliError(f"Cannot answer '{question}' non-interactively — pass {flag}.")
