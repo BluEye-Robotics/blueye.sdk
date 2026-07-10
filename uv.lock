@@ -127,17 +127,17 @@ dependencies = [
     { name = "proto-plus" },
     { name = "python-dateutil" },
     { name = "pyzmq" },
+    { name = "questionary" },
     { name = "requests" },
+    { name = "rich" },
     { name = "tabulate" },
+    { name = "tomli", marker = "python_full_version < '3.11'" },
 ]
 
 [package.optional-dependencies]
 cli = [
     { name = "mcap-protobuf-support" },
     { name = "onnx" },
-    { name = "questionary" },
-    { name = "rich" },
-    { name = "tomli", marker = "python_full_version < '3.11'" },
 ]
 examples = [
     { name = "asciimatics" },
@@ -169,10 +169,7 @@ dev = [
     { name = "pytest" },
     { name = "pytest-cov" },
     { name = "pytest-mock" },
-    { name = "questionary" },
     { name = "requests-mock" },
-    { name = "rich" },
-    { name = "tomli", marker = "python_full_version < '3.11'" },
 ]
 
 [package.metadata]
@@ -191,11 +188,11 @@ requires-dist = [
     { name = "pyserial", marker = "extra == 'examples'", specifier = "~=3.5" },
     { name = "python-dateutil", specifier = ">=2.8.2,<3" },
     { name = "pyzmq", specifier = ">=26,<28" },
-    { name = "questionary", marker = "extra == 'cli'", specifier = ">=2.0,<3" },
+    { name = "questionary", specifier = ">=2.0,<3" },
     { name = "requests", specifier = ">=2.22.0,<3" },
-    { name = "rich", marker = "extra == 'cli'", specifier = ">=13,<15" },
+    { name = "rich", specifier = ">=13,<15" },
     { name = "tabulate", specifier = ">=0.9,<0.10" },
-    { name = "tomli", marker = "python_full_version < '3.11' and extra == 'cli'", specifier = ">=2,<3" },
+    { name = "tomli", marker = "python_full_version < '3.11'", specifier = ">=2,<3" },
     { name = "webdavclient3", marker = "extra == 'examples'", specifier = ">=3.14.6,<4" },
 ]
 provides-extras = ["cli", "examples"]
@@ -219,10 +216,7 @@ dev = [
     { name = "pytest", specifier = "~=8.3" },
     { name = "pytest-cov", specifier = "~=6.0" },
     { name = "pytest-mock", specifier = "~=3.11" },
-    { name = "questionary", specifier = ">=2.0,<3" },
     { name = "requests-mock", specifier = "~=1.11" },
-    { name = "rich", specifier = ">=13,<15" },
-    { name = "tomli", marker = "python_full_version < '3.11'", specifier = ">=2,<3" },
 ]
 
 [[package]]

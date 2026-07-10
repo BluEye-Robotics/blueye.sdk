@@ -8,7 +8,7 @@ from .command import add_parser, run
 COMMAND = CommandSpec(
     name="models",
     help="Manage the CV model packages installed on the drone",
-    requires=("rich", "questionary"),
+    requires=(),  # rich/questionary are core SDK dependencies.
     add_parser=add_parser,
     run=run,
 )

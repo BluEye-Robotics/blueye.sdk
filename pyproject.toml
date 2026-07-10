@@ -22,20 +22,22 @@ dependencies = [
     # cp313 and has to be compiled from source on newer interpreters.
     "pyzmq>=26,<28",
     "proto-plus>=1.22.2,<2",
+    # The `blueye` CLI ships with the SDK; these power its terminal UI and the
+    # PEP 723 metadata parsing for third-party tools.
+    "rich>=13,<15",
+    "questionary>=2.0,<3",
+    "tomli>=2,<3; python_version < '3.11'",
 ]
 
 [project.scripts]
 blueye = "blueye.sdk.cli:main"
 
 [project.optional-dependencies]
-# Dependencies for the `blueye` command line interface (e.g. `blueye bundle-model`). Install
-# with: pip install "blueye.sdk[cli]"
+# Heavyweight dependencies for `blueye bundle-model` (ONNX model introspection).
+# The rest of the CLI works without this extra. Install with:
+# pip install "blueye.sdk[cli]"
 cli = [
     "onnx>=1.16,<2",
-    "rich>=13,<15",
-    "questionary>=2.0,<3",
-    # TOML parser for reading third-party tools' PEP 723 metadata; stdlib from 3.11.
-    "tomli>=2,<3; python_version < '3.11'",
     # .bez -> .mcap conversion (`blueye logs download --mcap`).
     "mcap-protobuf-support>=0.5.3,<0.6",
 ]
@@ -60,9 +62,6 @@ Repository = "https://github.com/blueye-robotics/blueye.sdk"
 dev = [
     # The CLI extra, repeated here so the test suite can exercise the CLI modules.
     "onnx>=1.16,<2",
-    "rich>=13,<15",
-    "questionary>=2.0,<3",
-    "tomli>=2,<3; python_version < '3.11'",
     "mcap-protobuf-support>=0.5.3,<0.6",
     "pytest~=8.3",
     "pytest-mock~=3.11",
