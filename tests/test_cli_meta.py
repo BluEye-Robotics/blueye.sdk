@@ -103,6 +103,28 @@ class TestBuildMeta:
         meta = build_meta(detection_options(output_format="ssd_multi", one_indexed_classes=True))
         assert meta["detection"]["one_indexed_classes"] is True
 
+    def test_informational_fields_emitted_after_name(self):
+        meta = build_meta(
+            detection_options(
+                version="1.2.0",
+                description="Test detector",
+                author="Blueye Robotics",
+                license="MIT",
+            )
+        )
+        assert meta["version"] == "1.2.0"
+        assert meta["description"] == "Test detector"
+        assert meta["author"] == "Blueye Robotics"
+        assert meta["license"] == "MIT"
+        keys = list(meta)
+        assert keys.index("name") < keys.index("version")
+        assert keys.index("license") < keys.index("preprocessing")
+
+    def test_informational_fields_omitted_when_empty(self):
+        meta = build_meta(detection_options())
+        for key in ("version", "description", "author", "license"):
+            assert key not in meta
+
 
 class TestDefaultPreprocessing:
     def test_raw_pixel_formats(self):
@@ -165,6 +187,17 @@ class TestValidateMeta:
         )
         meta = build_meta(options)
         assert any("template_size" in error for error in validate_meta(meta))
+
+    def test_valid_informational_fields_pass(self):
+        meta = build_meta(
+            detection_options(version="1.0.0", description="d", author="a", license="MIT")
+        )
+        assert validate_meta(meta) == []
+
+    def test_non_string_informational_field_rejected(self):
+        meta = build_meta(detection_options())
+        meta["license"] = 42
+        assert "license must be a string" in validate_meta(meta)
 
 
 class TestDetectionLabelsNotDefaulted:

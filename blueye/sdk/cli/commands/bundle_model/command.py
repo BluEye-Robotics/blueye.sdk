@@ -35,6 +35,16 @@ def add_parser(subparsers) -> None:
     )
     parser.add_argument("onnx_path", nargs="?", help="Path to the ONNX model file")
     parser.add_argument("--name", help="Human-readable model name")
+    parser.add_argument(
+        "--model-version",
+        help='Model version string written to the metadata (default: "1.0.0")',
+    )
+    parser.add_argument("--description", help="Human-readable model description")
+    parser.add_argument("--author", help="Model author/publisher")
+    parser.add_argument(
+        "--license",
+        help='Model license, preferably an SPDX id (e.g. "MIT", "Apache-2.0", "Proprietary")',
+    )
     parser.add_argument("-o", "--output", help="Output zip path (default: <name>_package.zip)")
     parser.add_argument(
         "--format",
@@ -151,6 +161,16 @@ def _parse_float_list(value: str, flag: str) -> list[float]:
         return [float(part) for part in value.split(",") if part.strip()]
     except ValueError as error:
         raise CliError(f"{flag} must be a comma-separated float list: {error}") from error
+
+
+def _optional_text(value: str | None, prompter, interactive: bool, question: str, flag: str) -> str:
+    """Resolve an optional informational field: the flag wins, interactive runs prompt,
+    non-interactive runs omit the field instead of failing on the empty default."""
+    if value is not None:
+        return value
+    if not interactive:
+        return ""
+    return prompter.text(question, "", flag)
 
 
 def _read_labels_file(path: Path) -> list[str]:
@@ -326,6 +346,29 @@ def run(args: argparse.Namespace) -> int:
         name = args.name or prompter.text("Model name:", default_name, "--name")
 
         options = meta.MetaOptions(name=name, output_format=output_format, kind=kind)
+
+        options.version = args.model_version or prompter.text(
+            "Model version:", "1.0.0", "--model-version"
+        )
+        has_detail_flags = any(
+            value is not None for value in (args.description, args.author, args.license)
+        )
+        if has_detail_flags or prompter.confirm(
+            "Add package details (description / author / license)?", False, "--description"
+        ):
+            options.description = _optional_text(
+                args.description, prompter, interactive, "Description:", "--description"
+            )
+            options.author = _optional_text(
+                args.author, prompter, interactive, "Author:", "--author"
+            )
+            options.license = _optional_text(
+                args.license,
+                prompter,
+                interactive,
+                "License (SPDX id, e.g. MIT, Apache-2.0, AGPL-3.0, Proprietary):",
+                "--license",
+            )
 
         if args.input_size:
             options.input_width, options.input_height = _parse_input_size(args.input_size)
