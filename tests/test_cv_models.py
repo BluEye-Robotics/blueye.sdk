@@ -44,6 +44,17 @@ class TestList:
         requests_mock.get(f"{BASE}/", json=[])
         assert cv_models.list() == []
 
+    def test_list_sorted_by_directory(self, cv_models, requests_mock):
+        requests_mock.get(
+            f"{BASE}/",
+            json=[
+                {"name": "B", "directory": "b-model"},
+                {"name": "A", "directory": "a-model"},
+            ],
+        )
+        models = cv_models.list()
+        assert [model.directory for model in models] == ["a-model", "b-model"]
+
     def test_missing_optional_fields_defaulted(self):
         model = CvModel.from_json({"name": "x", "directory": "x"})
         assert model.type == "unknown"
@@ -99,6 +110,17 @@ class TestDownload:
         output = cv_models.download("cod-detector", output_path=tmp_path)
         assert output == tmp_path / "cod-detector.zip"
         assert output.read_bytes() == b"zip-bytes"
+
+    def test_download_ignores_extra_disposition_parameters(
+        self, cv_models, requests_mock, tmp_path
+    ):
+        requests_mock.get(
+            f"{BASE}/cod-detector/download",
+            content=b"zip-bytes",
+            headers={"Content-Disposition": 'attachment; filename="cod-detector.zip"; foo="bar"'},
+        )
+        output = cv_models.download("cod-detector", output_path=tmp_path)
+        assert output == tmp_path / "cod-detector.zip"
 
     def test_download_fallback_name_and_explicit_path(self, cv_models, requests_mock, tmp_path):
         requests_mock.get(f"{BASE}/cod-detector/download", content=b"zip-bytes")

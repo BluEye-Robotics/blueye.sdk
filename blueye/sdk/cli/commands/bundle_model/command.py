@@ -18,7 +18,11 @@ from ...errors import CliError
 
 logger = logging.getLogger(__name__)
 
-_DEVICES = ("cpu", "cuda", "tensorrt", "tensorrt-dla0", "tensorrt-dla1", "coreml")
+#: Devices the drone's CV model API exposes; the interactive prompt offers only these.
+_DRONE_DEVICES = ("cuda", "tensorrt", "tensorrt-dla0", "tensorrt-dla1")
+#: The package format additionally allows cpu/coreml for local desktop testing with
+#: be-cv; they stay reachable via an explicit --runtime-device flag.
+_DEVICES = (*_DRONE_DEVICES, "cpu", "coreml")
 _RATE_PRESETS = ("max (unlimited)", "30", "15", "10", "5", "2", "custom...")
 
 
@@ -225,7 +229,8 @@ def _resolve_runtime(args, dla, prompter):
     else:
         recommended = "tensorrt-dla0" if dla.good_fit else "tensorrt"
         choices = [
-            device + (" (recommended)" if device == recommended else "") for device in _DEVICES
+            device + (" (recommended)" if device == recommended else "")
+            for device in _DRONE_DEVICES
         ]
         answer = prompter.select(
             f"Execution device on the drone? ({dla.reason})",
@@ -465,6 +470,11 @@ def run(args: argparse.Namespace) -> int:
         options.runtime_device = device
         options.runtime_hz = hz
         options.runtime_enabled = enabled
+        if device not in _DRONE_DEVICES:
+            console.print(
+                f"[yellow]Note:[/yellow] device '{device}' is for local be-cv testing — "
+                f"the drone only exposes {', '.join(_DRONE_DEVICES)}."
+            )
 
         # Stage 4 — build and validate.
         meta_dict = meta.build_meta(options)
