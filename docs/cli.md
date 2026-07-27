@@ -54,6 +54,11 @@ name, tracking algorithm, and the runtime configuration for the drone:
 - **Inference rate** — maximum rate in Hz, defaulting to unlimited.
 - **Autolaunch** — whether the drone should start this model automatically. Defaults
   to enabled; pass `--no-runtime-enabled` to bundle the package disabled.
+- **Package metadata** — a version string (default `1.0.0`) plus optional description,
+  author, and license. These are informational fields carried inside
+  `model_meta.json` so the package stays self-describing wherever it travels
+  (drone web UI, Blueye App, Blueye Cloud). Use an [SPDX identifier](https://spdx.org/licenses/)
+  for the license when you can (`MIT`, `Apache-2.0`, `AGPL-3.0`, `Proprietary`).
 
 The result is a zip with `model.onnx` and `model_meta.json` at its root.
 
@@ -64,6 +69,8 @@ Every prompt can be answered with a flag, and `--yes` accepts all inferred defau
 ```shell
 blueye bundle-model yolov8n.onnx --yes \
     --name "YOLOv8n (COCO)" \
+    --model-version 1.0.0 --author "Ultralytics" --license AGPL-3.0 \
+    --description "YOLOv8n nano object detector trained on COCO (80 classes)" \
     --tracking byte_track \
     --runtime-device tensorrt-dla0 --runtime-hz 10 --runtime-enabled \
     --output yolov8n_package.zip

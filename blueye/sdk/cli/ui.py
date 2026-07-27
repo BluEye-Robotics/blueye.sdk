@@ -33,7 +33,7 @@ def model_summary_panel(info) -> Panel:
     """Render the introspected model as a summary panel.
 
     Args:
-        info: A :class:`~blueye.sdk.cli.introspect.ModelInfo`.
+        info: A :class:`~blueye.sdk.cli.commands.bundle_model.introspect.ModelInfo`.
     """
     table = Table(show_header=True, header_style="bold", box=None, pad_edge=False)
     table.add_column("Tensor")
@@ -59,7 +59,7 @@ def inference_panel(config) -> Panel:
     """Render the inference result and its reasoning.
 
     Args:
-        config: A :class:`~blueye.sdk.cli.heuristics.InferredConfig`.
+        config: A :class:`~blueye.sdk.cli.commands.bundle_model.heuristics.InferredConfig`.
     """
     lines = []
     if config.output_format:

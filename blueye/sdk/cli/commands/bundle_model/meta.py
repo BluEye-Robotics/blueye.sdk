@@ -78,6 +78,10 @@ class MetaOptions:
     """
 
     name: str = ""
+    version: str = ""
+    description: str = ""
+    author: str = ""
+    license: str = ""
     output_format: str = ""
     kind: str = "detection"  # "detection" or "sot"
     num_classes: int | None = None
@@ -136,6 +140,10 @@ def build_meta(options: MetaOptions) -> dict:
         "model_file": "model.onnx",
         "name": options.name,
     }
+    for key in ("version", "description", "author", "license"):
+        value = getattr(options, key)
+        if value:
+            meta[key] = value
 
     preprocessing: dict = {
         "color_order": options.color_order,
@@ -211,6 +219,9 @@ def validate_meta(meta: dict) -> list[str]:
         errors.append("format_version must be 1")
     if not meta.get("model_file"):
         errors.append("model_file must be non-empty")
+    for key in ("name", "version", "description", "author", "license"):
+        if key in meta and not isinstance(meta[key], str):
+            errors.append(f"{key} must be a string")
 
     detection = meta.get("detection")
     sot = meta.get("sot")

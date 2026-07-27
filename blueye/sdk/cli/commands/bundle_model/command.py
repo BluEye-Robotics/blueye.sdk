@@ -18,7 +18,11 @@ from ...errors import CliError
 
 logger = logging.getLogger(__name__)
 
-_DEVICES = ("cpu", "cuda", "tensorrt", "tensorrt-dla0", "tensorrt-dla1", "coreml")
+#: Devices the drone's CV model API exposes; the interactive prompt offers only these.
+_DRONE_DEVICES = ("cuda", "tensorrt", "tensorrt-dla0", "tensorrt-dla1")
+#: The package format additionally allows cpu/coreml for local desktop testing with
+#: be-cv; they stay reachable via an explicit --runtime-device flag.
+_DEVICES = (*_DRONE_DEVICES, "cpu", "coreml")
 _RATE_PRESETS = ("max (unlimited)", "30", "15", "10", "5", "2", "custom...")
 
 
@@ -35,6 +39,16 @@ def add_parser(subparsers) -> None:
     )
     parser.add_argument("onnx_path", nargs="?", help="Path to the ONNX model file")
     parser.add_argument("--name", help="Human-readable model name")
+    parser.add_argument(
+        "--model-version",
+        help='Model version string written to the metadata (default: "1.0.0")',
+    )
+    parser.add_argument("--description", help="Human-readable model description")
+    parser.add_argument("--author", help="Model author/publisher")
+    parser.add_argument(
+        "--license",
+        help='Model license, preferably an SPDX id (e.g. "MIT", "Apache-2.0", "Proprietary")',
+    )
     parser.add_argument("-o", "--output", help="Output zip path (default: <name>_package.zip)")
     parser.add_argument(
         "--format",
@@ -153,6 +167,16 @@ def _parse_float_list(value: str, flag: str) -> list[float]:
         raise CliError(f"{flag} must be a comma-separated float list: {error}") from error
 
 
+def _optional_text(value: str | None, prompter, interactive: bool, question: str, flag: str) -> str:
+    """Resolve an optional informational field: the flag wins, interactive runs prompt,
+    non-interactive runs omit the field instead of failing on the empty default."""
+    if value is not None:
+        return value
+    if not interactive:
+        return ""
+    return prompter.text(question, "", flag)
+
+
 def _read_labels_file(path: Path) -> list[str]:
     if not path.is_file():
         raise CliError(f"Labels file not found: {path}")
@@ -205,7 +229,8 @@ def _resolve_runtime(args, dla, prompter):
     else:
         recommended = "tensorrt-dla0" if dla.good_fit else "tensorrt"
         choices = [
-            device + (" (recommended)" if device == recommended else "") for device in _DEVICES
+            device + (" (recommended)" if device == recommended else "")
+            for device in _DRONE_DEVICES
         ]
         answer = prompter.select(
             f"Execution device on the drone? ({dla.reason})",
@@ -327,6 +352,29 @@ def run(args: argparse.Namespace) -> int:
 
         options = meta.MetaOptions(name=name, output_format=output_format, kind=kind)
 
+        options.version = args.model_version or prompter.text(
+            "Model version:", "1.0.0", "--model-version"
+        )
+        has_detail_flags = any(
+            value is not None for value in (args.description, args.author, args.license)
+        )
+        if has_detail_flags or prompter.confirm(
+            "Add package details (description / author / license)?", False, "--description"
+        ):
+            options.description = _optional_text(
+                args.description, prompter, interactive, "Description:", "--description"
+            )
+            options.author = _optional_text(
+                args.author, prompter, interactive, "Author:", "--author"
+            )
+            options.license = _optional_text(
+                args.license,
+                prompter,
+                interactive,
+                "License (SPDX id, e.g. MIT, Apache-2.0, AGPL-3.0, Proprietary):",
+                "--license",
+            )
+
         if args.input_size:
             options.input_width, options.input_height = _parse_input_size(args.input_size)
         else:
@@ -422,6 +470,11 @@ def run(args: argparse.Namespace) -> int:
         options.runtime_device = device
         options.runtime_hz = hz
         options.runtime_enabled = enabled
+        if device not in _DRONE_DEVICES:
+            console.print(
+                f"[yellow]Note:[/yellow] device '{device}' is for local be-cv testing — "
+                f"the drone only exposes {', '.join(_DRONE_DEVICES)}."
+            )
 
         # Stage 4 — build and validate.
         meta_dict = meta.build_meta(options)

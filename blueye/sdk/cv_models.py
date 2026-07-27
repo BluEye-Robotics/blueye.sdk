@@ -119,7 +119,8 @@ class CvModels:
             One CvModel per installed package, sorted by directory name.
         """
         response = self._check(requests.get(f"{self._base_url}/", timeout=timeout))
-        return [CvModel.from_json(entry) for entry in response.json()]
+        models = [CvModel.from_json(entry) for entry in response.json()]
+        return sorted(models, key=lambda model: model.directory)
 
     def upload(self, package: Path | str, timeout: float = 60) -> CvModel:
         """Upload a model package zip to the drone.
@@ -169,7 +170,7 @@ class CvModels:
         """
         response = self._check(requests.get(f"{self._base_url}/{name}/download", timeout=timeout))
         disposition = response.headers.get("Content-Disposition", "")
-        matches = re.findall('filename="(.+)"', disposition)
+        matches = re.findall('filename="([^"]+)"', disposition)
         filename = matches[0] if matches else f"{name}.zip"
 
         if output_path is None:
