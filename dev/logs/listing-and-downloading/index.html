@@ -712,6 +712,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#from-the-command-line" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        From the command line
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#listing-the-log-files" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1041,6 +1052,33 @@
   
   
     <li class="md-nav__item">
+      <a href="../../cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The blueye CLI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../odometer-to-831l/" class="md-nav__link">
         
   
@@ -1130,10 +1168,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_15" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_16" >
         
           
-          <label class="md-nav__link" for="__nav_15" id="__nav_15_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_16" id="__nav_16_label" tabindex="0">
             
   
   
@@ -1151,8 +1189,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_15_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_15">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_16_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_16">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1225,6 +1263,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../reference/blueye/sdk/cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    blueye.sdk.cli
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../reference/blueye/sdk/connection/" class="md-nav__link">
         
   
@@ -1261,6 +1327,34 @@
     
   
     blueye.sdk.constants
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/blueye/sdk/cv_models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    blueye.sdk.cv_models
   
 
     
@@ -1457,10 +1551,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_15_11" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_16_13" >
         
           
-          <label class="md-nav__link" for="__nav_15_11" id="__nav_15_11_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_16_13" id="__nav_16_13_label" tabindex="0">
             
   
   
@@ -1478,8 +1572,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_15_11_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_15_11">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_16_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_16_13">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1727,6 +1821,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#from-the-command-line" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        From the command line
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#listing-the-log-files" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1783,6 +1888,15 @@
 <p>When the drone is powered on a new log file is created, where it stores telemetry data such as depth, temperature, and more, is created. The drone will log data as long as it is powered on. These files can be downloaded to your local system where you can plot them or use them however you see fit.</p>
 <p>Blunux v3.0 introduced a a modern binary log format to replace the older CSV-based logs. This updated format employs gzip compression and Google's Protocol Buffers (Protobuf) for serialization. Gzip compression reduces log file sizes, optimizing storage and data transfer. The integration of Protobuf streamlines log parsing and analysis, offering more efficient data handling.</p>
 <p>Every entry in the binary log is a <a class="autorefs autorefs-internal" title="            BinlogRecord" href="../../reference/blueye/protocol/message_formats/#blueye.protocol.types.message_formats.BinlogRecord">BinlogRecord</a> Protobuf message, which in turn contains a unix timestamp in UTC, the monotonic timestamp (time since boot), and an Any message wrapping the Blueye telemetry message. The telemetry messages are documented in the <a class="autorefs autorefs-internal" title="            telemetry" href="../../reference/blueye/protocol/telemetry/#blueye.protocol.types.telemetry">telemetry proto</a>.</p>
+<h2 id="from-the-command-line">From the command line</h2>
+<p>The binary logs are also available through the <a href="../../cli/"><code>blueye</code> CLI</a>, which is
+installed with the SDK and connects to the drone as an observer — taking no control:</p>
+<div class="highlight"><pre><span></span><code>blueye<span class="w"> </span>logs<span class="w"> </span>list<span class="w">                       </span><span class="c1"># table of logs on the drone</span>
+blueye<span class="w"> </span>logs<span class="w"> </span>download<span class="w"> </span>--latest<span class="w"> </span><span class="m">1</span><span class="w">        </span><span class="c1"># newest log to the current directory</span>
+blueye<span class="w"> </span>logs<span class="w"> </span>download<span class="w"> </span>--latest<span class="w"> </span><span class="m">1</span><span class="w"> </span>--mcap<span class="w"> </span><span class="c1"># ...and convert it for Foxglove</span>
+blueye<span class="w"> </span>logs<span class="w"> </span>download<span class="w"> </span>BYEDP000000_ea9ac92e1817a1d4_00002<span class="w"> </span>-o<span class="w"> </span>~/dives
+blueye<span class="w"> </span>logs<span class="w">                            </span><span class="c1"># interactive: pick logs to download</span>
+</code></pre></div>
 <h2 id="listing-the-log-files">Listing the log files</h2>
 <p>If your drone has completed 5 dives and you do</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Binary logs</label><label for="__tabbed_1_2">Legacy logs</label></div>

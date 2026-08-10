@@ -9,10 +9,10 @@
       
       
       
-        <link rel="prev" href="../nmea-publisher/">
+        <link rel="prev" href="../mission-planning/">
       
       
-        <link rel="next" href="../cli/">
+        <link rel="next" href="../odometer-to-831l/">
       
       
         
@@ -23,7 +23,7 @@
     
     
       
-        <title>Mission Planning - Blueye SDK</title>
+        <title>The blueye CLI - Blueye SDK</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#mission-planning-with-the-sdk" class="md-skip">
+        <a href="#the-blueye-cli" class="md-skip">
           Skip to content
         </a>
       
@@ -146,7 +146,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-            Mission Planning
+            The blueye CLI
             
           </span>
         </div>
@@ -929,6 +929,33 @@
     
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../mission-planning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mission Planning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
     
   
   
@@ -948,7 +975,7 @@
   <span class="md-ellipsis">
     
   
-    Mission Planning
+    The blueye CLI
   
 
     
@@ -966,7 +993,7 @@
   <span class="md-ellipsis">
     
   
-    Mission Planning
+    The blueye CLI
   
 
     
@@ -992,10 +1019,71 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#creating-a-mission" class="md-nav__link">
+  <a href="#bundling-cv-models-blueye-bundle-model" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Creating a mission
+        Bundling CV models — blueye bundle-model
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Bundling CV models — blueye bundle-model">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#interactive-use" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Interactive use
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scripted-use" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scripted use
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#supported-model-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported model types
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploying-to-the-drone" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deploying to the drone
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#managing-models-on-the-drone-blueye-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Managing models on the drone — blueye models
       
     </span>
   </a>
@@ -1003,10 +1091,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#loading-and-running-the-mission" class="md-nav__link">
+  <a href="#downloading-dive-logs-blueye-logs" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Loading and running the mission
+        Downloading dive logs — blueye logs
       
     </span>
   </a>
@@ -1014,46 +1102,41 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#getting-status-updates-from-the-mission" class="md-nav__link">
+  <a href="#third-party-tools-blueye-tools" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Getting status updates from the mission
+        Third-party tools — blueye tools
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Third-party tools — blueye tools">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#writing-a-tool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Writing a tool
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#exporting-to-json" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#installing-and-managing-tools" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Exporting to JSON
+        Installing and managing tools
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#importing-from-json" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Importing from JSON
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Examples
-      
-    </span>
-  </a>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1061,33 +1144,6 @@
   
 </nav>
       
-    </li>
-  
-
-    
-    
-    
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../cli/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    The blueye CLI
-  
-
-    
-  </span>
-  
-  
-
-      </a>
     </li>
   
 
@@ -1841,10 +1897,71 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#creating-a-mission" class="md-nav__link">
+  <a href="#bundling-cv-models-blueye-bundle-model" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Creating a mission
+        Bundling CV models — blueye bundle-model
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Bundling CV models — blueye bundle-model">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#interactive-use" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Interactive use
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scripted-use" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scripted use
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#supported-model-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported model types
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploying-to-the-drone" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deploying to the drone
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#managing-models-on-the-drone-blueye-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Managing models on the drone — blueye models
       
     </span>
   </a>
@@ -1852,10 +1969,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#loading-and-running-the-mission" class="md-nav__link">
+  <a href="#downloading-dive-logs-blueye-logs" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Loading and running the mission
+        Downloading dive logs — blueye logs
       
     </span>
   </a>
@@ -1863,46 +1980,41 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#getting-status-updates-from-the-mission" class="md-nav__link">
+  <a href="#third-party-tools-blueye-tools" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Getting status updates from the mission
+        Third-party tools — blueye tools
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Third-party tools — blueye tools">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#writing-a-tool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Writing a tool
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#exporting-to-json" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#installing-and-managing-tools" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Exporting to JSON
+        Installing and managing tools
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#importing-from-json" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Importing from JSON
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Examples
-      
-    </span>
-  </a>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1926,211 +2038,273 @@
   
 
 
-<h1 id="mission-planning-with-the-sdk">Mission planning with the SDK</h1>
-<p>The SDK supports creating and running missions on the drone using the <a class="autorefs autorefs-internal" title="            Mission" href="../reference/blueye/sdk/mission/#blueye.sdk.mission.Mission"><code>mission</code></a> attribute of the <a class="autorefs autorefs-internal" title="            Drone" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Drone"><code>Drone</code></a> class. Missions are created using a set of instructions that define the actions the drone should perform.</p>
-<h2 id="creating-a-mission">Creating a mission</h2>
-<p>As an example we will create a mission that goes to the seabed, takes a picture with the main camera, and returns to the surface.</p>
-<p>First we define the instructions we want to use. The available instructions are outlined in the <a class="autorefs autorefs-internal" title="            Instruction" href="../reference/blueye/protocol/mission_planning/#blueye.protocol.types.mission_planning.Instruction"><code>Instruction</code></a> class.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">blueye.protocol</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">bp</span>
-
-<span class="n">go_to_seabed</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">Instruction</span><span class="p">(</span><span class="n">go_to_seabed_command</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;desired_speed&quot;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">})</span>
-<span class="n">take_picture</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">Instruction</span><span class="p">(</span><span class="n">camera_command</span><span class="o">=</span><span class="p">{</span>
-    <span class="s2">&quot;camera_action&quot;</span><span class="p">:</span> <span class="n">bp</span><span class="o">.</span><span class="n">CameraAction</span><span class="o">.</span><span class="n">CAMERA_ACTION_TAKE_PHOTO</span>
-<span class="p">})</span>
-<span class="n">go_to_surface</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">Instruction</span><span class="p">(</span><span class="n">go_to_surface_command</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;desired_speed&quot;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">})</span>
+<h1 id="the-blueye-cli">The blueye CLI</h1>
+<p>The SDK ships with a <code>blueye</code> command line interface for working with the drone from
+the terminal. It is installed together with the SDK:</p>
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>blueye.sdk
 </code></pre></div>
-<p>Next we create the mission using these instructions. The mission is created by passing a list of instructions to the <a class="autorefs autorefs-internal" title="            prepare_new_mission" href="../reference/blueye/sdk/mission/#blueye.sdk.mission.prepare_new_mission"><code>prepare_new_mission</code></a> function.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk.mission</span><span class="w"> </span><span class="kn">import</span> <span class="n">prepare_new_mission</span>
-<span class="n">go_to_seabed_mission</span> <span class="o">=</span> <span class="n">prepare_new_mission</span><span class="p">(</span>
-    <span class="n">instruction_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">go_to_seabed</span><span class="p">,</span> <span class="n">take_picture</span><span class="p">,</span> <span class="n">go_to_surface</span><span class="p">],</span>
-    <span class="n">mission_id</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="n">mission_name</span> <span class="o">=</span> <span class="s2">&quot;Go to seabed and take a picture&quot;</span><span class="p">,</span>
-<span class="p">)</span>
+<p>Running <code>blueye --help</code> lists the available commands. One command needs an extra:
+<code>blueye bundle-model</code> inspects ONNX files and requires the heavyweight <code>onnx</code> package,
+installed with the SDK's <code>cli</code> extra:</p>
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;blueye.sdk[cli]&quot;</span>
 </code></pre></div>
-<h2 id="loading-and-running-the-mission">Loading and running the mission</h2>
-<p>With the mission created we can now transfer it to the drone and run it. The easiest way to do this is to use the <a class="autorefs autorefs-internal" title="            load_and_run" href="../reference/blueye/sdk/mission/#blueye.sdk.mission.Mission.load_and_run"><code>load_and_run</code></a> method, which will transfer the mission the drone, wait for it to become ready and then start the mission.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drone</span>
-
-<span class="n">d</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">()</span>
-
-<span class="n">d</span><span class="o">.</span><span class="n">mission</span><span class="o">.</span><span class="n">load_and_run</span><span class="p">(</span><span class="n">go_to_seabed_mission</span><span class="p">)</span>
+<p>(Keep the quotes — most shells treat square brackets specially.) If the extra is
+missing, <code>bundle-model</code> detects it and prints the install command for your platform
+instead of failing.</p>
+<h2 id="bundling-cv-models-blueye-bundle-model">Bundling CV models — <code>blueye bundle-model</code></h2>
+<p>The Blueye X3 Ultra can run your own computer vision models: object
+detection, instance segmentation, and single-object tracking. The drone's vision
+pipeline consumes <strong>model packages</strong> — a zip containing an ONNX model and a
+<code>model_meta.json</code> file that describes how to preprocess frames and decode the model's
+outputs.</p>
+<p>The <code>blueye bundle-model</code> command turns an exported ONNX file into such a package. It</p>
+<ul>
+<li>validates that the model is of a supported type,</li>
+<li>auto-generates <code>model_meta.json</code> from the ONNX graph and any embedded metadata
+  (Ultralytics exports carry their class names and input size along),</li>
+<li>interactively asks about anything that cannot be inferred, and</li>
+<li>writes a deployable zip.</li>
+</ul>
+<h3 id="interactive-use">Interactive use</h3>
+<p>Point the command at your ONNX file and answer the prompts:</p>
+<div class="highlight"><pre><span></span><code>blueye<span class="w"> </span>bundle-model<span class="w"> </span>path/to/model.onnx
 </code></pre></div>
-<h2 id="getting-status-updates-from-the-mission">Getting status updates from the mission</h2>
-<p>The mission progress is published through the <a class="autorefs autorefs-internal" title="            NotificationTel" href="../reference/blueye/protocol/telemetry/#blueye.protocol.types.telemetry.NotificationTel"><code>NotificationTel</code></a> messages. These messages can be read manually with the usual telemetry methods, ie. <a class="autorefs autorefs-internal" title="            get" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Telemetry.get"><code>telemetry.get</code></a> or <a class="autorefs autorefs-internal" title="            add_msg_callback" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Telemetry.add_msg_callback"><code>telemetry.add_msg_callback</code></a>.</p>
-<p>Alternatively, if one initializes the Drone object with <code>log_notifications=True</code>, the notifications will be logged with pythons <code>logging</code> module. This is the recommended way to get notified about mission progress.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drone</span>
-
-<span class="n">d</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">(</span><span class="n">log_notifications</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<p>The CLI inspects the model, shows what it inferred (output format, class count, input
+size, labels), and walks through the remaining choices with interactive prompts — model
+name, tracking algorithm, and the runtime configuration for the drone:</p>
+<ul>
+<li><strong>Execution device</strong> — the CLI analyzes the network and recommends the Jetson DLA
+  cores (<code>tensorrt-dla0</code>/<code>tensorrt-dla1</code>) for convolution-style models, which frees the
+  GPU for other work. Models with layers the DLA cannot run (NMS-in-graph,
+  transformers) get <code>tensorrt</code> recommended instead. You can always pick any device.</li>
+<li><strong>Inference rate</strong> — maximum rate in Hz, defaulting to unlimited.</li>
+<li><strong>Autolaunch</strong> — whether the drone should start this model automatically. Defaults
+  to enabled; pass <code>--no-runtime-enabled</code> to bundle the package disabled.</li>
+<li><strong>Package metadata</strong> — a version string (default <code>1.0.0</code>) plus optional description,
+  author, and license. These are informational fields carried inside
+  <code>model_meta.json</code> so the package stays self-describing wherever it travels
+  (drone web UI, Blueye App, Blueye Cloud). Use an <a href="https://spdx.org/licenses/">SPDX identifier</a>
+  for the license when you can (<code>MIT</code>, <code>Apache-2.0</code>, <code>AGPL-3.0</code>, <code>Proprietary</code>).</li>
+</ul>
+<p>The result is a zip with <code>model.onnx</code> and <code>model_meta.json</code> at its root.</p>
+<h3 id="scripted-use">Scripted use</h3>
+<p>Every prompt can be answered with a flag, and <code>--yes</code> accepts all inferred defaults:</p>
+<div class="highlight"><pre><span></span><code>blueye<span class="w"> </span>bundle-model<span class="w"> </span>yolov8n.onnx<span class="w"> </span>--yes<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--name<span class="w"> </span><span class="s2">&quot;YOLOv8n (COCO)&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--model-version<span class="w"> </span><span class="m">1</span>.0.0<span class="w"> </span>--author<span class="w"> </span><span class="s2">&quot;Ultralytics&quot;</span><span class="w"> </span>--license<span class="w"> </span>AGPL-3.0<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--description<span class="w"> </span><span class="s2">&quot;YOLOv8n nano object detector trained on COCO (80 classes)&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--tracking<span class="w"> </span>byte_track<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--runtime-device<span class="w"> </span>tensorrt-dla0<span class="w"> </span>--runtime-hz<span class="w"> </span><span class="m">10</span><span class="w"> </span>--runtime-enabled<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--output<span class="w"> </span>yolov8n_package.zip
 </code></pre></div>
-<p>The termial output can however quickly become cluttered when the logs are being printed inbetween the program output. In such cases, it can be useful to run the program in one terminal and then run a separate terminal to read the logs. This can be accomplished by configuring a simple TCP server to listen for log messages. See the <a href="../logs/runtime-logs/#receiving-logs-in-another-terminal">Receiving logs in another terminal</a> section for an example of how to do this.</p>
-<h2 id="exporting-to-json">Exporting to JSON</h2>
-<p>The mission can be exported to a JSON file using the <a class="autorefs autorefs-internal" title="            export_to_json" href="../reference/blueye/sdk/mission/#blueye.sdk.mission.export_to_json"><code>export_to_json</code></a> method. This allows you to save the mission for later use or share it with others. It is also possible to load the json file in the Blueye App.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">blueye.protocol</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">bp</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk.mission</span><span class="w"> </span><span class="kn">import</span> <span class="n">export_to_json</span><span class="p">,</span> <span class="n">prepare_new_mission</span>
-
-<span class="c1"># Create a mission</span>
-<span class="n">mission</span> <span class="o">=</span> <span class="n">prepare_new_mission</span><span class="p">(</span>
-    <span class="n">instruction_list</span><span class="o">=</span><span class="p">[</span><span class="n">bp</span><span class="o">.</span><span class="n">Instruction</span><span class="p">(</span><span class="n">go_to_seabed_command</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;desired_speed&quot;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">})]</span>
-<span class="p">)</span>
-
-<span class="c1"># Export the mission to a JSON file</span>
-<span class="n">export_to_json</span><span class="p">(</span><span class="n">mission</span><span class="p">,</span> <span class="s2">&quot;exported_mission.json&quot;</span><span class="p">)</span>
+<p>Use <code>--dry-run</code> to print the generated <code>model_meta.json</code> without writing anything, and
+<code>--labels labels.txt</code> (one class name per line) when the model does not embed its class
+names.</p>
+<h3 id="supported-model-types">Supported model types</h3>
+<table>
+<thead>
+<tr>
+<th>Output format</th>
+<th>Model family</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>yolov2_grid</code></td>
+<td>YOLOv2 / TinyYOLOv2 (grid + anchors)</td>
+</tr>
+<tr>
+<td><code>yolov5_flat</code></td>
+<td>YOLOv5 ONNX export</td>
+</tr>
+<tr>
+<td><code>yolov8_flat</code></td>
+<td>YOLOv8 / YOLO11 ONNX export</td>
+</tr>
+<tr>
+<td><code>yolov8_seg</code></td>
+<td>YOLOv8/v11 segmentation</td>
+</tr>
+<tr>
+<td><code>yolo_e2e</code></td>
+<td>End-to-end YOLO with NMS in the model (YOLO26)</td>
+</tr>
+<tr>
+<td><code>yolo_e2e_seg</code></td>
+<td>End-to-end YOLO segmentation</td>
+</tr>
+<tr>
+<td><code>ssd_multi</code></td>
+<td>SSD (multi-output, e.g. TensorFlow exports)</td>
+</tr>
+<tr>
+<td><code>detr</code></td>
+<td>DETR transformer detectors</td>
+</tr>
+<tr>
+<td><code>ostrack</code></td>
+<td>OSTrack single-object tracker</td>
+</tr>
+<tr>
+<td><code>mixformerv2</code></td>
+<td>MixFormerV2 single-object tracker</td>
+</tr>
+</tbody>
+</table>
+<p>The model must take float32 image input; models with a clearly unsupported structure
+(image classifiers, float16 inputs, non-image inputs) are rejected with an explanation.</p>
+<h3 id="deploying-to-the-drone">Deploying to the drone</h3>
+<p>The easiest way is to push the package directly: interactive runs offer it after the
+zip is written, and scripts pass <code>--push</code> (with <code>--drone-ip</code> if the drone is not at
+the default <code>192.168.1.101</code>):</p>
+<div class="highlight"><pre><span></span><code>blueye<span class="w"> </span>bundle-model<span class="w"> </span>yolov8n.onnx<span class="w"> </span>--yes<span class="w"> </span>--push
 </code></pre></div>
-<h2 id="importing-from-json">Importing from JSON</h2>
-<p>You can also import a mission from a JSON file using the <a class="autorefs autorefs-internal" title="            import_from_json" href="../reference/blueye/sdk/mission/#blueye.sdk.mission.import_from_json"><code>import_from_json</code></a> method. This allows you to load a previously saved mission and run it on the drone.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drone</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk.mission</span><span class="w"> </span><span class="kn">import</span> <span class="n">import_from_json</span>
+<p>If the drone cannot be reached, the command fails with a clear message — the zip is
+still written and can be pushed later.</p>
+<p>The same operations are available programmatically through the SDK:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">blueye.sdk</span>
 
-<span class="n">mission</span> <span class="o">=</span> <span class="n">import_from_json</span><span class="p">(</span><span class="s2">&quot;exported_mission.json&quot;</span><span class="p">)</span>
-
-<span class="n">d</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">()</span>
-<span class="n">d</span><span class="o">.</span><span class="n">mission</span><span class="o">.</span><span class="n">load_and_run</span><span class="p">(</span><span class="n">mission</span><span class="p">)</span>
+<span class="n">drone</span> <span class="o">=</span> <span class="n">blueye</span><span class="o">.</span><span class="n">sdk</span><span class="o">.</span><span class="n">Drone</span><span class="p">(</span><span class="n">auto_connect</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># HTTP only, takes no control</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">drone</span><span class="o">.</span><span class="n">cv_models</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="s2">&quot;yolov8n_package.zip&quot;</span><span class="p">)</span>
+<span class="n">drone</span><span class="o">.</span><span class="n">cv_models</span><span class="o">.</span><span class="n">set_enabled</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
-<h2 id="examples">Examples</h2>
-<p>Here are some examples outlining how to use some of the mission planning features</p>
-<details class="example">
-<summary>Tilt camera</summary>
-<p>This is a simple example that tilts the camera up and down. Useful for testing with the drone out of the water.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">logging.handlers</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
-
-<span class="kn">import</span><span class="w"> </span><span class="nn">blueye.protocol</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">bp</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drone</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk.mission</span><span class="w"> </span><span class="kn">import</span> <span class="n">prepare_new_mission</span>
-
-<span class="c1"># Publish runtime logs over TCP (including mission status notifications)</span>
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;blueye.sdk&quot;</span><span class="p">)</span>
-<span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
-<span class="n">socket_handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">SocketHandler</span><span class="p">(</span>
-    <span class="s2">&quot;localhost&quot;</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">DEFAULT_TCP_LOGGING_PORT</span>
-<span class="p">)</span>
-<span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">socket_handler</span><span class="p">)</span>
-
-<span class="c1"># Create some instructions for the mission</span>
-<span class="n">tilt_camera_center</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">Instruction</span><span class="p">(</span><span class="n">tilt_main_camera_command</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;tilt_angle&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">}})</span>
-<span class="n">tilt_camera_top</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">Instruction</span><span class="p">(</span><span class="n">tilt_main_camera_command</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;tilt_angle&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mf">30.0</span><span class="p">}})</span>
-<span class="n">tilt_camera_bottom</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">Instruction</span><span class="p">(</span><span class="n">tilt_main_camera_command</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;tilt_angle&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">30.0</span><span class="p">}})</span>
-<span class="n">wait</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">Instruction</span><span class="p">(</span><span class="n">wait_for_command</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;wait_for_seconds&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">})</span>
-
-<span class="c1"># Create a mission with the instructions</span>
-<span class="n">mission</span> <span class="o">=</span> <span class="n">prepare_new_mission</span><span class="p">(</span>
-    <span class="n">instruction_list</span><span class="o">=</span><span class="p">[</span><span class="n">tilt_camera_top</span><span class="p">,</span> <span class="n">wait</span><span class="p">,</span> <span class="n">tilt_camera_bottom</span><span class="p">,</span> <span class="n">wait</span><span class="p">,</span> <span class="n">tilt_camera_center</span><span class="p">,</span> <span class="n">wait</span><span class="p">],</span>
-    <span class="n">mission_id</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-    <span class="n">mission_name</span><span class="o">=</span><span class="s2">&quot;Tilt camera&quot;</span><span class="p">,</span>
-<span class="p">)</span>
-
-<span class="c1"># Establish a connection to the drone</span>
-<span class="n">d</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">(</span><span class="n">log_notifications</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="c1"># Send the mission to the drone and start it</span>
-<span class="n">d</span><span class="o">.</span><span class="n">mission</span><span class="o">.</span><span class="n">load_and_run</span><span class="p">(</span><span class="n">mission</span><span class="p">)</span>
-
-<span class="c1"># Wait until the mission state becomes MISSION_STATE_COMPLETED</span>
-<span class="k">while</span> <span class="n">d</span><span class="o">.</span><span class="n">mission</span><span class="o">.</span><span class="n">get_status</span><span class="p">()</span><span class="o">.</span><span class="n">state</span> <span class="o">!=</span> <span class="n">bp</span><span class="o">.</span><span class="n">MissionState</span><span class="o">.</span><span class="n">MISSION_STATE_COMPLETED</span><span class="p">:</span>
-    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Mission completed successfully!&quot;</span><span class="p">)</span>
+<p>Without the SDK installed, the drone's HTTP endpoint accepts the package zip as a
+multipart upload (field name <code>file</code>):</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;file=@yolov8n_package.zip&quot;</span><span class="w"> </span>http://192.168.1.101/api/cv-models/upload
 </code></pre></div>
-</details>
-<details class="example">
-<summary>Go to seabed</summary>
-<p>Another simple example outlining how to create some simple instructions and run them on the drone. This example goes to the seabed, takes a picture with the main camera, and returns to the surface.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">logging.handlers</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
-
-<span class="kn">import</span><span class="w"> </span><span class="nn">blueye.protocol</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">bp</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drone</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk.mission</span><span class="w"> </span><span class="kn">import</span> <span class="n">prepare_new_mission</span>
-
-<span class="c1"># Set up logging</span>
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;blueye.sdk&quot;</span><span class="p">)</span>
-<span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
-<span class="n">socket_handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">SocketHandler</span><span class="p">(</span>
-    <span class="s2">&quot;localhost&quot;</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">DEFAULT_TCP_LOGGING_PORT</span>
-<span class="p">)</span>
-<span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">socket_handler</span><span class="p">)</span>
-
-<span class="c1"># Create some instructions for the mission</span>
-<span class="n">go_to_seabed</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">Instruction</span><span class="p">(</span><span class="n">go_to_seabed_command</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;desired_speed&quot;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">})</span>
-<span class="n">take_picture</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">Instruction</span><span class="p">(</span>
-    <span class="n">camera_command</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;camera_action&quot;</span><span class="p">:</span> <span class="n">bp</span><span class="o">.</span><span class="n">CameraAction</span><span class="o">.</span><span class="n">CAMERA_ACTION_TAKE_PHOTO</span><span class="p">}</span>
-<span class="p">)</span>
-<span class="n">go_to_surface</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">Instruction</span><span class="p">(</span><span class="n">go_to_surface_command</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;desired_speed&quot;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">})</span>
-
-<span class="c1"># Create a mission with the instructions</span>
-<span class="n">mission</span> <span class="o">=</span> <span class="n">prepare_new_mission</span><span class="p">(</span>
-    <span class="n">instruction_list</span><span class="o">=</span><span class="p">[</span><span class="n">go_to_seabed</span><span class="p">,</span> <span class="n">take_picture</span><span class="p">,</span> <span class="n">go_to_surface</span><span class="p">],</span>
-    <span class="n">mission_id</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-    <span class="n">mission_name</span><span class="o">=</span><span class="s2">&quot;Go to seabed and take a picture&quot;</span><span class="p">,</span>
-<span class="p">)</span>
-
-<span class="c1"># Establish a connection to the drone</span>
-<span class="n">d</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">(</span><span class="n">log_notifications</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="c1"># Send the mission to the drone and start it</span>
-<span class="n">d</span><span class="o">.</span><span class="n">mission</span><span class="o">.</span><span class="n">load_and_run</span><span class="p">(</span><span class="n">mission</span><span class="p">)</span>
-
-<span class="c1"># Wait until the mission state becomes MISSION_STATE_COMPLETED</span>
-<span class="k">while</span> <span class="n">d</span><span class="o">.</span><span class="n">mission</span><span class="o">.</span><span class="n">get_status</span><span class="p">()</span><span class="o">.</span><span class="n">state</span> <span class="o">!=</span> <span class="n">bp</span><span class="o">.</span><span class="n">MissionState</span><span class="o">.</span><span class="n">MISSION_STATE_COMPLETED</span><span class="p">:</span>
-    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Mission completed successfully!&quot;</span><span class="p">)</span>
+<p>or use the Blunux Web App — open <code>http://192.168.1.101</code> in a browser and upload the
+zip from the Computer Vision tab.</p>
+<h2 id="managing-models-on-the-drone-blueye-models">Managing models on the drone — <code>blueye models</code></h2>
+<p>Installed models are managed with the <code>blueye models</code> command, or interactively by
+running it without arguments on a terminal:</p>
+<div class="highlight"><pre><span></span><code>blueye<span class="w"> </span>models<span class="w"> </span>list
+blueye<span class="w"> </span>models<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>yolov8n-coco
+blueye<span class="w"> </span>models<span class="w"> </span>set-device<span class="w"> </span>yolov8n-coco<span class="w"> </span>tensorrt-dla0
+blueye<span class="w"> </span>models<span class="w"> </span>warmup<span class="w"> </span>yolov8n-coco<span class="w">      </span><span class="c1"># pre-build the TensorRT engine</span>
+blueye<span class="w"> </span>models<span class="w"> </span>delete<span class="w"> </span>yolov8n-coco
 </code></pre></div>
-</details>
-<details class="example">
-<summary>Go to waypoints</summary>
-<p>This example shows how one can create multiple waypoints and have the drone go to each of them in sequence.
-<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">logging.handlers</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<p>Model names are the directory slugs shown by <code>blueye models list</code>. Note: the
+<code>enabled</code> state is the autolaunch configuration; the API does not expose a live
+"running" status.</p>
+<h2 id="downloading-dive-logs-blueye-logs">Downloading dive logs — <code>blueye logs</code></h2>
+<p>The drone's binary dive logs (<code>.bez</code>) can be listed and downloaded from the terminal.
+The command connects to the drone as an observer — taking no control:</p>
+<div class="highlight"><pre><span></span><code>blueye<span class="w"> </span>logs<span class="w"> </span>list<span class="w">                       </span><span class="c1"># table of logs on the drone</span>
+blueye<span class="w"> </span>logs<span class="w"> </span>download<span class="w"> </span>--latest<span class="w"> </span><span class="m">1</span><span class="w">        </span><span class="c1"># newest log to the current directory</span>
+blueye<span class="w"> </span>logs<span class="w"> </span>download<span class="w"> </span>--latest<span class="w"> </span><span class="m">1</span><span class="w"> </span>--mcap<span class="w"> </span><span class="c1"># ...and convert it for Foxglove</span>
+blueye<span class="w"> </span>logs<span class="w"> </span>download<span class="w"> </span>BYEDP000000_ea9ac92e1817a1d4_00002<span class="w"> </span>-o<span class="w"> </span>~/dives
+blueye<span class="w"> </span>logs<span class="w"> </span>convert<span class="w"> </span>mydive.bez<span class="w">         </span><span class="c1"># convert an already-downloaded log (no drone)</span>
+blueye<span class="w"> </span>logs<span class="w">                            </span><span class="c1"># interactive: pick logs to download</span>
+</code></pre></div>
+<p><code>list</code>, <code>download</code>, and the interactive view accept <code>--dives-only</code>, <code>--since
+YYYY-MM-DD</code>, and <code>--until YYYY-MM-DD</code> to narrow the selection; the interactive view
+is a single scrollable table (type to filter, space to select, sorted newest first).
+<code>--mcap</code> converts each downloaded log to a Foxglove-ready <code>.mcap</code> next to the
+<code>.bez</code> — <code>blueye logs convert</code> does the same for files already on disk. See
+<a href="../logs/foxglove-bez-to-mcap/">visualizing dive logs with Foxglove</a>.
+For working with logs from Python (streaming, filtering, plotting), see
+<a href="../logs/listing-and-downloading/">logs from the drone</a>.</p>
+<h2 id="third-party-tools-blueye-tools">Third-party tools — <code>blueye tools</code></h2>
+<p>The <code>blueye</code> command is built to grow: besides the built-in commands, anyone can drop
+single-file Python tools into a per-user directory. The CLI discovers them
+automatically, lists them in <code>blueye --help</code>, and runs them as
+<code>blueye &lt;tool-name&gt; ...</code> — no SDK changes needed.</p>
+<h3 id="writing-a-tool">Writing a tool</h3>
+<p>A tool is a normal Python script carrying <a href="https://peps.python.org/pep-0723/">PEP 723</a>
+inline metadata, extended with a <code>[tool.blueye]</code> table:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># /// script</span>
+<span class="c1"># requires-python = &quot;&gt;=3.10&quot;</span>
+<span class="c1"># dependencies = [&quot;pandas&quot;]</span>
+<span class="c1">#</span>
+<span class="c1"># [tool.blueye]</span>
+<span class="c1"># name = &quot;export-logs&quot;</span>
+<span class="c1"># description = &quot;Export dive logs to CSV&quot;</span>
+<span class="c1"># min-sdk-version = &quot;2.7.0&quot;</span>
+<span class="c1"># ///</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">blueye.protocol</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">bp</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drone</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk.mission</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_waypoint_instruction</span><span class="p">,</span> <span class="n">prepare_new_mission</span>
-
-<span class="c1"># Publish runtime logs over TCP (including mission status notifications)</span>
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;blueye.sdk&quot;</span><span class="p">)</span>
-<span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
-<span class="n">socket_handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">SocketHandler</span><span class="p">(</span>
-    <span class="s2">&quot;localhost&quot;</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">DEFAULT_TCP_LOGGING_PORT</span>
-<span class="p">)</span>
-<span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">socket_handler</span><span class="p">)</span>
-
-<span class="c1"># Create some waypoints in a (roughly) square pattern</span>
-<span class="c1">#    10.4174°E           10.4176°E</span>
-<span class="c1">#    B ------------------ C 63.4418°N</span>
-<span class="c1">#    |                    |</span>
-<span class="c1">#    |                    |</span>
-<span class="c1">#    |                    |</span>
-<span class="c1">#    A ------------------ D 63.4415°N</span>
-<span class="n">wp_a</span> <span class="o">=</span> <span class="n">create_waypoint_instruction</span><span class="p">(</span><span class="s2">&quot;Point A&quot;</span><span class="p">,</span> <span class="mf">63.4415</span><span class="p">,</span> <span class="mf">10.4174</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-<span class="n">wp_b</span> <span class="o">=</span> <span class="n">create_waypoint_instruction</span><span class="p">(</span><span class="s2">&quot;Point B&quot;</span><span class="p">,</span> <span class="mf">63.4418</span><span class="p">,</span> <span class="mf">10.4176</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-<span class="n">wp_c</span> <span class="o">=</span> <span class="n">create_waypoint_instruction</span><span class="p">(</span><span class="s2">&quot;Point C&quot;</span><span class="p">,</span> <span class="mf">63.4418</span><span class="p">,</span> <span class="mf">10.4174</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-<span class="n">wp_d</span> <span class="o">=</span> <span class="n">create_waypoint_instruction</span><span class="p">(</span><span class="s2">&quot;Point D&quot;</span><span class="p">,</span> <span class="mf">63.4415</span><span class="p">,</span> <span class="mf">10.4176</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
 
-<span class="c1"># Create a mission with the instructions</span>
-<span class="n">mission</span> <span class="o">=</span> <span class="n">prepare_new_mission</span><span class="p">(</span>
-    <span class="n">instruction_list</span><span class="o">=</span><span class="p">[</span><span class="n">wp_a</span><span class="p">,</span> <span class="n">wp_b</span><span class="p">,</span> <span class="n">wp_c</span><span class="p">,</span> <span class="n">wp_d</span><span class="p">,</span> <span class="n">wp_a</span><span class="p">],</span>
-    <span class="n">mission_id</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-    <span class="n">mission_name</span><span class="o">=</span><span class="s2">&quot;Go to waypoints&quot;</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;exporting with args: </span><span class="si">{</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="mi">0</span>
 
-<span class="c1"># Establish a connection to the drone</span>
-<span class="n">d</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">(</span><span class="n">log_notifications</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<span class="c1"># Send the mission to the drone and start it</span>
-<span class="n">d</span><span class="o">.</span><span class="n">mission</span><span class="o">.</span><span class="n">load_and_run</span><span class="p">(</span><span class="n">mission</span><span class="p">)</span>
-
-<span class="c1"># Wait until the mission state becomes MISSION_STATE_COMPLETED</span>
-<span class="k">while</span> <span class="n">d</span><span class="o">.</span><span class="n">mission</span><span class="o">.</span><span class="n">get_status</span><span class="p">()</span><span class="o">.</span><span class="n">state</span> <span class="o">!=</span> <span class="n">bp</span><span class="o">.</span><span class="n">MissionState</span><span class="o">.</span><span class="n">MISSION_STATE_COMPLETED</span><span class="p">:</span>
-    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Mission completed successfully!&quot;</span><span class="p">)</span>
-</code></pre></div></p>
-</details>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</code></pre></div>
+<p>The <code>[tool.blueye]</code> keys:</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Required</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>name</code></td>
+<td>yes</td>
+<td>The subcommand name (<code>blueye export-logs</code>). Lowercase letters, digits, and hyphens; must start with a letter; at most 32 characters.</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>yes</td>
+<td>One line shown in <code>blueye --help</code> and <code>blueye tools list</code>.</td>
+</tr>
+<tr>
+<td><code>min-sdk-version</code></td>
+<td>no</td>
+<td>Minimum blueye.sdk version; a mismatch prints a warning but never blocks.</td>
+</tr>
+</tbody>
+</table>
+<p>Arguments after the tool name are passed to the script verbatim, and its exit code
+becomes the CLI's exit code. Invocation is strictly <code>blueye &lt;tool-name&gt; args...</code>.</p>
+<p><strong>Dependencies</strong>: when the script declares PEP 723 <code>dependencies</code> and
+<a href="https://docs.astral.sh/uv/">uv</a> is installed, the CLI runs it with <code>uv run</code>, giving
+the script an isolated environment with those dependencies — your tool can use pandas
+without pandas ever being installed next to the SDK. Without uv, the script runs with
+the current interpreter and must find its dependencies there.</p>
+<h3 id="installing-and-managing-tools">Installing and managing tools</h3>
+<div class="highlight"><pre><span></span><code>blueye<span class="w"> </span>tools<span class="w"> </span>validate<span class="w"> </span>my_script.py<span class="w">   </span><span class="c1"># check the metadata before installing</span>
+blueye<span class="w"> </span>tools<span class="w"> </span>install<span class="w"> </span>my_script.py<span class="w">    </span><span class="c1"># copy it into the tools directory</span>
+blueye<span class="w"> </span>tools<span class="w"> </span>list<span class="w">                    </span><span class="c1"># built-ins + installed tools</span>
+blueye<span class="w"> </span>tools<span class="w"> </span>uninstall<span class="w"> </span>export-logs
+blueye<span class="w"> </span>tools<span class="w"> </span>dir<span class="w">                     </span><span class="c1"># print the resolved tools directory</span>
+</code></pre></div>
+<p>Discovery scans the tools directory on every invocation and parses <strong>only the
+metadata block — tool code is never executed during discovery</strong> or listing.</p>
+<p>The directory is resolved from the <code>BLUEYE_CLI_TOOLS_DIR</code> environment variable when
+set, otherwise from the platform default:</p>
+<table>
+<thead>
+<tr>
+<th>Platform</th>
+<th>Default tools directory</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>macOS</td>
+<td><code>~/Library/Application Support/blueye/cli-tools</code></td>
+</tr>
+<tr>
+<td>Linux</td>
+<td><code>$XDG_DATA_HOME/blueye/cli-tools</code> (or <code>~/.local/share/blueye/cli-tools</code>)</td>
+</tr>
+<tr>
+<td>Windows</td>
+<td><code>%APPDATA%\blueye\cli-tools</code></td>
+</tr>
+</tbody>
+</table>
+<p>Name collisions always resolve in favor of built-in commands; <code>blueye tools list</code>
+shows shadowed or invalid tools with the reason.</p>
+<p>SDK contributors adding a <strong>built-in</strong> command should follow the recipe and
+invariants documented in the <code>blueye.sdk.cli.commands</code> module docstring.</p>
 
 
 
@@ -2167,8 +2341,8 @@
   <nav class="md-footer__inner md-grid" aria-label="footer.title">
     
     
-    <a href="../nmea-publisher/" class="md-footer__link md-footer__link--prev"
-      aria-label="Previous: Forwarding positioning to NMEA" rel="prev">
+    <a href="../mission-planning/" class="md-footer__link md-footer__link--prev"
+      aria-label="Previous: Mission Planning" rel="prev">
       <div class="md-footer__button md-icon">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
       </div>
@@ -2177,21 +2351,21 @@
           <span class="md-footer__direction">
             Previous
           </span>
-          Forwarding positioning to NMEA
+          Mission Planning
         </div>
       </div>
     </a>
     
     
     
-    <a href="../cli/" class="md-footer__link md-footer__link--next"
-      aria-label="Next: The blueye CLI" rel="next">
+    <a href="../odometer-to-831l/" class="md-footer__link md-footer__link--next"
+      aria-label="Next: Odometer forwarding" rel="next">
       <div class="md-footer__title">
         <div class="md-ellipsis">
           <span class="md-footer__direction">
             Next
           </span>
-          The blueye CLI
+          Odometer forwarding
         </div>
       </div>
       <div class="md-footer__button md-icon">
