@@ -18,11 +18,29 @@ dependencies = [
     "packaging>=24.2",
     "blueye.protocol>=3.3.0,<4",
     "python-dateutil>=2.8.2,<3",
-    "pyzmq~=26.0",
+    # 27.x ships an abi3 Windows wheel that covers Python 3.14+; 26.x tops out at
+    # cp313 and has to be compiled from source on newer interpreters.
+    "pyzmq>=26,<28",
     "proto-plus>=1.22.2,<2",
+    # The `blueye` CLI ships with the SDK; these power its terminal UI and the
+    # PEP 723 metadata parsing for third-party tools.
+    "rich>=13,<15",
+    "questionary>=2.0,<3",
+    "tomli>=2,<3; python_version < '3.11'",
 ]
 
+[project.scripts]
+blueye = "blueye.sdk.cli:main"
+
 [project.optional-dependencies]
+# Heavyweight dependencies for `blueye bundle-model` (ONNX model introspection).
+# The rest of the CLI works without this extra. Install with:
+# pip install "blueye.sdk[cli]"
+cli = [
+    "onnx>=1.16,<2",
+    # .bez -> .mcap conversion (`blueye logs download --mcap`).
+    "mcap-protobuf-support>=0.5.3,<0.6",
+]
 # These are dependencies that are not necessary for the core functionality of the SDK, but are
 # necessary for some of the examples.
 examples = [
@@ -33,7 +51,6 @@ examples = [
     "webdavclient3>=3.14.6,<4",
     "foxglove_websocket>=0.1.2,<0.2",
     "pyserial~=3.5",
-    "mcap-protobuf-support>=0.5.3,<0.6",
 ]
 
 [project.urls]
@@ -42,6 +59,9 @@ Repository = "https://github.com/blueye-robotics/blueye.sdk"
 
 [dependency-groups]
 dev = [
+    # The CLI extra, repeated here so the test suite can exercise the CLI modules.
+    "onnx>=1.16,<2",
+    "mcap-protobuf-support>=0.5.3,<0.6",
     "pytest~=8.3",
     "pytest-mock~=3.11",
     "mike~=2.1",

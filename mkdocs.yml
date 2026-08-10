@@ -108,14 +108,17 @@ nav:
   - "Visualize live sensor data": "foxglove-bridge.md"
   - "Forwarding positioning to NMEA": "nmea-publisher.md"
   - "Mission Planning": "mission-planning.md"
+  - "The blueye CLI": "cli.md"
   - "Odometer forwarding": odometer-to-831l.md
   - "Updating from v1 to v2": "migrating-to-v2.md"
   - "HTTP API": "http-api.md"
   - Reference:
       - blueye.sdk.battery: "reference/blueye/sdk/battery.md"
       - blueye.sdk.camera: "reference/blueye/sdk/camera.md"
+      - blueye.sdk.cli: "reference/blueye/sdk/cli.md"
       - blueye.sdk.connection: "reference/blueye/sdk/connection.md"
       - blueye.sdk.constants: "reference/blueye/sdk/constants.md"
+      - blueye.sdk.cv_models: "reference/blueye/sdk/cv_models.md"
       - blueye.sdk.drone: "reference/blueye/sdk/drone.md"
       - blueye.sdk.guestport: "reference/blueye/sdk/guestport.md"
       - blueye.sdk.logs: "reference/blueye/sdk/logs.md"

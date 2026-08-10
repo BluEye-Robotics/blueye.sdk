@@ -27,6 +27,7 @@ from .guestport import (
     SkidServo,
     device_to_peripheral,
 )
+from .cv_models import CvModels
 from .logs import LegacyLogs, Logs
 from .mission import Mission
 from .motion import Motion
@@ -235,6 +236,7 @@ class Drone:
         self.battery = Battery(self)
         self.telemetry = Telemetry(self)
         self.mission = Mission(self)
+        self.cv_models = CvModels(self)
         self.connected = False
         self.client_id: int = None
         self.in_control: bool = False
