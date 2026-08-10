@@ -17,6 +17,7 @@ import sys
 from pathlib import Path
 
 from ...errors import CliError
+from .._common import drone_options_parser, friendly_errors
 
 logger = logging.getLogger(__name__)
 
@@ -26,11 +27,7 @@ _HZ_CHOICES = (0, 5, 10, 15)
 
 def add_parser(subparsers) -> None:
     """Register the ``models`` subcommand and its sub-subcommands."""
-    common = argparse.ArgumentParser(add_help=False)
-    common.add_argument(
-        "--drone-ip", default="192.168.1.101", help="Drone address (default: %(default)s)"
-    )
-    common.add_argument("--timeout", type=float, default=5.0, help="Request timeout in seconds")
+    common = drone_options_parser(timeout_default=5.0)
 
     parser = subparsers.add_parser(
         "models",
@@ -100,21 +97,6 @@ def _cv_models(args):
     return Drone(ip=args.drone_ip, auto_connect=False).cv_models
 
 
-def _friendly_errors(action):
-    """Run an action, translating transport/API failures into CliErrors."""
-    import requests
-
-    try:
-        return action()
-    except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as error:
-        raise CliError(
-            "Could not reach the drone — is it connected? (Use --drone-ip if it is not "
-            "at the default address.)"
-        ) from error
-    except requests.exceptions.HTTPError as error:
-        raise CliError(str(error)) from error
-
-
 def _runtime_field(model, key: str, default: str = "-") -> str:
     value = model.raw.get("runtime", {}).get(key)
     return str(value) if value is not None else default
@@ -143,7 +125,7 @@ def _print_models_table(console, models) -> None:
 
 
 def _run_list(console, args) -> int:
-    models = _friendly_errors(lambda: _cv_models(args).list(timeout=args.timeout))
+    models = friendly_errors(lambda: _cv_models(args).list(timeout=args.timeout))
     if not models:
         console.print("No CV models installed on the drone.")
         return 0
@@ -155,7 +137,7 @@ def _run_interactive(console, args, prompter) -> int:
     """Interactive management loop: pick a model, pick an action, repeat."""
     cv_models = _cv_models(args)
     while True:
-        models = _friendly_errors(lambda: cv_models.list(timeout=args.timeout))
+        models = friendly_errors(lambda: cv_models.list(timeout=args.timeout))
         if not models:
             console.print("No CV models installed on the drone.")
             return 0
@@ -180,7 +162,7 @@ def _run_interactive(console, args, prompter) -> int:
             "ACTION",
         )
         if action == toggle:
-            _friendly_errors(
+            friendly_errors(
                 lambda: cv_models.set_enabled(
                     model.directory, not model.enabled, timeout=args.timeout
                 )
@@ -189,7 +171,7 @@ def _run_interactive(console, args, prompter) -> int:
             device = prompter.select(
                 "Execution device:", list(_DEVICES), _runtime_field(model, "device"), "ACTION"
             )
-            _friendly_errors(
+            friendly_errors(
                 lambda: cv_models.set_device(model.directory, device, timeout=args.timeout)
             )
         elif action == "Set rate":
@@ -200,15 +182,15 @@ def _run_interactive(console, args, prompter) -> int:
                 "ACTION",
             )
             hz = 0 if rate.startswith("max") else int(rate)
-            _friendly_errors(lambda: cv_models.set_hz(model.directory, hz, timeout=args.timeout))
+            friendly_errors(lambda: cv_models.set_hz(model.directory, hz, timeout=args.timeout))
         elif action == "Warm up":
             with console.status(
                 f"[cyan]Warming up '{model.directory}' (TensorRT builds can take minutes)..."
             ):
-                _friendly_errors(lambda: cv_models.warmup(model.directory))
+                friendly_errors(lambda: cv_models.warmup(model.directory))
         elif action == "Delete":
             if prompter.confirm(f"Delete '{model.directory}' from the drone?", False, "--force"):
-                _friendly_errors(lambda: cv_models.delete(model.directory, timeout=args.timeout))
+                friendly_errors(lambda: cv_models.delete(model.directory, timeout=args.timeout))
 
 
 def run(args: argparse.Namespace) -> int:
@@ -232,23 +214,23 @@ def run(args: argparse.Namespace) -> int:
 
     cv_models = _cv_models(args)
     if action == "enable":
-        _friendly_errors(lambda: cv_models.set_enabled(args.name, True, timeout=args.timeout))
+        friendly_errors(lambda: cv_models.set_enabled(args.name, True, timeout=args.timeout))
         console.print(f"Enabled autolaunch for '{args.name}'.")
     elif action == "disable":
-        _friendly_errors(lambda: cv_models.set_enabled(args.name, False, timeout=args.timeout))
+        friendly_errors(lambda: cv_models.set_enabled(args.name, False, timeout=args.timeout))
         console.print(f"Disabled autolaunch for '{args.name}'.")
     elif action == "set-device":
-        _friendly_errors(lambda: cv_models.set_device(args.name, args.device, timeout=args.timeout))
+        friendly_errors(lambda: cv_models.set_device(args.name, args.device, timeout=args.timeout))
         console.print(f"'{args.name}' now runs on {args.device}.")
     elif action == "set-hz":
-        _friendly_errors(lambda: cv_models.set_hz(args.name, args.hz, timeout=args.timeout))
+        friendly_errors(lambda: cv_models.set_hz(args.name, args.hz, timeout=args.timeout))
         rate = "unlimited" if args.hz == 0 else f"{args.hz} Hz"
         console.print(f"'{args.name}' rate set to {rate}.")
     elif action == "warmup":
         with console.status(
             f"[cyan]Warming up '{args.name}' (TensorRT builds can take minutes)..."
         ):
-            _friendly_errors(lambda: cv_models.warmup(args.name))
+            friendly_errors(lambda: cv_models.warmup(args.name))
         console.print(f"Warmup of '{args.name}' complete.")
     elif action == "delete":
         if not args.force:
@@ -261,22 +243,22 @@ def run(args: argparse.Namespace) -> int:
                 f"Delete '{args.name}' from the drone?", False, "--force"
             ):
                 return 1
-        _friendly_errors(lambda: cv_models.delete(args.name, timeout=args.timeout))
+        friendly_errors(lambda: cv_models.delete(args.name, timeout=args.timeout))
         console.print(f"Deleted '{args.name}' from the drone.")
     elif action == "upload":
         package = Path(args.package).expanduser()
         if not package.is_file():
             raise CliError(f"No such file: {package}")
         with console.status("[cyan]Uploading to the drone..."):
-            model = _friendly_errors(lambda: cv_models.upload(package))
+            model = friendly_errors(lambda: cv_models.upload(package))
         state = "enabled" if model.enabled else "disabled"
         console.print(f"Uploaded '{model.name}' as '{model.directory}' (autolaunch {state}).")
     elif action == "download":
         output = Path(args.output).expanduser() if args.output else None
         with console.status("[cyan]Downloading from the drone..."):
-            path = _friendly_errors(lambda: cv_models.download(args.name, output_path=output))
+            path = friendly_errors(lambda: cv_models.download(args.name, output_path=output))
         console.print(f"Downloaded '{args.name}' to {path}.")
     elif action == "rescan":
-        _friendly_errors(lambda: cv_models.rescan(timeout=args.timeout))
+        friendly_errors(lambda: cv_models.rescan(timeout=args.timeout))
         console.print("Rescan triggered.")
     return 0

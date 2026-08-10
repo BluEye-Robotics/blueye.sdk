@@ -38,6 +38,8 @@ blueye = "blueye.sdk.cli:main"
 # pip install "blueye.sdk[cli]"
 cli = [
     "onnx>=1.16,<2",
+    # .bez -> .mcap conversion (`blueye logs download --mcap`).
+    "mcap-protobuf-support>=0.5.3,<0.6",
 ]
 # These are dependencies that are not necessary for the core functionality of the SDK, but are
 # necessary for some of the examples.
@@ -49,7 +51,6 @@ examples = [
     "webdavclient3>=3.14.6,<4",
     "foxglove_websocket>=0.1.2,<0.2",
     "pyserial~=3.5",
-    "mcap-protobuf-support>=0.5.3,<0.6",
 ]
 
 [project.urls]
@@ -60,6 +61,7 @@ Repository = "https://github.com/blueye-robotics/blueye.sdk"
 dev = [
     # The CLI extra, repeated here so the test suite can exercise the CLI modules.
     "onnx>=1.16,<2",
+    "mcap-protobuf-support>=0.5.3,<0.6",
     "pytest~=8.3",
     "pytest-mock~=3.11",
     "mike~=2.1",

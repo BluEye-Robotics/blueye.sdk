@@ -148,6 +148,29 @@ Model names are the directory slugs shown by `blueye models list`. Note: the
 `enabled` state is the autolaunch configuration; the API does not expose a live
 "running" status.
 
+## Downloading dive logs — `blueye logs`
+
+The drone's binary dive logs (`.bez`) can be listed and downloaded from the terminal.
+The command connects to the drone as an observer — taking no control:
+
+```shell
+blueye logs list                       # table of logs on the drone
+blueye logs download --latest 1        # newest log to the current directory
+blueye logs download --latest 1 --mcap # ...and convert it for Foxglove
+blueye logs download BYEDP000000_ea9ac92e1817a1d4_00002 -o ~/dives
+blueye logs convert mydive.bez         # convert an already-downloaded log (no drone)
+blueye logs                            # interactive: pick logs to download
+```
+
+`list`, `download`, and the interactive view accept `--dives-only`, `--since
+YYYY-MM-DD`, and `--until YYYY-MM-DD` to narrow the selection; the interactive view
+is a single scrollable table (type to filter, space to select, sorted newest first).
+`--mcap` converts each downloaded log to a Foxglove-ready `.mcap` next to the
+`.bez` — `blueye logs convert` does the same for files already on disk. See
+[visualizing dive logs with Foxglove](logs/foxglove-bez-to-mcap.md).
+For working with logs from Python (streaming, filtering, plotting), see
+[logs from the drone](logs/listing-and-downloading.md).
+
 ## Third-party tools — `blueye tools`
 
 The `blueye` command is built to grow: besides the built-in commands, anyone can drop
