@@ -1,6 +1,8 @@
 from time import time
 
+import blueye.protocol as bp
 import pytest
+from packaging import version
 
 
 def polling_assert_with_timeout(getter, value_to_wait_for, timeout):
@@ -74,12 +76,28 @@ class TestFunctionsWhenConnectedToDrone:
         real_drone.camera.set_hue(30)
         polling_assert_with_timeout(real_drone.camera.get_hue, 30, 1)
 
+    @pytest.mark.filterwarnings("ignore::DeprecationWarning")
     def test_camera_resolution(self, real_drone):
+        if version.parse(real_drone.software_version_short) >= version.parse("4.4"):
+            pytest.xfail(
+                "Drones running Blunux 4.4 or newer ignore the deprecated resolution field when "
+                "camera parameters are set, use the stream/recording resolution methods instead"
+            )
         _ = real_drone.camera.get_resolution()
         real_drone.camera.set_resolution(720)
         polling_assert_with_timeout(real_drone.camera.get_resolution, 720, 1)
         real_drone.camera.set_resolution(1080)
         polling_assert_with_timeout(real_drone.camera.get_resolution, 1080, 1)
+
+    def test_camera_stream_resolution(self, real_drone):
+        original_resolution = real_drone.camera.get_stream_resolution()
+        try:
+            real_drone.camera.set_stream_resolution(bp.Resolution.RESOLUTION_HD_720P)
+            polling_assert_with_timeout(
+                real_drone.camera.get_stream_resolution, bp.Resolution.RESOLUTION_HD_720P, 3
+            )
+        finally:
+            real_drone.camera.set_stream_resolution(original_resolution)
 
     def test_camera_framerate(self, real_drone):
         _ = real_drone.camera.get_framerate()
