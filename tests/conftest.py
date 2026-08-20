@@ -1,3 +1,5 @@
+import time
+
 import blueye.protocol as bp
 import pytest
 
@@ -11,6 +13,23 @@ def real_drone():
     Used for integration tests with physical hardware.
     """
     return blueye.sdk.Drone()
+
+
+@pytest.fixture(scope="class")
+def drone_model(real_drone) -> bp.Model:
+    """Fixture that reports the model of the connected drone
+
+    Used to skip integration tests for camera parameters the connected hardware does not
+    support. Returns MODEL_UNSPECIFIED if no drone info is received, which is also what
+    drones older than the introduction of the model field report.
+    """
+    deadline = time.monotonic() + 3
+    while time.monotonic() < deadline:
+        drone_info = real_drone.telemetry.get(bp.DroneInfoTel)
+        if drone_info is not None:
+            return drone_info.drone_info.model
+        time.sleep(0.1)
+    return bp.Model.MODEL_UNSPECIFIED
 
 
 @pytest.fixture
