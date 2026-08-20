@@ -410,3 +410,69 @@ def test_configure_rejects_mtu_size_on_blunux_5_0(mocked_drone: Drone):
         with camera.configure() as params:
             params.mtu_size = 1200
     camera._parent_drone._req_rep_client.set_camera_parameters.assert_not_called()
+
+
+def test_recording_bitrate_getter(mocked_ultra_camera):
+    mocked_ultra_camera._parent_drone._req_rep_client.get_camera_parameters.return_value = (
+        bp.CameraParameters(recording_bitrate=24_000_000)
+    )
+    assert mocked_ultra_camera.get_recording_bitrate() == 24_000_000
+
+
+def test_recording_bitrate_setter(mocked_ultra_camera):
+    mocked_ultra_camera._camera_parameters = bp.CameraParameters(recording_bitrate=0)
+
+    mocked_ultra_camera.set_recording_bitrate(24_000_000)
+
+    mocked_ultra_camera._parent_drone._req_rep_client.set_camera_parameters.assert_called_once_with(
+        bp.CameraParameters(recording_bitrate=24_000_000)
+    )
+    assert mocked_ultra_camera._camera_parameters.recording_bitrate == 24_000_000
+
+
+def test_recording_bitrate_setter_requires_blunux_5(mocked_camera):
+    with pytest.raises(RuntimeError):
+        mocked_camera.set_recording_bitrate(24_000_000)
+
+
+def test_parameter_getter_refreshes_from_the_drone(mocked_ultra_camera):
+    """A getter must ask the drone, never answer from the cache.
+
+    Every getter method calls _update_camera_parameters() first, so a value
+    that changed since the last request - because another client set it, or
+    because the drone resolved an "automatic" request to a concrete number - is
+    reported as it is now and not as it was last written.
+    """
+    mocked_ultra_camera._camera_parameters = bp.CameraParameters(recording_bitrate=0)
+    mocked_ultra_camera._parent_drone._req_rep_client.get_camera_parameters.return_value = (
+        bp.CameraParameters(recording_bitrate=14_000_000)
+    )
+
+    assert mocked_ultra_camera.get_recording_bitrate() == 14_000_000
+    mocked_ultra_camera._parent_drone._req_rep_client.get_camera_parameters.assert_called_once()
+
+
+def test_setter_on_a_cold_camera_fetches_current_parameters_first(mocked_ultra_camera):
+    """A setter on a camera that has not talked to the drone yet must fetch the
+    current parameters before it sends.
+
+    set_camera_parameters carries the whole CameraParameters struct, so without
+    the lazy fetch the first setter after construction would send a
+    default-constructed one and zero every field the caller never touched -
+    resolution, framerate and codec among them.
+    """
+    assert mocked_ultra_camera._camera_parameters is None
+    mocked_ultra_camera._parent_drone._req_rep_client.get_camera_parameters.return_value = (
+        bp.CameraParameters(
+            stream_resolution=bp.Resolution.RESOLUTION_FULLHD_1080P,
+            framerate=bp.Framerate.FRAMERATE_FPS_30,
+        )
+    )
+
+    mocked_ultra_camera.set_recording_bitrate(24_000_000)
+
+    mocked_ultra_camera._parent_drone._req_rep_client.get_camera_parameters.assert_called_once()
+    sent = mocked_ultra_camera._parent_drone._req_rep_client.set_camera_parameters.call_args[0][0]
+    assert sent.recording_bitrate == 24_000_000
+    assert sent.stream_resolution == bp.Resolution.RESOLUTION_FULLHD_1080P
+    assert sent.framerate == bp.Framerate.FRAMERATE_FPS_30
