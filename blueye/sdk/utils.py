@@ -1,6 +1,7 @@
 import os
+import warnings
 import webbrowser
-from typing import Tuple
+from typing import Optional, Tuple
 
 import blueye.protocol as bp
 import google.protobuf.wrappers_pb2 as wrappers
@@ -19,6 +20,46 @@ from google.protobuf.wrappers_pb2 import (
 )
 
 import blueye.sdk
+
+
+class deprecated_property:
+    """Property shim that warns and delegates to the new getter/setter methods.
+
+    `fget`/`fset` are the *names* of the replacement methods on the owning class. This is always a
+    data descriptor (it defines `__set__`) so that assignments to read-only deprecated properties
+    raise an AttributeError instead of silently shadowing the descriptor with an instance attribute.
+    """
+
+    def __init__(self, fget: str, fset: Optional[str] = None, doc: Optional[str] = None):
+        self.fget = fget
+        self.fset = fset
+        self.__doc__ = doc
+
+    def __set_name__(self, owner, name):
+        self.owner = owner.__name__
+        self.name = name
+
+    def __get__(self, obj, objtype=None):
+        if obj is None:
+            return self
+        warnings.warn(
+            f"`{self.owner}.{self.name}` is deprecated and will be removed in the next major "
+            f"version. Use `{self.owner}.{self.fget}()` instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return getattr(obj, self.fget)()
+
+    def __set__(self, obj, value):
+        if self.fset is None:
+            raise AttributeError(f"can't set attribute `{self.name}`")
+        warnings.warn(
+            f"`{self.owner}.{self.name}` is deprecated and will be removed in the next major "
+            f"version. Use `{self.owner}.{self.fset}()` instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        getattr(obj, self.fset)(value)
 
 
 def open_local_documentation():

@@ -23,25 +23,25 @@ class JoystickHandler:
 
     def handle_x_button(self, value):
         """Starts/stops the video recording"""
-        self.drone.camera.is_recording = value
+        self.drone.camera.set_recording(value)
 
     def handle_y_button(self, value):
         """Turns lights on or off"""
         if value:
-            if self.drone.lights > 0:
-                self.drone.lights = 0
+            if self.drone.get_lights() > 0:
+                self.drone.set_lights(0)
             else:
-                self.drone.lights = 0.1
+                self.drone.set_lights(0.1)
 
     def handle_b_button(self, value):
         """Toggles autoheading"""
         if value:
-            self.drone.motion.auto_heading_active = not self.drone.motion.auto_heading_active
+            self.drone.motion.enable_auto_heading(not self.drone.motion.is_auto_heading_active())
 
     def handle_a_button(self, value):
         """Toggles autodepth"""
         if value:
-            self.drone.motion.auto_depth_active = not self.drone.motion.auto_depth_active
+            self.drone.motion.enable_auto_depth(not self.drone.motion.is_auto_depth_active())
 
     def filter_and_normalize(self, value, lower=5000, upper=32768):
         """Normalizing the joystick axis range from (default) -32768<->32678 to -1<->1
@@ -59,22 +59,22 @@ class JoystickHandler:
             return 0
 
     def handle_left_x_axis(self, value):
-        self.drone.motion.yaw = self.filter_and_normalize(value)
+        self.drone.motion.set_yaw(self.filter_and_normalize(value))
 
     def handle_left_y_axis(self, value):
-        self.drone.motion.heave = self.filter_and_normalize(value)
+        self.drone.motion.set_heave(self.filter_and_normalize(value))
 
     def handle_right_x_axis(self, value):
-        self.drone.motion.sway = self.filter_and_normalize(value)
+        self.drone.motion.set_sway(self.filter_and_normalize(value))
 
     def handle_right_y_axis(self, value):
-        self.drone.motion.surge = -self.filter_and_normalize(value)
+        self.drone.motion.set_surge(-self.filter_and_normalize(value))
 
     def handle_left_trigger(self, value):
-        self.drone.motion.slow = self.filter_and_normalize(value, lower=0, upper=255)
+        self.drone.motion.set_slow(self.filter_and_normalize(value, lower=0, upper=255))
 
     def handle_right_trigger(self, value):
-        self.drone.motion.boost = self.filter_and_normalize(value, lower=0, upper=255)
+        self.drone.motion.set_boost(self.filter_and_normalize(value, lower=0, upper=255))
 
 
 if __name__ == "__main__":

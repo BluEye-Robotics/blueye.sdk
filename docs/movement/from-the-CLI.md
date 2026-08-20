@@ -6,7 +6,7 @@ This is a super simple example showing how you make the drone move from the comm
 import time
 from blueye.sdk import Drone
 myDrone = Drone()
-myDrone.motion.surge = 0.4
+myDrone.motion.set_surge(0.4)
 time.sleep(1)
-myDrone.motion.surge = 0
+myDrone.motion.set_surge(0)
 ```
