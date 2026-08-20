@@ -79,7 +79,24 @@ def mocked_ctrl_client(mocker):
 
 @pytest.fixture
 def mocked_telemetry_client(mocker):
-    return mocker.patch("blueye.sdk.drone.TelemetryClient", autospec=True)
+    """Patch the telemetry subscriber so unit tests never read telemetry off the network.
+
+    Without this the drone built by `mocked_drone` opens a real ZMQ subscriber against the
+    drone IP, and any drone on the same network fills its state within a few hundred
+    milliseconds. That makes every "returns None when no telemetry has been received" test
+    fail at random, depending on which one happens to run late enough to receive something.
+
+    The mock keeps a real dict for `_state` and looks messages up in it, raising KeyError for
+    the ones that are missing, so tests can keep seeding telemetry by assigning to
+    `drone._telemetry_watcher._state[SomeTel]`.
+    """
+    patched = mocker.patch("blueye.sdk.drone.TelemetryClient", autospec=True)
+    instance = patched.return_value
+    instance._state = {}
+    # Read the attribute on every call rather than closing over the dict, because the real
+    # get() looks up self._state and several tests rebind _state to a fresh dict.
+    instance.get.side_effect = lambda key: instance._state[key]
+    return patched
 
 
 @pytest.fixture
@@ -98,6 +115,7 @@ def mocked_drone(
     mocker,
     mocked_requests,
     mocked_ctrl_client,
+    mocked_telemetry_client,
     mocked_watchdog_publisher,
     mocked_req_rep_client,
 ):
