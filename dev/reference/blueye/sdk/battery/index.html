@@ -1196,10 +1196,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#blueye.sdk.battery.Battery.state_of_charge" class="md-nav__link">
+  <a href="#blueye.sdk.battery.Battery.get_state_of_charge" class="md-nav__link">
     <span class="md-ellipsis">
       
-        <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;state_of_charge
+        <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;get_state_of_charge
       
     </span>
   </a>
@@ -1840,10 +1840,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#blueye.sdk.battery.Battery.state_of_charge" class="md-nav__link">
+  <a href="#blueye.sdk.battery.Battery.get_state_of_charge" class="md-nav__link">
     <span class="md-ellipsis">
       
-        <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;state_of_charge
+        <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;get_state_of_charge
       
     </span>
   </a>
@@ -1950,12 +1950,12 @@
 
                   <details class="quote">
                     <summary>Source code in <code>blueye/sdk/battery.py</code></summary>
-                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
+                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">17</span>
 <span class="normal">18</span>
 <span class="normal">19</span>
-<span class="normal">20</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_drone</span><span class="p">:</span> <span class="n">Drone</span><span class="p">):</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_drone</span><span class="p">:</span> <span class="n">Drone</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize the Battery class.</span>
 
 <span class="sd">    Args:</span>
@@ -1974,20 +1974,17 @@
 
 
 
-<div class="doc doc-object doc-attribute">
 
 
-
-<h4 id="blueye.sdk.battery.Battery.state_of_charge" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">state_of_charge</span>
+<div class="doc doc-object doc-function">
 
 
-  <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-property"><code>property</code></small>
-  </span>
+<h4 id="blueye.sdk.battery.Battery.get_state_of_charge" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">get_state_of_charge</span>
+
 
 </h4>
-<div class="doc-signature highlight"><pre><span></span><code><span class="n">state_of_charge</span><span class="p">:</span> <span class="n"><span title="typing.Optional">Optional</span></span><span class="p">[</span><span class="n"><span title="float">float</span></span><span class="p">]</span>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">get_state_of_charge</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n"><span title="typing.Optional">Optional</span></span><span class="p">[</span><span class="n"><span title="float">float</span></span><span class="p">]</span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
@@ -2006,11 +2003,35 @@
         </li>
     </ul>
 
+
+            <details class="quote">
+              <summary>Source code in <code>blueye/sdk/battery.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_state_of_charge</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the battery state of charge.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Current state of charge of the drone battery (0..1).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">battery_tel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent_drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">blueye</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">BatteryTel</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">battery_tel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">battery_tel</span><span class="o">.</span><span class="n">battery</span><span class="o">.</span><span class="n">level</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+</code></pre></div></td></tr></table></div>
+            </details>
     </div>
 
 </div>
-
-
 
 
 

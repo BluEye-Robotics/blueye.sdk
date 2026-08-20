@@ -1919,10 +1919,10 @@
 <span class="n">drone</span><span class="o">.</span><span class="n">external_camera</span><span class="o">.</span><span class="n">take_picture</span><span class="p">()</span>
 
 <span class="c1"># Set bitrate for external camera to 2 Mbps</span>
-<span class="n">drone</span><span class="o">.</span><span class="n">external_camera</span><span class="o">.</span><span class="n">bitrate</span> <span class="o">=</span> <span class="mi">2_000_000</span>
+<span class="n">drone</span><span class="o">.</span><span class="n">external_camera</span><span class="o">.</span><span class="n">set_bitrate</span><span class="p">(</span><span class="mi">2_000_000</span><span class="p">)</span>
 
 <span class="c1"># Start recording video from the external camera</span>
-<span class="n">drone</span><span class="o">.</span><span class="n">external_camera</span><span class="o">.</span><span class="n">is_recording</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">drone</span><span class="o">.</span><span class="n">external_camera</span><span class="o">.</span><span class="n">set_recording</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
 <h2 id="external-light">External light</h2>
 <p>If the drone has an external light attached, the <code>Drone</code> class will have an <code>external_light</code> attribute that is a <a class="autorefs autorefs-internal" title="            GuestPortLight" href="../reference/blueye/sdk/guestport/#blueye.sdk.guestport.GuestPortLight"><code>GuestPortLight</code></a> object. This object can be used to control the light.</p>
@@ -1942,18 +1942,18 @@
 </code></pre></div>
 <h2 id="gripper">Gripper</h2>
 <p>If the drone has a gripper attached, the <code>Drone</code> class will have a <code>gripper</code> attribute that is a <a class="autorefs autorefs-internal" title="            Gripper" href="../reference/blueye/sdk/guestport/#blueye.sdk.guestport.Gripper"><code>Gripper</code></a> object. This object can be used to control the grip and rotation of the gripper.</p>
-<p>If the connected gripper does not support rotation, the <code>rotation_velocity</code> property will be ignored.</p>
+<p>If the connected gripper does not support rotation, the rotation velocity will be ignored.</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Open the gripper</span>
-<span class="n">drone</span><span class="o">.</span><span class="n">gripper</span><span class="o">.</span><span class="n">grip_velocity</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">drone</span><span class="o">.</span><span class="n">gripper</span><span class="o">.</span><span class="n">set_grip_velocity</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
 
 <span class="c1"># Close the gripper</span>
-<span class="n">drone</span><span class="o">.</span><span class="n">gripper</span><span class="o">.</span><span class="n">grip_velocity</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
+<span class="n">drone</span><span class="o">.</span><span class="n">gripper</span><span class="o">.</span><span class="n">set_grip_velocity</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">)</span>
 
 <span class="c1"># Rotate the gripper clockwise</span>
-<span class="n">drone</span><span class="o">.</span><span class="n">gripper</span><span class="o">.</span><span class="n">rotation_velocity</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">drone</span><span class="o">.</span><span class="n">gripper</span><span class="o">.</span><span class="n">set_rotation_velocity</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
 
 <span class="c1"># Rotate the gripper counterclockwise</span>
-<span class="n">drone</span><span class="o">.</span><span class="n">gripper</span><span class="o">.</span><span class="n">rotation_velocity</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
+<span class="n">drone</span><span class="o">.</span><span class="n">gripper</span><span class="o">.</span><span class="n">set_rotation_velocity</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">)</span>
 </code></pre></div>
 <h2 id="servo">Servo</h2>
 <p>If the drone has a servo attached, the <code>Drone</code> class will either have a <code>servo</code> attribute that is a <a class="autorefs autorefs-internal" title="            GenericServo" href="../reference/blueye/sdk/guestport/#blueye.sdk.guestport.GenericServo"><code>GenericServo</code></a> object, or a <code>skid_servo</code> attribute that is a <a class="autorefs autorefs-internal" title="            SkidServo" href="../reference/blueye/sdk/guestport/#blueye.sdk.guestport.SkidServo"><code>SkidServo</code></a> object. These objects can be used to control the servo.</p>

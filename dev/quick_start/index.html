@@ -2021,37 +2021,37 @@ This will create a <code>.venv</code> folder in your project directory.</p>
 on how to turn on the drone and surface unit, you can watch the
 <a href="https://support.blueye.no/hc/en-us/articles/360006901473-Quick-Start-Guide">quick start video</a>.</p>
 <h2 id="control-the-drone">Control the drone</h2>
-<p>Most of the functionality is controlled using Python properties. We will illustrate the use of
-properties by showing how to control the lights:</p>
+<p>Most of the functionality is controlled using getter and setter methods. We will illustrate their
+use by showing how to control the lights:</p>
 <p><div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drone</span>
 
 <span class="c1"># When the Drone object is instantiated, a connection to the drone is established</span>
 <span class="n">myDrone</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">()</span>
 
-<span class="c1"># Setting the lights property to 0.1 (10 %)</span>
-<span class="n">myDrone</span><span class="o">.</span><span class="n">lights</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="c1"># Setting the lights to 0.1 (10 %)</span>
+<span class="n">myDrone</span><span class="o">.</span><span class="n">set_lights</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
 
 <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 
-<span class="c1"># We can also get the current brightness of the lights through the lights property</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Current light intensity: </span><span class="si">{</span><span class="n">myDrone</span><span class="o">.</span><span class="n">lights</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="n">myDrone</span><span class="o">.</span><span class="n">lights</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="c1"># We can also get the current brightness of the lights with the get_lights method</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Current light intensity: </span><span class="si">{</span><span class="n">myDrone</span><span class="o">.</span><span class="n">get_lights</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">myDrone</span><span class="o">.</span><span class="n">set_lights</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
-<span class="c1"># Properties can also be used for reading telemetry data from the drone</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Current depth in meters: </span><span class="si">{</span><span class="n">myDrone</span><span class="o">.</span><span class="n">depth</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># Getter methods are also used for reading telemetry data from the drone</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Current depth in meters: </span><span class="si">{</span><span class="n">myDrone</span><span class="o">.</span><span class="n">get_depth</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </code></pre></div>
-For an overview of the properties that are available for controlling and reading data from the drone, go to the
+For an overview of the methods that are available for controlling and reading data from the drone, go to the
 <a href="../reference/blueye/sdk/drone/"><code>Reference section</code></a> of the documentation.
-The valid input ranges and descriptions of the different properties can also be found there.</p>
+The valid input ranges and descriptions of the different methods can also be found there.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>You can explore the properties of the drone interactively using an interactive Python interpreter like
+<p>You can explore the methods of the drone interactively using an interactive Python interpreter like
 <a href="https://ipython.readthedocs.io/en/stable/interactive/tutorial.html"><code>iPython</code></a>, which can be installed with:
 <div class="highlight"><pre><span></span><code>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>ipython
 </code></pre></div>
 By instantiating a Drone object and using the completion key (normally the <code>tab-key ↹</code>), you can get an interactive list of
-the available properties on the drone, making it easy to try setting and getting the different properties.
+the available methods on the drone, making it easy to try setting and getting the different values.
 <img alt="iPython" src="https://blueyenostorage.blob.core.windows.net/sdkimages/ipython-exploration.gif" /></p>
 </div>
 <h3 id="watching-the-video-stream">Watching the video stream</h3>
