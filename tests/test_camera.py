@@ -601,3 +601,43 @@ def test_configure_rejects_unknown_field_name(mocked_camera):
     with pytest.raises(AttributeError):
         with mocked_camera.configure() as params:
             params.not_a_camera_parameter = 1
+
+
+def camera_parameters_with_unknown_enum(field: str, value: int) -> bp.CameraParameters:
+    """Build a CameraParameters reporting an enum value this SDK build does not know.
+
+    proto-plus surfaces an unrecognized enum value as a plain int rather than an enum member,
+    which is what a drone running a newer Blunux than the SDK would produce.
+    """
+    raw = bp.CameraParameters.pb(bp.CameraParameters())
+    setattr(raw, field, value)
+    return bp.CameraParameters.wrap(raw)
+
+
+@pytest.mark.filterwarnings("ignore::DeprecationWarning")
+@pytest.mark.filterwarnings("ignore::UserWarning")
+def test_get_resolution_raises_runtime_error_on_unknown_enum(mocked_camera):
+    mocked_camera._parent_drone._req_rep_client.get_camera_parameters.return_value = (
+        camera_parameters_with_unknown_enum("resolution", 42)
+    )
+    with pytest.raises(RuntimeError, match="42"):
+        mocked_camera.get_resolution()
+
+
+@pytest.mark.filterwarnings("ignore::UserWarning")
+def test_get_framerate_raises_runtime_error_on_unknown_enum(mocked_camera):
+    mocked_camera._parent_drone._req_rep_client.get_camera_parameters.return_value = (
+        camera_parameters_with_unknown_enum("framerate", 42)
+    )
+    with pytest.raises(RuntimeError, match="42"):
+        mocked_camera.get_framerate()
+
+
+@pytest.mark.filterwarnings("ignore::UserWarning")
+def test_configure_raises_runtime_error_on_unknown_enum(mocked_camera):
+    mocked_camera._parent_drone._req_rep_client.get_camera_parameters.return_value = (
+        camera_parameters_with_unknown_enum("framerate", 42)
+    )
+    with pytest.raises(RuntimeError, match="42"):
+        with mocked_camera.configure() as params:
+            params.framerate
