@@ -18,6 +18,22 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
+_RESOLUTION_TO_HEIGHT = {
+    blueye.protocol.Resolution.RESOLUTION_VGA_480P: 480,
+    blueye.protocol.Resolution.RESOLUTION_HD_720P: 720,
+    blueye.protocol.Resolution.RESOLUTION_FULLHD_1080P: 1080,
+    blueye.protocol.Resolution.RESOLUTION_QHD_2K: 1440,
+    blueye.protocol.Resolution.RESOLUTION_UHD_4K: 2160,
+}
+_HEIGHT_TO_RESOLUTION = {height: res for res, height in _RESOLUTION_TO_HEIGHT.items()}
+
+_FRAMERATE_TO_FPS = {
+    blueye.protocol.Framerate.FRAMERATE_FPS_25: 25,
+    blueye.protocol.Framerate.FRAMERATE_FPS_30: 30,
+    blueye.protocol.Framerate.FRAMERATE_FPS_60: 60,
+}
+_FPS_TO_FRAMERATE = {fps: framerate for framerate, fps in _FRAMERATE_TO_FPS.items()}
+
 
 class Tilt:
     """Handles the camera tilt functionality for the Blueye drone."""
@@ -810,12 +826,19 @@ class Camera:
 
         Changes are accumulated and sent as a single request on scope exit.
 
+        Parameters take the same names and the same values as the corresponding setters, so
+        `params.whitebalance` and `params.framerate = 60` work here just as
+        [`set_whitebalance`][blueye.sdk.camera.Camera.set_whitebalance] and
+        [`set_framerate`][blueye.sdk.camera.Camera.set_framerate] do, and invalid values are
+        rejected the same way. The underlying protobuf field names (`white_balance`,
+        `h264_bitrate`, `mjpg_bitrate`) and the `blueye.protocol` enums are accepted too.
+
         Usage::
 
             with drone.camera.configure() as params:
                 params.recording_codec = bp.RecordingCodec.RECORDING_CODEC_H265
                 params.recording_bitrate = 20_000_000
-                params.framerate = bp.Framerate.FRAMERATE_FPS_30
+                params.framerate = 30
             # All three fields are sent in one set_camera_parameters call here.
         """
 
@@ -825,23 +848,94 @@ class Camera:
             self._camera._update_camera_parameters(timeout=timeout)
             self._params = camera._camera_parameters
 
+        # SDK accessor names whose protobuf field is spelled differently. The batch API accepts
+        # both, so code written against the setters works, and the protobuf names that shipped
+        # in 2.7.0 keep working.
+        _FIELD_ALIASES = {
+            "whitebalance": "white_balance",
+            "bitrate": "h264_bitrate",
+            "bitrate_still_picture": "mjpg_bitrate",
+        }
+
+        # Fields the setters expose as plain ints, with the tables translating to and from the
+        # protocol enum, and the enum type that is accepted as-is.
+        _INT_VALUED_FIELDS = {
+            "framerate": (_FPS_TO_FRAMERATE, _FRAMERATE_TO_FPS, blueye.protocol.Framerate),
+            "resolution": (
+                _HEIGHT_TO_RESOLUTION,
+                _RESOLUTION_TO_HEIGHT,
+                blueye.protocol.Resolution,
+            ),
+        }
+
+        _DEPRECATED_FIELDS = {
+            "resolution": (
+                "`resolution` is deprecated and is ignored by drones running Blunux 4.4 or newer, "
+                "use stream_resolution or recording_resolution instead"
+            ),
+        }
+
+        def _resolve(self, name: str) -> str:
+            """Translate an SDK accessor name into the protobuf field it reads or writes."""
+            field = self._FIELD_ALIASES.get(name, name)
+            if field in self._DEPRECATED_FIELDS:
+                warnings.warn(self._DEPRECATED_FIELDS[field], DeprecationWarning, stacklevel=3)
+            return field
+
+        def _to_enum(self, field: str, value):
+            """Map a plain int to its protocol enum, passing enum values through untouched."""
+            to_enum, _, enum_type = self._INT_VALUED_FIELDS[field]
+            if isinstance(value, enum_type):
+                return value
+            try:
+                return to_enum[value]
+            except (KeyError, TypeError):
+                valid = ", ".join(str(v) for v in sorted(to_enum))
+                raise ValueError(
+                    f"{value} is not a valid {field}. Valid values are {valid}"
+                ) from None
+
         def __getattr__(self, name):
-            return getattr(self._params, name)
+            field = self._resolve(name)
+            value = getattr(self._params, field)
+            if field in self._INT_VALUED_FIELDS:
+                _, from_enum, _ = self._INT_VALUED_FIELDS[field]
+                try:
+                    return from_enum[value]
+                except KeyError:
+                    raise RuntimeError(
+                        f"Drone reported an unsupported {field}: {value.name}"
+                    ) from None
+            return value
 
         _VERSION_GATED_PARAMS = {
             "recording_bitrate": "5.0.0",
             "recording_codec": "5.0.0",
+            "brightness": "5.0.0",
+            "contrast": "5.0.0",
+            "saturation": "5.0.0",
+            "gamma": "5.0.0",
+            "sharpness": "5.0.0",
+            "backlight_compensation": "5.0.0",
+            "denoise": "5.0.0",
+            "ehdr_enabled": "5.0.0",
+            "ehdr_exposure_min_number": "5.0.0",
+            "ehdr_exposure_max_number": "5.0.0",
+            "mtu_size": "5.1.0",
         }
 
         def __setattr__(self, name, value):
             if name.startswith("_"):
                 super().__setattr__(name, value)
-            else:
-                if name in self._VERSION_GATED_PARAMS:
-                    self._camera._parent_drone._verify_required_blunux_version(
-                        self._VERSION_GATED_PARAMS[name]
-                    )
-                setattr(self._params, name, value)
+                return
+            field = self._resolve(name)
+            if field in self._VERSION_GATED_PARAMS:
+                self._camera._parent_drone._verify_required_blunux_version(
+                    self._VERSION_GATED_PARAMS[field]
+                )
+            if field in self._INT_VALUED_FIELDS:
+                value = self._to_enum(field, value)
+            setattr(self._params, field, value)
 
         def __enter__(self):
             return self
@@ -891,9 +985,16 @@ class Camera:
         ``set_camera_parameters`` request when the ``with`` block exits.  If an exception is
         raised inside the block the changes are discarded.
 
+        Parameters take the same names and values as the corresponding setters; the protobuf
+        field names and enums are accepted as well.
+
         Args:
             timeout (float, optional): Timeout in seconds for the request. Increase when changing
                 parameters that trigger pipeline restarts (e.g. codec, resolution).
+
+        Raises:
+            ValueError: If a value is not valid for the parameter being set.
+            RuntimeError: If a parameter requires a newer Blunux version than the drone runs.
 
         Usage::
 
@@ -1061,40 +1162,374 @@ class Camera:
 
     hue = deprecated_property("get_hue", "set_hue")
 
+    def get_gain(self) -> float:
+        """Get the camera gain.
+
+        Only available on Pioneer/Pro/X1/X3.
+
+        Returns:
+            The camera ISO gain.
+        """
+        self._update_camera_parameters()
+        return self._camera_parameters.gain
+
+    def set_gain(self, gain: float):
+        """Set the camera gain.
+
+        Only available on Pioneer/Pro/X1/X3.
+
+        Args:
+            gain (float): Set the ISO gain (0..1).
+        """
+        if self._camera_parameters is None:
+            self._update_camera_parameters()
+        self._camera_parameters.gain = gain
+        self._parent_drone._req_rep_client.set_camera_parameters(self._camera_parameters)
+
+    def get_brightness(self) -> int:
+        """Get the camera brightness.
+
+        Only available on Ultra.
+
+        Returns:
+            The camera brightness.
+        """
+        self._update_camera_parameters()
+        return self._camera_parameters.brightness
+
+    def set_brightness(self, brightness: int):
+        """Set the camera brightness.
+
+        Only available on Ultra.
+
+        Args:
+            brightness (int): Set the brightness (-10..10), 0 is the default.
+
+        Raises:
+            RuntimeError: If the connected drone is running a Blunux version older than 5.0.0.
+        """
+        self._parent_drone._verify_required_blunux_version("5.0.0")
+        if self._camera_parameters is None:
+            self._update_camera_parameters()
+        self._camera_parameters.brightness = brightness
+        self._parent_drone._req_rep_client.set_camera_parameters(self._camera_parameters)
+
+    def get_contrast(self) -> int:
+        """Get the camera contrast.
+
+        Only available on Ultra.
+
+        Returns:
+            The camera contrast.
+        """
+        self._update_camera_parameters()
+        return self._camera_parameters.contrast
+
+    def set_contrast(self, contrast: int):
+        """Set the camera contrast.
+
+        Only available on Ultra.
+
+        Args:
+            contrast (int): Set the contrast (-50..50), 0 is the default.
+
+        Raises:
+            RuntimeError: If the connected drone is running a Blunux version older than 5.0.0.
+        """
+        self._parent_drone._verify_required_blunux_version("5.0.0")
+        if self._camera_parameters is None:
+            self._update_camera_parameters()
+        self._camera_parameters.contrast = contrast
+        self._parent_drone._req_rep_client.set_camera_parameters(self._camera_parameters)
+
+    def get_saturation(self) -> int:
+        """Get the camera saturation.
+
+        Only available on Ultra.
+
+        Returns:
+            The camera saturation.
+        """
+        self._update_camera_parameters()
+        return self._camera_parameters.saturation
+
+    def set_saturation(self, saturation: int):
+        """Set the camera saturation.
+
+        Only available on Ultra.
+
+        Args:
+            saturation (int): Set the saturation (0..50), 8 is the default.
+
+        Raises:
+            RuntimeError: If the connected drone is running a Blunux version older than 5.0.0.
+        """
+        self._parent_drone._verify_required_blunux_version("5.0.0")
+        if self._camera_parameters is None:
+            self._update_camera_parameters()
+        self._camera_parameters.saturation = saturation
+        self._parent_drone._req_rep_client.set_camera_parameters(self._camera_parameters)
+
+    def get_gamma(self) -> int:
+        """Get the camera gamma.
+
+        Only available on Ultra.
+
+        Returns:
+            The camera gamma.
+        """
+        self._update_camera_parameters()
+        return self._camera_parameters.gamma
+
+    def set_gamma(self, gamma: int):
+        """Set the camera gamma.
+
+        Only available on Ultra.
+
+        Args:
+            gamma (int): Set the gamma (4..79), 22 is the default.
+
+        Raises:
+            RuntimeError: If the connected drone is running a Blunux version older than 5.0.0.
+        """
+        self._parent_drone._verify_required_blunux_version("5.0.0")
+        if self._camera_parameters is None:
+            self._update_camera_parameters()
+        self._camera_parameters.gamma = gamma
+        self._parent_drone._req_rep_client.set_camera_parameters(self._camera_parameters)
+
+    def get_sharpness(self) -> int:
+        """Get the camera sharpness.
+
+        Only available on Ultra.
+
+        Returns:
+            The camera sharpness.
+        """
+        self._update_camera_parameters()
+        return self._camera_parameters.sharpness
+
+    def set_sharpness(self, sharpness: int):
+        """Set the camera sharpness.
+
+        Only available on Ultra.
+
+        Args:
+            sharpness (int): Set the sharpness (-20..20), -20 is the default.
+
+        Raises:
+            RuntimeError: If the connected drone is running a Blunux version older than 5.0.0.
+        """
+        self._parent_drone._verify_required_blunux_version("5.0.0")
+        if self._camera_parameters is None:
+            self._update_camera_parameters()
+        self._camera_parameters.sharpness = sharpness
+        self._parent_drone._req_rep_client.set_camera_parameters(self._camera_parameters)
+
+    def get_backlight_compensation(self) -> int:
+        """Get the camera backlight compensation.
+
+        Only available on Ultra.
+
+        Returns:
+            The camera backlight compensation.
+        """
+        self._update_camera_parameters()
+        return self._camera_parameters.backlight_compensation
+
+    def set_backlight_compensation(self, compensation: int):
+        """Set the camera backlight compensation.
+
+        Only available on Ultra.
+
+        Args:
+            compensation (int): Set the backlight compensation (-150..150), 10 is the default.
+
+        Raises:
+            RuntimeError: If the connected drone is running a Blunux version older than 5.0.0.
+        """
+        self._parent_drone._verify_required_blunux_version("5.0.0")
+        if self._camera_parameters is None:
+            self._update_camera_parameters()
+        self._camera_parameters.backlight_compensation = compensation
+        self._parent_drone._req_rep_client.set_camera_parameters(self._camera_parameters)
+
+    def get_denoise(self) -> int:
+        """Get the camera noise reduction.
+
+        Only available on Ultra.
+
+        Returns:
+            The camera noise reduction.
+        """
+        self._update_camera_parameters()
+        return self._camera_parameters.denoise
+
+    def set_denoise(self, denoise: int):
+        """Set the camera noise reduction.
+
+        Only available on Ultra.
+
+        Args:
+            denoise (int): Set the noise reduction (-20..20), -20 is the default.
+
+        Raises:
+            RuntimeError: If the connected drone is running a Blunux version older than 5.0.0.
+        """
+        self._parent_drone._verify_required_blunux_version("5.0.0")
+        if self._camera_parameters is None:
+            self._update_camera_parameters()
+        self._camera_parameters.denoise = denoise
+        self._parent_drone._req_rep_client.set_camera_parameters(self._camera_parameters)
+
+    def is_ehdr_enabled(self) -> bool:
+        """Get the state of the eHDR mode.
+
+        Only available on Ultra.
+
+        Returns:
+            The current state of the eHDR mode.
+        """
+        self._update_camera_parameters()
+        return self._camera_parameters.ehdr_enabled
+
+    def enable_ehdr(self, enable_ehdr: bool):
+        """Enable or disable the eHDR mode.
+
+        Only available on Ultra.
+
+        Args:
+            enable_ehdr (bool): True to enable eHDR mode, False to disable it. Enabled by default.
+
+        Raises:
+            RuntimeError: If the connected drone is running a Blunux version older than 5.0.0.
+        """
+        self._parent_drone._verify_required_blunux_version("5.0.0")
+        if self._camera_parameters is None:
+            self._update_camera_parameters()
+        self._camera_parameters.ehdr_enabled = enable_ehdr
+        self._parent_drone._req_rep_client.set_camera_parameters(self._camera_parameters)
+
+    def get_ehdr_exposure_min_number(self) -> int:
+        """Get the minimum number of eHDR frames.
+
+        Only available on Ultra.
+
+        Returns:
+            The minimum number of eHDR frames.
+        """
+        self._update_camera_parameters()
+        return self._camera_parameters.ehdr_exposure_min_number
+
+    def set_ehdr_exposure_min_number(self, number: int):
+        """Set the minimum number of eHDR frames.
+
+        Only available on Ultra.
+
+        Args:
+            number (int): Set the minimum number of eHDR frames (1..4), 1 is the default.
+
+        Raises:
+            RuntimeError: If the connected drone is running a Blunux version older than 5.0.0.
+        """
+        self._parent_drone._verify_required_blunux_version("5.0.0")
+        if self._camera_parameters is None:
+            self._update_camera_parameters()
+        self._camera_parameters.ehdr_exposure_min_number = number
+        self._parent_drone._req_rep_client.set_camera_parameters(self._camera_parameters)
+
+    def get_ehdr_exposure_max_number(self) -> int:
+        """Get the maximum number of eHDR frames.
+
+        Only available on Ultra.
+
+        Returns:
+            The maximum number of eHDR frames.
+        """
+        self._update_camera_parameters()
+        return self._camera_parameters.ehdr_exposure_max_number
+
+    def set_ehdr_exposure_max_number(self, number: int):
+        """Set the maximum number of eHDR frames.
+
+        Only available on Ultra.
+
+        Args:
+            number (int): Set the maximum number of eHDR frames (1..4), 2 is the default. Setting
+                it higher than 2 can reduce the frame rate.
+
+        Raises:
+            RuntimeError: If the connected drone is running a Blunux version older than 5.0.0.
+        """
+        self._parent_drone._verify_required_blunux_version("5.0.0")
+        if self._camera_parameters is None:
+            self._update_camera_parameters()
+        self._camera_parameters.ehdr_exposure_max_number = number
+        self._parent_drone._req_rep_client.set_camera_parameters(self._camera_parameters)
+
     def get_resolution(self) -> int:
         """Get the camera resolution.
+
+        Deprecated:
+            Drones running Blunux 4.4 or newer take the resolution from the stream and recording
+            resolution fields. Use
+            [`get_stream_resolution`][blueye.sdk.camera.Camera.get_stream_resolution] and
+            [`get_recording_resolution`][blueye.sdk.camera.Camera.get_recording_resolution]
+            instead.
+
+        Raises:
+            RuntimeError: If the drone reports a resolution the SDK does not recognize.
 
         Returns:
             The camera resolution.
         """
+        warnings.warn(
+            "`Camera.get_resolution` is deprecated, use `Camera.get_stream_resolution` or "
+            "`Camera.get_recording_resolution` instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         self._update_camera_parameters()
-        if self._camera_parameters.resolution == blueye.protocol.Resolution.RESOLUTION_HD_720P:
-            return 720
-        elif (
-            self._camera_parameters.resolution == blueye.protocol.Resolution.RESOLUTION_FULLHD_1080P
-        ):
-            return 1080
+        try:
+            return _RESOLUTION_TO_HEIGHT[self._camera_parameters.resolution]
+        except KeyError:
+            raise RuntimeError(
+                "Drone reported an unsupported resolution: "
+                f"{self._camera_parameters.resolution.name}"
+            ) from None
 
     def set_resolution(self, resolution: int):
         """Set the camera resolution.
 
+        Deprecated:
+            Drones running Blunux 4.4 or newer ignore this field when camera parameters are set,
+            so calling this method has no effect on them. Use
+            [`set_stream_resolution`][blueye.sdk.camera.Camera.set_stream_resolution] and
+            [`set_recording_resolution`][blueye.sdk.camera.Camera.set_recording_resolution]
+            instead.
+
         Args:
-            resolution (int): Set the camera in vertical pixels. Valid values are 720 or 1080.
+            resolution (int): Set the camera in vertical pixels. Valid values are 480, 720, 1080,
+                1440 or 2160.
 
         Raises:
-            ValueError: If the resolution is not 720 or 1080.
+            ValueError: If the resolution is not one of the valid values.
         """
-        if resolution not in (720, 1080):
+        warnings.warn(
+            "`Camera.set_resolution` is deprecated and is ignored by drones running Blunux 4.4 or "
+            "newer, use `Camera.set_stream_resolution` or `Camera.set_recording_resolution` "
+            "instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        if resolution not in _HEIGHT_TO_RESOLUTION:
             raise ValueError(
-                f"{resolution} is not a valid resolution. Valid values are 720 or 1080"
+                f"{resolution} is not a valid resolution. "
+                "Valid values are 480, 720, 1080, 1440 or 2160"
             )
         if self._camera_parameters is None:
             self._update_camera_parameters()
-        if resolution == 720:
-            self._camera_parameters.resolution = blueye.protocol.Resolution.RESOLUTION_HD_720P
-        elif resolution == 1080:
-            self._camera_parameters.resolution = blueye.protocol.Resolution.RESOLUTION_FULLHD_1080P
-
+        self._camera_parameters.resolution = _HEIGHT_TO_RESOLUTION[resolution]
         self._parent_drone._req_rep_client.set_camera_parameters(self._camera_parameters)
 
     resolution = deprecated_property("get_resolution", "set_resolution")
@@ -1186,33 +1621,38 @@ class Camera:
     def get_framerate(self) -> int:
         """Get the camera frame rate.
 
+        Raises:
+            RuntimeError: If the drone reports a frame rate the SDK does not recognize.
+
         Returns:
             The camera frame rate.
         """
         self._update_camera_parameters()
-        if self._camera_parameters.framerate == blueye.protocol.Framerate.FRAMERATE_FPS_25:
-            return 25
-        elif self._camera_parameters.framerate == blueye.protocol.Framerate.FRAMERATE_FPS_30:
-            return 30
+        try:
+            return _FRAMERATE_TO_FPS[self._camera_parameters.framerate]
+        except KeyError:
+            raise RuntimeError(
+                "Drone reported an unsupported framerate: "
+                f"{self._camera_parameters.framerate.name}"
+            ) from None
 
     def set_framerate(self, framerate: int):
         """Set the camera frame rate.
 
         Args:
-            framerate (int): Set the camera frame rate in frames per second.
-                             Valid values are 25 or 30.
+            framerate (int): Set the camera frame rate in frames per second. Valid values are 25,
+                30 or 60. 25 fps is only supported on Pioneer/Pro/X1/X3, and 60 fps only on the
+                Ultra at 1440p or lower. If the requested frame rate is not supported at the
+                current resolution the drone reduces it while respecting the resolution.
 
         Raises:
-            ValueError: If the framerate is not 25 or 30.
+            ValueError: If the frame rate is not 25, 30 or 60.
         """
-        if framerate not in (25, 30):
-            raise ValueError(f"{framerate} is not a valid framerate. Valid values are 25 or 30")
+        if framerate not in _FPS_TO_FRAMERATE:
+            raise ValueError(f"{framerate} is not a valid framerate. Valid values are 25, 30 or 60")
         if self._camera_parameters is None:
             self._update_camera_parameters()
-        if framerate == 25:
-            self._camera_parameters.framerate = blueye.protocol.Framerate.FRAMERATE_FPS_25
-        elif framerate == 30:
-            self._camera_parameters.framerate = blueye.protocol.Framerate.FRAMERATE_FPS_30
+        self._camera_parameters.framerate = _FPS_TO_FRAMERATE[framerate]
         self._parent_drone._req_rep_client.set_camera_parameters(self._camera_parameters)
 
     framerate = deprecated_property("get_framerate", "set_framerate")
@@ -1306,6 +1746,31 @@ class Camera:
         self._parent_drone._req_rep_client.set_camera_parameters(self._camera_parameters)
 
     streaming_protocol = deprecated_property("get_streaming_protocol", "set_streaming_protocol")
+
+    def get_mtu_size(self) -> int:
+        """Get the network MTU size used for video streaming.
+
+        Returns:
+            The MTU size in bytes (0 if the drone default is used).
+        """
+        self._update_camera_parameters()
+        return self._camera_parameters.mtu_size
+
+    def set_mtu_size(self, mtu_size: int):
+        """Set the network MTU size used for video streaming.
+
+        Args:
+            mtu_size (int): Set the MTU size in bytes (68..65535). The Blueye app allows values
+                between 500 and 1460. A value of 0 means the drone uses its default of 1400.
+
+        Raises:
+            RuntimeError: If the connected drone is running a Blunux version older than 5.1.0.
+        """
+        self._parent_drone._verify_required_blunux_version("5.1.0")
+        if self._camera_parameters is None:
+            self._update_camera_parameters()
+        self._camera_parameters.mtu_size = mtu_size
+        self._parent_drone._req_rep_client.set_camera_parameters(self._camera_parameters)
 
     def get_record_time(self) -> Optional[int]:
         """Get the duration of the current camera recording.

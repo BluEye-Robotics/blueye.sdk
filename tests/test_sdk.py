@@ -1,6 +1,6 @@
 import json
 from time import time
-from unittest.mock import Mock, PropertyMock
+from unittest.mock import Mock, NonCallableMock, PropertyMock
 
 import blueye.protocol as bp
 import pytest
@@ -31,6 +31,20 @@ class TestPose:
         assert pose["roll"] == new_angle
         assert pose["pitch"] == new_angle
         assert pose["yaw"] == new_angle
+
+
+def test_mocked_drone_is_isolated_from_live_telemetry(mocked_drone):
+    """Unit tests must never read telemetry off the network.
+
+    `mocked_drone` used to build a real TelemetryClient, which subscribes to the drone IP. With
+    a drone on the same network that fills the state within a few hundred milliseconds, and the
+    tests asserting that a getter returns None when no telemetry has been received start failing
+    at random.
+    """
+    # A spec'd mock passes isinstance() against the class it specs, so check for the mock
+    # itself rather than asserting the watcher is not a TelemetryClient.
+    assert isinstance(mocked_drone._telemetry_watcher, NonCallableMock)
+    assert mocked_drone.telemetry.get(bp.ControlModeTel) is None
 
 
 def test_zmq_connection_error(mocked_drone):
