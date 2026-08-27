@@ -476,3 +476,128 @@ def test_setter_on_a_cold_camera_fetches_current_parameters_first(mocked_ultra_c
     assert sent.recording_bitrate == 24_000_000
     assert sent.stream_resolution == bp.Resolution.RESOLUTION_FULLHD_1080P
     assert sent.framerate == bp.Framerate.FRAMERATE_FPS_30
+
+
+# (SDK accessor name, protobuf field name) for the fields whose names diverge
+BATCH_FIELD_ALIASES = [
+    ("whitebalance", "white_balance", 3200),
+    ("bitrate", "h264_bitrate", 3_000_000),
+    ("bitrate_still_picture", "mjpg_bitrate", 500_000),
+]
+
+
+@pytest.mark.parametrize("sdk_name, field_name, value", BATCH_FIELD_ALIASES)
+def test_configure_accepts_sdk_field_names(mocked_camera, sdk_name, field_name, value):
+    """configure() should take the same names as the setters, not raw protobuf names."""
+    mocked_camera._parent_drone._req_rep_client.get_camera_parameters.return_value = (
+        bp.CameraParameters()
+    )
+    with mocked_camera.configure() as params:
+        setattr(params, sdk_name, value)
+    sent = mocked_camera._parent_drone._req_rep_client.set_camera_parameters.call_args[0][0]
+    assert getattr(sent, field_name) == value
+
+
+@pytest.mark.parametrize("sdk_name, field_name, value", BATCH_FIELD_ALIASES)
+def test_configure_still_accepts_protobuf_field_names(mocked_camera, sdk_name, field_name, value):
+    """The protobuf names shipped in 2.7.0, so they have to keep working."""
+    mocked_camera._parent_drone._req_rep_client.get_camera_parameters.return_value = (
+        bp.CameraParameters()
+    )
+    with mocked_camera.configure() as params:
+        setattr(params, field_name, value)
+    sent = mocked_camera._parent_drone._req_rep_client.set_camera_parameters.call_args[0][0]
+    assert getattr(sent, field_name) == value
+
+
+@pytest.mark.parametrize("sdk_name, field_name, value", BATCH_FIELD_ALIASES)
+def test_configure_reads_back_through_sdk_names(mocked_camera, sdk_name, field_name, value):
+    mocked_camera._parent_drone._req_rep_client.get_camera_parameters.return_value = (
+        bp.CameraParameters(**{field_name: value})
+    )
+    with mocked_camera.configure() as params:
+        assert getattr(params, sdk_name) == value
+
+
+def test_configure_translates_framerate_int_to_enum(mocked_camera):
+    """set_framerate() takes fps, so the batch must too - not a raw enum number."""
+    mocked_camera._parent_drone._req_rep_client.get_camera_parameters.return_value = (
+        bp.CameraParameters()
+    )
+    with mocked_camera.configure() as params:
+        params.framerate = 60
+    sent = mocked_camera._parent_drone._req_rep_client.set_camera_parameters.call_args[0][0]
+    assert sent.framerate == bp.Framerate.FRAMERATE_FPS_60
+
+
+def test_configure_still_accepts_framerate_enum(mocked_camera):
+    mocked_camera._parent_drone._req_rep_client.get_camera_parameters.return_value = (
+        bp.CameraParameters()
+    )
+    with mocked_camera.configure() as params:
+        params.framerate = bp.Framerate.FRAMERATE_FPS_25
+    sent = mocked_camera._parent_drone._req_rep_client.set_camera_parameters.call_args[0][0]
+    assert sent.framerate == bp.Framerate.FRAMERATE_FPS_25
+
+
+def test_configure_rejects_invalid_framerate(mocked_camera):
+    mocked_camera._parent_drone._req_rep_client.get_camera_parameters.return_value = (
+        bp.CameraParameters()
+    )
+    with pytest.raises(ValueError):
+        with mocked_camera.configure() as params:
+            params.framerate = 24
+    mocked_camera._parent_drone._req_rep_client.set_camera_parameters.assert_not_called()
+
+
+@pytest.mark.filterwarnings("ignore::DeprecationWarning")
+def test_configure_translates_resolution_int_to_enum(mocked_camera):
+    mocked_camera._parent_drone._req_rep_client.get_camera_parameters.return_value = (
+        bp.CameraParameters()
+    )
+    with mocked_camera.configure() as params:
+        params.resolution = 1440
+    sent = mocked_camera._parent_drone._req_rep_client.set_camera_parameters.call_args[0][0]
+    assert sent.resolution == bp.Resolution.RESOLUTION_QHD_2K
+
+
+@pytest.mark.filterwarnings("ignore::DeprecationWarning")
+def test_configure_rejects_invalid_resolution(mocked_camera):
+    mocked_camera._parent_drone._req_rep_client.get_camera_parameters.return_value = (
+        bp.CameraParameters()
+    )
+    with pytest.raises(ValueError):
+        with mocked_camera.configure() as params:
+            params.resolution = 600
+
+
+def test_configure_warns_on_deprecated_resolution(mocked_camera):
+    """The batch must not become the quiet way to keep using the deprecated field."""
+    mocked_camera._parent_drone._req_rep_client.get_camera_parameters.return_value = (
+        bp.CameraParameters()
+    )
+    with pytest.warns(DeprecationWarning, match="stream_resolution"):
+        with mocked_camera.configure() as params:
+            params.resolution = 1080
+
+
+def test_configure_reads_back_framerate_and_resolution_as_ints(mocked_camera):
+    mocked_camera._parent_drone._req_rep_client.get_camera_parameters.return_value = (
+        bp.CameraParameters(
+            framerate=bp.Framerate.FRAMERATE_FPS_60,
+            resolution=bp.Resolution.RESOLUTION_UHD_4K,
+        )
+    )
+    with mocked_camera.configure() as params:
+        assert params.framerate == 60
+        with pytest.warns(DeprecationWarning):
+            assert params.resolution == 2160
+
+
+def test_configure_rejects_unknown_field_name(mocked_camera):
+    mocked_camera._parent_drone._req_rep_client.get_camera_parameters.return_value = (
+        bp.CameraParameters()
+    )
+    with pytest.raises(AttributeError):
+        with mocked_camera.configure() as params:
+            params.not_a_camera_parameter = 1

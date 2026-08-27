@@ -826,12 +826,19 @@ class Camera:
 
         Changes are accumulated and sent as a single request on scope exit.
 
+        Parameters take the same names and the same values as the corresponding setters, so
+        `params.whitebalance` and `params.framerate = 60` work here just as
+        [`set_whitebalance`][blueye.sdk.camera.Camera.set_whitebalance] and
+        [`set_framerate`][blueye.sdk.camera.Camera.set_framerate] do, and invalid values are
+        rejected the same way. The underlying protobuf field names (`white_balance`,
+        `h264_bitrate`, `mjpg_bitrate`) and the `blueye.protocol` enums are accepted too.
+
         Usage::
 
             with drone.camera.configure() as params:
                 params.recording_codec = bp.RecordingCodec.RECORDING_CODEC_H265
                 params.recording_bitrate = 20_000_000
-                params.framerate = bp.Framerate.FRAMERATE_FPS_30
+                params.framerate = 30
             # All three fields are sent in one set_camera_parameters call here.
         """
 
@@ -841,8 +848,65 @@ class Camera:
             self._camera._update_camera_parameters(timeout=timeout)
             self._params = camera._camera_parameters
 
+        # SDK accessor names whose protobuf field is spelled differently. The batch API accepts
+        # both, so code written against the setters works, and the protobuf names that shipped
+        # in 2.7.0 keep working.
+        _FIELD_ALIASES = {
+            "whitebalance": "white_balance",
+            "bitrate": "h264_bitrate",
+            "bitrate_still_picture": "mjpg_bitrate",
+        }
+
+        # Fields the setters expose as plain ints, with the tables translating to and from the
+        # protocol enum, and the enum type that is accepted as-is.
+        _INT_VALUED_FIELDS = {
+            "framerate": (_FPS_TO_FRAMERATE, _FRAMERATE_TO_FPS, blueye.protocol.Framerate),
+            "resolution": (
+                _HEIGHT_TO_RESOLUTION,
+                _RESOLUTION_TO_HEIGHT,
+                blueye.protocol.Resolution,
+            ),
+        }
+
+        _DEPRECATED_FIELDS = {
+            "resolution": (
+                "`resolution` is deprecated and is ignored by drones running Blunux 4.4 or newer, "
+                "use stream_resolution or recording_resolution instead"
+            ),
+        }
+
+        def _resolve(self, name: str) -> str:
+            """Translate an SDK accessor name into the protobuf field it reads or writes."""
+            field = self._FIELD_ALIASES.get(name, name)
+            if field in self._DEPRECATED_FIELDS:
+                warnings.warn(self._DEPRECATED_FIELDS[field], DeprecationWarning, stacklevel=3)
+            return field
+
+        def _to_enum(self, field: str, value):
+            """Map a plain int to its protocol enum, passing enum values through untouched."""
+            to_enum, _, enum_type = self._INT_VALUED_FIELDS[field]
+            if isinstance(value, enum_type):
+                return value
+            try:
+                return to_enum[value]
+            except (KeyError, TypeError):
+                valid = ", ".join(str(v) for v in sorted(to_enum))
+                raise ValueError(
+                    f"{value} is not a valid {field}. Valid values are {valid}"
+                ) from None
+
         def __getattr__(self, name):
-            return getattr(self._params, name)
+            field = self._resolve(name)
+            value = getattr(self._params, field)
+            if field in self._INT_VALUED_FIELDS:
+                _, from_enum, _ = self._INT_VALUED_FIELDS[field]
+                try:
+                    return from_enum[value]
+                except KeyError:
+                    raise RuntimeError(
+                        f"Drone reported an unsupported {field}: {value.name}"
+                    ) from None
+            return value
 
         _VERSION_GATED_PARAMS = {
             "recording_bitrate": "5.0.0",
@@ -863,12 +927,15 @@ class Camera:
         def __setattr__(self, name, value):
             if name.startswith("_"):
                 super().__setattr__(name, value)
-            else:
-                if name in self._VERSION_GATED_PARAMS:
-                    self._camera._parent_drone._verify_required_blunux_version(
-                        self._VERSION_GATED_PARAMS[name]
-                    )
-                setattr(self._params, name, value)
+                return
+            field = self._resolve(name)
+            if field in self._VERSION_GATED_PARAMS:
+                self._camera._parent_drone._verify_required_blunux_version(
+                    self._VERSION_GATED_PARAMS[field]
+                )
+            if field in self._INT_VALUED_FIELDS:
+                value = self._to_enum(field, value)
+            setattr(self._params, field, value)
 
         def __enter__(self):
             return self
@@ -918,9 +985,16 @@ class Camera:
         ``set_camera_parameters`` request when the ``with`` block exits.  If an exception is
         raised inside the block the changes are discarded.
 
+        Parameters take the same names and values as the corresponding setters; the protobuf
+        field names and enums are accepted as well.
+
         Args:
             timeout (float, optional): Timeout in seconds for the request. Increase when changing
                 parameters that trigger pipeline restarts (e.g. codec, resolution).
+
+        Raises:
+            ValueError: If a value is not valid for the parameter being set.
+            RuntimeError: If a parameter requires a newer Blunux version than the drone runs.
 
         Usage::
 
