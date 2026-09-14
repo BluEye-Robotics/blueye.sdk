@@ -261,13 +261,34 @@ def test_altitude_is_correct_on_valid_readings(mocked_drone):
 def test_gp_cam_recording(mocked_drone):
     mocked_drone.gp_cam = Camera(mocked_drone, is_guestport_camera=True)
     record_state_tel = bp.RecordStateTel(
-        record_state={"main_is_recording": False, "guestport_is_recording": False}
+        record_state={
+            "main_is_recording": False,
+            "guestport_is_recording": False,
+            "multibeam_is_recording": True,
+        }
     )
     mocked_drone._telemetry_watcher._state[bp.RecordStateTel] = bp.RecordStateTel.serialize(
         record_state_tel
     )
     mocked_drone.gp_cam.set_recording(True)
-    mocked_drone._ctrl_client.set_recording_state.assert_called_with(False, True)
+    mocked_drone._ctrl_client.set_recording_state.assert_called_with(False, True, True)
+
+
+def test_main_cam_recording_preserves_multibeam_state(mocked_drone):
+    record_state_tel = bp.RecordStateTel(
+        record_state={
+            "main_is_recording": False,
+            "guestport_is_recording": True,
+            "multibeam_is_recording": True,
+        }
+    )
+    mocked_drone._telemetry_watcher._state[bp.RecordStateTel] = bp.RecordStateTel.serialize(
+        record_state_tel
+    )
+
+    mocked_drone.camera.set_recording(True)
+
+    mocked_drone._ctrl_client.set_recording_state.assert_called_with(True, True, True)
 
 
 class TestTelemetry:

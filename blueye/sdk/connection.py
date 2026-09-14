@@ -345,15 +345,22 @@ class CtrlClient(threading.Thread):
         msg = blueye.protocol.WeatherVaningCtrl(state={"enabled": enabled})
         self._messages_to_send.put(msg)
 
-    def set_recording_state(self, main_enabled: bool, guestport_enabled: bool):
+    def set_recording_state(
+        self, main_enabled: bool, guestport_enabled: bool, multibeam_enabled: bool
+    ):
         """Enable or disable recording.
 
         Args:
             main_enabled (bool): Whether to enable main recording.
             guestport_enabled (bool): Whether to enable guest port recording.
+            multibeam_enabled (bool): Whether to enable multibeam recording.
         """
         msg = blueye.protocol.RecordCtrl(
-            record_on={"main": main_enabled, "guestport": guestport_enabled}
+            record_on={
+                "main": main_enabled,
+                "guestport": guestport_enabled,
+                "multibeam": multibeam_enabled,
+            }
         )
         self._messages_to_send.put(msg)
 
