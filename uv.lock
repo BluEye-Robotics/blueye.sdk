@@ -107,14 +107,14 @@ wheels = [
 
 [[package]]
 name = "blueye-protocol"
-version = "3.3.0"
+version = "3.5.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "proto-plus" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/6b/ad/f45ef606c32e11a92d24adb211344774eb70088b22d1cb74553f05352eb5/blueye_protocol-3.3.0.tar.gz", hash = "sha256:29b4b866f3f6768cde3393b4806788e12b32871a9c4f00a8d1a1b6f3ace1d3e7", size = 63833, upload-time = "2026-05-18T11:07:14.925Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/9e/56/f3b86c8ca6a5c085bc445bb2e66746bc4c6f655c8c9e521c0a11e6e4864f/blueye_protocol-3.5.0.tar.gz", hash = "sha256:fb4a11640c2de836b610122f373abdb5097f053c2347a4e18abe7baee10949b0", size = 76236, upload-time = "2026-09-17T09:25:24.847Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/3d/b8/4367b497dca2ffff5e25cb8a5f291532afc309a750831b97870fda24163d/blueye_protocol-3.3.0-py3-none-any.whl", hash = "sha256:08ba5cdb1d7647f42a81dbebbd754bc9a004535b033a6fc18660f259ea777bd5", size = 68387, upload-time = "2026-05-18T11:07:13.975Z" },
+    { url = "https://files.pythonhosted.org/packages/a2/0c/e1b40b8bacadf8f423f1cf0e03321198c5832c6064430e0f86980fd25e08/blueye_protocol-3.5.0-py3-none-any.whl", hash = "sha256:af44215261e34227940d77120db50ca5c4279533ab496c819cc58d08b56ee988", size = 80920, upload-time = "2026-09-17T09:25:23.96Z" },
 ]
 
 [[package]]
@@ -174,7 +174,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "asciimatics", marker = "extra == 'examples'", specifier = ">=1.11.0,<2" },
-    { name = "blueye-protocol", specifier = ">=3.3.0,<4" },
+    { name = "blueye-protocol", specifier = ">=3.5.0,<4" },
     { name = "foxglove-websocket", marker = "extra == 'examples'", specifier = ">=0.1.2,<0.2" },
     { name = "inputs", marker = "extra == 'examples'", specifier = ">=0.5,<0.6" },
     { name = "matplotlib", marker = "extra == 'examples'", specifier = "~=3.10" },
