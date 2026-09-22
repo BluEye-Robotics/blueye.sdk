@@ -35,6 +35,16 @@ _FRAMERATE_TO_FPS = {
 _FPS_TO_FRAMERATE = {fps: framerate for framerate, fps in _FRAMERATE_TO_FPS.items()}
 
 
+def _describe_enum(value) -> str:
+    """Render a protocol enum value for an error message.
+
+    A drone running a newer Blunux than the SDK can report an enum value this build does not
+    know, and proto-plus surfaces those as a plain int rather than an enum member. Fall back to
+    the number so the error still says which value was rejected.
+    """
+    return getattr(value, "name", str(value))
+
+
 class Tilt:
     """Handles the camera tilt functionality for the Blueye drone."""
 
@@ -904,7 +914,7 @@ class Camera:
                     return from_enum[value]
                 except KeyError:
                     raise RuntimeError(
-                        f"Drone reported an unsupported {field}: {value.name}"
+                        f"Drone reported an unsupported {field}: {_describe_enum(value)}"
                     ) from None
             return value
 
@@ -1495,7 +1505,7 @@ class Camera:
         except KeyError:
             raise RuntimeError(
                 "Drone reported an unsupported resolution: "
-                f"{self._camera_parameters.resolution.name}"
+                f"{_describe_enum(self._camera_parameters.resolution)}"
             ) from None
 
     def set_resolution(self, resolution: int):
@@ -1633,7 +1643,7 @@ class Camera:
         except KeyError:
             raise RuntimeError(
                 "Drone reported an unsupported framerate: "
-                f"{self._camera_parameters.framerate.name}"
+                f"{_describe_enum(self._camera_parameters.framerate)}"
             ) from None
 
     def set_framerate(self, framerate: int):
