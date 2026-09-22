@@ -1,0 +1,2398 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../mission-planning/">
+      
+      
+        <link rel="next" href="../odometer-to-831l/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../media/blueye_b.svg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>The blueye CLI - Blueye SDK</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.618322db.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../css/mkdocsoad.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#the-blueye-cli" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      <!--
+  Copyright (c) 2016-2023 Martin Donath <martin.donath@squidfunk.com>
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to
+  deal in the Software without restriction, including without limitation the
+  rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+  sell copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+  IN THE SOFTWARE.
+-->
+
+<!-- Determine classes -->
+
+
+
+
+
+<!-- Header -->
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+
+    <!-- Link to home -->
+    <a href=".." title="Blueye SDK"
+      class="md-header__button md-logo" aria-label="Blueye SDK" data-md-component="logo">
+      
+  <img src="../media/blueye_sdk_logo_darkblue.svg" alt="logo">
+
+    </a>
+
+    <!-- Button to open drawer -->
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+
+    <!-- Header title -->
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+            The blueye CLI
+            
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Color palette toggle -->
+    
+    
+    <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="blue"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="blue"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+    
+    
+
+    <!-- Site language selector -->
+    
+
+    <!-- Button to open search modal -->
+    
+    <label class="md-header__button md-icon" for="__search">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+    </label>
+
+    <!-- Search interface -->
+    <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    <!-- Repository information -->
+    
+    <div class="md-header__source">
+      <a href="https://github.com/BluEye-Robotics/blueye.sdk" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    
+  </div>
+</a>
+    </div>
+    
+  </nav>
+
+  <!-- Navigation tabs (sticky) -->
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <!--
+  Copyright (c) 2016-2023 Martin Donath <martin.donath@squidfunk.com>
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to
+  deal in the Software without restriction, including without limitation the
+  rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+  sell copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+  IN THE SOFTWARE.
+-->
+
+
+
+<!-- Determine classes -->
+
+
+
+
+<!-- Navigation -->
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+
+  <!-- Site title -->
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Blueye SDK"
+      class="md-nav__button md-logo" aria-label="Blueye SDK" data-md-component="logo">
+      
+  <img src="../media/blueye_sdk_logo_darkblue.svg" alt="logo">
+
+    </a>
+  </label>
+
+  <!-- Repository information -->
+  
+  <div class="md-nav__source">
+    <a href="https://github.com/BluEye-Robotics/blueye.sdk" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    
+  </div>
+</a>
+  </div>
+  
+
+  <!-- Navigation list -->
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About the Blueye Drones
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../quick_start/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quick Start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Movement
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Movement
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../movement/from-the-CLI/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Control from the CLI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../movement/with-a-gamepad/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Control with a gamepad
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Video
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Video
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../video/gstreamer-for-video-streaming/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GStreamer for video streaming
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../video/downloading/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Downloading videos and images
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Logs
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Logs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../logs/listing-and-downloading/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Listing and downloading log files
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../logs/foxglove-bez-to-mcap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visualize dive log data in Foxglove
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../logs/plotting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plotting log files
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../logs/runtime-logs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Runtime logs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../logs/legacy-log-file-format/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Legacy log file format
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configure drone parameters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../telemetry-callback/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Subscribing to a telemetry message
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../peripherals/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Peripherals
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../foxglove-bridge/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visualize live sensor data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../nmea-publisher/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Forwarding positioning to NMEA
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mission-planning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mission Planning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The blueye CLI
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The blueye CLI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#bundling-cv-models-blueye-bundle-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bundling CV models — blueye bundle-model
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Bundling CV models — blueye bundle-model">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#interactive-use" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Interactive use
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scripted-use" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scripted use
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#supported-model-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported model types
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploying-to-the-drone" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deploying to the drone
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#managing-models-on-the-drone-blueye-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Managing models on the drone — blueye models
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#downloading-dive-logs-blueye-logs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Downloading dive logs — blueye logs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#third-party-tools-blueye-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Third-party tools — blueye tools
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Third-party tools — blueye tools">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#writing-a-tool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Writing a tool
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#installing-and-managing-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installing and managing tools
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../odometer-to-831l/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Odometer forwarding
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../migrating-to-v2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Updating from v1 to v2
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../http-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HTTP API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_16" >
+        
+          
+          <label class="md-nav__link" for="__nav_16" id="__nav_16_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_16_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_16">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/blueye/sdk/battery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    blueye.sdk.battery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/blueye/sdk/camera/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    blueye.sdk.camera
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/blueye/sdk/cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    blueye.sdk.cli
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/blueye/sdk/connection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    blueye.sdk.connection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/blueye/sdk/constants/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    blueye.sdk.constants
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/blueye/sdk/cv_models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    blueye.sdk.cv_models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/blueye/sdk/drone/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    blueye.sdk.drone
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/blueye/sdk/guestport/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    blueye.sdk.guestport
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/blueye/sdk/logs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    blueye.sdk.logs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/blueye/sdk/motion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    blueye.sdk.motion
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/blueye/sdk/utils/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    blueye.sdk.utils
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/blueye/sdk/mission/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    blueye.sdk.mission
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_16_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_16_13" id="__nav_16_13_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    blueye.protocol
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_16_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_16_13">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    blueye.protocol
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/blueye/protocol/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/blueye/protocol/telemetry/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Telemetry
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/blueye/protocol/control/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/blueye/protocol/req_rep/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ReqRep
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/blueye/protocol/message_formats/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Message Formats
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/blueye/protocol/mission_planning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mission Planning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/blueye/protocol/aquatroll/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Aquatroll
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#bundling-cv-models-blueye-bundle-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bundling CV models — blueye bundle-model
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Bundling CV models — blueye bundle-model">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#interactive-use" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Interactive use
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scripted-use" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scripted use
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#supported-model-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported model types
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploying-to-the-drone" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deploying to the drone
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#managing-models-on-the-drone-blueye-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Managing models on the drone — blueye models
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#downloading-dive-logs-blueye-logs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Downloading dive logs — blueye logs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#third-party-tools-blueye-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Third-party tools — blueye tools
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Third-party tools — blueye tools">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#writing-a-tool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Writing a tool
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#installing-and-managing-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installing and managing tools
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="the-blueye-cli">The blueye CLI</h1>
+<p>The SDK ships with a <code>blueye</code> command line interface for working with the drone from
+the terminal. It is installed together with the SDK:</p>
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>blueye.sdk
+</code></pre></div>
+<p>Running <code>blueye --help</code> lists the available commands. One command needs an extra:
+<code>blueye bundle-model</code> inspects ONNX files and requires the heavyweight <code>onnx</code> package,
+installed with the SDK's <code>cli</code> extra:</p>
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;blueye.sdk[cli]&quot;</span>
+</code></pre></div>
+<p>(Keep the quotes — most shells treat square brackets specially.) If the extra is
+missing, <code>bundle-model</code> detects it and prints the install command for your platform
+instead of failing.</p>
+<h2 id="bundling-cv-models-blueye-bundle-model">Bundling CV models — <code>blueye bundle-model</code></h2>
+<p>The Blueye X3 Ultra can run your own computer vision models: object
+detection, instance segmentation, and single-object tracking. The drone's vision
+pipeline consumes <strong>model packages</strong> — a zip containing an ONNX model and a
+<code>model_meta.json</code> file that describes how to preprocess frames and decode the model's
+outputs.</p>
+<p>The <code>blueye bundle-model</code> command turns an exported ONNX file into such a package. It</p>
+<ul>
+<li>validates that the model is of a supported type,</li>
+<li>auto-generates <code>model_meta.json</code> from the ONNX graph and any embedded metadata
+  (Ultralytics exports carry their class names and input size along),</li>
+<li>interactively asks about anything that cannot be inferred, and</li>
+<li>writes a deployable zip.</li>
+</ul>
+<h3 id="interactive-use">Interactive use</h3>
+<p>Point the command at your ONNX file and answer the prompts:</p>
+<div class="highlight"><pre><span></span><code>blueye<span class="w"> </span>bundle-model<span class="w"> </span>path/to/model.onnx
+</code></pre></div>
+<p>The CLI inspects the model, shows what it inferred (output format, class count, input
+size, labels), and walks through the remaining choices with interactive prompts — model
+name, tracking algorithm, and the runtime configuration for the drone:</p>
+<ul>
+<li><strong>Execution device</strong> — the CLI analyzes the network and recommends the Jetson DLA
+  cores (<code>tensorrt-dla0</code>/<code>tensorrt-dla1</code>) for convolution-style models, which frees the
+  GPU for other work. Models with layers the DLA cannot run (NMS-in-graph,
+  transformers) get <code>tensorrt</code> recommended instead. You can always pick any device.</li>
+<li><strong>Inference rate</strong> — maximum rate in Hz, defaulting to unlimited.</li>
+<li><strong>Autolaunch</strong> — whether the drone should start this model automatically. Defaults
+  to enabled; pass <code>--no-runtime-enabled</code> to bundle the package disabled.</li>
+<li><strong>Package metadata</strong> — a version string (default <code>1.0.0</code>) plus optional description,
+  author, and license. These are informational fields carried inside
+  <code>model_meta.json</code> so the package stays self-describing wherever it travels
+  (drone web UI, Blueye App, Blueye Cloud). Use an <a href="https://spdx.org/licenses/">SPDX identifier</a>
+  for the license when you can (<code>MIT</code>, <code>Apache-2.0</code>, <code>AGPL-3.0</code>, <code>Proprietary</code>).</li>
+</ul>
+<p>The result is a zip with <code>model.onnx</code> and <code>model_meta.json</code> at its root.</p>
+<h3 id="scripted-use">Scripted use</h3>
+<p>Every prompt can be answered with a flag, and <code>--yes</code> accepts all inferred defaults:</p>
+<div class="highlight"><pre><span></span><code>blueye<span class="w"> </span>bundle-model<span class="w"> </span>yolov8n.onnx<span class="w"> </span>--yes<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--name<span class="w"> </span><span class="s2">&quot;YOLOv8n (COCO)&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--model-version<span class="w"> </span><span class="m">1</span>.0.0<span class="w"> </span>--author<span class="w"> </span><span class="s2">&quot;Ultralytics&quot;</span><span class="w"> </span>--license<span class="w"> </span>AGPL-3.0<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--description<span class="w"> </span><span class="s2">&quot;YOLOv8n nano object detector trained on COCO (80 classes)&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--tracking<span class="w"> </span>byte_track<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--runtime-device<span class="w"> </span>tensorrt-dla0<span class="w"> </span>--runtime-hz<span class="w"> </span><span class="m">10</span><span class="w"> </span>--runtime-enabled<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--output<span class="w"> </span>yolov8n_package.zip
+</code></pre></div>
+<p>Use <code>--dry-run</code> to print the generated <code>model_meta.json</code> without writing anything, and
+<code>--labels labels.txt</code> (one class name per line) when the model does not embed its class
+names.</p>
+<h3 id="supported-model-types">Supported model types</h3>
+<table>
+<thead>
+<tr>
+<th>Output format</th>
+<th>Model family</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>yolov2_grid</code></td>
+<td>YOLOv2 / TinyYOLOv2 (grid + anchors)</td>
+</tr>
+<tr>
+<td><code>yolov5_flat</code></td>
+<td>YOLOv5 ONNX export</td>
+</tr>
+<tr>
+<td><code>yolov8_flat</code></td>
+<td>YOLOv8 / YOLO11 ONNX export</td>
+</tr>
+<tr>
+<td><code>yolov8_seg</code></td>
+<td>YOLOv8/v11 segmentation</td>
+</tr>
+<tr>
+<td><code>yolo_e2e</code></td>
+<td>End-to-end YOLO with NMS in the model (YOLO26)</td>
+</tr>
+<tr>
+<td><code>yolo_e2e_seg</code></td>
+<td>End-to-end YOLO segmentation</td>
+</tr>
+<tr>
+<td><code>ssd_multi</code></td>
+<td>SSD (multi-output, e.g. TensorFlow exports)</td>
+</tr>
+<tr>
+<td><code>detr</code></td>
+<td>DETR transformer detectors</td>
+</tr>
+<tr>
+<td><code>ostrack</code></td>
+<td>OSTrack single-object tracker</td>
+</tr>
+<tr>
+<td><code>mixformerv2</code></td>
+<td>MixFormerV2 single-object tracker</td>
+</tr>
+</tbody>
+</table>
+<p>The model must take float32 image input; models with a clearly unsupported structure
+(image classifiers, float16 inputs, non-image inputs) are rejected with an explanation.</p>
+<h3 id="deploying-to-the-drone">Deploying to the drone</h3>
+<p>The easiest way is to push the package directly: interactive runs offer it after the
+zip is written, and scripts pass <code>--push</code> (with <code>--drone-ip</code> if the drone is not at
+the default <code>192.168.1.101</code>):</p>
+<div class="highlight"><pre><span></span><code>blueye<span class="w"> </span>bundle-model<span class="w"> </span>yolov8n.onnx<span class="w"> </span>--yes<span class="w"> </span>--push
+</code></pre></div>
+<p>If the drone cannot be reached, the command fails with a clear message — the zip is
+still written and can be pushed later.</p>
+<p>The same operations are available programmatically through the SDK:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">blueye.sdk</span>
+
+<span class="n">drone</span> <span class="o">=</span> <span class="n">blueye</span><span class="o">.</span><span class="n">sdk</span><span class="o">.</span><span class="n">Drone</span><span class="p">(</span><span class="n">auto_connect</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># HTTP only, takes no control</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">drone</span><span class="o">.</span><span class="n">cv_models</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="s2">&quot;yolov8n_package.zip&quot;</span><span class="p">)</span>
+<span class="n">drone</span><span class="o">.</span><span class="n">cv_models</span><span class="o">.</span><span class="n">set_enabled</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+<p>Without the SDK installed, the drone's HTTP endpoint accepts the package zip as a
+multipart upload (field name <code>file</code>):</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;file=@yolov8n_package.zip&quot;</span><span class="w"> </span>http://192.168.1.101/api/cv-models/upload
+</code></pre></div>
+<p>or use the Blunux Web App — open <code>http://192.168.1.101</code> in a browser and upload the
+zip from the Computer Vision tab.</p>
+<h2 id="managing-models-on-the-drone-blueye-models">Managing models on the drone — <code>blueye models</code></h2>
+<p>Installed models are managed with the <code>blueye models</code> command, or interactively by
+running it without arguments on a terminal:</p>
+<div class="highlight"><pre><span></span><code>blueye<span class="w"> </span>models<span class="w"> </span>list
+blueye<span class="w"> </span>models<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>yolov8n-coco
+blueye<span class="w"> </span>models<span class="w"> </span>set-device<span class="w"> </span>yolov8n-coco<span class="w"> </span>tensorrt-dla0
+blueye<span class="w"> </span>models<span class="w"> </span>warmup<span class="w"> </span>yolov8n-coco<span class="w">      </span><span class="c1"># pre-build the TensorRT engine</span>
+blueye<span class="w"> </span>models<span class="w"> </span>delete<span class="w"> </span>yolov8n-coco
+</code></pre></div>
+<p>Model names are the directory slugs shown by <code>blueye models list</code>. Note: the
+<code>enabled</code> state is the autolaunch configuration; the API does not expose a live
+"running" status.</p>
+<h2 id="downloading-dive-logs-blueye-logs">Downloading dive logs — <code>blueye logs</code></h2>
+<p>The drone's binary dive logs (<code>.bez</code>) can be listed and downloaded from the terminal.
+The command connects to the drone as an observer — taking no control:</p>
+<div class="highlight"><pre><span></span><code>blueye<span class="w"> </span>logs<span class="w"> </span>list<span class="w">                       </span><span class="c1"># table of logs on the drone</span>
+blueye<span class="w"> </span>logs<span class="w"> </span>download<span class="w"> </span>--latest<span class="w"> </span><span class="m">1</span><span class="w">        </span><span class="c1"># newest log to the current directory</span>
+blueye<span class="w"> </span>logs<span class="w"> </span>download<span class="w"> </span>--latest<span class="w"> </span><span class="m">1</span><span class="w"> </span>--mcap<span class="w"> </span><span class="c1"># ...and convert it for Foxglove</span>
+blueye<span class="w"> </span>logs<span class="w"> </span>download<span class="w"> </span>BYEDP000000_ea9ac92e1817a1d4_00002<span class="w"> </span>-o<span class="w"> </span>~/dives
+blueye<span class="w"> </span>logs<span class="w"> </span>convert<span class="w"> </span>mydive.bez<span class="w">         </span><span class="c1"># convert an already-downloaded log (no drone)</span>
+blueye<span class="w"> </span>logs<span class="w">                            </span><span class="c1"># interactive: pick logs to download</span>
+</code></pre></div>
+<p><code>list</code>, <code>download</code>, and the interactive view accept <code>--dives-only</code>, <code>--since
+YYYY-MM-DD</code>, and <code>--until YYYY-MM-DD</code> to narrow the selection; the interactive view
+is a single scrollable table (type to filter, space to select, sorted newest first).
+<code>--mcap</code> converts each downloaded log to a Foxglove-ready <code>.mcap</code> next to the
+<code>.bez</code> — <code>blueye logs convert</code> does the same for files already on disk. See
+<a href="../logs/foxglove-bez-to-mcap/">visualizing dive logs with Foxglove</a>.
+For working with logs from Python (streaming, filtering, plotting), see
+<a href="../logs/listing-and-downloading/">logs from the drone</a>.</p>
+<h2 id="third-party-tools-blueye-tools">Third-party tools — <code>blueye tools</code></h2>
+<p>The <code>blueye</code> command is built to grow: besides the built-in commands, anyone can drop
+single-file Python tools into a per-user directory. The CLI discovers them
+automatically, lists them in <code>blueye --help</code>, and runs them as
+<code>blueye &lt;tool-name&gt; ...</code> — no SDK changes needed.</p>
+<h3 id="writing-a-tool">Writing a tool</h3>
+<p>A tool is a normal Python script carrying <a href="https://peps.python.org/pep-0723/">PEP 723</a>
+inline metadata, extended with a <code>[tool.blueye]</code> table:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># /// script</span>
+<span class="c1"># requires-python = &quot;&gt;=3.10&quot;</span>
+<span class="c1"># dependencies = [&quot;pandas&quot;]</span>
+<span class="c1">#</span>
+<span class="c1"># [tool.blueye]</span>
+<span class="c1"># name = &quot;export-logs&quot;</span>
+<span class="c1"># description = &quot;Export dive logs to CSV&quot;</span>
+<span class="c1"># min-sdk-version = &quot;2.7.0&quot;</span>
+<span class="c1"># ///</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;exporting with args: </span><span class="si">{</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="mi">0</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</code></pre></div>
+<p>The <code>[tool.blueye]</code> keys:</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Required</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>name</code></td>
+<td>yes</td>
+<td>The subcommand name (<code>blueye export-logs</code>). Lowercase letters, digits, and hyphens; must start with a letter; at most 32 characters.</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>yes</td>
+<td>One line shown in <code>blueye --help</code> and <code>blueye tools list</code>.</td>
+</tr>
+<tr>
+<td><code>min-sdk-version</code></td>
+<td>no</td>
+<td>Minimum blueye.sdk version; a mismatch prints a warning but never blocks.</td>
+</tr>
+</tbody>
+</table>
+<p>Arguments after the tool name are passed to the script verbatim, and its exit code
+becomes the CLI's exit code. Invocation is strictly <code>blueye &lt;tool-name&gt; args...</code>.</p>
+<p><strong>Dependencies</strong>: when the script declares PEP 723 <code>dependencies</code> and
+<a href="https://docs.astral.sh/uv/">uv</a> is installed, the CLI runs it with <code>uv run</code>, giving
+the script an isolated environment with those dependencies — your tool can use pandas
+without pandas ever being installed next to the SDK. Without uv, the script runs with
+the current interpreter and must find its dependencies there.</p>
+<h3 id="installing-and-managing-tools">Installing and managing tools</h3>
+<div class="highlight"><pre><span></span><code>blueye<span class="w"> </span>tools<span class="w"> </span>validate<span class="w"> </span>my_script.py<span class="w">   </span><span class="c1"># check the metadata before installing</span>
+blueye<span class="w"> </span>tools<span class="w"> </span>install<span class="w"> </span>my_script.py<span class="w">    </span><span class="c1"># copy it into the tools directory</span>
+blueye<span class="w"> </span>tools<span class="w"> </span>list<span class="w">                    </span><span class="c1"># built-ins + installed tools</span>
+blueye<span class="w"> </span>tools<span class="w"> </span>uninstall<span class="w"> </span>export-logs
+blueye<span class="w"> </span>tools<span class="w"> </span>dir<span class="w">                     </span><span class="c1"># print the resolved tools directory</span>
+</code></pre></div>
+<p>Discovery scans the tools directory on every invocation and parses <strong>only the
+metadata block — tool code is never executed during discovery</strong> or listing.</p>
+<p>The directory is resolved from the <code>BLUEYE_CLI_TOOLS_DIR</code> environment variable when
+set, otherwise from the platform default:</p>
+<table>
+<thead>
+<tr>
+<th>Platform</th>
+<th>Default tools directory</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>macOS</td>
+<td><code>~/Library/Application Support/blueye/cli-tools</code></td>
+</tr>
+<tr>
+<td>Linux</td>
+<td><code>$XDG_DATA_HOME/blueye/cli-tools</code> (or <code>~/.local/share/blueye/cli-tools</code>)</td>
+</tr>
+<tr>
+<td>Windows</td>
+<td><code>%APPDATA%\blueye\cli-tools</code></td>
+</tr>
+</tbody>
+</table>
+<p>Name collisions always resolve in favor of built-in commands; <code>blueye tools list</code>
+shows shadowed or invalid tools with the reason.</p>
+<p>SDK contributors adding a <strong>built-in</strong> command should follow the recipe and
+invariants documented in the <code>blueye.sdk.cli.commands</code> module docstring.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+  <nav class="md-footer__inner md-grid" aria-label="footer.title">
+    
+    
+    <a href="../mission-planning/" class="md-footer__link md-footer__link--prev"
+      aria-label="Previous: Mission Planning" rel="prev">
+      <div class="md-footer__button md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </div>
+      <div class="md-footer__title">
+        <div class="md-ellipsis">
+          <span class="md-footer__direction">
+            Previous
+          </span>
+          Mission Planning
+        </div>
+      </div>
+    </a>
+    
+    
+    
+    <a href="../odometer-to-831l/" class="md-footer__link md-footer__link--next"
+      aria-label="Next: Odometer forwarding" rel="next">
+      <div class="md-footer__title">
+        <div class="md-ellipsis">
+          <span class="md-footer__direction">
+            Next
+          </span>
+          Odometer forwarding
+        </div>
+      </div>
+      <div class="md-footer__button md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+      </div>
+    </a>
+    
+  </nav>
+  
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["content.tabs.link", "navigation.top"], "search": "../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+        <script src="../js/deprecated-toc.js"></script>
+      
+    
+  </body>
+</html>
