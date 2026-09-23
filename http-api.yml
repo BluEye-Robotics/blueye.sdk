@@ -477,22 +477,6 @@ paths:
               schema:
                 type: string
           description: ''
-  /logcsv/binary_logs.zip:
-    get:
-      operationId: logcsv_binary_logs.zip_retrieve
-      description: Download all CSV log files as a zlib compressed zip file
-      summary: Zipped CSV log files
-      tags:
-      - Legacy logs
-      responses:
-        '200':
-          content:
-            application/zip:
-              schema:
-                type: string
-                format: binary
-                description: All the csv log files compressed into one archive
-          description: ''
   /logs/:
     get:
       operationId: logs_retrieve
