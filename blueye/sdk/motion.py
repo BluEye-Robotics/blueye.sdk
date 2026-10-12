@@ -10,15 +10,25 @@ from .utils import deprecated_property
 class Motion:
     """Control the motion of the drone, and set automatic control modes
 
-    Motion can be set one degree of freedom at a time by using the 4 motion setters
-    (set_surge, set_sway, set_heave and set_yaw) or for all 4 degrees of freedom in one go through
-    the `send_thruster_setpoint` method.
+    Motion can be set one degree of freedom at a time by using the motion setters (set_surge,
+    set_sway, set_heave and set_yaw, and on the Blueye X7 also set_roll and set_pitch) or for all
+    degrees of freedom in one go through the `send_thruster_setpoint` method.
+
+    Only the Blueye X7 has thrusters that can produce roll and pitch moments. The other models
+    ignore roll and pitch input, so the setters are safe to call on any drone.
     """
 
     def __init__(self, parent_drone):
         self._parent_drone = parent_drone
         self.thruster_lock = threading.Lock()
-        self._current_thruster_setpoints = {"surge": 0, "sway": 0, "heave": 0, "yaw": 0}
+        self._current_thruster_setpoints = {
+            "surge": 0,
+            "sway": 0,
+            "heave": 0,
+            "yaw": 0,
+            "roll": 0,
+            "pitch": 0,
+        }
         self._current_boost_setpoints = {"slow": 0, "boost": 0}
 
     def get_current_thruster_setpoints(self):
@@ -53,9 +63,18 @@ class Motion:
 
     def _send_motion_input_message(self):
         """Small helper function for building argument list to motion_input command"""
-        thruster_setpoints = self._current_thruster_setpoints.values()
-        boost_setpoints = self._current_boost_setpoints.values()
-        self._parent_drone._ctrl_client.set_motion_input(*thruster_setpoints, *boost_setpoints)
+        setpoints = self._current_thruster_setpoints
+        boost_setpoints = self._current_boost_setpoints
+        self._parent_drone._ctrl_client.set_motion_input(
+            setpoints["surge"],
+            setpoints["sway"],
+            setpoints["heave"],
+            setpoints["yaw"],
+            boost_setpoints["slow"],
+            boost_setpoints["boost"],
+            roll=setpoints["roll"],
+            pitch=setpoints["pitch"],
+        )
 
     def get_surge(self) -> float:
         """Get the force reference for the surge direction
@@ -141,32 +160,117 @@ class Motion:
 
     yaw = deprecated_property("get_yaw", "set_yaw")
 
-    def send_thruster_setpoint(self, surge, sway, heave, yaw):
+    def get_roll(self) -> float:
+        """Get the moment reference for the roll direction
+
+        Only the Blueye X7 acts on roll input, see `set_roll`.
+
+        Returns:
+            Moment set point in the roll direction in range <-1, 1>.
+        """
+        return self._current_thruster_setpoints["roll"]
+
+    def set_roll(self, roll_value: float):
+        """Set moment reference for the roll direction
+
+        Only the Blueye X7 has thrusters that can produce a roll moment. Other models ignore this
+        input.
+
+        With auto heading off the value is an open-loop moment set point, like yaw, and nothing on
+        the drone limits the resulting angle. The drone settles where the thruster moment is
+        balanced by its righting moment, and a large input held for a few seconds can roll it over.
+        The drone keeps acting on the last setpoint for as long as the SDK is connected, so set it
+        back to 0 when the manoeuvre is done.
+
+        With auto heading on the drone instead holds a roll angle. The value is then an angular
+        speed set point for that angle, which is bounded to 45 degrees either side of level, and
+        the drone keeps the angle it has reached when the input returns to 0. Engaging auto heading
+        resets the held roll and pitch angles to level.
+
+        While the autopilot is running a mission the drone holds level and ignores roll input.
+        Starting the autopilot also switches auto heading off.
+
+        Args:
+            roll_value (float): Moment set point in the roll direction in range <-1, 1>,
+                                a positive set point rolls the drone to the right.
+        """
+        with self.thruster_lock:
+            self._current_thruster_setpoints["roll"] = roll_value
+            self._send_motion_input_message()
+
+    def get_pitch(self) -> float:
+        """Get the moment reference for the pitch direction
+
+        Only the Blueye X7 acts on pitch input, see `set_pitch`.
+
+        Returns:
+            Moment set point in the pitch direction in range <-1, 1>.
+        """
+        return self._current_thruster_setpoints["pitch"]
+
+    def set_pitch(self, pitch_value: float):
+        """Set moment reference for the pitch direction
+
+        Only the Blueye X7 has thrusters that can produce a pitch moment. Other models ignore this
+        input.
+
+        With auto heading off the value is an open-loop moment set point, like yaw, and nothing on
+        the drone limits the resulting angle. The drone settles where the thruster moment is
+        balanced by its righting moment, and a large input held for a few seconds can tip it over.
+        The drone keeps acting on the last setpoint for as long as the SDK is connected, so set it
+        back to 0 when the manoeuvre is done.
+
+        With auto heading on the drone instead holds a pitch angle. The value is then an angular
+        speed set point for that angle, which is bounded to 45 degrees either side of level, and
+        the drone keeps the angle it has reached when the input returns to 0. Engaging auto heading
+        resets the held roll and pitch angles to level.
+
+        While the autopilot is running a mission the drone holds level and ignores pitch input.
+        Starting the autopilot also switches auto heading off.
+
+        Args:
+            pitch_value (float): Moment set point in the pitch direction in range <-1, 1>,
+                                 a positive set point pitches the nose of the drone up.
+        """
+        with self.thruster_lock:
+            self._current_thruster_setpoints["pitch"] = pitch_value
+            self._send_motion_input_message()
+
+    def send_thruster_setpoint(self, surge, sway, heave, yaw, *, roll=0.0, pitch=0.0):
         """Control the thrusters of the drone
 
         Set reference values between -1 and 1 for each controllable degree of freedom on the drone.
-        The reference values are mapped linearly to a thruster force, a set point of -1 correspons
+        The reference values are mapped linearly to a thruster force, a set point of -1 corresponds
         to maximum negative force and a set point of 1 corresponds to maximum positive force. For
-        the yaw direction the reference is a moment not a force, as the yaw direction is rotational
-        not translational.
+        the yaw, roll and pitch directions the reference is a moment not a force, as these
+        directions are rotational not translational.
 
+        Roll and pitch are keyword-only and default to 0, so a call that leaves them out clears any
+        roll or pitch set earlier. Only the Blueye X7 acts on them, and with auto heading off they
+        are open-loop moments that nothing on the drone limits. See `set_roll` and `set_pitch` for
+        how auto heading changes their meaning and why the autopilot ignores them.
 
-        Arguments:
-
-        * **surge** (float): Force set point in the surge direction in range <-1, 1>,
-                             a positive set point makes the drone move forward
-        * **sway** (float): Force set point in the sway direction in range <-1, 1>,
-                             a positive set point makes the drone move to the right
-        * **heave** (float): Force set point in the heave direction in range <-1, 1>,
-                             a positive set point makes the drone move down.
-        * **yaw** (float): Moment set point in the yaw direction in range <-1, 1>,
-                             a positive set point makes the drone rotate clockwise.
+        Args:
+            surge (float): Force set point in the surge direction in range <-1, 1>,
+                           a positive set point makes the drone move forward.
+            sway (float): Force set point in the sway direction in range <-1, 1>,
+                          a positive set point makes the drone move to the right.
+            heave (float): Force set point in the heave direction in range <-1, 1>,
+                           a positive set point makes the drone move down.
+            yaw (float): Moment set point in the yaw direction in range <-1, 1>,
+                         a positive set point makes the drone rotate clockwise.
+            roll (float): Moment set point in the roll direction in range <-1, 1>,
+                          a positive set point rolls the drone to the right. X7 only.
+            pitch (float): Moment set point in the pitch direction in range <-1, 1>,
+                           a positive set point pitches the nose of the drone up. X7 only.
         """
         with self.thruster_lock:
             self._current_thruster_setpoints["surge"] = surge
             self._current_thruster_setpoints["sway"] = sway
             self._current_thruster_setpoints["heave"] = heave
             self._current_thruster_setpoints["yaw"] = yaw
+            self._current_thruster_setpoints["roll"] = roll
+            self._current_thruster_setpoints["pitch"] = pitch
             self._send_motion_input_message()
 
     def get_boost(self) -> float:

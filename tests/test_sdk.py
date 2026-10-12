@@ -32,6 +32,25 @@ class TestPose:
         assert pose["pitch"] == new_angle
         assert pose["yaw"] == new_angle
 
+    def test_pose_is_none_without_telemetry(self, mocked_drone):
+        assert mocked_drone.get_pose() is None
+
+
+class TestAttitude:
+    @pytest.mark.parametrize("roll, pitch, yaw", [(0, 0, 0), (-1.5, 2.5, -179), (180, -180, 90)])
+    def test_angles_keep_their_sign(self, mocked_drone, roll, pitch, yaw):
+        attitude_tel = bp.AttitudeTel(attitude={"roll": roll, "pitch": pitch, "yaw": yaw})
+        mocked_drone._telemetry_watcher._state[bp.AttitudeTel] = bp.AttitudeTel.serialize(
+            attitude_tel
+        )
+        attitude = mocked_drone.get_attitude()
+        assert attitude["roll"] == pytest.approx(roll)
+        assert attitude["pitch"] == pytest.approx(pitch)
+        assert attitude["yaw"] == pytest.approx(yaw)
+
+    def test_attitude_is_none_without_telemetry(self, mocked_drone):
+        assert mocked_drone.get_attitude() is None
+
 
 def test_mocked_drone_is_isolated_from_live_telemetry(mocked_drone):
     """Unit tests must never read telemetry off the network.
