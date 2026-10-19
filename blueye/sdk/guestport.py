@@ -365,8 +365,19 @@ class GenericServo(Peripheral):
 
 class SkidServo(Peripheral):
     """
-    Represents the servo on the skid (typically used for multibeams)
+    Represents the tilt servo for a multibeam sonar.
+
+    Covers the skid-mounted servo (first and second generation), which tilts ±28 degrees, and the
+    head-mounted multibeam servo, which tilts ±45 degrees. The drone drives all of them through
+    the same control message, so one class serves all three; `min_angle` and `max_angle` give
+    the range of the connected servo.
     """
+
+    _ANGLE_LIMITS = {
+        bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_MULTIBEAM_SERVO: 28,
+        bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_MULTIBEAM_SERVO_V2: 28,
+        bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_MULTIBEAM_HEAD_SERVO: 45,
+    }
 
     def __init__(
         self, parent_drone: "Drone", port_number: bp.GuestPortNumber, device: bp.GuestPortDevice
@@ -378,15 +389,17 @@ class SkidServo(Peripheral):
             port_number (bp.GuestPortNumber): The guest port number.
             device (bp.GuestPortDevice): The guest port device.
         """
-        self.max_angle = 28
-        self.min_angle = -28
+        limit = self._ANGLE_LIMITS.get(device.device_id, 28)
+        self.max_angle = limit
+        self.min_angle = -limit
         Peripheral.__init__(self, parent_drone, port_number, device)
 
     def set_angle(self, angle: float) -> None:
-        """Set the angle of the skid servo.
+        """Set the angle of the multibeam servo.
 
         Args:
-            angle (float): The angle to set for the servo (-28 to 28 degrees).
+            angle (float): The angle to set for the servo in degrees, within `min_angle` and
+                `max_angle` (±28 for the skid servos, ±45 for the head servo).
 
         Raises:
             ValueError: If the angle is not within the allowed range.
@@ -398,16 +411,28 @@ class SkidServo(Peripheral):
         self.parent_drone._ctrl_client.set_multibeam_servo_angle(angle)
 
     def get_angle(self) -> float | None:
-        """Get the current angle of the skid servo.
+        """Get the current angle of the multibeam servo.
 
         Returns:
-            The current angle of the skid servo in degrees. None if telemetry is not available.
+            The current angle of the servo in degrees. None if telemetry is not available.
         """
         telemetry_msg = self.parent_drone.telemetry.get(bp.MultibeamServoTel)
         if telemetry_msg is None:
             return None
         else:
             return telemetry_msg.servo.angle
+
+    def get_set_point(self) -> float | None:
+        """Get the angle the multibeam servo is moving towards.
+
+        Returns:
+            The commanded angle in degrees. None if telemetry is not available.
+        """
+        telemetry_msg = self.parent_drone.telemetry.get(bp.MultibeamServoTel)
+        if telemetry_msg is None:
+            return None
+        else:
+            return telemetry_msg.set_point
 
 
 def device_to_peripheral(
@@ -447,7 +472,7 @@ def device_to_peripheral(
         peripheral = Laser(parent_drone, port_number, device)
     elif device.device_id == bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_GENERIC_SERVO:
         peripheral = GenericServo(parent_drone, port_number, device)
-    elif device.device_id == bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_MULTIBEAM_SERVO:
+    elif device.device_id in SkidServo._ANGLE_LIMITS:
         peripheral = SkidServo(parent_drone, port_number, device)
     else:
         peripheral = Peripheral(parent_drone, port_number, device)
