@@ -93,10 +93,13 @@ drone.gripper.set_rotation_velocity(-1.0)
 ## Servo
 If the drone has a servo attached, the `Drone` class will either have a `servo` attribute that is a [`GenericServo`][blueye.sdk.guestport.GenericServo] object, or a `skid_servo` attribute that is a [`SkidServo`][blueye.sdk.guestport.SkidServo] object. These objects can be used to control the servo.
 
+`skid_servo` covers every multibeam tilt servo: the skid-mounted servo (first and second generation), which tilts ±28 degrees, and the head-mounted servo, which tilts ±45 degrees. The allowed range of the connected servo is in `min_angle` and `max_angle`.
+
 ```python
 # Set the angle
 drone.skid_servo.set_angle(20.0)
 
-# Get the current angle
+# Get the current angle, and the angle the servo is moving towards
 drone.skid_servo.get_angle()
+drone.skid_servo.get_set_point()
 ```

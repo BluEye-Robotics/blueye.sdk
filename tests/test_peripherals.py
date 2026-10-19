@@ -485,3 +485,43 @@ def test_blueye_scaling_laser_is_a_laser(mocked_drone):
         mocked_drone.laser.device_id
         == bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_SCALING_LASER
     )
+
+
+def _device_on_port_1(device_id):
+    device = bp.GuestPortDevice({"device_id": device_id})
+    return bp.GuestPortInfo(
+        gp1=_port(bp.GuestPortNumber.GUEST_PORT_NUMBER_PORT_1, devices=[device])
+    )
+
+
+@pytest.mark.parametrize(
+    "device_id, limit",
+    [
+        (bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_MULTIBEAM_SERVO, 28),
+        (bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_MULTIBEAM_SERVO_V2, 28),
+        (bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_MULTIBEAM_HEAD_SERVO, 45),
+    ],
+    ids=["skid_v1", "skid_v2", "head"],
+)
+def test_multibeam_servo_range_follows_device(mocked_drone, device_id, limit):
+    mocked_drone._create_peripherals_from_drone_info(_device_on_port_1(device_id))
+    servo = mocked_drone.skid_servo
+
+    assert (servo.min_angle, servo.max_angle) == (-limit, limit)
+    servo.set_angle(limit)
+    mocked_drone._ctrl_client.set_multibeam_servo_angle.assert_called_once_with(limit)
+    with pytest.raises(ValueError):
+        servo.set_angle(limit + 1)
+
+
+def test_multibeam_servo_set_point(mocked_drone):
+    mocked_drone._create_peripherals_from_drone_info(
+        _device_on_port_1(bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_MULTIBEAM_HEAD_SERVO)
+    )
+    assert mocked_drone.skid_servo.get_set_point() is None
+
+    mocked_drone._telemetry_watcher._state[bp.MultibeamServoTel] = bp.MultibeamServoTel.serialize(
+        bp.MultibeamServoTel(servo=bp.MultibeamServo(angle=10), set_point=40)
+    )
+    assert mocked_drone.skid_servo.get_angle() == 10
+    assert mocked_drone.skid_servo.get_set_point() == 40
