@@ -20,12 +20,13 @@ from .constants import JETSON_MODELS, WaterDensities
 from .guestport import (
     GenericServo,
     Gripper,
+    GuestPort,
     GuestPortCamera,
     GuestPortLight,
     Laser,
     Peripheral,
     SkidServo,
-    device_to_peripheral,
+    connector_info_to_guest_port,
 )
 from .cv_models import CvModels
 from .logs import LegacyLogs, Logs
@@ -263,6 +264,7 @@ class Drone:
         self.peripherals: Optional[List[Peripheral]] = None
         """This list holds the peripherals connected to the drone. If it is `None`, then no
         Guestport telemetry message has been received yet."""
+        self._guest_ports: Optional[List[GuestPort]] = None
 
         if auto_connect is True:
             self.connect(
@@ -359,10 +361,16 @@ class Drone:
             logger.debug(log_msg)
 
     def _create_peripherals_from_drone_info(self, gp_info: blueye.protocol.GuestPortInfo):
+        self._guest_ports = []
         self.peripherals = []
-        for port in (gp_info.gp1, gp_info.gp2, gp_info.gp3):
-            for device in port.device_list.devices:
-                peripheral = device_to_peripheral(self, port.guest_port_number, device)
+        # Only the slots the drone has set describe physical ports; an unset slot would read as an
+        # empty connector info with port number UNSPECIFIED.
+        for slot in ("gp1", "gp2", "gp3", "gp4", "gp5", "gp6"):
+            if slot not in gp_info:
+                continue
+            port = connector_info_to_guest_port(self, getattr(gp_info, slot))
+            self._guest_ports.append(port)
+            for peripheral in port.devices:
                 self.peripherals.append(peripheral)
                 if isinstance(peripheral, GuestPortLight):
                     self.external_light = peripheral
@@ -458,6 +466,7 @@ class Drone:
                 )
         else:
             self.peripherals = []
+            self._guest_ports = []
 
         self._last_notification_timestamp = None
         if log_notifications:
@@ -721,6 +730,19 @@ class Drone:
             return altitude_tel.altitude.value
 
     altitude = deprecated_property("get_altitude")
+
+    def get_guest_ports(self) -> Optional[List[GuestPort]]:
+        """Get the state of every guest port on the drone.
+
+        Each entry carries the port number, the interfaces the port provides, the connector error
+        the drone reports for it (if any), and the peripherals discovered on it. A port with
+        nothing plugged in reports `GUEST_PORT_ERROR_NOT_CONNECTED` and no devices.
+
+        Returns:
+            One [GuestPort][blueye.sdk.guestport.GuestPort] per port the drone reports, or `None`
+            if no guest port information has been received from the drone yet.
+        """
+        return self._guest_ports
 
     def get_error_flags(self) -> Dict[str, bool]:
         """Get the error flags.

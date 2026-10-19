@@ -6,6 +6,25 @@ To list the peripherals that are currently attached to the drone, you can check 
 
 The SDK will also create attributes for supported peripherals to simplify access.
 
+Every [`Peripheral`][blueye.sdk.guestport.Peripheral] records which port it sits on, the interfaces it requires from that port, and which ports on the drone fully support it. For detachable devices, [`get_detach_status()`][blueye.sdk.guestport.Peripheral.get_detach_status] reports whether the device is currently attached.
+
+## Guest ports
+To see the state of each guest port, including ports with nothing connected or with a connector fault, use [`get_guest_ports()`][blueye.sdk.drone.Drone.get_guest_ports]. It returns one [`GuestPort`][blueye.sdk.guestport.GuestPort] per port the drone reports, or `None` if no guest port information has been received yet. A port either carries a list of devices or reports a connector error, never both; an empty port reports `GUEST_PORT_ERROR_NOT_CONNECTED`. Connector errors other than "not connected" are also logged as warnings when the ports are discovered.
+
+```python
+import blueye.protocol as bp
+
+for port in drone.get_guest_ports():
+    if port.error == bp.GuestPortError.GUEST_PORT_ERROR_NOT_CONNECTED:
+        print(f"{port.number.name}: empty")
+    elif port.error is not None:
+        print(f"{port.number.name}: connector error {port.error.name}")
+    else:
+        names = ", ".join(device.name for device in port.devices)
+        print(f"{port.number.name}: {names}")
+    print(f"  provides {[cap.name for cap in port.capabilities]}")
+```
+
 ## Navigation sensors
 
 The drone has no class for its navigation sensors yet; they appear in `peripherals` as plain [`Peripheral`][blueye.sdk.guestport.Peripheral] objects. What they provide decides which auto modes and mission instructions the drone will run:
