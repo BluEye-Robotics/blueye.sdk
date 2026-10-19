@@ -577,9 +577,9 @@ class Drone:
     def is_jetson_platform(self) -> Optional[bool]:
         """Check if the connected drone is built on the NVIDIA Jetson platform.
 
-        The X3 Ultra and X7 run on the Jetson platform and share a camera pipeline that differs
-        from the older models: it has no hue control, supports 60 fps and publishes the main
-        camera calibration. See [`JETSON_MODELS`][blueye.sdk.constants.JETSON_MODELS].
+        The X3 Ultra and X7 run on the Jetson platform and have the 4K camera, which differs
+        from the camera in the older models: it has no hue control, supports 60 fps and publishes
+        its calibration. See [`JETSON_MODELS`][blueye.sdk.constants.JETSON_MODELS].
 
         Returns:
             True for the X3 Ultra and X7, False for the other models, and None if the model is

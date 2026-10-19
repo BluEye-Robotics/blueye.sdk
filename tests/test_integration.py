@@ -85,8 +85,8 @@ class TestFunctionsWhenConnectedToDrone:
     def test_camera_bitrate(self, real_drone, drone_model):
         if drone_model in JETSON_MODELS:
             pytest.xfail(
-                "The Jetson models apply the stream bitrate but always report it as 0. The drone "
-                "fills h264_bitrate from the camera control node, and the Jetson camera does not "
+                "The 4K camera models apply the stream bitrate but always report it as 0. The "
+                "drone fills h264_bitrate from the camera control node, and the 4K camera does not "
                 "encode H264 - the RTSP server does, and its bitrate never reaches the reply"
             )
         _ = real_drone.camera.get_bitrate()
@@ -112,7 +112,7 @@ class TestFunctionsWhenConnectedToDrone:
     def test_camera_hue(self, real_drone, drone_model):
         if drone_model in JETSON_MODELS:
             pytest.skip(
-                "Hue is only available on Pioneer/Pro/X1/X3, the Jetson camera has no hue control"
+                "Hue is only available on Pioneer/Pro/X1/X3, the 4K camera has no hue control"
             )
         _ = real_drone.camera.get_hue()
         real_drone.camera.set_hue(20)
@@ -154,7 +154,7 @@ class TestFunctionsWhenConnectedToDrone:
     def test_camera_framerate(self, real_drone, drone_model):
         if drone_model in JETSON_MODELS:
             pytest.skip(
-                "The Jetson models only apply 25 fps to the recording pipeline, and the reported "
+                "The 4K camera only applies 25 fps to the recording pipeline, and the reported "
                 "frame rate comes from the stream pipeline, which stays at 30. See "
                 "test_camera_framerate_60_fps for the frame rate they do support"
             )
@@ -165,7 +165,7 @@ class TestFunctionsWhenConnectedToDrone:
         polling_assert_with_timeout(real_drone.camera.get_framerate, 30, 1)
 
     def test_camera_framerate_60_fps(self, real_drone, drone_model):
-        """60 fps is only supported on the Jetson models, and only at 1440p or lower.
+        """60 fps is only supported on the 4K camera, and only at 1440p or lower.
 
         The drone caps the frame rate against the highest of the stream and recording
         resolution, so both must be lowered before requesting 60 fps.

@@ -14,7 +14,7 @@ drone = Drone()
 # The model as a blueye.protocol.Model enum, e.g. bp.Model.MODEL_X7
 model = drone.get_model()
 
-# True for the X3 Ultra and X7, which share the Jetson camera pipeline
+# True for the X3 Ultra and X7, which have the 4K camera
 if drone.is_jetson_platform():
     drone.camera.set_framerate(60)
 
