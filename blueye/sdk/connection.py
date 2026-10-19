@@ -96,6 +96,7 @@ class TelemetryClient(threading.Thread):
         self._socket.setsockopt_string(zmq.SUBSCRIBE, "")
         self._exit_flag = threading.Event()
         self._state_lock = threading.Lock()
+        self._callbacks_lock = threading.Lock()
         self._callbacks: List[Callback] = []
         self._state: Dict[proto.message.Message, bytes] = {}
         """`_state` is dictionary of the latest received messages, where the key is the protobuf
@@ -119,13 +120,25 @@ class TelemetryClient(threading.Thread):
         msg_payload = msg[1]
         with self._state_lock:
             self._state[msg_type] = msg_payload
-        for callback in self._callbacks:
+        # Iterate over a snapshot so a callback can add or remove callbacks (including itself)
+        # without skipping the next entry in the list.
+        with self._callbacks_lock:
+            callbacks = list(self._callbacks)
+        for callback in callbacks:
             if msg_type in callback.message_filter or callback.message_filter == []:
-                if callback.pass_raw_data:
-                    callback.function(msg_type_name, msg_payload, **callback.kwargs)
-                else:
-                    msg_deserialized = msg_type.deserialize(msg_payload)
-                    callback.function(msg_type_name, msg_deserialized, **callback.kwargs)
+                # An exception from one callback must not take down the telemetry thread, which
+                # would silently freeze every telemetry getter at the last cached value.
+                try:
+                    if callback.pass_raw_data:
+                        callback.function(msg_type_name, msg_payload, **callback.kwargs)
+                    else:
+                        msg_deserialized = msg_type.deserialize(msg_payload)
+                        callback.function(msg_type_name, msg_deserialized, **callback.kwargs)
+                except Exception:
+                    logger.exception(
+                        f"Telemetry callback {callback.function!r} raised on {msg_type_name}, "
+                        "ignoring"
+                    )
 
     def run(self):
         """Run the telemetry client thread."""
@@ -158,7 +171,8 @@ class TelemetryClient(threading.Thread):
             str: The UUID of the callback in hexadecimal format.
         """
         uuid_hex = uuid.uuid1().hex
-        self._callbacks.append(Callback(msg_filter, callback_function, raw, uuid_hex, kwargs))
+        with self._callbacks_lock:
+            self._callbacks.append(Callback(msg_filter, callback_function, raw, uuid_hex, kwargs))
         return uuid_hex
 
     def remove_callback(self, callback_id: str):
@@ -167,10 +181,12 @@ class TelemetryClient(threading.Thread):
         Args:
             callback_id (str): The UUID of the callback to remove.
         """
-        try:
-            self._callbacks.pop([cb.uuid_hex for cb in self._callbacks].index(callback_id))
-        except ValueError:
-            logger.warning(f"Callback with id {callback_id} not found, ignoring")
+        with self._callbacks_lock:
+            for index, callback in enumerate(self._callbacks):
+                if callback.uuid_hex == callback_id:
+                    del self._callbacks[index]
+                    return
+        logger.warning(f"Callback with id {callback_id} not found, ignoring")
 
     def get(self, key: proto.message.Message) -> bytes:
         """Get the latest received message of a specific type.
