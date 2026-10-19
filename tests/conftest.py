@@ -25,9 +25,9 @@ def drone_model(real_drone) -> bp.Model:
     """
     deadline = time.monotonic() + 3
     while time.monotonic() < deadline:
-        drone_info = real_drone.telemetry.get(bp.DroneInfoTel)
-        if drone_info is not None:
-            return drone_info.drone_info.model
+        model = real_drone.get_model()
+        if model is not None:
+            return model
         time.sleep(0.1)
     return bp.Model.MODEL_UNSPECIFIED
 

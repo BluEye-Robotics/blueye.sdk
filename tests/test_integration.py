@@ -4,6 +4,8 @@ import blueye.protocol as bp
 import pytest
 from packaging import version
 
+from blueye.sdk.constants import JETSON_MODELS
+
 ALL_RESOLUTIONS = [
     bp.Resolution.RESOLUTION_VGA_480P,
     bp.Resolution.RESOLUTION_HD_720P,
@@ -38,6 +40,30 @@ class TestFunctionsWhenConnectedToDrone:
     def test_run_ping(self, real_drone):
         real_drone.ping()
 
+    def test_drone_info(self, real_drone, drone_model):
+        drone_info = real_drone.get_drone_info()
+        assert drone_info is not None
+        assert drone_info.model == drone_model
+        assert real_drone.get_model() == drone_model
+        assert real_drone.is_jetson_platform() is (drone_model in JETSON_MODELS)
+        assert isinstance(real_drone.get_power_source(), bp.PowerSource)
+        assert isinstance(real_drone.get_depth_sensor_type(), bp.PressureSensorType)
+
+    def test_camera_calibration(self, real_drone, drone_model):
+        calibration = real_drone.camera.get_calibration()
+        if drone_model not in JETSON_MODELS:
+            assert calibration is None
+            pytest.skip("Only the X3 Ultra and X7 publish a camera calibration")
+        assert calibration is not None
+        assert calibration.image_width > 0 and calibration.image_height > 0
+        assert len(calibration.distortion_coefficients) == 5
+        scaled = real_drone.camera.get_scaled_calibration((1280, 720))
+        assert scaled.image_width == 1280 and scaled.image_height == 720
+        assert scaled.fx == pytest.approx(calibration.fx * 1280 / calibration.image_width)
+        external_camera = getattr(real_drone, "external_camera", None)
+        if external_camera is not None:
+            assert external_camera.get_calibration() is None
+
     @pytest.mark.skip(
         reason="a camera stream must have been run before camera recording is possible"
     )
@@ -57,10 +83,10 @@ class TestFunctionsWhenConnectedToDrone:
         polling_assert_with_timeout(real_drone.camera.get_record_time, 1, 3)
 
     def test_camera_bitrate(self, real_drone, drone_model):
-        if drone_model == bp.Model.MODEL_X3_ULTRA:
+        if drone_model in JETSON_MODELS:
             pytest.xfail(
-                "The Ultra applies the stream bitrate but always reports it as 0. The drone "
-                "fills h264_bitrate from the camera control node, and the Ultra camera does not "
+                "The Jetson models apply the stream bitrate but always report it as 0. The drone "
+                "fills h264_bitrate from the camera control node, and the Jetson camera does not "
                 "encode H264 - the RTSP server does, and its bitrate never reaches the reply"
             )
         _ = real_drone.camera.get_bitrate()
@@ -84,9 +110,9 @@ class TestFunctionsWhenConnectedToDrone:
         polling_assert_with_timeout(real_drone.camera.get_whitebalance, 3400, 1)
 
     def test_camera_hue(self, real_drone, drone_model):
-        if drone_model == bp.Model.MODEL_X3_ULTRA:
+        if drone_model in JETSON_MODELS:
             pytest.skip(
-                "Hue is only available on Pioneer/Pro/X1/X3, the Ultra camera has no hue control"
+                "Hue is only available on Pioneer/Pro/X1/X3, the Jetson camera has no hue control"
             )
         _ = real_drone.camera.get_hue()
         real_drone.camera.set_hue(20)
@@ -126,11 +152,11 @@ class TestFunctionsWhenConnectedToDrone:
             real_drone.camera.set_recording_resolution(original_resolution)
 
     def test_camera_framerate(self, real_drone, drone_model):
-        if drone_model == bp.Model.MODEL_X3_ULTRA:
+        if drone_model in JETSON_MODELS:
             pytest.skip(
-                "The Ultra only applies 25 fps to the recording pipeline, and the reported frame "
-                "rate comes from the stream pipeline, which stays at 30. See "
-                "test_camera_framerate_60_fps for the frame rate the Ultra does support"
+                "The Jetson models only apply 25 fps to the recording pipeline, and the reported "
+                "frame rate comes from the stream pipeline, which stays at 30. See "
+                "test_camera_framerate_60_fps for the frame rate they do support"
             )
         _ = real_drone.camera.get_framerate()
         real_drone.camera.set_framerate(25)
@@ -139,13 +165,13 @@ class TestFunctionsWhenConnectedToDrone:
         polling_assert_with_timeout(real_drone.camera.get_framerate, 30, 1)
 
     def test_camera_framerate_60_fps(self, real_drone, drone_model):
-        """60 fps is only supported on the Ultra, and only at 1440p or lower.
+        """60 fps is only supported on the Jetson models, and only at 1440p or lower.
 
         The drone caps the frame rate against the highest of the stream and recording
         resolution, so both must be lowered before requesting 60 fps.
         """
-        if drone_model != bp.Model.MODEL_X3_ULTRA:
-            pytest.skip("60 fps is only supported on the Ultra")
+        if drone_model not in JETSON_MODELS:
+            pytest.skip("60 fps is only supported on the X3 Ultra and X7")
         original_stream_resolution = real_drone.camera.get_stream_resolution()
         original_recording_resolution = real_drone.camera.get_recording_resolution()
         original_framerate = real_drone.camera.get_framerate()

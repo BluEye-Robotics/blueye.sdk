@@ -16,7 +16,7 @@ from packaging import version
 from .battery import Battery
 from .camera import Camera
 from .connection import CtrlClient, ReqRepClient, TelemetryClient, WatchdogPublisher
-from .constants import WaterDensities
+from .constants import JETSON_MODELS, WaterDensities
 from .guestport import (
     GenericServo,
     Gripper,
@@ -517,6 +517,78 @@ class Drone:
             return clients_tel.client_id_in_control
 
     client_in_control = deprecated_property("get_client_in_control")
+
+    def get_drone_info(self) -> Optional[blueye.protocol.DroneInfo]:
+        """Get the identity and hardware information the drone publishes about itself.
+
+        This is the `DroneInfo` message from the `DroneInfoTel` telemetry message. It carries the
+        drone model, serial numbers, the depth sensor type, the power source, the installed
+        computer vision models, the guest port configuration and, on the X3 Ultra and X7, the
+        main camera calibration.
+
+        Returns:
+            The latest `DroneInfo` message, or None if it has not been received yet.
+        """
+        drone_info_tel = self.telemetry.get(blueye.protocol.DroneInfoTel)
+        if drone_info_tel is None:
+            return None
+        return drone_info_tel.drone_info
+
+    def get_model(self) -> Optional[blueye.protocol.Model]:
+        """Get the model of the connected drone.
+
+        The model comes from the `DroneInfoTel` telemetry message, which is the reliable source.
+        The `model_name` string in the HTTP `drone_info` endpoint is not exposed since its
+        formatting varies between drones.
+
+        Returns:
+            The drone model, or None if no `DroneInfo` message has been received yet.
+        """
+        drone_info = self.get_drone_info()
+        if drone_info is None:
+            return None
+        return drone_info.model
+
+    def get_power_source(self) -> Optional[blueye.protocol.PowerSource]:
+        """Get how the drone is powered.
+
+        The X7 runs two batteries in parallel, the other models a single battery. Drones running
+        a Blunux version that predates this field report `POWER_SOURCE_UNSPECIFIED`.
+
+        Returns:
+            The power source, or None if no `DroneInfo` message has been received yet.
+        """
+        drone_info = self.get_drone_info()
+        if drone_info is None:
+            return None
+        return drone_info.power_source
+
+    def get_depth_sensor_type(self) -> Optional[blueye.protocol.PressureSensorType]:
+        """Get the type of depth sensor connected to the drone.
+
+        Returns:
+            The depth sensor type, or None if no `DroneInfo` message has been received yet.
+        """
+        drone_info = self.get_drone_info()
+        if drone_info is None:
+            return None
+        return drone_info.depth_sensor
+
+    def is_jetson_platform(self) -> Optional[bool]:
+        """Check if the connected drone is built on the NVIDIA Jetson platform.
+
+        The X3 Ultra and X7 run on the Jetson platform and share a camera pipeline that differs
+        from the older models: it has no hue control, supports 60 fps and publishes the main
+        camera calibration. See [`JETSON_MODELS`][blueye.sdk.constants.JETSON_MODELS].
+
+        Returns:
+            True for the X3 Ultra and X7, False for the other models, and None if the model is
+            not known yet.
+        """
+        model = self.get_model()
+        if model is None:
+            return None
+        return model in JETSON_MODELS
 
     def take_control(self, timeout=1):
         """Take control of the drone, disconnecting other clients.

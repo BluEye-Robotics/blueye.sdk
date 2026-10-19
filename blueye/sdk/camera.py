@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 import re
 import warnings
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, Tuple, Union
 
 import blueye.protocol
 import requests
@@ -33,6 +33,46 @@ _FRAMERATE_TO_FPS = {
     blueye.protocol.Framerate.FRAMERATE_FPS_60: 60,
 }
 _FPS_TO_FRAMERATE = {fps: framerate for framerate, fps in _FRAMERATE_TO_FPS.items()}
+
+
+def scale_calibration(
+    calibration: blueye.protocol.CameraCalibration, width: int, height: int
+) -> blueye.protocol.CameraCalibration:
+    """Scale a camera calibration to another image resolution.
+
+    The focal lengths and principal point are expressed in pixels at the resolution the
+    calibration was computed at, so they have to be scaled before they can be used on an image
+    of a different size. `fx` and `cx` scale with the width ratio, `fy` and `cy` with the height
+    ratio, and the distortion coefficients are resolution independent.
+
+    Args:
+        calibration (blueye.protocol.CameraCalibration): The calibration to scale.
+        width (int): The width in pixels of the image the calibration will be used on.
+        height (int): The height in pixels of the image the calibration will be used on.
+
+    Raises:
+        ValueError: If the calibration has no resolution, or the target resolution is not
+            positive.
+
+    Returns:
+        A new calibration with `image_width` and `image_height` set to the target resolution.
+    """
+    if calibration.image_width <= 0 or calibration.image_height <= 0:
+        raise ValueError("The calibration does not have a resolution and cannot be scaled")
+    if width <= 0 or height <= 0:
+        raise ValueError(f"{width}x{height} is not a valid resolution")
+    width_ratio = width / calibration.image_width
+    height_ratio = height / calibration.image_height
+    return blueye.protocol.CameraCalibration(
+        fx=calibration.fx * width_ratio,
+        fy=calibration.fy * height_ratio,
+        cx=calibration.cx * width_ratio,
+        cy=calibration.cy * height_ratio,
+        distortion_coefficients=list(calibration.distortion_coefficients),
+        image_width=width,
+        image_height=height,
+        is_default=calibration.is_default,
+    )
 
 
 def _describe_enum(value) -> str:
@@ -1798,6 +1838,75 @@ class Camera:
             return record_state.main_seconds
 
     record_time = deprecated_property("get_record_time")
+
+    def get_calibration(self) -> Optional[blueye.protocol.CameraCalibration]:
+        """Get the intrinsic calibration of the camera.
+
+        The X3 Ultra and X7 publish the main camera calibration (pinhole model with OpenCV
+        distortion coefficients) in the `DroneInfoTel` telemetry message. The values are in
+        pixels at the resolution the calibration was computed at, see
+        [`get_scaled_calibration`][blueye.sdk.camera.Camera.get_scaled_calibration] for a version
+        matching the video resolution. `is_default` is set when the drone reports the model's
+        built-in calibration rather than one measured for this particular drone.
+
+        Older models and the guestport camera do not publish a calibration.
+
+        Returns:
+            The camera calibration, or None if the drone has not published one.
+        """
+        if self._is_guestport_camera:
+            return None
+        drone_info = self._parent_drone.get_drone_info()
+        if drone_info is None or drone_info.main_camera_calibration._pb.ByteSize() == 0:
+            return None
+        return drone_info.main_camera_calibration
+
+    def get_scaled_calibration(
+        self,
+        resolution: Union[blueye.protocol.Resolution, Tuple[int, int], None] = None,
+    ) -> Optional[blueye.protocol.CameraCalibration]:
+        """Get the camera calibration scaled to a video resolution.
+
+        See [`scale_calibration`][blueye.sdk.camera.scale_calibration] for how the values are
+        scaled.
+
+        Args:
+            resolution (blueye.protocol.Resolution | tuple[int, int], optional):
+                The resolution to scale the calibration to, either as a
+                `blueye.protocol.Resolution` or as a `(width, height)` tuple in pixels. When a
+                `Resolution` is given the width is derived from the aspect ratio of the
+                calibration. Defaults to the current stream resolution.
+
+        Raises:
+            ValueError: If the resolution is not a `blueye.protocol.Resolution` or a
+                `(width, height)` tuple of positive integers.
+            RuntimeError: If the drone reports a stream resolution the SDK does not recognize.
+
+        Returns:
+            The scaled calibration, or None if the drone has not published one.
+        """
+        calibration = self.get_calibration()
+        if calibration is None:
+            return None
+        if resolution is None:
+            resolution = self.get_stream_resolution()
+        if isinstance(resolution, blueye.protocol.Resolution):
+            try:
+                height = _RESOLUTION_TO_HEIGHT[resolution]
+            except KeyError:
+                raise RuntimeError(
+                    f"Drone reported an unsupported resolution: {_describe_enum(resolution)}"
+                ) from None
+            width = round(height * calibration.image_width / calibration.image_height)
+        else:
+            try:
+                width, height = resolution
+            except (TypeError, ValueError):
+                raise ValueError(
+                    f"{resolution!r} is not a valid resolution, expected a "
+                    "blueye.protocol.Resolution or a (width, height) tuple"
+                ) from None
+        return scale_calibration(calibration, width, height)
 
     def take_picture(self):
         """Take a still picture and store it locally on the drone.
