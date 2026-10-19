@@ -440,7 +440,8 @@ def device_to_peripheral(
     ):
         peripheral = Gripper(parent_drone, port_number, device)
     elif (
-        device.device_id == bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_LASER_TOOLS_SEA_BEAM
+        device.device_id == bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_SCALING_LASER
+        or device.device_id == bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_LASER_TOOLS_SEA_BEAM
         or device.device_id == bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_SPOT_X_LASER_SCALERS
     ):
         peripheral = Laser(parent_drone, port_number, device)

@@ -90,7 +90,7 @@ drone.external_light.set_intensity(0.5)
 ```
 
 ## Scaling laser
-If the drone has a scaling laser attached, the `Drone` class will have a `laser` attribute that is a [`Laser`][blueye.sdk.guestport.Laser] object. This object can be used to control the scaling laser.
+If the drone has a scaling laser attached (the Blueye scaling laser, the Laser Tools Sea Beam or the Spot X laser scalers), the `Drone` class will have a `laser` attribute that is a [`Laser`][blueye.sdk.guestport.Laser] object. This object can be used to control the scaling laser. The dot spacing is 50 mm for the Blueye laser and 75 mm for the Sea Beam.
 
 ```python
 # Get the current intensity of the scaling laser

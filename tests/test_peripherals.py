@@ -468,3 +468,20 @@ def test_connect_with_a_cached_report_with_guest_ports(
 
     assert isinstance(drone.laser, blueye.sdk.guestport.Laser)
     drone._telemetry_watcher.add_callback.assert_not_called()
+
+
+def test_blueye_scaling_laser_is_a_laser(mocked_drone):
+    laser = bp.GuestPortDevice(
+        {"device_id": bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_SCALING_LASER}
+    )
+    gp_info = bp.GuestPortInfo(
+        gp1=_port(bp.GuestPortNumber.GUEST_PORT_NUMBER_PORT_1, devices=[laser])
+    )
+
+    mocked_drone._create_peripherals_from_drone_info(gp_info)
+
+    assert isinstance(mocked_drone.laser, blueye.sdk.guestport.Laser)
+    assert (
+        mocked_drone.laser.device_id
+        == bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_SCALING_LASER
+    )
