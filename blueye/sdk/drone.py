@@ -537,9 +537,9 @@ class Drone:
     def get_model(self) -> Optional[blueye.protocol.Model]:
         """Get the model of the connected drone.
 
-        The model comes from the `DroneInfoTel` telemetry message, which is the reliable source.
-        The `model_name` string in the HTTP `drone_info` endpoint is not exposed since its
-        formatting varies between drones.
+        The model is read from the `DroneInfoTel` telemetry message. The HTTP `drone_info`
+        endpoint also reports a `model_name` string, but its formatting varies between drones, so
+        it is not used.
 
         Returns:
             The drone model, or None if no `DroneInfo` message has been received yet.
