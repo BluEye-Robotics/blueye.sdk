@@ -4,7 +4,17 @@ The `Drone` class maintains a list of peripherals that are attached to the drone
 
 To list the peripherals that are currently attached to the drone, you can check the [`peripherals`][blueye.sdk.drone.Drone.peripherals] attribute of the `Drone` class. This attribute is a list of [`Peripheral`][blueye.sdk.guestport.Peripheral] objects.
 
-The SDK will also create attributes for supported peripherals to simplify access.
+The SDK also has an attribute for each supported kind of peripheral (`external_camera`, `external_light`, `gripper`, `laser`, `servo` and `skid_servo`) to simplify access. If the drone carries two devices of the same kind, the attribute refers to the last one discovered; the full set is always in `peripherals`.
+
+## Discovery
+Peripherals are discovered once per connection, from the first `DroneInfoTel` telemetry message in which the drone lists its guest ports and the devices on them. Until then, `peripherals` and `get_guest_ports()` return `None` and every peripheral attribute is `None`; a drone that has reported but has no guest ports gives empty lists. Devices plugged in or removed later in the session are not picked up until the next `connect()`. Disconnecting clears the lists and the attributes.
+
+```python
+if drone.laser is None:
+    print("No scaling laser on this drone")
+else:
+    drone.laser.set_intensity(0.5)
+```
 
 Every [`Peripheral`][blueye.sdk.guestport.Peripheral] records which port it sits on, the interfaces it requires from that port, and which ports on the drone fully support it. For detachable devices, [`get_detach_status()`][blueye.sdk.guestport.Peripheral.get_detach_status] reports whether the device is currently attached.
 
