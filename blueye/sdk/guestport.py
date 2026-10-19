@@ -183,18 +183,31 @@ class GuestPortLight(Peripheral):
     def set_intensity(self, intensity: float):
         """Set the intensity of the guest port light.
 
+        The drone applies the value to every light on its guest ports at once.
+
         Args:
             intensity (float): The intensity of the light (0..1).
+
+        Raises:
+            ValueError: If the intensity is not between 0 and 1.
         """
+        if not 0 <= intensity <= 1:
+            raise ValueError("Light intensity must be between 0 and 1.")
         self.parent_drone._ctrl_client.set_guest_port_lights(intensity)
 
     def get_intensity(self) -> Optional[float]:
         """Get the intensity of the guest port light.
 
+        The drone only publishes the guest port light state after the lights have been set once
+        in the session, so this can be `None` for a while after connecting.
+
         Returns:
-            The intensity of the light (0..1).
+            The intensity of the light (0..1), or `None` if the drone has not reported it yet.
         """
-        return self.parent_drone.telemetry.get(bp.GuestPortLightsTel).lights.value
+        telemetry_msg = self.parent_drone.telemetry.get(bp.GuestPortLightsTel)
+        if telemetry_msg is None:
+            return None
+        return telemetry_msg.lights.value
 
 
 class Gripper(Peripheral):
@@ -298,7 +311,7 @@ class Laser(Peripheral):
         Raises:
             ValueError: If the intensity is not between 0 and 1.
         """
-        if intensity < 0 or intensity > 1:
+        if not 0 <= intensity <= 1:
             raise ValueError("Laser intensity must be between 0 and 1.")
         self.parent_drone._ctrl_client.set_laser_intensity(intensity)
 
@@ -344,7 +357,7 @@ class GenericServo(Peripheral):
         Raises:
             ValueError: If the angle is not within the allowed range.
         """
-        if angle < self.min_angle or angle > self.max_angle:
+        if not self.min_angle <= angle <= self.max_angle:
             raise ValueError(
                 f"Angle must be between {self.min_angle} and {self.max_angle} degrees."
             )
@@ -404,7 +417,7 @@ class SkidServo(Peripheral):
         Raises:
             ValueError: If the angle is not within the allowed range.
         """
-        if angle < self.min_angle or angle > self.max_angle:
+        if not self.min_angle <= angle <= self.max_angle:
             raise ValueError(
                 f"Angle must be between {self.min_angle} and {self.max_angle} degrees."
             )

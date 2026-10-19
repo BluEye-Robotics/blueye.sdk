@@ -525,3 +525,54 @@ def test_multibeam_servo_set_point(mocked_drone):
     )
     assert mocked_drone.skid_servo.get_angle() == 10
     assert mocked_drone.skid_servo.get_set_point() == 40
+
+
+def test_guest_port_light_intensity(mocked_drone):
+    mocked_drone._create_peripherals_from_drone_info(
+        _device_on_port_1(bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_LIGHT)
+    )
+    light = mocked_drone.external_light
+
+    # The drone has not published the light state yet
+    assert light.get_intensity() is None
+
+    mocked_drone._telemetry_watcher._state[bp.GuestPortLightsTel] = bp.GuestPortLightsTel.serialize(
+        bp.GuestPortLightsTel(lights=bp.Lights(value=0.25))
+    )
+    assert light.get_intensity() == 0.25
+
+    light.set_intensity(0.5)
+    mocked_drone._ctrl_client.set_guest_port_lights.assert_called_once_with(0.5)
+    with pytest.raises(ValueError):
+        light.set_intensity(1.5)
+
+
+@pytest.mark.parametrize("bad", [float("nan"), -0.1, 1.1])
+def test_light_and_laser_reject_out_of_range_intensity(mocked_drone, bad):
+    light = bp.GuestPortDevice(
+        {"device_id": bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_LIGHT}
+    )
+    laser = bp.GuestPortDevice(
+        {"device_id": bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_SCALING_LASER}
+    )
+    mocked_drone._create_peripherals_from_drone_info(
+        bp.GuestPortInfo(
+            gp1=_port(bp.GuestPortNumber.GUEST_PORT_NUMBER_PORT_1, devices=[light, laser])
+        )
+    )
+
+    with pytest.raises(ValueError):
+        mocked_drone.external_light.set_intensity(bad)
+    with pytest.raises(ValueError):
+        mocked_drone.laser.set_intensity(bad)
+    mocked_drone._ctrl_client.set_guest_port_lights.assert_not_called()
+    mocked_drone._ctrl_client.set_laser_intensity.assert_not_called()
+
+
+def test_multibeam_servo_rejects_nan(mocked_drone):
+    mocked_drone._create_peripherals_from_drone_info(
+        _device_on_port_1(bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_MULTIBEAM_SERVO)
+    )
+    with pytest.raises(ValueError):
+        mocked_drone.skid_servo.set_angle(float("nan"))
+    mocked_drone._ctrl_client.set_multibeam_servo_angle.assert_not_called()
