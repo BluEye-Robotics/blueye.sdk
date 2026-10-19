@@ -1,11 +1,12 @@
 import logging
-from typing import TYPE_CHECKING, Optional
+from dataclasses import dataclass, field
+from typing import TYPE_CHECKING, List, Optional
 
 import blueye.protocol as bp
 from packaging import version
 
 from .camera import Camera
-from .utils import deprecated_property
+from .utils import deprecated_property, describe_enum
 
 if TYPE_CHECKING:
     from .drone import Drone
@@ -36,6 +37,14 @@ class Peripheral:
         self.depth_rating: float = device.depth_rating
         self.required_blunux_version: str = device.required_blunux_version
         self.device_id: bp.GuestPortDeviceID = device.device_id
+        self._detach_status: bp.GuestPortDetachStatus = device.detach_status
+        self.required_capabilities: List[bp.GuestPortCapability] = list(
+            device.required_capabilities
+        )
+        """Interfaces the device requires from the port it is connected to."""
+        self.compatible_guest_ports: List[bp.GuestPortNumber] = list(device.compatible_guest_ports)
+        """Ports on this drone where the device is fully supported, as computed by the drone from
+        the port capabilities and the device requirements."""
         if self.required_blunux_version != "":
             if version.parse(self.required_blunux_version) > version.parse(
                 parent_drone.software_version_short
@@ -45,6 +54,94 @@ class Peripheral:
                     f"{self.required_blunux_version}, but the drone is running "
                     f"{parent_drone.software_version_short}"
                 )
+
+    def get_detach_status(self) -> bp.GuestPortDetachStatus:
+        """Get the current attach state of a detachable device.
+
+        The state is read from the latest drone info telemetry so it follows the device being
+        attached or detached during a session. If no newer telemetry is available, the state
+        reported when the peripheral was discovered is returned.
+
+        Returns:
+            The detach status. `GUEST_PORT_DETACH_STATUS_UNSPECIFIED` for devices that cannot be
+            detached.
+        """
+        drone_info_tel = self.parent_drone.telemetry.get(bp.DroneInfoTel)
+        if drone_info_tel is not None:
+            device = _find_device(drone_info_tel.drone_info.gp, self)
+            if device is not None:
+                return device.detach_status
+        return self._detach_status
+
+
+def _find_device(gp_info: bp.GuestPortInfo, peripheral: Peripheral) -> Optional[bp.GuestPortDevice]:
+    """Find the device entry for a peripheral in a `GuestPortInfo` message.
+
+    Matches on port, device id and serial number. Returns `None` if the port slot is not set or
+    the device is no longer listed on it.
+    """
+    port_index = int(peripheral.port_number)
+    if not 1 <= port_index <= 6:
+        return None
+    slot = f"gp{port_index}"
+    if slot not in gp_info:
+        return None
+    for device in getattr(gp_info, slot).device_list.devices:
+        if (
+            device.device_id == peripheral.device_id
+            and device.serial_number == peripheral.serial_number
+        ):
+            return device
+    return None
+
+
+@dataclass
+class GuestPort:
+    """State of one guest port connector on the drone.
+
+    A port either carries a list of devices or reports a connector error, never both. A port with
+    nothing plugged in reports `GUEST_PORT_ERROR_NOT_CONNECTED`.
+    """
+
+    number: bp.GuestPortNumber
+    """Which guest port this is."""
+    capabilities: List[bp.GuestPortCapability] = field(default_factory=list)
+    """Interfaces this port provides."""
+    error: Optional[bp.GuestPortError] = None
+    """Connector error reported by the drone, or `None` when the port carries a device list."""
+    devices: List[Peripheral] = field(default_factory=list)
+    """Peripherals discovered on this port. Empty when the port reports an error."""
+
+
+def connector_info_to_guest_port(
+    parent_drone: "Drone", connector_info: bp.GuestPortConnectorInfo
+) -> GuestPort:
+    """Build a [GuestPort][blueye.sdk.guestport.GuestPort] from the drone's connector info.
+
+    Args:
+        parent_drone (Drone): The parent drone instance.
+        connector_info (bp.GuestPortConnectorInfo): The per-port message from `GuestPortInfo`.
+
+    Returns:
+        The guest port with its capabilities, connector error, and discovered peripherals.
+    """
+    port = GuestPort(
+        number=connector_info.guest_port_number,
+        capabilities=list(connector_info.capabilities),
+    )
+    if "error" in connector_info:
+        port.error = connector_info.error
+        if port.error == bp.GuestPortError.GUEST_PORT_ERROR_NOT_CONNECTED:
+            logger.debug(f"Nothing connected to {describe_enum(port.number)}")
+        else:
+            logger.warning(
+                f"Guest port {describe_enum(port.number)} reports connector error "
+                f"{describe_enum(port.error)}"
+            )
+    else:
+        for device in connector_info.device_list.devices:
+            port.devices.append(device_to_peripheral(parent_drone, port.number, device))
+    return port
 
 
 class GuestPortCamera(Camera, Peripheral):
