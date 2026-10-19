@@ -266,15 +266,10 @@ def test_unknown_connector_error_does_not_abort_discovery(mocked_drone, caplog):
     assert any("connector error UNKNOWN(999)" in r.message for r in caplog.records)
 
 
-def test_get_guest_ports_is_empty_for_drones_without_guest_ports(mocked_drone):
-    # The mocked drone does not advertise the "gpdrone" feature
-    assert mocked_drone.get_guest_ports() == []
-    assert mocked_drone.peripherals == []
-
-
 def test_get_guest_ports_is_none_before_drone_info(mocked_drone):
-    mocked_drone._guest_ports = None
+    # No DroneInfoTel has been received by the mocked drone, so nothing is known yet
     assert mocked_drone.get_guest_ports() is None
+    assert mocked_drone.peripherals is None
 
 
 def test_peripheral_exposes_port_metadata(mocked_drone):
@@ -357,3 +352,119 @@ def test_detach_status_follows_drone_info_telemetry(mocked_drone):
         bp.GuestPortInfo(gp4=_port(port, error=bp.GuestPortError.GUEST_PORT_ERROR_NOT_CONNECTED)),
     )
     assert gripper.get_detach_status() == attached
+
+
+def _laser_info():
+    laser = bp.GuestPortDevice(
+        {"device_id": bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_SPOT_X_LASER_SCALERS}
+    )
+    return bp.GuestPortInfo(gp1=_port(bp.GuestPortNumber.GUEST_PORT_NUMBER_PORT_1, devices=[laser]))
+
+
+def _light_info():
+    light = bp.GuestPortDevice(
+        {"device_id": bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_LIGHT}
+    )
+    return bp.GuestPortInfo(gp2=_port(bp.GuestPortNumber.GUEST_PORT_NUMBER_PORT_2, devices=[light]))
+
+
+def test_peripheral_attributes_are_none_before_discovery(mocked_drone):
+    assert mocked_drone.peripherals is None
+    assert mocked_drone.get_guest_ports() is None
+    for name in ("external_camera", "external_light", "gripper", "laser", "servo", "skid_servo"):
+        assert getattr(mocked_drone, name) is None
+
+
+def test_discovery_does_not_depend_on_the_gpdrone_feature(mocked_drone):
+    # The mocked drone info lists no "gpdrone" feature, yet connect() must still wait for the
+    # guest port information from the drone instead of settling on an empty list.
+    assert "gpdrone" not in mocked_drone.features
+    mocked_drone._telemetry_watcher.add_callback.assert_called_once()
+    args, _ = mocked_drone._telemetry_watcher.add_callback.call_args
+    assert args[0] == [bp.DroneInfoTel]
+
+
+def test_rediscovery_drops_devices_that_are_gone(mocked_drone):
+    mocked_drone._create_peripherals_from_drone_info(_laser_info())
+    assert isinstance(mocked_drone.laser, blueye.sdk.guestport.Laser)
+
+    mocked_drone._create_peripherals_from_drone_info(_light_info())
+
+    assert mocked_drone.laser is None
+    assert isinstance(mocked_drone.external_light, blueye.sdk.guestport.GuestPortLight)
+    assert len(mocked_drone.peripherals) == 1
+    assert [port.number for port in mocked_drone.get_guest_ports()] == [
+        bp.GuestPortNumber.GUEST_PORT_NUMBER_PORT_2
+    ]
+
+
+def test_disconnect_forgets_peripherals(mocked_drone):
+    mocked_drone._create_peripherals_from_drone_info(_laser_info())
+
+    mocked_drone.disconnect()
+
+    assert mocked_drone.peripherals is None
+    assert mocked_drone.get_guest_ports() is None
+    assert mocked_drone.laser is None
+
+
+def test_drone_info_without_guest_ports_keeps_waiting(mocked_drone):
+    mocked_drone._drone_info_cb_id = "cb"
+    without_gp = bp.DroneInfoTel(drone_info=bp.DroneInfo())
+    with_gp = bp.DroneInfoTel(drone_info=bp.DroneInfo(gp=_laser_info()))
+
+    blueye.sdk.Drone._drone_info_callback("DroneInfoTel", without_gp, mocked_drone)
+    assert mocked_drone.peripherals == []
+    assert mocked_drone.get_guest_ports() == []
+    mocked_drone._telemetry_watcher.remove_callback.assert_not_called()
+
+    blueye.sdk.Drone._drone_info_callback("DroneInfoTel", with_gp, mocked_drone)
+    assert isinstance(mocked_drone.laser, blueye.sdk.guestport.Laser)
+    mocked_drone._telemetry_watcher.remove_callback.assert_called_once_with("cb")
+
+
+def test_drone_info_callback_is_ignored_after_disconnect(mocked_drone):
+    with_gp = bp.DroneInfoTel(drone_info=bp.DroneInfo(gp=_laser_info()))
+    mocked_drone.disconnect()
+
+    blueye.sdk.Drone._drone_info_callback("DroneInfoTel", with_gp, mocked_drone)
+
+    assert mocked_drone.peripherals is None
+    assert mocked_drone.laser is None
+
+
+def test_connect_with_a_cached_report_without_guest_ports(
+    mocked_drone_not_connected, mocked_req_rep_client, mocked_telemetry_client
+):
+    drone = mocked_drone_not_connected
+    mocked_req_rep_client.return_value.connect_client.return_value = bp.ConnectClientRep(
+        client_id=1, client_id_in_control=1
+    )
+    mocked_telemetry_client.return_value._state[bp.DroneInfoTel] = bp.DroneInfoTel.serialize(
+        bp.DroneInfoTel(drone_info=bp.DroneInfo())
+    )
+
+    drone.connect()
+
+    # Reported, but no guest ports yet: empty lists, and the callback keeps waiting for them
+    assert drone.peripherals == []
+    assert drone.get_guest_ports() == []
+    args, _ = drone._telemetry_watcher.add_callback.call_args
+    assert args[0] == [bp.DroneInfoTel]
+
+
+def test_connect_with_a_cached_report_with_guest_ports(
+    mocked_drone_not_connected, mocked_req_rep_client, mocked_telemetry_client
+):
+    drone = mocked_drone_not_connected
+    mocked_req_rep_client.return_value.connect_client.return_value = bp.ConnectClientRep(
+        client_id=1, client_id_in_control=1
+    )
+    mocked_telemetry_client.return_value._state[bp.DroneInfoTel] = bp.DroneInfoTel.serialize(
+        bp.DroneInfoTel(drone_info=bp.DroneInfo(gp=_laser_info()))
+    )
+
+    drone.connect()
+
+    assert isinstance(drone.laser, blueye.sdk.guestport.Laser)
+    drone._telemetry_watcher.add_callback.assert_not_called()
