@@ -35,7 +35,9 @@ independent.
 
 [`Camera.get_scaled_calibration`][blueye.sdk.camera.Camera.get_scaled_calibration] does this
 for you. Without arguments it scales to the current stream resolution, and it also accepts a
-[`Resolution`][blueye.protocol.Resolution] or a `(width, height)` tuple.
+[`Resolution`][blueye.protocol.Resolution] or a `(width, height)` tuple. A `Resolution` maps to
+the frame size the drone's video pipeline produces for it, which is 640x480 for 480p and 16:9 for
+the other resolutions.
 
 ```python
 import blueye.protocol as bp

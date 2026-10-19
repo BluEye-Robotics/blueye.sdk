@@ -712,6 +712,42 @@ class TestCalibration:
         assert scaled.fx == 2000.0
         assert scaled.cy == 1080.0
 
+    def test_scaled_calibration_to_480p_uses_the_4_by_3_frame(self, mocked_camera):
+        # The drone streams 480p as 640x480, not as the 16:9 853x480 the calibration's aspect
+        # ratio would suggest, so fx and cx must scale with the 640 width.
+        self._seed_calibration(mocked_camera)
+        scaled = mocked_camera.get_scaled_calibration(bp.Resolution.RESOLUTION_VGA_480P)
+        assert (scaled.image_width, scaled.image_height) == (640, 480)
+        assert scaled.fx == pytest.approx(1000.0 * 640 / 1920)
+        assert scaled.cx == pytest.approx(960.0 * 640 / 1920)
+        assert scaled.fy == pytest.approx(1010.0 * 480 / 1080)
+        assert scaled.cy == pytest.approx(540.0 * 480 / 1080)
+
+    def test_scaled_calibration_defaults_to_480p_stream_resolution(self, mocked_camera):
+        self._seed_calibration(mocked_camera)
+        mocked_camera._parent_drone._req_rep_client.get_camera_parameters.return_value = (
+            bp.CameraParameters(stream_resolution=bp.Resolution.RESOLUTION_VGA_480P)
+        )
+        scaled = mocked_camera.get_scaled_calibration()
+        assert (scaled.image_width, scaled.image_height) == (640, 480)
+        assert scaled.fx == pytest.approx(1000.0 * 640 / 1920)
+
+    @pytest.mark.parametrize(
+        "resolution, size",
+        [
+            (bp.Resolution.RESOLUTION_VGA_480P, (640, 480)),
+            (bp.Resolution.RESOLUTION_HD_720P, (1280, 720)),
+            (bp.Resolution.RESOLUTION_FULLHD_1080P, (1920, 1080)),
+            (bp.Resolution.RESOLUTION_QHD_2K, (2560, 1440)),
+            (bp.Resolution.RESOLUTION_UHD_4K, (3840, 2160)),
+        ],
+        ids=lambda v: v.name if isinstance(v, bp.Resolution) else "",
+    )
+    def test_scaled_calibration_resolution_frame_sizes(self, mocked_camera, resolution, size):
+        self._seed_calibration(mocked_camera)
+        scaled = mocked_camera.get_scaled_calibration(resolution)
+        assert (scaled.image_width, scaled.image_height) == size
+
     def test_scaled_calibration_defaults_to_stream_resolution(self, mocked_camera):
         self._seed_calibration(mocked_camera)
         mocked_camera._parent_drone._req_rep_client.get_camera_parameters.return_value = (

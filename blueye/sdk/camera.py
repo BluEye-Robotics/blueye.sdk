@@ -18,13 +18,16 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
-_RESOLUTION_TO_HEIGHT = {
-    blueye.protocol.Resolution.RESOLUTION_VGA_480P: 480,
-    blueye.protocol.Resolution.RESOLUTION_HD_720P: 720,
-    blueye.protocol.Resolution.RESOLUTION_FULLHD_1080P: 1080,
-    blueye.protocol.Resolution.RESOLUTION_QHD_2K: 1440,
-    blueye.protocol.Resolution.RESOLUTION_UHD_4K: 2160,
+# Frame size the drone's video pipeline produces for each resolution. 480p is 4:3, the rest are
+# 16:9, matching resolution_to_width() in the drone's gst_rtsp_record service.
+_RESOLUTION_TO_SIZE = {
+    blueye.protocol.Resolution.RESOLUTION_VGA_480P: (640, 480),
+    blueye.protocol.Resolution.RESOLUTION_HD_720P: (1280, 720),
+    blueye.protocol.Resolution.RESOLUTION_FULLHD_1080P: (1920, 1080),
+    blueye.protocol.Resolution.RESOLUTION_QHD_2K: (2560, 1440),
+    blueye.protocol.Resolution.RESOLUTION_UHD_4K: (3840, 2160),
 }
+_RESOLUTION_TO_HEIGHT = {res: height for res, (_, height) in _RESOLUTION_TO_SIZE.items()}
 _HEIGHT_TO_RESOLUTION = {height: res for res, height in _RESOLUTION_TO_HEIGHT.items()}
 
 _FRAMERATE_TO_FPS = {
@@ -1873,9 +1876,10 @@ class Camera:
         Args:
             resolution (blueye.protocol.Resolution | tuple[int, int], optional):
                 The resolution to scale the calibration to, either as a
-                `blueye.protocol.Resolution` or as a `(width, height)` tuple in pixels. When a
-                `Resolution` is given the width is derived from the aspect ratio of the
-                calibration. Defaults to the current stream resolution.
+                `blueye.protocol.Resolution` or as a `(width, height)` tuple in pixels. A
+                `Resolution` maps to the frame size the drone's video pipeline produces for it:
+                640x480 for 480p and 16:9 for the others. Defaults to the current stream
+                resolution.
 
         Raises:
             ValueError: If the resolution is not a `blueye.protocol.Resolution` or a
@@ -1892,12 +1896,11 @@ class Camera:
             resolution = self.get_stream_resolution()
         if isinstance(resolution, blueye.protocol.Resolution):
             try:
-                height = _RESOLUTION_TO_HEIGHT[resolution]
+                width, height = _RESOLUTION_TO_SIZE[resolution]
             except KeyError:
                 raise RuntimeError(
                     f"Drone reported an unsupported resolution: {_describe_enum(resolution)}"
                 ) from None
-            width = round(height * calibration.image_width / calibration.image_height)
         else:
             try:
                 width, height = resolution
