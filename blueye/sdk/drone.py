@@ -582,8 +582,12 @@ class Drone:
     def get_pose(self) -> Optional[Dict[str, float]]:
         """Get the current orientation of the drone.
 
+        The angles are wrapped to 0..359, so a drone rolled slightly to the left reports a roll
+        just below 360. Use `get_attitude` for signed angles.
+
         Returns:
-            A dictionary with roll, pitch, and yaw in degrees, from 0 to 359.
+            A dictionary with roll, pitch, and yaw in degrees, from 0 to 359. None if no attitude
+            telemetry has been received.
         """
         attitude_tel = self.telemetry.get(blueye.protocol.AttitudeTel)
         if attitude_tel is None:
@@ -597,6 +601,28 @@ class Drone:
         return pose
 
     pose = deprecated_property("get_pose")
+
+    def get_attitude(self) -> Optional[Dict[str, float]]:
+        """Get the current orientation of the drone as signed angles.
+
+        Unlike `get_pose`, the angles are returned as the drone reports them: 0 when the drone is
+        level and pointing north, with small deviations keeping their sign. A roll to the right and
+        a pitch with the nose up are positive. This is the natural form when working with the roll
+        and pitch input on the Blueye X7.
+
+        Returns:
+            A dictionary with roll, pitch, and yaw in degrees, from -180 to 180. None if no
+            attitude telemetry has been received.
+        """
+        attitude_tel = self.telemetry.get(blueye.protocol.AttitudeTel)
+        if attitude_tel is None:
+            return None
+        attitude = attitude_tel.attitude
+        return {
+            "roll": attitude.roll,
+            "pitch": attitude.pitch,
+            "yaw": attitude.yaw,
+        }
 
     def get_altitude(self) -> Optional[float]:
         """Get the current altitude in meters.

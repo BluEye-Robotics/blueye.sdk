@@ -276,7 +276,15 @@ class CtrlClient(threading.Thread):
         self._messages_to_send.put(msg)
 
     def set_motion_input(
-        self, surge: float, sway: float, heave: float, yaw: float, slow: float, boost: float
+        self,
+        surge: float,
+        sway: float,
+        heave: float,
+        yaw: float,
+        slow: float,
+        boost: float,
+        roll: float = 0.0,
+        pitch: float = 0.0,
     ):
         """Set the motion input values.
 
@@ -287,12 +295,16 @@ class CtrlClient(threading.Thread):
             yaw (float): The yaw value.
             slow (float): The slow value.
             boost (float): The boost value.
+            roll (float): The roll value. Only the Blueye X7 acts on it.
+            pitch (float): The pitch value. Only the Blueye X7 acts on it.
         """
         msg = blueye.protocol.MotionInputCtrl(
             motion_input={
                 "surge": surge,
                 "sway": sway,
                 "heave": heave,
+                "roll": roll,
+                "pitch": pitch,
                 "yaw": yaw,
                 "slow": slow,
                 "boost": boost,
