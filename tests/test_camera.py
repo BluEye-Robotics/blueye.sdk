@@ -796,13 +796,9 @@ class Test4kCameraFeatures:
         camera._parent_drone._telemetry_watcher._state[msg_type] = msg_type.serialize(msg)
 
     @pytest.fixture
-    def jetson_camera(self, mocked_drone: Drone):
+    def jetson_camera(self, mocked_drone_x7: Drone):
         """The main camera of an X7 running Blunux 5.0.0."""
-        from blueye.sdk.camera import Camera
-
-        mocked_drone.software_version_short = "5.0.0"
-        self._seed_model(mocked_drone, bp.Model.MODEL_X7)
-        return Camera(mocked_drone)
+        return mocked_drone_x7.camera
 
     @staticmethod
     def _no_telemetry(camera):
@@ -931,8 +927,10 @@ class Test4kCameraFeatures:
         ]
 
     def test_set_pan_tilt_zoom_with_all_values_does_not_read_telemetry(self, jetson_camera):
+        req_rep_client = jetson_camera._parent_drone._req_rep_client
+        req_rep_client.get_telemetry_msg.reset_mock()
         jetson_camera.set_pan_tilt_zoom(0.0, 0.0, 0.0)
-        jetson_camera._parent_drone._req_rep_client.get_telemetry_msg.assert_not_called()
+        req_rep_client.get_telemetry_msg.assert_not_called()
 
     # Validation
 
@@ -997,10 +995,8 @@ class Test4kCameraFeatures:
         getattr(Camera(mocked_drone), setter)(*args)
 
     @pytest.mark.parametrize("setter, args", SETTERS)
-    def test_setters_reject_the_guestport_camera(self, mocked_drone, setter, args):
+    def test_setters_reject_the_guestport_camera(self, mocked_drone_x7, setter, args):
         from blueye.sdk.camera import Camera
 
-        mocked_drone.software_version_short = "5.0.0"
-        self._seed_model(mocked_drone, bp.Model.MODEL_X7)
         with pytest.raises(RuntimeError, match="main camera"):
-            getattr(Camera(mocked_drone, is_guestport_camera=True), setter)(*args)
+            getattr(Camera(mocked_drone_x7, is_guestport_camera=True), setter)(*args)
