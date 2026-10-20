@@ -2,6 +2,7 @@ import warnings
 
 import blueye.protocol as bp
 import pytest
+from unittest.mock import call
 
 import blueye.sdk
 from blueye.sdk.guestport import (
@@ -54,50 +55,144 @@ def test_laser_peripheral(mocked_drone):
         mocked_drone.laser.set_intensity(2)
 
 
-def test_generic_servo_set_angle(mocked_drone):
-    # Create a GenericServo instance
-    generic_servo = GenericServo(
-        parent_drone=mocked_drone,
-        port_number=bp.GuestPortNumber.GUEST_PORT_NUMBER_PORT_1,
+def _generic_servo(drone, port=bp.GuestPortNumber.GUEST_PORT_NUMBER_PORT_1):
+    return GenericServo(
+        parent_drone=drone,
+        port_number=port,
         device=bp.GuestPortDevice(
             {"device_id": bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_GENERIC_SERVO}
         ),
     )
 
-    # Test valid angle
-    generic_servo.set_angle(45)
-    mocked_drone._ctrl_client.set_generic_servo_angle.assert_called_once_with(
-        45, bp.GuestPortNumber.GUEST_PORT_NUMBER_PORT_1
+
+def _servo_tel(port, value, set_point=None):
+    return bp.GenericServoTel(
+        servo=bp.GenericServo(value=value, guest_port_number=port),
+        set_point=value if set_point is None else set_point,
     )
 
-    # Test invalid angle
-    with pytest.raises(ValueError, match="Angle must be between -90 and 90 degrees."):
-        generic_servo.set_angle(100)
 
+class TestGenericServo:
+    PORT_1 = bp.GuestPortNumber.GUEST_PORT_NUMBER_PORT_1
+    PORT_2 = bp.GuestPortNumber.GUEST_PORT_NUMBER_PORT_2
 
-def test_generic_servo_get_angle(mocked_drone):
-    # Create a GenericServo instance
-    generic_servo = GenericServo(
-        parent_drone=mocked_drone,
-        port_number=bp.GuestPortNumber.GUEST_PORT_NUMBER_PORT_1,
-        device=bp.GuestPortDevice(
-            {"device_id": bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_GENERIC_SERVO}
-        ),
-    )
+    def test_set_position(self, mocked_drone):
+        _generic_servo(mocked_drone).set_position(0.25)
+        mocked_drone._ctrl_client.set_generic_servo_position.assert_called_once_with(
+            0.25, self.PORT_1
+        )
 
-    # Mock telemetry data
-    telemetry_msg = bp.GenericServoTel.serialize(
-        bp.GenericServoTel(servo=bp.GenericServo(value=30))
-    )
-    mocked_drone._telemetry_watcher._state[bp.GenericServoTel] = telemetry_msg
+    @pytest.mark.parametrize("position", [-0.1, 1.1, float("nan")])
+    def test_set_position_rejects_out_of_range(self, mocked_drone, position):
+        with pytest.raises(ValueError, match="Position must be between 0 and 1"):
+            _generic_servo(mocked_drone).set_position(position)
+        mocked_drone._ctrl_client.set_generic_servo_position.assert_not_called()
 
-    # Test getting angle
-    assert generic_servo.get_angle() == 30
+    def test_get_position_from_the_per_port_cache(self, mocked_drone):
+        mocked_drone._generic_servo_tel[self.PORT_1] = _servo_tel(self.PORT_1, 0.3, 0.9)
+        mocked_drone._generic_servo_tel[self.PORT_2] = _servo_tel(self.PORT_2, 0.7)
+        servo_1 = _generic_servo(mocked_drone, self.PORT_1)
+        servo_2 = _generic_servo(mocked_drone, self.PORT_2)
+        assert servo_1.get_position() == pytest.approx(0.3)
+        assert servo_1.get_set_point() == pytest.approx(0.9)
+        assert servo_2.get_position() == pytest.approx(0.7)
 
-    # Test when telemetry is not available
-    mocked_drone._telemetry_watcher._state = {}
+    def test_get_position_falls_back_to_the_telemetry_store_for_its_port(self, mocked_drone):
+        mocked_drone._telemetry_watcher._state[bp.GenericServoTel] = bp.GenericServoTel.serialize(
+            _servo_tel(self.PORT_2, 0.6)
+        )
+        assert _generic_servo(mocked_drone, self.PORT_2).get_position() == pytest.approx(0.6)
+        assert _generic_servo(mocked_drone, self.PORT_1).get_position() is None
 
-    assert generic_servo.get_angle() is None
+    def test_get_position_is_none_without_telemetry(self, mocked_drone):
+        servo = _generic_servo(mocked_drone)
+        assert servo.get_position() is None
+        assert servo.get_set_point() is None
+
+    def test_callback_fills_the_cache_per_port(self, mocked_drone):
+        mocked_drone._drone_info_callback = None
+        for port, value in ((self.PORT_1, 0.1), (self.PORT_2, 0.2), (self.PORT_1, 0.15)):
+            mocked_drone._generic_servo_callback(
+                "GenericServoTel", _servo_tel(port, value), mocked_drone
+            )
+        assert mocked_drone._generic_servo_tel[self.PORT_1].servo.value == pytest.approx(0.15)
+        assert mocked_drone._generic_servo_tel[self.PORT_2].servo.value == pytest.approx(0.2)
+
+    def test_discovery_registers_the_callback_while_a_servo_is_present(self, mocked_drone):
+        telemetry = mocked_drone._telemetry_watcher
+        # connect() registered the drone info callback, only the servo one matters here
+        telemetry.add_callback.reset_mock()
+        telemetry.add_callback.return_value = "cb"
+        servo_info = bp.GuestPortInfo()
+        servo_info.gp1 = bp.GuestPortConnectorInfo()
+        servo_info.gp1.device_list = bp.GuestPortDeviceList()
+        servo_info.gp1.device_list.devices.append(
+            bp.GuestPortDevice(
+                {"device_id": bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_GENERIC_SERVO}
+            )
+        )
+
+        mocked_drone._create_peripherals_from_drone_info(servo_info)
+        telemetry.add_callback.assert_called_once()
+        assert telemetry.add_callback.call_args[0][0] == [bp.GenericServoTel]
+        assert mocked_drone._generic_servo_cb_id == "cb"
+
+        # A second discovery with the servo still there keeps the one callback
+        mocked_drone._create_peripherals_from_drone_info(servo_info)
+        telemetry.add_callback.assert_called_once()
+
+        # Once the servo is gone the callback goes too, and so does the cache
+        mocked_drone._generic_servo_tel[self.PORT_1] = _servo_tel(self.PORT_1, 0.5)
+        mocked_drone._create_peripherals_from_drone_info(_light_info())
+        telemetry.remove_callback.assert_called_once_with("cb")
+        assert mocked_drone._generic_servo_cb_id is None
+        assert mocked_drone._generic_servo_tel == {}
+
+    def test_a_report_without_guest_ports_removes_the_callback(self, mocked_drone):
+        telemetry = mocked_drone._telemetry_watcher
+        telemetry.add_callback.return_value = "cb"
+        mocked_drone._track_generic_servos(True)
+        mocked_drone._generic_servo_tel[self.PORT_1] = _servo_tel(self.PORT_1, 0.5)
+        mocked_drone._reset_peripherals(reported=True)
+        telemetry.remove_callback.assert_called_once_with("cb")
+        assert mocked_drone._generic_servo_cb_id is None
+        assert mocked_drone._generic_servo_tel == {}
+
+    def test_disconnect_removes_the_callback(self, mocked_drone):
+        telemetry = mocked_drone._telemetry_watcher
+        telemetry.add_callback.return_value = "cb"
+        mocked_drone._track_generic_servos(True)
+        mocked_drone.disconnect()
+        assert call("cb") in telemetry.remove_callback.call_args_list
+        assert mocked_drone._generic_servo_cb_id is None
+        assert mocked_drone._generic_servo_tel == {}
+
+    @pytest.mark.parametrize("angle, position", [(-90, 0.0), (0, 0.5), (45, 0.75), (90, 1.0)])
+    def test_set_angle_is_deprecated_and_maps_onto_the_position(
+        self, mocked_drone, angle, position
+    ):
+        with pytest.warns(DeprecationWarning, match="set_position"):
+            _generic_servo(mocked_drone).set_angle(angle)
+        (sent, port), _ = mocked_drone._ctrl_client.set_generic_servo_position.call_args
+        assert sent == pytest.approx(position)
+        assert port == self.PORT_1
+
+    def test_set_angle_rejects_out_of_range(self, mocked_drone):
+        with pytest.warns(DeprecationWarning):
+            with pytest.raises(ValueError, match="Angle must be between -90 and 90 degrees."):
+                _generic_servo(mocked_drone).set_angle(100)
+
+    @pytest.mark.parametrize("position, angle", [(0.0, -90), (0.5, 0), (0.75, 45), (1.0, 90)])
+    def test_get_angle_is_deprecated_and_maps_from_the_position(
+        self, mocked_drone, position, angle
+    ):
+        mocked_drone._generic_servo_tel[self.PORT_1] = _servo_tel(self.PORT_1, position)
+        with pytest.warns(DeprecationWarning, match="get_position"):
+            assert _generic_servo(mocked_drone).get_angle() == pytest.approx(angle)
+
+    def test_get_angle_is_none_without_telemetry(self, mocked_drone):
+        with pytest.warns(DeprecationWarning):
+            assert _generic_servo(mocked_drone).get_angle() is None
 
 
 def test_skid_servo_set_angle(mocked_drone):
@@ -678,3 +773,26 @@ def test_unknown_integer_device_id_falls_back_to_plain_peripheral(mocked_drone):
     (peripheral,) = mocked_drone.peripherals
     assert type(peripheral) is Peripheral
     assert int(peripheral.device_id) == 999
+
+
+class TestGenericServoCtrl:
+    """The control client sends the 0..1 position as the protocol's servo value."""
+
+    @pytest.fixture
+    def ctrl_client(self, mocked_drone_not_connected):
+        from blueye.sdk.connection import CtrlClient
+
+        return CtrlClient(mocked_drone_not_connected)
+
+    def test_set_generic_servo_position(self, ctrl_client):
+        ctrl_client.set_generic_servo_position(0.25, bp.GuestPortNumber.GUEST_PORT_NUMBER_PORT_2)
+        msg = ctrl_client._messages_to_send.get_nowait()
+        assert isinstance(msg, bp.GenericServoCtrl)
+        assert msg.servo.value == pytest.approx(0.25)
+        assert msg.servo.guest_port_number == bp.GuestPortNumber.GUEST_PORT_NUMBER_PORT_2
+
+    def test_set_generic_servo_angle_is_deprecated_and_maps_onto_the_position(self, ctrl_client):
+        with pytest.warns(DeprecationWarning, match="set_generic_servo_position"):
+            ctrl_client.set_generic_servo_angle(45, bp.GuestPortNumber.GUEST_PORT_NUMBER_PORT_1)
+        msg = ctrl_client._messages_to_send.get_nowait()
+        assert msg.servo.value == pytest.approx(0.75)

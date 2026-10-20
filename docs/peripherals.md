@@ -122,6 +122,25 @@ drone.gripper.set_rotation_velocity(-1.0)
 ## Servo
 If the drone has a servo attached, the `Drone` class will either have a `servo` attribute that is a [`GenericServo`][blueye.sdk.guestport.GenericServo] object, or a `skid_servo` attribute that is a [`SkidServo`][blueye.sdk.guestport.SkidServo] object. These objects can be used to control the servo.
 
+`servo` is the Blueye generic servo. It takes a position between 0 and 1, where 0 and 1 are the end stops, since the drone has no idea what that is in degrees for the servo you have fitted. The drone drives generic servos on guest ports 1 to 3 only. The old `set_angle` and `get_angle` still work but warn, they map -90..90 degrees onto the 0..1 position.
+
+```python
+# Move to the middle
+drone.servo.set_position(0.5)
+
+# The reported position, and the position it is moving towards
+drone.servo.get_position()
+drone.servo.get_set_point()
+```
+
+With two generic servos, `drone.servo` is the last one discovered. Each servo in `drone.peripherals` reports its own port, so pick by `port_number` when you have more than one:
+
+```python
+from blueye.sdk.guestport import GenericServo
+
+servos = {p.port_number: p for p in drone.peripherals if isinstance(p, GenericServo)}
+```
+
 `skid_servo` covers every multibeam tilt servo: the skid-mounted servo (first and second generation), which tilts ±28 degrees, and the head-mounted servo, which tilts ±45 degrees. The allowed range of the connected servo is in `min_angle` and `max_angle`.
 
 ```python
