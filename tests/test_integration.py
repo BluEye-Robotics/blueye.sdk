@@ -96,11 +96,13 @@ class TestFunctionsWhenConnectedToDrone:
         polling_assert_with_timeout(real_drone.camera.get_bitrate, 3000000, 1)
 
     def test_camera_exposure(self, real_drone):
+        # Both values fit in one frame at 30 fps, which the 4K camera shortens longer shutter
+        # times to.
         _ = real_drone.camera.get_exposure()
-        real_drone.camera.set_exposure(1200)
-        polling_assert_with_timeout(real_drone.camera.get_exposure, 1200, 1)
-        real_drone.camera.set_exposure(1400)
-        polling_assert_with_timeout(real_drone.camera.get_exposure, 1400, 1)
+        real_drone.camera.set_exposure(100)
+        polling_assert_with_timeout(real_drone.camera.get_exposure, 100, 1)
+        real_drone.camera.set_exposure(200)
+        polling_assert_with_timeout(real_drone.camera.get_exposure, 200, 1)
 
     def test_camera_whitebalance(self, real_drone):
         _ = real_drone.camera.get_whitebalance()
