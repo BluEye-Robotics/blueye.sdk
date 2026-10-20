@@ -1915,6 +1915,171 @@ class Camera:
                 ) from None
         return scale_calibration(calibration, width, height)
 
+    def _verify_4k_camera(self, feature: str):
+        """Check that `feature` can be used on this camera.
+
+        The turbidity and color correction filters and digital pan, tilt and zoom exist on the
+        main camera of the X3 Ultra and X7, and the drone handles their messages from Blunux
+        5.0.0. A drone whose model is not known yet is let through, the drone then ignores the
+        message if it does not apply.
+
+        Raises:
+            RuntimeError: If this is the guestport camera, the drone runs a Blunux version older
+                than 5.0.0, or the drone is known to be neither an X3 Ultra nor an X7.
+        """
+        if self._is_guestport_camera:
+            raise RuntimeError(f"{feature} is only available on the main camera")
+        self._parent_drone._verify_required_blunux_version("5.0.0")
+        if self._parent_drone.is_jetson_platform() is False:
+            raise RuntimeError(f"{feature} is only available on the X3 Ultra and X7")
+
+    @staticmethod
+    def _verify_in_range(name: str, value: float, low: float, high: float):
+        if not low <= value <= high:
+            raise ValueError(f"{name} must be between {low} and {high}, got {value}")
+
+    def get_turbidity_filter(self) -> Optional[blueye.protocol.FilterMessage]:
+        """Get the turbidity filter settings of the main camera.
+
+        The turbidity filter runs contrast limited adaptive histogram equalisation (CLAHE) on
+        the video, which brings out detail in turbid water. Only available on the X3 Ultra and
+        X7.
+
+        The drone publishes `TurbidityFilterTel` when the settings change rather than at a fixed
+        rate. The value is the last change seen since connecting, and the drone is asked for its
+        current settings if there has been none.
+
+        Returns:
+            The filter settings with `enabled` and `intensity` (0..1), or None if the drone has
+            not reported any, as is the case for older models and the guestport camera.
+        """
+        if self._is_guestport_camera:
+            return None
+        tel = self._parent_drone.telemetry.get(blueye.protocol.TurbidityFilterTel)
+        if tel is None:
+            return None
+        return tel.turbidity_filter
+
+    def set_turbidity_filter(self, enabled: bool, intensity: float):
+        """Set the turbidity filter on the main camera.
+
+        See [`get_turbidity_filter`][blueye.sdk.camera.Camera.get_turbidity_filter] for what the
+        filter does.
+
+        Args:
+            enabled (bool): Whether the filter is enabled.
+            intensity (float): How strongly the filter is applied (0..1).
+
+        Raises:
+            ValueError: If the intensity is outside 0..1.
+            RuntimeError: If this is the guestport camera, the drone runs Blunux older than
+                5.0.0, or the drone is neither an X3 Ultra nor an X7.
+        """
+        self._verify_4k_camera("The turbidity filter")
+        self._verify_in_range("Turbidity filter intensity", intensity, 0.0, 1.0)
+        self._parent_drone._ctrl_client.set_turbidity_filter(enabled, intensity)
+
+    def get_color_correction(self) -> Optional[blueye.protocol.FilterMessage]:
+        """Get the color correction filter settings of the main camera.
+
+        The color correction filter restores the red and blue balance that water absorbs with
+        depth, driven by the depth and the scene. Only available on the X3 Ultra and X7.
+
+        The drone publishes `ColorCorrectionTel` when the settings change rather than at a fixed
+        rate. The value is the last change seen since connecting, and the drone is asked for its
+        current settings if there has been none.
+
+        Returns:
+            The filter settings with `enabled` and `intensity` (0..1), or None if the drone has
+            not reported any, as is the case for older models and the guestport camera.
+        """
+        if self._is_guestport_camera:
+            return None
+        tel = self._parent_drone.telemetry.get(blueye.protocol.ColorCorrectionTel)
+        if tel is None:
+            return None
+        return tel.color_correction_filter
+
+    def set_color_correction(self, enabled: bool, intensity: float):
+        """Set the color correction filter on the main camera.
+
+        See [`get_color_correction`][blueye.sdk.camera.Camera.get_color_correction] for what the
+        filter does.
+
+        Args:
+            enabled (bool): Whether the filter is enabled.
+            intensity (float): How much of the correction is applied, 0 leaves the image as is
+                and 1 applies the full correction.
+
+        Raises:
+            ValueError: If the intensity is outside 0..1.
+            RuntimeError: If this is the guestport camera, the drone runs Blunux older than
+                5.0.0, or the drone is neither an X3 Ultra nor an X7.
+        """
+        self._verify_4k_camera("Color correction")
+        self._verify_in_range("Color correction intensity", intensity, 0.0, 1.0)
+        self._parent_drone._ctrl_client.set_color_correction(enabled, intensity)
+
+    def get_pan_tilt_zoom(self) -> Optional[blueye.protocol.CameraPanTiltZoom]:
+        """Get the digital pan, tilt and zoom state of the main camera.
+
+        The 4K camera in the X3 Ultra and X7 can crop and scale its sensor image, which gives a
+        digital pan, tilt and zoom with no moving parts. The drone reports the state it has
+        applied in `CameraPanTiltZoomTel`, published when the state changes.
+
+        Returns:
+            The state with `pan` (-1..1), `tilt` (-1..1) and `zoom` (0..1), where 0 is centred and
+            not zoomed, or None if the drone has not reported any, as is the case for older
+            models and the guestport camera.
+        """
+        if self._is_guestport_camera:
+            return None
+        tel = self._parent_drone.telemetry.get(blueye.protocol.CameraPanTiltZoomTel)
+        if tel is None:
+            return None
+        return tel.camera_pan_tilt_zoom
+
+    def set_pan_tilt_zoom(
+        self,
+        pan: Optional[float] = None,
+        tilt: Optional[float] = None,
+        zoom: Optional[float] = None,
+    ):
+        """Set the digital pan, tilt and zoom of the main camera.
+
+        The three values are sent together in one message. An argument that is left out keeps
+        the value the drone last reported, or 0 if it has not reported one. Pan and tilt only
+        have an effect while zoomed in, since at zoom 0 the whole sensor image is already shown.
+
+        Laser dot tracking works on the full, unzoomed image, so the Blueye app resets pan, tilt
+        and zoom to 0 while a laser is modulated for tracking. Do the same before starting it.
+
+        Args:
+            pan (float, optional): Horizontal pan (-1..1), 0 is centred.
+            tilt (float, optional): Vertical tilt (-1..1), 0 is centred.
+            zoom (float, optional): Zoom level (0..1), 0 is no zoom.
+
+        Raises:
+            ValueError: If pan or tilt is outside -1..1, or zoom is outside 0..1.
+            RuntimeError: If this is the guestport camera, the drone runs Blunux older than
+                5.0.0, or the drone is neither an X3 Ultra nor an X7.
+        """
+        self._verify_4k_camera("Digital pan, tilt and zoom")
+        if pan is not None:
+            self._verify_in_range("Pan", pan, -1.0, 1.0)
+        if tilt is not None:
+            self._verify_in_range("Tilt", tilt, -1.0, 1.0)
+        if zoom is not None:
+            self._verify_in_range("Zoom", zoom, 0.0, 1.0)
+        if None in (pan, tilt, zoom):
+            current = self.get_pan_tilt_zoom()
+            if current is None:
+                current = blueye.protocol.CameraPanTiltZoom(pan=0.0, tilt=0.0, zoom=0.0)
+            pan = current.pan if pan is None else pan
+            tilt = current.tilt if tilt is None else tilt
+            zoom = current.zoom if zoom is None else zoom
+        self._parent_drone._ctrl_client.set_camera_pan_tilt_zoom(pan, tilt, zoom)
+
     def take_picture(self):
         """Take a still picture and store it locally on the drone.
 

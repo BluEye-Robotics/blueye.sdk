@@ -412,6 +412,43 @@ class CtrlClient(threading.Thread):
         msg = blueye.protocol.LaserCtrl(laser={"value": intensity})
         self._messages_to_send.put(msg)
 
+    def set_turbidity_filter(self, enabled: bool, intensity: float):
+        """Set the turbidity filter on the main camera.
+
+        Args:
+            enabled (bool): Whether the filter is enabled.
+            intensity (float): The filter intensity (0..1).
+        """
+        msg = blueye.protocol.SetTurbidityFilterCtrl(
+            turbidity_filter={"enabled": enabled, "intensity": intensity}
+        )
+        self._messages_to_send.put(msg)
+
+    def set_color_correction(self, enabled: bool, intensity: float):
+        """Set the color correction filter on the main camera.
+
+        Args:
+            enabled (bool): Whether the filter is enabled.
+            intensity (float): The filter intensity (0..1).
+        """
+        msg = blueye.protocol.SetColorCorrectionCtrl(
+            color_correction_filter={"enabled": enabled, "intensity": intensity}
+        )
+        self._messages_to_send.put(msg)
+
+    def set_camera_pan_tilt_zoom(self, pan: float, tilt: float, zoom: float):
+        """Set the digital pan, tilt and zoom of the main camera.
+
+        Args:
+            pan (float): Horizontal pan (-1..1), 0 is centre.
+            tilt (float): Vertical tilt (-1..1), 0 is centre.
+            zoom (float): Zoom level (0..1), 0 is no zoom.
+        """
+        msg = blueye.protocol.CameraPanTiltZoomCtrl(
+            camera_pan_tilt_zoom={"pan": pan, "tilt": tilt, "zoom": zoom}
+        )
+        self._messages_to_send.put(msg)
+
     def run_mission(self):
         msg = blueye.protocol.RunMissionCtrl()
         self._messages_to_send.put(msg)
