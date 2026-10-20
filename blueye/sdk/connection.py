@@ -5,6 +5,7 @@ import logging
 import platform
 import queue
 import threading
+import warnings
 import uuid
 from typing import Any, Callable, Dict, List, NamedTuple, Tuple
 
@@ -432,19 +433,39 @@ class CtrlClient(threading.Thread):
         msg = blueye.protocol.MultibeamServoCtrl(servo={"angle": angle})
         self._messages_to_send.put(msg)
 
-    def set_generic_servo_angle(
-        self, angle: float, gp_number: blueye.protocol.GuestPortNumber
+    def set_generic_servo_position(
+        self, position: float, gp_number: blueye.protocol.GuestPortNumber
     ) -> None:
-        """Set the angle of a generic servo on the guest port.
+        """Set the position of a generic servo on a guest port.
 
         Args:
-            angle (float): The angle in degrees.
+            position (float): The position (0..1), the drone clamps values outside that range.
             gp_number (blueye.protocol.GuestPortNumber): The guest port number.
         """
         msg = blueye.protocol.GenericServoCtrl(
-            servo={"value": angle, "guest_port_number": gp_number}
+            servo={"value": position, "guest_port_number": gp_number}
         )
         self._messages_to_send.put(msg)
+
+    def set_generic_servo_angle(
+        self, angle: float, gp_number: blueye.protocol.GuestPortNumber
+    ) -> None:
+        """Set the position of a generic servo from an angle in -90..90 degrees.
+
+        Deprecated, the protocol takes a 0..1 position and not an angle. Use
+        [`set_generic_servo_position`][blueye.sdk.connection.CtrlClient.set_generic_servo_position].
+
+        Args:
+            angle (float): The angle in degrees (-90..90), mapped linearly onto 0..1.
+            gp_number (blueye.protocol.GuestPortNumber): The guest port number.
+        """
+        warnings.warn(
+            "`CtrlClient.set_generic_servo_angle` is deprecated and will be removed in the next "
+            "major version. Use `CtrlClient.set_generic_servo_position()` instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        self.set_generic_servo_position((angle + 90) / 180, gp_number)
 
 
 class ReqRepClient(threading.Thread):
