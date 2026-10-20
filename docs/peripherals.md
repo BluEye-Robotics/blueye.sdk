@@ -134,13 +134,13 @@ drone.skid_servo.get_set_point()
 ```
 
 ## Supported devices
-| Device | SDK class | Attribute |
-| --- | --- | --- |
-| Blueye camera | [`GuestPortCamera`][blueye.sdk.guestport.GuestPortCamera] | `external_camera` |
-| Blueye light, Blueye light pair, Blue Robotics Lumen | [`GuestPortLight`][blueye.sdk.guestport.GuestPortLight] | `external_light` |
-| Blue Robotics Newton (fixed and detachable), Blueprint Lab Reach Alpha | [`Gripper`][blueye.sdk.guestport.Gripper] | `gripper` |
-| Blueye scaling laser, Laser Tools Sea Beam, Spot X laser scalers | [`Laser`][blueye.sdk.guestport.Laser] | `laser` |
-| Blueye generic servo | [`GenericServo`][blueye.sdk.guestport.GenericServo] | `servo` |
-| Blueye multibeam servo (V1 and V2), Blueye multibeam head servo | [`SkidServo`][blueye.sdk.guestport.SkidServo] | `skid_servo` |
+| Device                                                                 | SDK class                                                 | Attribute         |
+|------------------------------------------------------------------------|-----------------------------------------------------------|-------------------|
+| Blueye camera                                                          | [`GuestPortCamera`][blueye.sdk.guestport.GuestPortCamera] | `external_camera` |
+| Blueye light, Blueye light pair, Blue Robotics Lumen                   | [`GuestPortLight`][blueye.sdk.guestport.GuestPortLight]   | `external_light`  |
+| Blue Robotics Newton (fixed and detachable), Blueprint Lab Reach Alpha | [`Gripper`][blueye.sdk.guestport.Gripper]                 | `gripper`         |
+| Blueye scaling laser, Laser Tools Sea Beam, Spot X laser scalers       | [`Laser`][blueye.sdk.guestport.Laser]                     | `laser`           |
+| Blueye generic servo                                                   | [`GenericServo`][blueye.sdk.guestport.GenericServo]       | `servo`           |
+| Blueye multibeam servo (V1 and V2), Blueye multibeam head servo        | [`SkidServo`][blueye.sdk.guestport.SkidServo]             | `skid_servo`      |
 
 Every other device the drone discovers (sonars, DVLs, GNSS, sensors, USB storage) is listed in `peripherals` as a plain [`Peripheral`][blueye.sdk.guestport.Peripheral] with its name, port and device ID, and its data is read from the matching telemetry messages through `drone.telemetry.get()`.
