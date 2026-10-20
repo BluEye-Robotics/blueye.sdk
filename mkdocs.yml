@@ -96,6 +96,7 @@ nav:
   - Video:
       - "GStreamer for video streaming": "video/gstreamer-for-video-streaming.md"
       - "Downloading videos and images": "video/downloading.md"
+      - "Camera calibration": "video/camera-calibration.md"
   - Logs:
       - "Listing and downloading log files": "logs/listing-and-downloading.md"
       - "Visualize dive log data in Foxglove": "logs/foxglove-bez-to-mcap.md"
@@ -104,6 +105,7 @@ nav:
       - "Legacy log file format": "logs/legacy-log-file-format.md"
   - "Configure drone parameters": "configuration.md"
   - "Subscribing to a telemetry message": "telemetry-callback.md"
+  - "Drone model and hardware": "drone-info.md"
   - "Peripherals": "peripherals.md"
   - "Visualize live sensor data": "foxglove-bridge.md"
   - "Forwarding positioning to NMEA": "nmea-publisher.md"

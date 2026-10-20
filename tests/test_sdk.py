@@ -356,3 +356,54 @@ def test_connect_as_observer(mocked_drone_not_connected):
 def test_connect_as_observer_ignores_diconnect_other_clients(mocked_drone_not_connected):
     mocked_drone_not_connected.connect(disconnect_other_clients=True, connect_as_observer=True)
     mocked_drone_not_connected._req_rep_client.disconnect_client.assert_not_called()
+
+
+class TestDroneInfo:
+    @staticmethod
+    def _seed(mocked_drone, **drone_info):
+        drone_info_tel = bp.DroneInfoTel(drone_info=bp.DroneInfo(**drone_info))
+        mocked_drone._telemetry_watcher._state[bp.DroneInfoTel] = bp.DroneInfoTel.serialize(
+            drone_info_tel
+        )
+
+    def test_get_drone_info_returns_message(self, mocked_drone):
+        self._seed(mocked_drone, model=bp.Model.MODEL_X7, serial_number=b"BYEDP230000")
+        drone_info = mocked_drone.get_drone_info()
+        assert drone_info.model == bp.Model.MODEL_X7
+        assert drone_info.serial_number == b"BYEDP230000"
+
+    def test_getters_return_none_on_missing_telemetry(self, mocked_drone):
+        assert mocked_drone.get_drone_info() is None
+        assert mocked_drone.get_model() is None
+        assert mocked_drone.get_power_source() is None
+        assert mocked_drone.get_depth_sensor_type() is None
+        assert mocked_drone.is_jetson_platform() is None
+
+    def test_get_model(self, mocked_drone):
+        self._seed(mocked_drone, model=bp.Model.MODEL_X3_ULTRA)
+        assert mocked_drone.get_model() == bp.Model.MODEL_X3_ULTRA
+
+    def test_get_power_source(self, mocked_drone):
+        self._seed(mocked_drone, power_source=bp.PowerSource.POWER_SOURCE_PARALLEL_BATTERIES)
+        assert mocked_drone.get_power_source() == bp.PowerSource.POWER_SOURCE_PARALLEL_BATTERIES
+
+    def test_get_depth_sensor_type(self, mocked_drone):
+        self._seed(
+            mocked_drone, depth_sensor=bp.PressureSensorType.PRESSURE_SENSOR_TYPE_KELLER_PA7LD
+        )
+        assert (
+            mocked_drone.get_depth_sensor_type()
+            == bp.PressureSensorType.PRESSURE_SENSOR_TYPE_KELLER_PA7LD
+        )
+
+    @pytest.mark.parametrize("model", list(bp.Model), ids=lambda m: m.name)
+    def test_is_jetson_platform(self, mocked_drone, model):
+        self._seed(mocked_drone, model=model)
+        expected = model in (bp.Model.MODEL_X3_ULTRA, bp.Model.MODEL_X7)
+        assert mocked_drone.is_jetson_platform() is expected
+
+    def test_jetson_models_excludes_retired_prototype(self):
+        from blueye.sdk.constants import JETSON_MODELS
+
+        assert JETSON_MODELS == {bp.Model.MODEL_X3_ULTRA, bp.Model.MODEL_X7}
+        assert bp.Model.MODEL_NEXT not in JETSON_MODELS

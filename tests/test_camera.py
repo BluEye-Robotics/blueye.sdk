@@ -641,3 +641,139 @@ def test_configure_raises_runtime_error_on_unknown_enum(mocked_camera):
     with pytest.raises(RuntimeError, match="42"):
         with mocked_camera.configure() as params:
             params.framerate
+
+
+class TestCalibration:
+    CALIBRATION = bp.CameraCalibration(
+        fx=1000.0,
+        fy=1010.0,
+        cx=960.0,
+        cy=540.0,
+        distortion_coefficients=[-0.1, 0.05, 0.001, -0.002, 0.01],
+        image_width=1920,
+        image_height=1080,
+        is_default=True,
+    )
+
+    @staticmethod
+    def _seed(camera, **drone_info):
+        drone_info_tel = bp.DroneInfoTel(drone_info=bp.DroneInfo(**drone_info))
+        camera._parent_drone._telemetry_watcher._state[bp.DroneInfoTel] = bp.DroneInfoTel.serialize(
+            drone_info_tel
+        )
+
+    def _seed_calibration(self, camera):
+        self._seed(camera, model=bp.Model.MODEL_X7, main_camera_calibration=self.CALIBRATION)
+
+    def test_get_calibration_returns_published_calibration(self, mocked_camera):
+        self._seed_calibration(mocked_camera)
+        assert mocked_camera.get_calibration() == self.CALIBRATION
+
+    @staticmethod
+    def _no_telemetry(camera):
+        # The fixture runs Blunux 4.4, where a missing telemetry message is fetched from the
+        # drone with a request. Answer it with an empty payload, as a drone without the message
+        # would.
+        camera._parent_drone._req_rep_client.get_telemetry_msg.return_value = bp.GetTelemetryRep()
+
+    def test_get_calibration_is_none_on_missing_telemetry(self, mocked_camera):
+        self._no_telemetry(mocked_camera)
+        assert mocked_camera.get_calibration() is None
+
+    def test_get_calibration_is_none_when_not_published(self, mocked_camera):
+        self._seed(mocked_camera, model=bp.Model.MODEL_X3)
+        assert mocked_camera.get_calibration() is None
+
+    def test_get_calibration_is_none_for_guestport_camera(self, mocked_drone):
+        from blueye.sdk.camera import Camera
+
+        guestport_camera = Camera(mocked_drone, is_guestport_camera=True)
+        self._seed_calibration(guestport_camera)
+        assert guestport_camera.get_calibration() is None
+
+    def test_scaled_calibration_to_tuple(self, mocked_camera):
+        self._seed_calibration(mocked_camera)
+        scaled = mocked_camera.get_scaled_calibration((960, 540))
+        assert scaled.fx == 500.0
+        assert scaled.fy == 505.0
+        assert scaled.cx == 480.0
+        assert scaled.cy == 270.0
+        assert scaled.image_width == 960
+        assert scaled.image_height == 540
+        assert scaled.is_default is True
+        assert list(scaled.distortion_coefficients) == pytest.approx(
+            list(self.CALIBRATION.distortion_coefficients)
+        )
+
+    def test_scaled_calibration_to_resolution_enum(self, mocked_camera):
+        self._seed_calibration(mocked_camera)
+        scaled = mocked_camera.get_scaled_calibration(bp.Resolution.RESOLUTION_UHD_4K)
+        assert (scaled.image_width, scaled.image_height) == (3840, 2160)
+        assert scaled.fx == 2000.0
+        assert scaled.cy == 1080.0
+
+    def test_scaled_calibration_to_480p_uses_the_4_by_3_frame(self, mocked_camera):
+        # The drone streams 480p as 640x480, not as the 16:9 853x480 the calibration's aspect
+        # ratio would suggest, so fx and cx must scale with the 640 width.
+        self._seed_calibration(mocked_camera)
+        scaled = mocked_camera.get_scaled_calibration(bp.Resolution.RESOLUTION_VGA_480P)
+        assert (scaled.image_width, scaled.image_height) == (640, 480)
+        assert scaled.fx == pytest.approx(1000.0 * 640 / 1920)
+        assert scaled.cx == pytest.approx(960.0 * 640 / 1920)
+        assert scaled.fy == pytest.approx(1010.0 * 480 / 1080)
+        assert scaled.cy == pytest.approx(540.0 * 480 / 1080)
+
+    def test_scaled_calibration_defaults_to_480p_stream_resolution(self, mocked_camera):
+        self._seed_calibration(mocked_camera)
+        mocked_camera._parent_drone._req_rep_client.get_camera_parameters.return_value = (
+            bp.CameraParameters(stream_resolution=bp.Resolution.RESOLUTION_VGA_480P)
+        )
+        scaled = mocked_camera.get_scaled_calibration()
+        assert (scaled.image_width, scaled.image_height) == (640, 480)
+        assert scaled.fx == pytest.approx(1000.0 * 640 / 1920)
+
+    @pytest.mark.parametrize(
+        "resolution, size",
+        [
+            (bp.Resolution.RESOLUTION_VGA_480P, (640, 480)),
+            (bp.Resolution.RESOLUTION_HD_720P, (1280, 720)),
+            (bp.Resolution.RESOLUTION_FULLHD_1080P, (1920, 1080)),
+            (bp.Resolution.RESOLUTION_QHD_2K, (2560, 1440)),
+            (bp.Resolution.RESOLUTION_UHD_4K, (3840, 2160)),
+        ],
+        ids=lambda v: v.name if isinstance(v, bp.Resolution) else "",
+    )
+    def test_scaled_calibration_resolution_frame_sizes(self, mocked_camera, resolution, size):
+        self._seed_calibration(mocked_camera)
+        scaled = mocked_camera.get_scaled_calibration(resolution)
+        assert (scaled.image_width, scaled.image_height) == size
+
+    def test_scaled_calibration_defaults_to_stream_resolution(self, mocked_camera):
+        self._seed_calibration(mocked_camera)
+        mocked_camera._parent_drone._req_rep_client.get_camera_parameters.return_value = (
+            bp.CameraParameters(stream_resolution=bp.Resolution.RESOLUTION_HD_720P)
+        )
+        scaled = mocked_camera.get_scaled_calibration()
+        assert (scaled.image_width, scaled.image_height) == (1280, 720)
+        assert scaled.fx == pytest.approx(1000.0 * 1280 / 1920)
+
+    def test_scaled_calibration_keeps_the_published_calibration_untouched(self, mocked_camera):
+        self._seed_calibration(mocked_camera)
+        mocked_camera.get_scaled_calibration((960, 540))
+        assert mocked_camera.get_calibration() == self.CALIBRATION
+
+    def test_scaled_calibration_is_none_without_calibration(self, mocked_camera):
+        self._no_telemetry(mocked_camera)
+        assert mocked_camera.get_scaled_calibration((960, 540)) is None
+
+    @pytest.mark.parametrize("resolution", ["1080p", (1920,), (0, 1080), (1920, -1)])
+    def test_scaled_calibration_rejects_invalid_resolution(self, mocked_camera, resolution):
+        self._seed_calibration(mocked_camera)
+        with pytest.raises(ValueError):
+            mocked_camera.get_scaled_calibration(resolution)
+
+    def test_scale_calibration_requires_calibration_resolution(self):
+        from blueye.sdk.camera import scale_calibration
+
+        with pytest.raises(ValueError):
+            scale_calibration(bp.CameraCalibration(fx=1000.0), 1920, 1080)
