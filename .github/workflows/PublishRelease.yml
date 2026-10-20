@@ -19,8 +19,6 @@ jobs:
         uses: astral-sh/setup-uv@v5
         with:
          version: "0.7.11"
-      - name: Build HTTP documentation
-        run:  npx @redocly/cli build-docs http-api.yml --output docs/http-api.html
       - name: Build documentation for publishing
         run: uv run mkdocs build --no-directory-urls --site-dir blueye.sdk_docs
       - name: Build package (including documentation)
