@@ -9,7 +9,7 @@ import blueye.protocol
 import requests
 from packaging import version
 
-from .utils import deprecated_property
+from .utils import deprecated_property, describe_enum
 
 # Necessary to avoid cyclic imports
 if TYPE_CHECKING:
@@ -76,16 +76,6 @@ def scale_calibration(
         image_height=height,
         is_default=calibration.is_default,
     )
-
-
-def _describe_enum(value) -> str:
-    """Render a protocol enum value for an error message.
-
-    A drone running a newer Blunux than the SDK can report an enum value this build does not
-    know, and proto-plus surfaces those as a plain int rather than an enum member. Fall back to
-    the number so the error still says which value was rejected.
-    """
-    return getattr(value, "name", str(value))
 
 
 class Tilt:
@@ -957,7 +947,7 @@ class Camera:
                     return from_enum[value]
                 except KeyError:
                     raise RuntimeError(
-                        f"Drone reported an unsupported {field}: {_describe_enum(value)}"
+                        f"Drone reported an unsupported {field}: {describe_enum(value)}"
                     ) from None
             return value
 
@@ -1548,7 +1538,7 @@ class Camera:
         except KeyError:
             raise RuntimeError(
                 "Drone reported an unsupported resolution: "
-                f"{_describe_enum(self._camera_parameters.resolution)}"
+                f"{describe_enum(self._camera_parameters.resolution)}"
             ) from None
 
     def set_resolution(self, resolution: int):
@@ -1686,7 +1676,7 @@ class Camera:
         except KeyError:
             raise RuntimeError(
                 "Drone reported an unsupported framerate: "
-                f"{_describe_enum(self._camera_parameters.framerate)}"
+                f"{describe_enum(self._camera_parameters.framerate)}"
             ) from None
 
     def set_framerate(self, framerate: int):
@@ -1899,7 +1889,7 @@ class Camera:
                 width, height = _RESOLUTION_TO_SIZE[resolution]
             except KeyError:
                 raise RuntimeError(
-                    f"Drone reported an unsupported resolution: {_describe_enum(resolution)}"
+                    f"Drone reported an unsupported resolution: {describe_enum(resolution)}"
                 ) from None
         else:
             try:

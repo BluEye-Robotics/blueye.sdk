@@ -31,7 +31,12 @@ from .cv_models import CvModels
 from .logs import LegacyLogs, Logs
 from .mission import Mission
 from .motion import Motion
-from .utils import deprecated_property, deserialize_any_to_message, is_scalar_type
+from .utils import (
+    deprecated_property,
+    describe_enum,
+    deserialize_any_to_message,
+    is_scalar_type,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -150,7 +155,9 @@ class Telemetry:
             callback (Callable[[str, proto.message.Message], None]):
                 The callback function. It should be minimal and return as fast as possible to not
                 block the telemetry communication. It is called with two arguments, the message
-                type name and the message object.
+                type name and the message object. An exception raised by the callback is logged
+                and otherwise ignored, so it does not stop the telemetry thread or the other
+                callbacks.
             raw (bool, optional):
                 Pass the raw data instead of the deserialized message to the callback function.
             **kwargs:
@@ -332,7 +339,9 @@ class Drone:
 
         drone._last_notification_timestamp = msg.notification.timestamp
 
-        log_msg = f"{msg.notification.timestamp.astimezone()} - {notification_type.name}"
+        # A drone running a newer Blunux than blueye.protocol can send a notification type this
+        # build does not know; proto-plus hands those over as a plain int without a `name`.
+        log_msg = f"{msg.notification.timestamp.astimezone()} - {describe_enum(notification_type)}"
         if notification_msg.type_url != "":
             _, unpacked_msg = deserialize_any_to_message(notification_msg)
             if is_scalar_type(unpacked_msg):
