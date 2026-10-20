@@ -589,6 +589,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../video/camera-calibration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Camera calibration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -851,6 +879,33 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../../drone-info/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Drone model and hardware
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../../peripherals/" class="md-nav__link">
         
   
@@ -1077,10 +1132,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_16" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_17" checked>
         
           
-          <label class="md-nav__link" for="__nav_16" id="__nav_16_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_17" id="__nav_17_label" tabindex="0">
             
   
   
@@ -1098,8 +1153,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_16_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_16">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_17_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_17">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1294,6 +1349,17 @@
   
     <nav class="md-nav" aria-label=" constants">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#blueye.sdk.constants.JETSON_MODELS" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;JETSON_MODELS
+      
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#blueye.sdk.constants.WaterDensities" class="md-nav__link">
@@ -1531,10 +1597,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_16_13" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_17_13" >
         
           
-          <label class="md-nav__link" for="__nav_16_13" id="__nav_16_13_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_17_13" id="__nav_17_13_label" tabindex="0">
             
   
   
@@ -1552,8 +1618,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_16_13_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_16_13">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_17_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_17_13">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1811,6 +1877,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#blueye.sdk.constants.JETSON_MODELS" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;JETSON_MODELS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#blueye.sdk.constants.WaterDensities" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1877,6 +1954,45 @@
 
 
 
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="blueye.sdk.constants.JETSON_MODELS" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">JETSON_MODELS</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-module-attribute"><code>module-attribute</code></small>
+  </span>
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">JETSON_MODELS</span> <span class="o">=</span> <span class="n"><span title="frozenset">frozenset</span></span><span class="p">({</span><span class="n"><a class="autorefs autorefs-internal" title="            MODEL_X3_ULTRA
+
+
+  
+      class-attribute
+      instance-attribute
+   (blueye.protocol.Model.MODEL_X3_ULTRA)" href="../../protocol/message_formats/#blueye.protocol.types.message_formats.Model.MODEL_X3_ULTRA">MODEL_X3_ULTRA</a></span><span class="p">,</span> <span class="n"><a class="autorefs autorefs-internal" title="            MODEL_X7
+
+
+  
+      class-attribute
+      instance-attribute
+   (blueye.protocol.Model.MODEL_X7)" href="../../protocol/message_formats/#blueye.protocol.types.message_formats.Model.MODEL_X7">MODEL_X7</a></span><span class="p">})</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Drone models built on the NVIDIA Jetson platform.</p>
+<p>These models have the 4K camera, which differs from the camera in the older models in the
+controls it offers (no hue control, 60 fps support, main camera calibration published in
+<code>DroneInfoTel</code>). <code>MODEL_NEXT</code> was a retired prototype and is not included.</p>
+
+    </div>
+
+</div>
 
 
 <div class="doc doc-object doc-class">
