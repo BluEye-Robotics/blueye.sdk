@@ -34,7 +34,13 @@ class WatchdogPublisher(threading.Thread):
         self._exit_flag = threading.Event()
 
     def run(self):
-        """Run the watchdog publisher thread."""
+        """Run the watchdog publisher thread.
+
+        The first pet goes out after a second, not at once. The control socket that carries the
+        zero setpoint sent on connect has only just been opened, and a PUB socket can drop what
+        it is given before its subscription is set up, so the delay gives the zero a head
+        start. The drone pets its own watchdog on a control handover anyway.
+        """
         duration = 0
         WATCHDOG_DELAY = 1
         while not self._exit_flag.wait(WATCHDOG_DELAY):

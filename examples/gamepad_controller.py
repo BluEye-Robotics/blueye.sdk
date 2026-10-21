@@ -78,14 +78,15 @@ class JoystickHandler:
 
 
 if __name__ == "__main__":
-    try:
-        myDrone = Drone()
+    # Leaving the `with` block disconnects, which zeroes the thrusters first. That holds for
+    # Ctrl-C and for any exception, so the drone is never left running the last stick position.
+    with Drone() as myDrone:
         handler = JoystickHandler(myDrone)
-        while True:
-            events = inputs.get_gamepad()
-            for event in events:
-                if event.code in handler.event_to_function_map:
-                    handler.event_to_function_map[event.code](event.state)
-
-    except KeyboardInterrupt:
-        pass
+        try:
+            while True:
+                events = inputs.get_gamepad()
+                for event in events:
+                    if event.code in handler.event_to_function_map:
+                        handler.event_to_function_map[event.code](event.state)
+        except KeyboardInterrupt:
+            pass
