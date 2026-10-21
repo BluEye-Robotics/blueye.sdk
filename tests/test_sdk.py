@@ -74,7 +74,7 @@ def test_zmq_connection_error(mocked_drone):
 
 def test_feature_list(mocked_drone):
     mocked_drone._update_drone_info()
-    assert mocked_drone.features == ["lasers", "harpoon"]
+    assert mocked_drone.features == ["tilt"]
 
 
 def test_feature_list_is_empty_on_old_versions(mocked_drone, requests_mock):
@@ -407,3 +407,49 @@ class TestDroneInfo:
 
         assert JETSON_MODELS == {bp.Model.MODEL_X3_ULTRA, bp.Model.MODEL_X7}
         assert bp.Model.MODEL_NEXT not in JETSON_MODELS
+
+
+class TestMockedDroneX7:
+    """The X7 fixture models what the unit tests need from the newest drone."""
+
+    def test_http_drone_info(self, mocked_drone_x7):
+        assert mocked_drone_x7.software_version_short == "5.0.0"
+        assert mocked_drone_x7.features == ["gpdrone"]
+        assert mocked_drone_x7.serial_number == "BYEDP260000"
+
+    def test_model(self, mocked_drone_x7):
+        assert mocked_drone_x7.get_model() == bp.Model.MODEL_X7
+        assert mocked_drone_x7.is_jetson_platform() is True
+        assert mocked_drone_x7.get_power_source() == bp.PowerSource.POWER_SOURCE_PARALLEL_BATTERIES
+
+    def test_two_battery_packs(self, mocked_drone_x7):
+        battery_tel = mocked_drone_x7.telemetry.get(bp.BatteryTel)
+        assert battery_tel.battery.level == pytest.approx(0.8)
+        assert battery_tel.second_battery.level == pytest.approx(0.7)
+
+    def test_six_guest_ports(self, mocked_drone_x7):
+        gp = mocked_drone_x7.get_drone_info().gp
+        assert (
+            gp.gp1.device_list.devices[0].device_id
+            == bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_GNSS_DEVICE
+        )
+        assert (
+            gp.gp2.device_list.devices[0].device_id
+            == bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_WATERLINKED_DVL_A50
+        )
+        assert (
+            gp.gp4.device_list.devices[0].device_id
+            == bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_LIGHT
+        )
+        for port in (gp.gp3, gp.gp5, gp.gp6):
+            assert port.error == bp.GuestPortError.GUEST_PORT_ERROR_NOT_CONNECTED
+
+    def test_peripherals_discovered_on_connect(self, mocked_drone_x7):
+        assert [p.port_number for p in mocked_drone_x7.peripherals] == [
+            bp.GuestPortNumber.GUEST_PORT_NUMBER_PORT_1,
+            bp.GuestPortNumber.GUEST_PORT_NUMBER_PORT_2,
+            bp.GuestPortNumber.GUEST_PORT_NUMBER_PORT_4,
+        ]
+        from blueye.sdk.guestport import GuestPortLight
+
+        assert isinstance(mocked_drone_x7.external_light, GuestPortLight)
