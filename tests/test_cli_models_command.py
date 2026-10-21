@@ -81,7 +81,7 @@ class TestActions:
 
     def test_rescan(self, cv_models):
         assert main(["models", "rescan"]) == 0
-        cv_models.rescan.assert_called_once()
+        cv_models.rescan.assert_called_once_with()
 
     def test_upload(self, cv_models, tmp_path, capsys):
         package = tmp_path / "pkg.zip"
@@ -159,3 +159,56 @@ class TestInteractive:
 
         assert main(["models"]) == 0
         cv_models.set_enabled.assert_called_once_with("cod-detector", True, timeout=5.0)
+
+
+class TestConnection:
+    """Changing commands connect as an observer so the rescan goes out; reads stay on HTTP."""
+
+    @pytest.mark.parametrize(
+        "argv",
+        [
+            ["models", "enable", "cod-detector"],
+            ["models", "disable", "cod-detector"],
+            ["models", "set-device", "cod-detector", "cuda"],
+            ["models", "set-hz", "cod-detector", "5"],
+            ["models", "delete", "cod-detector", "--force"],
+            ["models", "rescan"],
+        ],
+    )
+    def test_changes_connect_as_observer_and_disconnect(self, cv_models, argv):
+        assert main(argv) == 0
+        kwargs = cv_models._drone_cls.call_args.kwargs
+        assert kwargs["connect_as_observer"] is True
+        assert "auto_connect" not in kwargs
+        cv_models._drone_cls.return_value.disconnect.assert_called_once_with()
+
+    def test_upload_connects_as_observer(self, cv_models, tmp_path):
+        package = tmp_path / "pkg.zip"
+        package.write_bytes(b"zip")
+        assert main(["models", "upload", str(package)]) == 0
+        assert cv_models._drone_cls.call_args.kwargs["connect_as_observer"] is True
+        cv_models._drone_cls.return_value.disconnect.assert_called_once_with()
+
+    @pytest.mark.parametrize(
+        "argv",
+        [
+            ["models", "list"],
+            ["models", "download", "cod-detector"],
+            ["models", "warmup", "cod-detector"],
+        ],
+    )
+    def test_reads_and_warmup_stay_on_http(self, cv_models, argv, tmp_path):
+        cv_models.download.return_value = tmp_path / "cod-detector.zip"
+        assert main(argv) == 0
+        assert cv_models._drone_cls.call_args.kwargs["auto_connect"] is False
+        cv_models._drone_cls.return_value.disconnect.assert_not_called()
+
+    def test_disconnects_when_the_change_fails(self, cv_models):
+        cv_models.set_enabled.side_effect = requests.exceptions.HTTPError("400 nope")
+        assert main(["models", "enable", "cod-detector"]) == 1
+        cv_models._drone_cls.return_value.disconnect.assert_called_once_with()
+
+    def test_unreachable_drone_is_a_friendly_error(self, cv_models, capsys):
+        cv_models._drone_cls.side_effect = ConnectionError("no drone")
+        assert main(["models", "rescan"]) == 1
+        assert "Could not reach the drone" in capsys.readouterr().err
