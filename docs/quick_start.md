@@ -133,7 +133,14 @@ uv pip install ipython
 ```
 By instantiating a Drone object and using the completion key (normally the `tab-key ↹`), you can get an interactive list of
 the available methods on the drone, making it easy to try setting and getting the different values.
-![`iPython`](https://blueyenostorage.blob.core.windows.net/sdkimages/ipython-exploration.gif)
+For example, create a drone in IPython:
+
+```python
+from blueye.sdk import Drone
+d = Drone()
+```
+
+Type `d.motion.set_` and press Tab to list the motion setters, such as `set_surge`.
 ///
 
 ### Watching the video stream
