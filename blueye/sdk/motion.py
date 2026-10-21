@@ -236,6 +236,20 @@ class Motion:
             self._current_thruster_setpoints["pitch"] = pitch_value
             self._send_motion_input_message()
 
+    def zero_setpoints(self):
+        """Set every setpoint to zero and send it.
+
+        Covers surge, sway, heave, yaw, roll and pitch as well as slow and boost. The drone keeps
+        the last motion input it received until a new one arrives or its watchdog times out, so
+        this is what [`disconnect`][blueye.sdk.drone.Drone.disconnect] sends before letting go.
+        """
+        with self.thruster_lock:
+            for axis in self._current_thruster_setpoints:
+                self._current_thruster_setpoints[axis] = 0
+            for gain in self._current_boost_setpoints:
+                self._current_boost_setpoints[gain] = 0
+            self._send_motion_input_message()
+
     def send_thruster_setpoint(self, surge, sway, heave, yaw, *, roll=0.0, pitch=0.0):
         """Control the thrusters of the drone
 

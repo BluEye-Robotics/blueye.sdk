@@ -165,6 +165,8 @@ def _mock_drone_replies(drone: blueye.sdk.Drone):
     drone._req_rep_client.connect_client.return_value = bp.ConnectClientRep(
         client_id=1, client_id_in_control=1
     )
+    # A telemetry message the drone has not published comes back empty, see Telemetry.get
+    drone._req_rep_client.get_telemetry_msg.return_value = bp.GetTelemetryRep()
 
 
 def _seed_telemetry(state: dict, msg):

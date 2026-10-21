@@ -4,6 +4,7 @@ from unittest.mock import Mock, NonCallableMock, PropertyMock
 
 import blueye.protocol as bp
 import pytest
+from unittest.mock import call
 import requests
 from freezegun import freeze_time
 
@@ -572,3 +573,212 @@ class TestFailedConnect:
             drone.connect()
         with pytest.raises(ConnectionError):
             drone.disconnect()
+
+
+class TestZeroThrustOnDisconnect:
+    """The drone keeps the last motion input until a new one arrives, so leaving sends zeros.
+
+    The fixture's own connect() ran before its connect reply was mocked, so the tests that need
+    control connect again first. After disconnect() the client attributes are placeholders, so
+    the mocks are taken before.
+    """
+
+    def test_connect_zeroes_every_setpoint(self, mocked_drone):
+        mocked_drone.connect()
+        assert mocked_drone.in_control is True
+        mocked_drone._ctrl_client.set_motion_input.assert_called_with(
+            0, 0, 0, 0, 0, 0, roll=0, pitch=0
+        )
+
+    def test_connect_zeroes_and_flushes_before_the_first_pet(
+        self,
+        mocked_drone_not_connected,
+        mocked_req_rep_client,
+        mocked_ctrl_client,
+        mocked_watchdog_publisher,
+    ):
+        drone = mocked_drone_not_connected
+        mocked_req_rep_client.return_value.connect_client.return_value = bp.ConnectClientRep(
+            client_id=1, client_id_in_control=1
+        )
+        ctrl = mocked_ctrl_client.return_value
+
+        def start():
+            ctrl.set_motion_input.assert_called_once_with(0, 0, 0, 0, 0, 0, roll=0, pitch=0)
+            ctrl.flush.assert_called_once()
+
+        mocked_watchdog_publisher.return_value.start.side_effect = start
+        drone.connect()
+        mocked_watchdog_publisher.return_value.start.assert_called_once()
+
+    @staticmethod
+    def _drone_reports_controller(drone, client_id_in_control):
+        """Answer the fresh request disconnect() makes on Blunux 3.3+ with this controller."""
+        drone.software_version_short = "5.0.0"
+        tel = bp.ConnectedClientsTel(client_id_in_control=client_id_in_control)
+        drone._req_rep_client.get_telemetry_msg.return_value = bp.GetTelemetryRep(
+            payload={
+                "type_url": "type.googleapis.com/blueye.protocol.ConnectedClientsTel",
+                "value": bp.ConnectedClientsTel.serialize(tel),
+            }
+        )
+
+    def test_disconnect_zeroes_when_promoted_to_control_meanwhile(self, mocked_drone):
+        # Connected behind another client, then that client left and the drone promoted us
+        mocked_drone._req_rep_client.connect_client.return_value = bp.ConnectClientRep(
+            client_id=2, client_id_in_control=1
+        )
+        mocked_drone.connect()
+        assert mocked_drone.in_control is False
+        ctrl = mocked_drone._ctrl_client
+        ctrl.set_motion_input.assert_not_called()
+        self._drone_reports_controller(mocked_drone, 2)
+        mocked_drone.disconnect()
+        ctrl.set_motion_input.assert_called_once_with(0, 0, 0, 0, 0, 0, roll=0, pitch=0)
+
+    def test_disconnect_zeroes_when_the_flag_says_so_and_the_report_says_nobody(self, mocked_drone):
+        # For a moment after a handover the drone reports nobody in control
+        mocked_drone.connect()
+        assert mocked_drone.in_control is True
+        ctrl = mocked_drone._ctrl_client
+        ctrl.set_motion_input.reset_mock()
+        self._drone_reports_controller(mocked_drone, 0)
+        mocked_drone.disconnect()
+        ctrl.set_motion_input.assert_called_once_with(0, 0, 0, 0, 0, 0, roll=0, pitch=0)
+
+    def test_displaced_client_does_not_zero_the_new_pilot(self, mocked_drone):
+        # We had control, another client took it. Motion input carries no client id, so a zero
+        # from us would cut the new pilot's input
+        mocked_drone.connect()
+        assert mocked_drone.in_control is True
+        ctrl = mocked_drone._ctrl_client
+        ctrl.set_motion_input.reset_mock()
+        self._drone_reports_controller(mocked_drone, 5)
+        mocked_drone.disconnect()
+        ctrl.set_motion_input.assert_not_called()
+
+    def test_disconnect_falls_back_to_the_flag_without_a_report(self, mocked_drone):
+        mocked_drone.connect()
+        mocked_drone.software_version_short = "5.0.0"
+        ctrl = mocked_drone._ctrl_client
+        ctrl.set_motion_input.reset_mock()
+        mocked_drone._req_rep_client.get_telemetry_msg.side_effect = bp.exceptions.ResponseTimeout
+        mocked_drone.disconnect()
+        ctrl.set_motion_input.assert_called_once_with(0, 0, 0, 0, 0, 0, roll=0, pitch=0)
+
+    def test_old_drones_use_the_cached_report(self, mocked_drone):
+        # Blunux before 3.3 cannot be asked for a telemetry message, the cache is all there is
+        mocked_drone.connect()
+        assert mocked_drone.software_version_short == "3.2.62"
+        ctrl = mocked_drone._ctrl_client
+        req_rep = mocked_drone._req_rep_client
+        ctrl.set_motion_input.reset_mock()
+        mocked_drone._telemetry_watcher._state[bp.ConnectedClientsTel] = (
+            bp.ConnectedClientsTel.serialize(bp.ConnectedClientsTel(client_id_in_control=5))
+        )
+        mocked_drone.disconnect()
+        ctrl.set_motion_input.assert_not_called()
+        req_rep.get_telemetry_msg.assert_not_called()
+
+    def test_connect_zeroes_again_at_the_end(self, mocked_drone):
+        # Once before the watchdog thread starts, once after the setup, see connect()
+        ctrl = mocked_drone._ctrl_client
+        ctrl.set_motion_input.reset_mock()
+        mocked_drone.connect()
+        zeros = [
+            c
+            for c in ctrl.set_motion_input.call_args_list
+            if c == call(0, 0, 0, 0, 0, 0, roll=0, pitch=0)
+        ]
+        assert len(zeros) == 2
+
+    def test_disconnect_in_control_zeroes_flushes_then_leaves(self, mocked_drone):
+        mocked_drone.connect()
+        ctrl = mocked_drone._ctrl_client
+        req_rep = mocked_drone._req_rep_client
+        ctrl.set_motion_input.reset_mock()
+        ctrl.flush.reset_mock()  # connect() flushed its own zero setpoint
+        mocked_drone.motion.set_surge(0.7)
+        assert mocked_drone.in_control is True
+
+        def disconnect_client(client_id):
+            ctrl.set_motion_input.assert_called_with(0, 0, 0, 0, 0, 0, roll=0, pitch=0)
+            ctrl.flush.assert_called_once_with(1.0)
+            return bp.DisconnectClientRep()
+
+        req_rep.disconnect_client.side_effect = disconnect_client
+        mocked_drone.disconnect()
+        req_rep.disconnect_client.assert_called_once_with(1)
+        assert mocked_drone.connected is False
+
+    def test_disconnect_passes_the_flush_timeout(self, mocked_drone):
+        mocked_drone.connect()
+        ctrl = mocked_drone._ctrl_client
+        ctrl.flush.reset_mock()  # connect() flushed its own zero setpoint
+        mocked_drone.disconnect(timeout=2.5)
+        ctrl.flush.assert_called_once_with(2.5)
+
+    def test_disconnect_warns_when_the_zero_setpoint_did_not_go_out(self, mocked_drone, caplog):
+        mocked_drone.connect()
+        mocked_drone._ctrl_client.flush.return_value = False
+        with caplog.at_level("WARNING", logger="blueye.sdk.drone"):
+            mocked_drone.disconnect()
+        assert "did not go out" in caplog.text
+
+    def test_observer_disconnect_sends_no_motion_input(
+        self, mocked_drone_not_connected, mocked_req_rep_client, mocked_ctrl_client
+    ):
+        drone = mocked_drone_not_connected
+        mocked_req_rep_client.return_value.connect_client.return_value = bp.ConnectClientRep(
+            client_id=2, client_id_in_control=1
+        )
+        drone.connect(connect_as_observer=True)
+        assert drone.in_control is False
+        ctrl = mocked_ctrl_client.return_value
+        ctrl.set_motion_input.assert_not_called()
+        drone.disconnect()
+        ctrl.set_motion_input.assert_not_called()
+        ctrl.flush.assert_not_called()
+
+
+class TestContextManagerAndExit:
+    def test_with_block_disconnects(self, mocked_drone, mocker):
+        disconnect = mocker.spy(mocked_drone, "disconnect")
+        with mocked_drone as drone:
+            assert drone is mocked_drone
+            disconnect.assert_not_called()
+        disconnect.assert_called_once()
+        assert mocked_drone.connected is False
+
+    def test_with_block_disconnects_on_an_exception(self, mocked_drone, mocker):
+        disconnect = mocker.spy(mocked_drone, "disconnect")
+        with pytest.raises(ValueError):
+            with mocked_drone:
+                raise ValueError("boom")
+        disconnect.assert_called_once()
+
+    def test_with_block_on_a_disconnected_drone_does_nothing(self, mocked_drone, mocker):
+        mocked_drone.disconnect()
+        disconnect = mocker.spy(mocked_drone, "disconnect")
+        with mocked_drone:
+            pass
+        disconnect.assert_not_called()
+
+    def test_exit_hook_disconnects_connected_drones_only(self, mocked_drone, mocker):
+        from blueye.sdk.drone import _connected_drones, _disconnect_at_exit
+
+        assert mocked_drone in _connected_drones
+        disconnect = mocker.spy(mocked_drone, "disconnect")
+        _disconnect_at_exit()
+        disconnect.assert_called_once()
+        assert mocked_drone not in _connected_drones
+        _disconnect_at_exit()
+        disconnect.assert_called_once()
+
+    def test_exit_hook_survives_a_failing_disconnect(self, mocked_drone, mocker, caplog):
+        from blueye.sdk.drone import _disconnect_at_exit
+
+        mocker.patch.object(mocked_drone, "disconnect", side_effect=RuntimeError("gone"))
+        with caplog.at_level("WARNING", logger="blueye.sdk.drone"):
+            _disconnect_at_exit()
+        assert "Could not disconnect" in caplog.text
