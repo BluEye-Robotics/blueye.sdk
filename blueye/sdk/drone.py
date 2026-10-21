@@ -505,8 +505,27 @@ class Drone:
         self._telemetry_watcher.start()
         self._req_rep_client.start()
         self._ctrl_client.start()
-        self._watchdog_publisher.start()
 
+        # Anything that fails from here on must not leave the threads behind. A watchdog thread
+        # that outlives a failed connect() would pet the drone as client 0, which the drone takes
+        # as the client in control whenever nobody is, and that keeps its failsafe from tripping.
+        try:
+            self._connect(
+                client_info, disconnect_other_clients, connect_as_observer, log_notifications
+            )
+        except BaseException:
+            self._stop_clients()
+            raise
+        logger.debug("Connected in {:.2f} seconds".format(time.time() - time_connection_start))
+
+    def _connect(
+        self,
+        client_info: blueye.protocol.ClientInfo,
+        disconnect_other_clients: bool,
+        connect_as_observer: bool,
+        log_notifications: bool,
+    ):
+        """The part of connect() that runs with the threads up, see there."""
         try:
             self.ping()
             connect_resp = self._req_rep_client.connect_client(
@@ -520,6 +539,8 @@ class Drone:
         self.client_id = connect_resp.client_id
         self.in_control = connect_resp.client_id == connect_resp.client_id_in_control
         self.connected = True
+        # The watchdog pets with our client id, so it starts once the drone has handed one out
+        self._watchdog_publisher.start()
         if disconnect_other_clients and not self.in_control and not connect_as_observer:
             self.take_control()
 
@@ -563,22 +584,17 @@ class Drone:
             self.config.set_drone_time(current_time)
             logger.debug("Disabling thrusters")
             self.motion.send_thruster_setpoint(0, 0, 0, 0)
-        logger.debug("Connected in {:.2f} seconds".format(time.time() - time_connection_start))
 
-    def disconnect(self):
-        """Disconnects the connection, allowing another client to take control of the drone."""
+    def _stop_clients(self):
+        """Stop the connection threads and leave clients that refuse to be used in their place."""
         self.connected = False
+        self.in_control = False
         if self._drone_info_cb_id is not None:
             self.telemetry.remove_msg_callback(self._drone_info_cb_id)
             self._drone_info_cb_id = None
         # Before the telemetry client goes away, since _reset_peripherals runs after that
         self._track_generic_servos(False)
-        try:
-            self._req_rep_client.disconnect_client(self.client_id)
-        except blueye.protocol.exceptions.ResponseTimeout:
-            # If there's no response the connection is likely already closed, so we can just
-            # continue to stop threads and disconnect
-            pass
+
         self._watchdog_publisher.stop()
         self._telemetry_watcher.stop()
         self._req_rep_client.stop()
@@ -591,6 +607,17 @@ class Drone:
 
         # The peripherals belong to the connection that discovered them
         self._reset_peripherals(reported=False)
+
+    def disconnect(self):
+        """Disconnects the connection, allowing another client to take control of the drone."""
+        self.connected = False
+        try:
+            self._req_rep_client.disconnect_client(self.client_id)
+        except blueye.protocol.exceptions.ResponseTimeout:
+            # If there's no response the connection is likely already closed, so we can just
+            # continue to stop threads and disconnect
+            pass
+        self._stop_clients()
 
     def get_connected_clients(self) -> Optional[List[blueye.protocol.ConnectedClient]]:
         """Get a list of connected clients.
