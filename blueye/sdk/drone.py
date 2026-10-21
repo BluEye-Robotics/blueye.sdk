@@ -280,6 +280,13 @@ class Drone:
         """Multibeam (skid) servo on a guest port, or `None` if none has been discovered."""
         self._guest_ports_known = False
         self._drone_info_cb_id: Optional[str] = None
+        # The drone publishes one GenericServoTel per guest port under the same message type, so
+        # the telemetry store only keeps the last one. This keeps the latest per port, filled by
+        # a callback that is registered while a generic servo is discovered.
+        self._generic_servo_tel: Dict[
+            blueye.protocol.GuestPortNumber, blueye.protocol.GenericServoTel
+        ] = {}
+        self._generic_servo_cb_id: Optional[str] = None
 
         if auto_connect is True:
             self.connect(
@@ -370,6 +377,22 @@ class Drone:
         self.laser = None
         self.servo = None
         self.skid_servo = None
+        self._track_generic_servos(False)
+
+    @staticmethod
+    def _generic_servo_callback(msg_type: str, msg: blueye.protocol.GenericServoTel, drone: Drone):
+        drone._generic_servo_tel[msg.servo.guest_port_number] = msg
+
+    def _track_generic_servos(self, present: bool):
+        """Keep the per-port servo telemetry callback registered only while a servo is present."""
+        if present and self._generic_servo_cb_id is None:
+            self._generic_servo_cb_id = self.telemetry.add_msg_callback(
+                [blueye.protocol.GenericServoTel], Drone._generic_servo_callback, False, drone=self
+            )
+        elif not present and self._generic_servo_cb_id is not None:
+            self.telemetry.remove_msg_callback(self._generic_servo_cb_id)
+            self._generic_servo_cb_id = None
+            self._generic_servo_tel = {}
 
     @staticmethod
     def notification_callback(msg_type: str, msg: blueye.protocol.NotificationTel, drone: Drone):
@@ -433,6 +456,7 @@ class Drone:
         self._guest_ports = guest_ports
         self.peripherals = peripherals
         self._guest_ports_known = True
+        self._track_generic_servos(any(isinstance(p, GenericServo) for p in peripherals))
 
     def connect(
         self,
@@ -547,6 +571,8 @@ class Drone:
         if self._drone_info_cb_id is not None:
             self.telemetry.remove_msg_callback(self._drone_info_cb_id)
             self._drone_info_cb_id = None
+        # Before the telemetry client goes away, since _reset_peripherals runs after that
+        self._track_generic_servos(False)
         try:
             self._req_rep_client.disconnect_client(self.client_id)
         except blueye.protocol.exceptions.ResponseTimeout:
