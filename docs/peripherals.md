@@ -100,6 +100,22 @@ intensity: float = drone.laser.get_intensity()
 drone.laser.set_intensity(0.5)
 ```
 
+### Laser dot tracking
+On the X3 Ultra and X7 the drone can track the laser dots in the main camera image. [`enable_tracking`][blueye.sdk.guestport.Laser.enable_tracking] modulates the laser at 5 Hz, and the drone then reports the dot positions, their distance in pixels and the estimated distance to the subject in `LaserTel`. The drone overwrites the modulation flag with every intensity command, so `set_intensity` keeps the reported flag unless you pass `modulated` yourself. Tracking works on the full camera image, so `enable_tracking(True)` also resets the digital pan, tilt and zoom to 0, as the Blueye app does.
+
+```python
+drone.laser.enable_tracking(True)
+
+detection = drone.laser.get_detection()  # blueye.protocol.LaserDetection, or None
+if detection is not None and detection.detected:
+    print(f"{detection.estimated_distance:.2f} m, dots {detection.pixel_distance:.0f} px apart")
+
+# Or just the distance, None while the dots are not detected
+print(drone.laser.get_estimated_distance())
+
+drone.laser.enable_tracking(False)
+```
+
 ## Gripper
 If the drone has a gripper attached, the `Drone` class will have a `gripper` attribute that is a [`Gripper`][blueye.sdk.guestport.Gripper] object. This object can be used to control the grip and rotation of the gripper.
 

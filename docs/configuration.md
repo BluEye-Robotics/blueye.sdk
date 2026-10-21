@@ -113,4 +113,4 @@ The drone publishes `TurbidityFilterTel`, `ColorCorrectionTel` and `CameraPanTil
 
 The report arrives about 0.1 s after the command, so `set_pan_tilt_zoom` fills in the values you leave out from what it last sent, and from the drone's report only before the first call. A change made by the Blueye app after your last call is not picked up that way; pass all three values when that matters.
 
-Laser dot tracking works on the full, unzoomed image. The Blueye app resets pan, tilt and zoom to 0 while a laser is modulated for tracking, so call `set_pan_tilt_zoom(0, 0, 0)` before starting tracking from a script.
+Laser dot tracking works on the full, unzoomed image, so [`enable_tracking`][blueye.sdk.guestport.Laser.enable_tracking] resets pan, tilt and zoom to 0 when it starts, as the Blueye app does.
