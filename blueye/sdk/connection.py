@@ -43,9 +43,15 @@ class WatchdogPublisher(threading.Thread):
     def pet_watchdog(self, duration):
         """Send a watchdog message.
 
+        Nothing is sent before the drone has handed out a client id. A pet with client id 0
+        counts as the client in control whenever nobody is, so an unregistered client must stay
+        quiet.
+
         Args:
             duration (int): The duration of the connection.
         """
+        if self._parent_drone.client_id is None:
+            return
         msg = blueye.protocol.WatchdogCtrl(
             connection_duration={"value": duration}, client_id=self._parent_drone.client_id
         )
