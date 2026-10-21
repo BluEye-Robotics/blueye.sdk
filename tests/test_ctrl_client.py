@@ -1,3 +1,5 @@
+import time
+
 import blueye.protocol as bp
 import pytest
 
@@ -32,3 +34,43 @@ def test_set_camera_pan_tilt_zoom_queues_message(ctrl_client):
     assert isinstance(msg, bp.CameraPanTiltZoomCtrl)
     ptz = msg.camera_pan_tilt_zoom
     assert (ptz.pan, ptz.tilt, ptz.zoom) == pytest.approx((-0.5, 0.25, 1.0))
+
+
+def test_rescan_cv_models_queues_message(ctrl_client):
+    ctrl_client.rescan_cv_models()
+    assert isinstance(ctrl_client._messages_to_send.get_nowait(), bp.RescanCvModelsCtrl)
+
+
+class TestFlush:
+    @pytest.fixture
+    def running_client(self, mocker, mocked_drone_not_connected):
+        """A control client whose thread runs against a mocked socket."""
+        client = CtrlClient(mocked_drone_not_connected, context=mocker.MagicMock())
+        client.start()
+        yield client
+        client._exit_flag.set()
+        client.join(timeout=1)
+
+    def test_flush_waits_until_the_thread_has_sent(self, running_client):
+        running_client.rescan_cv_models()
+        assert running_client.flush(timeout=2) is True
+        (frames,), _ = running_client._drone_pub_socket.send_multipart.call_args
+        assert frames[0] == b"blueye.protocol.RescanCvModelsCtrl"
+
+    def test_flush_gives_up_when_nothing_sends(self, ctrl_client):
+        # The thread is not running, so the message stays queued
+        ctrl_client.rescan_cv_models()
+        assert ctrl_client.flush(timeout=0.2) is False
+
+    def test_stop_sends_what_is_queued_first(self, running_client):
+        running_client.rescan_cv_models()
+        running_client.stop()
+        running_client.join(timeout=1)
+        assert not running_client.is_alive()
+        running_client._drone_pub_socket.send_multipart.assert_called_once()
+
+    def test_stop_on_a_thread_that_never_ran_does_not_wait(self, ctrl_client):
+        ctrl_client.rescan_cv_models()
+        start = time.monotonic()
+        ctrl_client.stop()
+        assert time.monotonic() - start < 0.5
