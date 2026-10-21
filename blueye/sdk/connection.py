@@ -5,6 +5,7 @@ import logging
 import platform
 import queue
 import threading
+import time
 import warnings
 import uuid
 from typing import Any, Callable, Dict, List, NamedTuple, Tuple
@@ -239,18 +240,44 @@ class CtrlClient(threading.Thread):
         while not self._exit_flag.is_set():
             try:
                 msg = self._messages_to_send.get(timeout=0.1)
+            except queue.Empty:
+                continue
+            try:
                 self._drone_pub_socket.send_multipart(
                     [
                         bytes(msg._pb.DESCRIPTOR.full_name, "utf-8"),
                         msg.__class__.serialize(msg),
                     ]
                 )
-            except queue.Empty:
-                # No messages to send, so we can
-                continue
+            finally:
+                self._messages_to_send.task_done()
+
+    def flush(self, timeout: float = 1.0) -> bool:
+        """Wait until every queued control message has been handed to the socket.
+
+        The messages are sent from the thread, so a message queued right before
+        [`stop`][blueye.sdk.connection.CtrlClient.stop] or
+        [`disconnect`][blueye.sdk.drone.Drone.disconnect] would otherwise be lost.
+
+        Args:
+            timeout (float, optional): Seconds to wait for the queue to drain.
+
+        Returns:
+            True if the queue is empty, False if it still held messages when the time ran out.
+        """
+        deadline = time.monotonic() + timeout
+        q = self._messages_to_send
+        with q.all_tasks_done:
+            while q.unfinished_tasks:
+                remaining = deadline - time.monotonic()
+                if remaining <= 0 or not q.all_tasks_done.wait(remaining):
+                    return False
+        return True
 
     def stop(self):
-        """Stop the control client thread."""
+        """Stop the control client thread, after sending what is still queued."""
+        if self.is_alive() and not self.flush():
+            logger.warning("Control messages were still queued when the connection was closed")
         self._exit_flag.set()
 
     def set_lights(self, value: float):
@@ -455,6 +482,10 @@ class CtrlClient(threading.Thread):
             camera_pan_tilt_zoom={"pan": pan, "tilt": tilt, "zoom": zoom}
         )
         self._messages_to_send.put(msg)
+
+    def rescan_cv_models(self):
+        """Ask the drone to rescan the installed computer vision model packages."""
+        self._messages_to_send.put(blueye.protocol.RescanCvModelsCtrl())
 
     def run_mission(self):
         msg = blueye.protocol.RunMissionCtrl()

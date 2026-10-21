@@ -243,6 +243,13 @@ is the autolaunch configuration; the API does not expose a live "running" status
 | `download NAME [-o PATH]`      | Save a package zip from the drone to a file or directory (default: current directory). |
 | `rescan`                       | Ask the drone's vision pipeline to re-read the package directory.            |
 
+`list` and `download` only talk to the drone's HTTP API. The commands that change a
+model (`upload`, `delete`, `enable`, `disable`, `set-device`, `set-hz`) and the
+interactive session connect to the drone as an observer, taking no control, because the
+drone only picks a change up after the rescan message that the command sends once the
+change is in. `blueye models rescan` sends that message on its own, for changes made
+some other way. A rescan restarts every running model.
+
 ## Downloading dive logs — `blueye logs`
 
 The drone's binary dive logs (`.bez`) can be listed and downloaded from the terminal.

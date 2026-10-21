@@ -21,8 +21,23 @@ MODEL_ENTRY = {
 
 @pytest.fixture
 def cv_models(mocker):
-    mocked_drone = mocker.patch("blueye.sdk.Drone", autospec=True, _ip="192.168.1.101")
-    return CvModels(mocked_drone)
+    """A CvModels client on a drone that is not connected, which is all the HTTP calls need."""
+    from blueye.sdk.drone import _NoConnectionClient
+
+    drone = mocker.Mock()
+    drone._ip = "192.168.1.101"
+    drone.connected = False
+    drone._ctrl_client = _NoConnectionClient()
+    return CvModels(drone)
+
+
+@pytest.fixture
+def connected_cv_models(mocker):
+    """A CvModels client on a connected drone, with a mocked control client."""
+    drone = mocker.Mock()
+    drone._ip = "192.168.1.101"
+    drone.connected = True
+    return CvModels(drone)
 
 
 class TestList:
@@ -170,10 +185,59 @@ class TestWarmupAndRescan:
         with pytest.raises(requests.exceptions.HTTPError, match="503"):
             cv_models.warmup("cod-detector")
 
-    def test_rescan(self, cv_models, requests_mock):
-        requests_mock.post(f"{BASE}/rescan", json={"success": True})
-        cv_models.rescan()
-        assert requests_mock.called
+    def test_rescan_sends_the_control_message(self, connected_cv_models):
+        connected_cv_models.rescan()
+        connected_cv_models._parent_drone._ctrl_client.rescan_cv_models.assert_called_once_with()
+
+    def test_rescan_needs_a_connection(self, cv_models):
+        with pytest.raises(ConnectionError):
+            cv_models.rescan()
+
+    def test_rescan_timeout_is_deprecated_and_ignored(self, connected_cv_models):
+        with pytest.warns(DeprecationWarning, match="timeout"):
+            connected_cv_models.rescan(timeout=5)
+        connected_cv_models._parent_drone._ctrl_client.rescan_cv_models.assert_called_once_with()
+
+
+# (method, args, HTTP verb, URL path) for the changes the drone only picks up after a rescan
+CHANGES = [
+    ("delete", ("cod-detector",), "delete", "/cod-detector"),
+    ("set_enabled", ("cod-detector", True), "patch", "/cod-detector/enabled"),
+    ("set_device", ("cod-detector", "cuda"), "patch", "/cod-detector/device"),
+    ("set_hz", ("cod-detector", 10), "patch", "/cod-detector/hz"),
+]
+
+
+class TestAutomaticRescan:
+    @pytest.mark.parametrize("method, args, verb, path", CHANGES)
+    def test_changes_rescan_while_connected(
+        self, connected_cv_models, requests_mock, method, args, verb, path
+    ):
+        getattr(requests_mock, verb)(f"{BASE}{path}", json={"success": True})
+        getattr(connected_cv_models, method)(*args)
+        connected_cv_models._parent_drone._ctrl_client.rescan_cv_models.assert_called_once_with()
+
+    def test_upload_rescans_while_connected(self, connected_cv_models, requests_mock, tmp_path):
+        requests_mock.post(f"{BASE}/upload", json=MODEL_ENTRY)
+        package = tmp_path / "pkg.zip"
+        package.write_bytes(b"zip")
+        connected_cv_models.upload(package)
+        connected_cv_models._parent_drone._ctrl_client.rescan_cv_models.assert_called_once_with()
+
+    @pytest.mark.parametrize("method, args, verb, path", CHANGES)
+    def test_changes_warn_when_not_connected(
+        self, cv_models, requests_mock, caplog, method, args, verb, path
+    ):
+        getattr(requests_mock, verb)(f"{BASE}{path}", json={"success": True})
+        with caplog.at_level("WARNING", logger="blueye.sdk.cv_models"):
+            getattr(cv_models, method)(*args)
+        assert "not been asked to rescan" in caplog.text
+
+    def test_rescan_is_not_sent_when_the_change_fails(self, connected_cv_models, requests_mock):
+        requests_mock.patch(f"{BASE}/cod-detector/hz", status_code=400, text="bad rate")
+        with pytest.raises(requests.exceptions.HTTPError):
+            connected_cv_models.set_hz("cod-detector", 10)
+        connected_cv_models._parent_drone._ctrl_client.rescan_cv_models.assert_not_called()
 
 
 def test_drone_has_cv_models_feature(mocker):

@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import logging
 import re
+import warnings
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -85,6 +86,13 @@ class CvModels:
     All methods raise `requests.exceptions.ConnectionError`/`ConnectTimeout` when the
     drone is unreachable, and `requests.exceptions.HTTPError` (with the drone's error
     message included) when the drone rejects a request.
+
+    The listing and the changes go over HTTP and need no connection. The drone only picks
+    up a change after a rescan, which is a control message, so
+    [`upload`][blueye.sdk.cv_models.CvModels.upload],
+    [`delete`][blueye.sdk.cv_models.CvModels.delete] and the `set_*` methods send one when
+    the drone is connected (an observer connection is enough) and log a warning when it is
+    not. [`rescan`][blueye.sdk.cv_models.CvModels.rescan] sends one on its own.
     """
 
     def __init__(self, parent_drone: "blueye.sdk.Drone"):
@@ -143,7 +151,9 @@ class CvModels:
             response = requests.post(
                 f"{self._base_url}/upload", files={"file": file_handle}, timeout=timeout
             )
-        return CvModel.from_json(self._check(response).json())
+        model = CvModel.from_json(self._check(response).json())
+        self._request_rescan()
+        return model
 
     def delete(self, name: str, timeout: float = 5) -> None:
         """Delete a model package from the drone.
@@ -153,6 +163,7 @@ class CvModels:
             timeout: Request timeout in seconds.
         """
         self._check(requests.delete(f"{self._base_url}/{name}", timeout=timeout))
+        self._request_rescan()
 
     def download(
         self, name: str, output_path: Path | str | None = None, timeout: float = 60
@@ -195,6 +206,7 @@ class CvModels:
                 f"{self._base_url}/{name}/enabled", json={"enabled": enabled}, timeout=timeout
             )
         )
+        self._request_rescan()
 
     def set_device(self, name: str, device: str, timeout: float = 5) -> None:
         """Set the execution provider a model runs on.
@@ -210,6 +222,7 @@ class CvModels:
                 f"{self._base_url}/{name}/device", json={"device": device}, timeout=timeout
             )
         )
+        self._request_rescan()
 
     def set_hz(self, name: str, hz: int, timeout: float = 5) -> None:
         """Set a model's maximum inference rate.
@@ -220,6 +233,7 @@ class CvModels:
             timeout: Request timeout in seconds.
         """
         self._check(requests.patch(f"{self._base_url}/{name}/hz", json={"hz": hz}, timeout=timeout))
+        self._request_rescan()
 
     def warmup(self, name: str, timeout: float = 600) -> None:
         """Pre-build the model's inference engine on the drone.
@@ -234,13 +248,40 @@ class CvModels:
         """
         self._check(requests.post(f"{self._base_url}/{name}/warmup", timeout=timeout))
 
-    def rescan(self, timeout: float = 5) -> None:
+    def rescan(self, timeout: float | None = None) -> None:
         """Ask the drone's vision pipeline to rescan the installed packages.
 
-        Uploads, deletions, and configuration changes trigger a rescan
-        automatically; this is only needed after out-of-band changes.
+        The request is the `RescanCvModelsCtrl` control message, so the drone has to be
+        connected; an observer connection is enough. The drone has no file watcher, so a
+        package uploaded, deleted or reconfigured stays as it was until a rescan or a reboot.
+        [`upload`][blueye.sdk.cv_models.CvModels.upload],
+        [`delete`][blueye.sdk.cv_models.CvModels.delete] and the `set_*` methods send one
+        themselves while connected, so this is for changes made some other way. A rescan
+        restarts every running model, and models only run while a client in control pets the
+        watchdog.
 
         Args:
-            timeout: Request timeout in seconds.
+            timeout: Ignored. The rescan used to be an HTTP request with a timeout; the
+                argument stays so code written for 2.8.0 keeps working.
+
+        Raises:
+            ConnectionError: If the drone is not connected.
         """
-        self._check(requests.post(f"{self._base_url}/rescan", timeout=timeout))
+        if timeout is not None:
+            warnings.warn(
+                "`CvModels.rescan` sends a control message and no longer takes a timeout, "
+                "the argument is ignored and will be removed in the next major version",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+        self._parent_drone._ctrl_client.rescan_cv_models()
+
+    def _request_rescan(self) -> None:
+        """Send a rescan after a change, or say why not when the drone is not connected."""
+        if self._parent_drone.connected:
+            self._parent_drone._ctrl_client.rescan_cv_models()
+        else:
+            logger.warning(
+                "The drone is not connected, so it has not been asked to rescan its CV models. "
+                "The change takes effect after connect() and rescan(), or a reboot."
+            )
