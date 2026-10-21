@@ -2051,8 +2051,9 @@ class Camera:
         the value the drone last reported, or 0 if it has not reported one. Pan and tilt only
         have an effect while zoomed in, since at zoom 0 the whole sensor image is already shown.
 
-        Laser dot tracking works on the full, unzoomed image, so the Blueye app resets pan, tilt
-        and zoom to 0 while a laser is modulated for tracking. Do the same before starting it.
+        Laser dot tracking works on the full, unzoomed image, so
+        [`enable_tracking`][blueye.sdk.guestport.Laser.enable_tracking] resets pan, tilt and
+        zoom to 0 when it starts, as the Blueye app does.
 
         Args:
             pan (float, optional): Horizontal pan (-1..1), 0 is centred.
