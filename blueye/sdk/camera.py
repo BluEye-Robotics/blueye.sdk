@@ -9,7 +9,7 @@ import blueye.protocol
 import requests
 from packaging import version
 
-from .utils import deprecated_property
+from .utils import deprecated_property, describe_enum
 
 # Necessary to avoid cyclic imports
 if TYPE_CHECKING:
@@ -76,16 +76,6 @@ def scale_calibration(
         image_height=height,
         is_default=calibration.is_default,
     )
-
-
-def _describe_enum(value) -> str:
-    """Render a protocol enum value for an error message.
-
-    A drone running a newer Blunux than the SDK can report an enum value this build does not
-    know, and proto-plus surfaces those as a plain int rather than an enum member. Fall back to
-    the number so the error still says which value was rejected.
-    """
-    return getattr(value, "name", str(value))
 
 
 class Tilt:
@@ -957,7 +947,7 @@ class Camera:
                     return from_enum[value]
                 except KeyError:
                     raise RuntimeError(
-                        f"Drone reported an unsupported {field}: {_describe_enum(value)}"
+                        f"Drone reported an unsupported {field}: {describe_enum(value)}"
                     ) from None
             return value
 
@@ -1158,10 +1148,13 @@ class Camera:
     def set_exposure(self, exposure: int):
         """Set the camera exposure.
 
+        On the X3 Ultra and X7 a shutter time longer than one frame at the current frame rate
+        is shortened to the frame period, 333 at 30 fps, and
+        [`get_exposure`][blueye.sdk.camera.Camera.get_exposure] reports the shortened value.
+
         Args:
-            exposure (int): Set the camera exposure time. Unit is thousandths of a second,
-                            ie. 5 = 5s/1000. Valid values are in the range (1 .. 5000) or -1
-                            for auto exposure.
+            exposure (int): Shutter time in units of 1/10000 s (100 µs), so 100 = 10 ms. Valid
+                values are in the range (1..5000) or -1 for auto exposure.
         """
         if self._camera_parameters is None:
             self._update_camera_parameters()
@@ -1183,8 +1176,9 @@ class Camera:
         """Set the camera white balance.
 
         Args:
-            white_balance (int): Set the camera white balance. Valid values are in the range
-                                 (2800..9300) or -1 for auto white balance.
+            white_balance (int): Colour temperature in kelvin. Valid values are in the range
+                (2800..9300) on Pioneer/Pro/X1/X3 and (2300..15000) on the X3 Ultra and X7, or
+                -1 for auto white balance.
         """
         if self._camera_parameters is None:
             self._update_camera_parameters()
@@ -1196,6 +1190,9 @@ class Camera:
     def get_hue(self) -> int:
         """Get the camera hue.
 
+        Only available on Pioneer/Pro/X1/X3, the 4K camera in the X3 Ultra and X7 has no hue
+        control.
+
         Returns:
             The camera hue.
         """
@@ -1204,6 +1201,9 @@ class Camera:
 
     def set_hue(self, hue: int):
         """Set the camera hue.
+
+        Only available on Pioneer/Pro/X1/X3, the 4K camera in the X3 Ultra and X7 has no hue
+        control.
 
         Args:
             hue (int): Set the camera hue. Valid values are in the range (-40..40).
@@ -1218,10 +1218,11 @@ class Camera:
     def get_gain(self) -> float:
         """Get the camera gain.
 
-        Only available on Pioneer/Pro/X1/X3.
+        On the X3 Ultra and X7 the drone reports -1 while auto exposure owns the gain, that is
+        whenever the exposure is automatic or no manual gain has been set.
 
         Returns:
-            The camera ISO gain.
+            The camera ISO gain (0..1), or -1 when the drone controls it.
         """
         self._update_camera_parameters()
         return self._camera_parameters.gain
@@ -1229,10 +1230,13 @@ class Camera:
     def set_gain(self, gain: float):
         """Set the camera gain.
 
-        Only available on Pioneer/Pro/X1/X3.
+        On the X3 Ultra and X7 a manual gain only takes effect together with a manual exposure
+        (see [`set_exposure`][blueye.sdk.camera.Camera.set_exposure]). With auto exposure, or
+        with a gain of -1, the drone's auto exposure controls the gain. On Pioneer/Pro/X1/X3 a
+        value of -1 leaves the gain unchanged.
 
         Args:
-            gain (float): Set the ISO gain (0..1).
+            gain (float): Set the ISO gain (0..1), or -1 to let the drone control it.
         """
         if self._camera_parameters is None:
             self._update_camera_parameters()
@@ -1242,7 +1246,7 @@ class Camera:
     def get_brightness(self) -> int:
         """Get the camera brightness.
 
-        Only available on Ultra.
+        Only available on the X3 Ultra and X7.
 
         Returns:
             The camera brightness.
@@ -1253,7 +1257,7 @@ class Camera:
     def set_brightness(self, brightness: int):
         """Set the camera brightness.
 
-        Only available on Ultra.
+        Only available on the X3 Ultra and X7.
 
         Args:
             brightness (int): Set the brightness (-10..10), 0 is the default.
@@ -1270,7 +1274,7 @@ class Camera:
     def get_contrast(self) -> int:
         """Get the camera contrast.
 
-        Only available on Ultra.
+        Only available on the X3 Ultra and X7.
 
         Returns:
             The camera contrast.
@@ -1281,7 +1285,7 @@ class Camera:
     def set_contrast(self, contrast: int):
         """Set the camera contrast.
 
-        Only available on Ultra.
+        Only available on the X3 Ultra and X7.
 
         Args:
             contrast (int): Set the contrast (-50..50), 0 is the default.
@@ -1298,7 +1302,7 @@ class Camera:
     def get_saturation(self) -> int:
         """Get the camera saturation.
 
-        Only available on Ultra.
+        Only available on the X3 Ultra and X7.
 
         Returns:
             The camera saturation.
@@ -1309,7 +1313,7 @@ class Camera:
     def set_saturation(self, saturation: int):
         """Set the camera saturation.
 
-        Only available on Ultra.
+        Only available on the X3 Ultra and X7.
 
         Args:
             saturation (int): Set the saturation (0..50), 8 is the default.
@@ -1326,7 +1330,7 @@ class Camera:
     def get_gamma(self) -> int:
         """Get the camera gamma.
 
-        Only available on Ultra.
+        Only available on the X3 Ultra and X7.
 
         Returns:
             The camera gamma.
@@ -1337,7 +1341,7 @@ class Camera:
     def set_gamma(self, gamma: int):
         """Set the camera gamma.
 
-        Only available on Ultra.
+        Only available on the X3 Ultra and X7.
 
         Args:
             gamma (int): Set the gamma (4..79), 22 is the default.
@@ -1354,7 +1358,7 @@ class Camera:
     def get_sharpness(self) -> int:
         """Get the camera sharpness.
 
-        Only available on Ultra.
+        Only available on the X3 Ultra and X7.
 
         Returns:
             The camera sharpness.
@@ -1365,7 +1369,7 @@ class Camera:
     def set_sharpness(self, sharpness: int):
         """Set the camera sharpness.
 
-        Only available on Ultra.
+        Only available on the X3 Ultra and X7.
 
         Args:
             sharpness (int): Set the sharpness (-20..20), -20 is the default.
@@ -1382,7 +1386,7 @@ class Camera:
     def get_backlight_compensation(self) -> int:
         """Get the camera backlight compensation.
 
-        Only available on Ultra.
+        Only available on the X3 Ultra and X7.
 
         Returns:
             The camera backlight compensation.
@@ -1393,7 +1397,7 @@ class Camera:
     def set_backlight_compensation(self, compensation: int):
         """Set the camera backlight compensation.
 
-        Only available on Ultra.
+        Only available on the X3 Ultra and X7.
 
         Args:
             compensation (int): Set the backlight compensation (-150..150), 10 is the default.
@@ -1410,7 +1414,7 @@ class Camera:
     def get_denoise(self) -> int:
         """Get the camera noise reduction.
 
-        Only available on Ultra.
+        Only available on the X3 Ultra and X7.
 
         Returns:
             The camera noise reduction.
@@ -1421,7 +1425,7 @@ class Camera:
     def set_denoise(self, denoise: int):
         """Set the camera noise reduction.
 
-        Only available on Ultra.
+        Only available on the X3 Ultra and X7.
 
         Args:
             denoise (int): Set the noise reduction (-20..20), -20 is the default.
@@ -1438,7 +1442,7 @@ class Camera:
     def is_ehdr_enabled(self) -> bool:
         """Get the state of the eHDR mode.
 
-        Only available on Ultra.
+        Only available on the X3 Ultra and X7.
 
         Returns:
             The current state of the eHDR mode.
@@ -1449,7 +1453,7 @@ class Camera:
     def enable_ehdr(self, enable_ehdr: bool):
         """Enable or disable the eHDR mode.
 
-        Only available on Ultra.
+        Only available on the X3 Ultra and X7.
 
         Args:
             enable_ehdr (bool): True to enable eHDR mode, False to disable it. Enabled by default.
@@ -1466,7 +1470,7 @@ class Camera:
     def get_ehdr_exposure_min_number(self) -> int:
         """Get the minimum number of eHDR frames.
 
-        Only available on Ultra.
+        Only available on the X3 Ultra and X7.
 
         Returns:
             The minimum number of eHDR frames.
@@ -1477,7 +1481,7 @@ class Camera:
     def set_ehdr_exposure_min_number(self, number: int):
         """Set the minimum number of eHDR frames.
 
-        Only available on Ultra.
+        Only available on the X3 Ultra and X7.
 
         Args:
             number (int): Set the minimum number of eHDR frames (1..4), 1 is the default.
@@ -1494,7 +1498,7 @@ class Camera:
     def get_ehdr_exposure_max_number(self) -> int:
         """Get the maximum number of eHDR frames.
 
-        Only available on Ultra.
+        Only available on the X3 Ultra and X7.
 
         Returns:
             The maximum number of eHDR frames.
@@ -1505,7 +1509,7 @@ class Camera:
     def set_ehdr_exposure_max_number(self, number: int):
         """Set the maximum number of eHDR frames.
 
-        Only available on Ultra.
+        Only available on the X3 Ultra and X7.
 
         Args:
             number (int): Set the maximum number of eHDR frames (1..4), 2 is the default. Setting
@@ -1548,7 +1552,7 @@ class Camera:
         except KeyError:
             raise RuntimeError(
                 "Drone reported an unsupported resolution: "
-                f"{_describe_enum(self._camera_parameters.resolution)}"
+                f"{describe_enum(self._camera_parameters.resolution)}"
             ) from None
 
     def set_resolution(self, resolution: int):
@@ -1686,7 +1690,7 @@ class Camera:
         except KeyError:
             raise RuntimeError(
                 "Drone reported an unsupported framerate: "
-                f"{_describe_enum(self._camera_parameters.framerate)}"
+                f"{describe_enum(self._camera_parameters.framerate)}"
             ) from None
 
     def set_framerate(self, framerate: int):
@@ -1695,8 +1699,8 @@ class Camera:
         Args:
             framerate (int): Set the camera frame rate in frames per second. Valid values are 25,
                 30 or 60. 25 fps is only supported on Pioneer/Pro/X1/X3, and 60 fps only on the
-                Ultra at 1440p or lower. If the requested frame rate is not supported at the
-                current resolution the drone reduces it while respecting the resolution.
+                X3 Ultra and X7 at 1440p or lower. If the requested frame rate is not supported
+                at the current resolution the drone reduces it while respecting the resolution.
 
         Raises:
             ValueError: If the frame rate is not 25, 30 or 60.
@@ -1725,7 +1729,7 @@ class Camera:
         Args:
             codec (blueye.protocol.RecordingCodec): Set the recording codec.
                 RECORDING_CODEC_UNSPECIFIED uses the platform default (H.264).
-                RECORDING_CODEC_H265 is only available on Ultra.
+                RECORDING_CODEC_H265 is only available on the X3 Ultra and X7.
 
         Raises:
             ValueError: If the codec is not a valid `blueye.protocol.RecordingCodec` type.
@@ -1899,7 +1903,7 @@ class Camera:
                 width, height = _RESOLUTION_TO_SIZE[resolution]
             except KeyError:
                 raise RuntimeError(
-                    f"Drone reported an unsupported resolution: {_describe_enum(resolution)}"
+                    f"Drone reported an unsupported resolution: {describe_enum(resolution)}"
                 ) from None
         else:
             try:

@@ -5,6 +5,7 @@ import logging
 import platform
 import queue
 import threading
+import warnings
 import uuid
 from typing import Any, Callable, Dict, List, NamedTuple, Tuple
 
@@ -96,6 +97,7 @@ class TelemetryClient(threading.Thread):
         self._socket.setsockopt_string(zmq.SUBSCRIBE, "")
         self._exit_flag = threading.Event()
         self._state_lock = threading.Lock()
+        self._callbacks_lock = threading.Lock()
         self._callbacks: List[Callback] = []
         self._state: Dict[proto.message.Message, bytes] = {}
         """`_state` is dictionary of the latest received messages, where the key is the protobuf
@@ -119,13 +121,25 @@ class TelemetryClient(threading.Thread):
         msg_payload = msg[1]
         with self._state_lock:
             self._state[msg_type] = msg_payload
-        for callback in self._callbacks:
+        # Iterate over a snapshot so a callback can add or remove callbacks (including itself)
+        # without skipping the next entry in the list.
+        with self._callbacks_lock:
+            callbacks = list(self._callbacks)
+        for callback in callbacks:
             if msg_type in callback.message_filter or callback.message_filter == []:
-                if callback.pass_raw_data:
-                    callback.function(msg_type_name, msg_payload, **callback.kwargs)
-                else:
-                    msg_deserialized = msg_type.deserialize(msg_payload)
-                    callback.function(msg_type_name, msg_deserialized, **callback.kwargs)
+                # An exception from one callback must not take down the telemetry thread, which
+                # would silently freeze every telemetry getter at the last cached value.
+                try:
+                    if callback.pass_raw_data:
+                        callback.function(msg_type_name, msg_payload, **callback.kwargs)
+                    else:
+                        msg_deserialized = msg_type.deserialize(msg_payload)
+                        callback.function(msg_type_name, msg_deserialized, **callback.kwargs)
+                except Exception:
+                    logger.exception(
+                        f"Telemetry callback {callback.function!r} raised on {msg_type_name}, "
+                        "ignoring"
+                    )
 
     def run(self):
         """Run the telemetry client thread."""
@@ -158,7 +172,8 @@ class TelemetryClient(threading.Thread):
             str: The UUID of the callback in hexadecimal format.
         """
         uuid_hex = uuid.uuid1().hex
-        self._callbacks.append(Callback(msg_filter, callback_function, raw, uuid_hex, kwargs))
+        with self._callbacks_lock:
+            self._callbacks.append(Callback(msg_filter, callback_function, raw, uuid_hex, kwargs))
         return uuid_hex
 
     def remove_callback(self, callback_id: str):
@@ -167,10 +182,12 @@ class TelemetryClient(threading.Thread):
         Args:
             callback_id (str): The UUID of the callback to remove.
         """
-        try:
-            self._callbacks.pop([cb.uuid_hex for cb in self._callbacks].index(callback_id))
-        except ValueError:
-            logger.warning(f"Callback with id {callback_id} not found, ignoring")
+        with self._callbacks_lock:
+            for index, callback in enumerate(self._callbacks):
+                if callback.uuid_hex == callback_id:
+                    del self._callbacks[index]
+                    return
+        logger.warning(f"Callback with id {callback_id} not found, ignoring")
 
     def get(self, key: proto.message.Message) -> bytes:
         """Get the latest received message of a specific type.
@@ -416,19 +433,39 @@ class CtrlClient(threading.Thread):
         msg = blueye.protocol.MultibeamServoCtrl(servo={"angle": angle})
         self._messages_to_send.put(msg)
 
-    def set_generic_servo_angle(
-        self, angle: float, gp_number: blueye.protocol.GuestPortNumber
+    def set_generic_servo_position(
+        self, position: float, gp_number: blueye.protocol.GuestPortNumber
     ) -> None:
-        """Set the angle of a generic servo on the guest port.
+        """Set the position of a generic servo on a guest port.
 
         Args:
-            angle (float): The angle in degrees.
+            position (float): The position (0..1), the drone clamps values outside that range.
             gp_number (blueye.protocol.GuestPortNumber): The guest port number.
         """
         msg = blueye.protocol.GenericServoCtrl(
-            servo={"value": angle, "guest_port_number": gp_number}
+            servo={"value": position, "guest_port_number": gp_number}
         )
         self._messages_to_send.put(msg)
+
+    def set_generic_servo_angle(
+        self, angle: float, gp_number: blueye.protocol.GuestPortNumber
+    ) -> None:
+        """Set the position of a generic servo from an angle in -90..90 degrees.
+
+        Deprecated, the protocol takes a 0..1 position and not an angle. Use
+        [`set_generic_servo_position`][blueye.sdk.connection.CtrlClient.set_generic_servo_position].
+
+        Args:
+            angle (float): The angle in degrees (-90..90), mapped linearly onto 0..1.
+            gp_number (blueye.protocol.GuestPortNumber): The guest port number.
+        """
+        warnings.warn(
+            "`CtrlClient.set_generic_servo_angle` is deprecated and will be removed in the next "
+            "major version. Use `CtrlClient.set_generic_servo_position()` instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        self.set_generic_servo_position((angle + 90) / 180, gp_number)
 
 
 class ReqRepClient(threading.Thread):
