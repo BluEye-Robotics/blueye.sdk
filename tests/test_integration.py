@@ -1,4 +1,4 @@
-from time import time
+from time import sleep, time
 
 import blueye.protocol as bp
 import pytest
@@ -186,3 +186,63 @@ class TestFunctionsWhenConnectedToDrone:
             real_drone.camera.set_framerate(original_framerate)
             real_drone.camera.set_stream_resolution(original_stream_resolution)
             real_drone.camera.set_recording_resolution(original_recording_resolution)
+
+    @pytest.mark.parametrize(
+        "getter, setter",
+        [
+            ("get_turbidity_filter", "set_turbidity_filter"),
+            ("get_color_correction", "set_color_correction"),
+        ],
+    )
+    def test_camera_filters(self, real_drone, drone_model, getter, setter):
+        """The filter telemetry is published on change, so a set must show up in the getter."""
+        if drone_model not in JETSON_MODELS:
+            pytest.skip("The image filters are only available on the X3 Ultra and X7")
+        if version.parse(real_drone.software_version_short) < version.parse("5.0.0"):
+            pytest.skip("The image filters need Blunux 5.0.0")
+        original = getattr(real_drone.camera, getter)()
+
+        def reported():
+            settings = getattr(real_drone.camera, getter)()
+            if settings is None:
+                return None
+            return (settings.enabled, round(settings.intensity, 2))
+
+        try:
+            getattr(real_drone.camera, setter)(True, 0.5)
+            deadline = time() + 10
+            while reported() is None and time() < deadline:
+                sleep(0.1)
+            if reported() is None:
+                # The drone only reports a filter it has in its video pipeline. Color correction
+                # came to gst_rtsp_record in July 2026, so earlier Blunux 5.0 builds have the
+                # turbidity filter but not this one.
+                pytest.skip(f"This drone build does not report {setter[4:]}")
+            polling_assert_with_timeout(reported, (True, 0.5), 10)
+            getattr(real_drone.camera, setter)(False, 0.25)
+            polling_assert_with_timeout(reported, (False, 0.25), 10)
+        finally:
+            if original is not None:
+                getattr(real_drone.camera, setter)(original.enabled, original.intensity)
+
+    def test_camera_pan_tilt_zoom(self, real_drone, drone_model):
+        if drone_model not in JETSON_MODELS:
+            pytest.skip("Digital pan, tilt and zoom is only available on the X3 Ultra and X7")
+        if version.parse(real_drone.software_version_short) < version.parse("5.0.0"):
+            pytest.skip("Digital pan, tilt and zoom needs Blunux 5.0.0")
+        original = real_drone.camera.get_pan_tilt_zoom()
+
+        def rounded_state():
+            state = real_drone.camera.get_pan_tilt_zoom()
+            if state is None:
+                return None
+            return (round(state.pan, 1), round(state.tilt, 1), round(state.zoom, 1))
+
+        try:
+            real_drone.camera.set_pan_tilt_zoom(pan=0.5, tilt=-0.5, zoom=0.5)
+            polling_assert_with_timeout(rounded_state, (0.5, -0.5, 0.5), 2)
+            real_drone.camera.set_pan_tilt_zoom(zoom=0.0)
+            polling_assert_with_timeout(lambda: rounded_state()[2], 0.0, 2)
+        finally:
+            if original is not None:
+                real_drone.camera.set_pan_tilt_zoom(original.pan, original.tilt, original.zoom)
