@@ -139,7 +139,7 @@ the available methods on the drone, making it easy to try setting and getting th
 ### Watching the video stream
 The easiest way to open the RTSP video stream is by using [`VLC media player`](https://www.videolan.org/vlc/index.html).
 Once VLC is downloaded, you can start the stream like this. The RTSP URL is: `rtsp://192.168.1.101:8554/test`
-![text](https://blueyenostorage.blob.core.windows.net/sdkimages/rtsp-in-vlc.gif)
+![VLC: open the drone's RTSP network stream](media/rtsp-in-vlc.gif)
 
 
 For lower latency streaming (on a PC), you can see the instructions on using
