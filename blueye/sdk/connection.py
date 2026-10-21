@@ -403,13 +403,14 @@ class CtrlClient(threading.Thread):
         )
         self._messages_to_send.put(msg)
 
-    def set_laser_intensity(self, intensity: float):
+    def set_laser_intensity(self, intensity: float, modulated: bool = False):
         """Set the laser intensity.
 
         Args:
             intensity (float): The laser intensity value.
+            modulated (bool, optional): Modulate the laser at 5 Hz for dot tracking.
         """
-        msg = blueye.protocol.LaserCtrl(laser={"value": intensity})
+        msg = blueye.protocol.LaserCtrl(laser={"value": intensity, "modulated": modulated})
         self._messages_to_send.put(msg)
 
     def set_turbidity_filter(self, enabled: bool, intensity: float):
