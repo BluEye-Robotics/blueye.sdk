@@ -24,3 +24,12 @@ def test_pet_carries_the_client_id(watchdog):
     msg = bp.WatchdogCtrl.deserialize(frames[1])
     assert msg.client_id == 3
     assert msg.connection_duration.value == 5
+
+
+def test_the_first_pet_waits_a_second(watchdog):
+    # The zero setpoint sent on connect goes out on a socket that has only just been opened,
+    # and a PUB socket can drop early messages, so the first pet must not race it.
+    watchdog._parent_drone.client_id = 3
+    watchdog._exit_flag.set()
+    watchdog.run()
+    watchdog._socket.send_multipart.assert_not_called()

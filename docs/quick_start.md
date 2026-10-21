@@ -123,6 +123,21 @@ For an overview of the methods that are available for controlling and reading da
 [`Reference section`](reference/blueye/sdk/drone.md) of the documentation.
 The valid input ranges and descriptions of the different methods can also be found there.
 
+When a script is done it should call [`disconnect`][blueye.sdk.drone.Drone.disconnect]. The drone
+keeps the last motion input it received until a new one arrives or its watchdog times out, so
+`disconnect` zeroes the thrusters before it tells the drone that the client is leaving. A `with`
+block does that for you, also when the script fails or is stopped with Ctrl-C, and a script that
+ends without either is disconnected when the interpreter exits:
+
+``` python
+from blueye.sdk import Drone
+
+with Drone() as myDrone:
+    myDrone.motion.set_surge(0.3)
+    ...
+# Thrusters zeroed and disconnected here
+```
+
 
 /// admonition | Tip
     type: tip
