@@ -5,7 +5,7 @@ import logging
 import zlib
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import Callable, Iterator, List, Optional, Tuple
+from typing import Callable, Dict, Iterator, List, Optional, Tuple, Union
 
 import blueye.protocol as bp
 import dateutil.parser
@@ -18,6 +18,10 @@ from packaging import version
 from .utils import deserialize_any_to_message
 
 logger = logging.getLogger(__name__)
+
+#: Seconds to wait for the drone to answer a log index or dive info request. This is the
+#: `requests` timeout: the time to connect, and then the time between bytes.
+HTTP_TIMEOUT = 10
 
 
 def human_readable_filesize(binsize: int) -> str:
@@ -114,15 +118,30 @@ class StreamingDecompressor:
 class LogStream:
     """Class for streaming a log
 
-    Creates a stream from a downloaded log file. Iterate over the object to get the next log record.
+    Creates a stream from a downloaded log file. Iterate over the object to get the next log
+    record as a tuple of
+
+    * the wall clock time of the record (`DatetimeWithNanoseconds`, UTC),
+    * the time since the first record in the log (`timedelta`),
+    * the message type, eg. `bp.DepthTel`, and
+    * the message itself.
+
+    A log can hold types this SDK does not know, for instance when the drone runs a newer
+    release than the installed blueye.protocol package. By default those records are skipped:
+    the first one of each type logs a warning, and all of them are counted per type URL in
+    `unknown_types`. Pass `include_unknown=True` to get them as
+    `(time, time since first record, type URL, raw payload bytes)` tuples instead, where the
+    type URL is a string such as `"type.googleapis.com/blueye.protocol.PowerCanisterTel"`.
     """
 
-    def __init__(self, log: bytes, decompress: bool = True) -> Iterator[
+    def __init__(
+        self, log: bytes, decompress: bool = True, include_unknown: bool = False
+    ) -> Iterator[
         Tuple[
             proto.datetime_helpers.DatetimeWithNanoseconds,  # Real time clock
             timedelta,  # Time since first message
-            proto.message.MessageMeta,  # Message type
-            proto.message.Message,  # Message contents
+            Union[type, str],  # Message type, or its type URL if the SDK does not know it
+            Union[proto.message.Message, bytes],  # Message contents, or the raw payload
         ]
     ]:
         if decompress:
@@ -130,13 +149,17 @@ class LogStream:
         else:
             self.stream = io.BytesIO(log)
 
+        self.include_unknown = include_unknown
+        #: Type URL -> number of records in the stream so far that could not be decoded
+        self.unknown_types: Dict[str, int] = {}
         self.start_monotonic: proto.datetime_helpers.DatetimeWithNanoseconds = 0
+        self._summary_logged = False
 
     def __iter__(self):
         return self
 
-    def __next__(self):
-        # Try to read the varint that indicates message size
+    def _read_record(self) -> bytes:
+        """Read the next length-prefixed record, or raise StopIteration at the end"""
         try:
             # Read bytes one by one until we have a complete varint
             varint_bytes = bytearray()
@@ -162,26 +185,69 @@ class LogStream:
             msg_data = self.stream.read(msg_size)
             if len(msg_data) < msg_size:
                 raise StopIteration
+            return msg_data
 
         except (ValueError, IOError) as e:
             logger.error(f"Error reading log stream: {e}")
             raise StopIteration
 
-        try:
-            msg = bp.BinlogRecord.deserialize(msg_data)
-            payload_type, payload_msg_deserialized = deserialize_any_to_message(msg.payload)
-        except Exception as e:
-            logger.error(f"Failed to deserialize payload: {e}")
-            return self.__next__()  # Skip this message and continue with the next
+    def _end_of_stream(self):
+        """Log the unknown-type summary once, then stop the iteration"""
+        skipped = sum(self.unknown_types.values())
+        if skipped and not self.include_unknown and not self._summary_logged:
+            self._summary_logged = True
+            logger.info(
+                f"Skipped {skipped} records of {len(self.unknown_types)} message types this SDK "
+                f"cannot decode: {', '.join(sorted(self.unknown_types))}"
+            )
+        raise StopIteration
 
-        if self.start_monotonic == 0:
-            self.start_monotonic = msg.clock_monotonic
-        return (
-            msg.unix_timestamp,
-            msg.clock_monotonic - self.start_monotonic,
-            payload_type,
-            payload_msg_deserialized,
-        )
+    def _count_unknown(self, type_url: str, error: Exception):
+        first = type_url not in self.unknown_types
+        self.unknown_types[type_url] = self.unknown_types.get(type_url, 0) + 1
+        if not first:
+            return
+        if self.include_unknown:
+            logger.debug(f"Cannot decode {type_url}, passing the raw payload through: {error}")
+        else:
+            logger.warning(
+                f"Skipping records of type {type_url}, which this SDK cannot decode: {error}. "
+                "Further records of this type are counted in LogStream.unknown_types without "
+                "a log line."
+            )
+
+    def __next__(self):
+        # A loop rather than a recursive call, so a long run of records the SDK cannot decode
+        # does not exhaust the interpreter stack.
+        while True:
+            try:
+                msg_data = self._read_record()
+            except StopIteration:
+                self._end_of_stream()
+
+            try:
+                msg = bp.BinlogRecord.deserialize(msg_data)
+            except Exception as e:
+                logger.error(f"Failed to deserialize log record: {e}")
+                continue
+            if msg.clock_monotonic is None or msg.unix_timestamp is None:
+                logger.error("Skipping log record without timestamps")
+                continue
+
+            if self.start_monotonic == 0:
+                self.start_monotonic = msg.clock_monotonic
+            delta = msg.clock_monotonic - self.start_monotonic
+
+            try:
+                payload_type, payload_msg_deserialized = deserialize_any_to_message(msg.payload)
+            except Exception as e:
+                type_url = msg.payload.type_url
+                self._count_unknown(type_url, e)
+                if self.include_unknown:
+                    return (msg.unix_timestamp, delta, type_url, msg.payload.value)
+                continue
+
+            return (msg.unix_timestamp, delta, payload_type, payload_msg_deserialized)
 
 
 class LogFile:
@@ -239,7 +305,8 @@ class LogFile:
             If True, the log will be written to the specified path. If False, the
             log will only be returned as a bytes object.
         * `timeout`:
-            Seconds to wait for response
+            Seconds to wait for the drone to connect, and then between bytes of the response.
+            This is the `requests` timeout, so it does not limit the total download time.
         * `overwrite_cache`:
             If True, the log will be downloaded even if it is already been downloaded.
             Open logs (`is_open`) are always downloaded again, since the drone is still
@@ -248,6 +315,11 @@ class LogFile:
         *Returns*:
 
         The compressed log file as a bytes object.
+
+        *Raises*:
+
+        `requests.HTTPError` if the drone answers with an error status, and
+        `requests.ConnectionError` or `requests.Timeout` if it does not answer.
         """
         if self.is_open:
             logger.warning(
@@ -255,7 +327,9 @@ class LogFile:
                 "snapshot that stops mid-record"
             )
         if self.content is None or overwrite_cache or self.is_open:
-            self.content = requests.get(self.download_url, timeout=timeout).content
+            response = requests.get(self.download_url, timeout=timeout)
+            response.raise_for_status()
+            self.content = response.content
         if write_to_file:
             if output_path is None:
                 output_path = Path(f"{self.name}.bez")
@@ -303,11 +377,14 @@ class Logs:
         if auto_download_index:
             self.refresh_log_index()
 
-    def refresh_log_index(self):
+    def refresh_log_index(self, timeout: float = HTTP_TIMEOUT):
         """Refresh the log index from the drone
 
         This is method is run on the first log access by default, but if you would like to check
         for new log files it can be called at any time.
+
+        `timeout` is the seconds to wait for each request to the drone. Raises
+        `requests.HTTPError` if the drone answers with an error status.
         """
         if not self._parent_drone.connected:
             raise ConnectionError(
@@ -316,7 +393,9 @@ class Logs:
             )
         logger.debug("Refreshing log index")
         logs_endpoint = f"http://{self._parent_drone._ip}/logs"
-        logs: List[dict] = requests.get(logs_endpoint).json()
+        response = requests.get(logs_endpoint, timeout=timeout)
+        response.raise_for_status()
+        logs: List[dict] = response.json()
 
         if version.parse(self._parent_drone.software_version_short) < version.parse("3.3"):
             # Extend index with dive info, sends a request for each log file so can be quite slow
@@ -324,8 +403,9 @@ class Logs:
             # the index.
             logger.debug(f"Getting dive info for {len(logs)} logs")
             for index, log in enumerate(logs):
-                dive_info = requests.get(f"{logs_endpoint}/{log['name']}/dive_info").json()
-                logs[index].update(dive_info)
+                response = requests.get(f"{logs_endpoint}/{log['name']}/dive_info", timeout=timeout)
+                response.raise_for_status()
+                logs[index].update(response.json())
 
         # Instantiate log objects for each log
         logger.debug(f"Creating log objects for {len(logs)} logs")
@@ -435,7 +515,9 @@ class LegacyLogFile:
             human_readable_filesize(self.binsize),
         ]
 
-    def download(self, output_path=None, output_name=None, downsample_divisor=10):
+    def download(
+        self, output_path=None, output_name=None, downsample_divisor=10, timeout=HTTP_TIMEOUT
+    ):
         """
         Download the specified log to your local file system
 
@@ -447,8 +529,15 @@ class LegacyLogFile:
 
         The drone samples the log content at 10 Hz, and by default this function downsamples this
         rate to 1 Hz.
+
+        `timeout` is the seconds to wait for the drone to connect and then between bytes.
+        Raises `requests.HTTPError` if the drone answers with an error status.
         """
-        log = requests.get(self.download_path, params={"divisor": downsample_divisor}).content
+        response = requests.get(
+            self.download_path, params={"divisor": downsample_divisor}, timeout=timeout
+        )
+        response.raise_for_status()
+        log = response.content
         if output_path is None:
             output_path = "./"
         if output_name is None:
@@ -499,11 +588,14 @@ class LegacyLogs:
         else:
             self._logs = {}
 
-    def _get_list_of_logs_from_drone(self, get_all: bool):
-        list_of_dictionaries = requests.get(
-            "http://" + self.ip + "/logcsv", params={"all": True} if get_all else {}
-        ).json()
-        return list_of_dictionaries
+    def _get_list_of_logs_from_drone(self, get_all: bool, timeout: float = HTTP_TIMEOUT):
+        response = requests.get(
+            "http://" + self.ip + "/logcsv",
+            params={"all": True} if get_all else {},
+            timeout=timeout,
+        )
+        response.raise_for_status()
+        return response.json()
 
     def _build_log_files_from_dictionary(self, list_of_logs_in_dictionaries):
         loglist = {}
@@ -518,20 +610,21 @@ class LegacyLogs:
                 )
         return loglist
 
-    def refresh_log_index(self, get_all_logs=False):
+    def refresh_log_index(self, get_all_logs=False, timeout: float = HTTP_TIMEOUT):
         """Refresh the log index from the drone
 
         This is method is run on the first log access by default, but if you would like to check
         for new log files it can be called at any time.
 
         Pass with `get_all_logs=True` to include logs that are not classified as dives.
+        `timeout` is the seconds to wait for the drone to answer.
         """
         if not self._parent_drone.connected:
             raise ConnectionError(
                 "The connection to the drone is not established, try calling the connect method "
                 "before retrying"
             )
-        list_of_logs_in_dictionaries = self._get_list_of_logs_from_drone(get_all_logs)
+        list_of_logs_in_dictionaries = self._get_list_of_logs_from_drone(get_all_logs, timeout)
         self._logs = self._build_log_files_from_dictionary(list_of_logs_in_dictionaries)
         self.index_downloaded = True
 

@@ -120,7 +120,14 @@ def _filter_logs(args, log_files) -> list:
 
 def _log_rows(logs, args) -> list:
     """The drone's logs, filtered and sorted descending alphabetically."""
-    log_files = friendly_errors(lambda: list(logs))
+
+    def fetch():
+        # Fetch the index with the user's --timeout. Iterating the index straight away would
+        # fetch it with the SDK default instead.
+        logs.refresh_log_index(timeout=args.timeout)
+        return list(logs)
+
+    log_files = friendly_errors(fetch)
     return sorted(_filter_logs(args, log_files), key=lambda log: log.name, reverse=True)
 
 
@@ -202,10 +209,24 @@ def _download_logs(
             bez_path = output_dir / f"{log.name}.bez"
             mcap_path = output_dir / f"{log.name}.mcap"
             with console.status(f"[cyan]Converting {log.name} to .mcap..."):
-                message_count = convert_bez_to_mcap(bez_path, mcap_path)
+                summary = convert_bez_to_mcap(bez_path, mcap_path)
             console.print(
-                f"Converted to {mcap_path.name} ({message_count} messages) — open it in " "Foxglove"
+                f"Converted to {mcap_path.name} ({summary.message_count} messages) — open it in "
+                "Foxglove"
             )
+            _print_unknown_types(console, summary)
+
+
+def _print_unknown_types(console, summary) -> None:
+    """One line about records written raw because this SDK does not know their type."""
+    if not summary.unknown_types:
+        return
+    count = sum(summary.unknown_types.values())
+    names = ", ".join(sorted(url.rsplit("/", 1)[-1] for url in summary.unknown_types))
+    console.print(
+        f"[yellow]{count} records of types this SDK cannot decode were written raw: {names}. "
+        "Upgrade blueye.protocol to decode them.[/yellow]"
+    )
 
 
 def _run_convert(console, args) -> int:
@@ -225,8 +246,11 @@ def _run_convert(console, args) -> int:
     for bez_path in inputs:
         mcap_path = (output_dir or bez_path.parent) / f"{bez_path.stem}.mcap"
         with console.status(f"[cyan]Converting {bez_path.name}..."):
-            message_count = convert_bez_to_mcap(bez_path, mcap_path)
-        console.print(f"Converted {bez_path.name} to {mcap_path} ({message_count} messages)")
+            summary = convert_bez_to_mcap(bez_path, mcap_path)
+        console.print(
+            f"Converted {bez_path.name} to {mcap_path} ({summary.message_count} messages)"
+        )
+        _print_unknown_types(console, summary)
     return 0
 
 
