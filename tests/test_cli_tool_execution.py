@@ -1,4 +1,5 @@
 import json
+import shutil
 import sys
 
 import pytest
@@ -16,7 +17,9 @@ def tools_dir(tmp_path, monkeypatch):
 
 
 def write_tool(tools_dir, name, body, dependencies=False):
-    deps_line = '# dependencies = ["nonexistent-package"]\n' if dependencies else ""
+    deps_line = '# dependencies = ["nonexistent-package"]\n' if dependencies is True else ""
+    if isinstance(dependencies, list):
+        deps_line = f"# dependencies = {json.dumps(dependencies)}\n"
     (tools_dir / f"{name}.py").write_text(
         "# /// script\n"
         + deps_line
@@ -71,12 +74,25 @@ class TestUvPreference:
         write_tool(tools_dir, "uv-tool", "pass\n", dependencies=dependencies)
         return discovery.discover_tools()["uv-tool"]
 
-    def test_uv_used_for_scripts_with_dependencies(self, tools_dir, mocker):
+    def test_uv_layers_dependencies_on_the_cli_interpreter(self, tools_dir, mocker):
+        """Regression guard for #270: the tool must run on sys.executable (so it can
+        import the CLI's blueye.sdk), with the declared dependencies layered on top."""
         tool = self._tool(tools_dir, dependencies=True)
         mocker.patch("shutil.which", return_value="/usr/bin/uv")
         run = mocker.patch("subprocess.run", return_value=mocker.Mock(returncode=0))
         assert execution.run_tool(tool, ["-x"]) == 0
-        assert run.call_args[0][0] == ["uv", "run", str(tool.path), "-x"]
+        assert run.call_args[0][0] == [
+            "uv",
+            "run",
+            "--no-project",
+            "--python",
+            sys.executable,
+            "--with-requirements",
+            str(tool.path),
+            "python",
+            str(tool.path),
+            "-x",
+        ]
 
     def test_interpreter_used_without_uv(self, tools_dir, mocker):
         tool = self._tool(tools_dir, dependencies=True)
@@ -91,6 +107,22 @@ class TestUvPreference:
         run = mocker.patch("subprocess.run", return_value=mocker.Mock(returncode=0))
         execution.run_tool(tool, [])
         assert run.call_args[0][0] == [sys.executable, str(tool.path)]
+
+    @pytest.mark.skipif(shutil.which("uv") is None, reason="uv is not installed")
+    def test_tool_with_dependencies_imports_the_sdk_under_uv(self, tools_dir, tmp_path):
+        """End-to-end #270 check with the real uv. The declared dependency is one the
+        SDK already pulls in, so the run needs no network."""
+        out_file = tmp_path / "sdk.json"
+        write_tool(
+            tools_dir,
+            "sdk-tool",
+            "import json, sys\n"
+            "import blueye.sdk, tabulate\n"
+            f"open({str(out_file)!r}, 'w').write(json.dumps(sys.argv[1:]))\n",
+            dependencies=["tabulate"],
+        )
+        assert main(["sdk-tool", "--flag", "x"]) == 0
+        assert json.loads(out_file.read_text()) == ["--flag", "x"]
 
 
 class TestMinSdkVersionWarning:

@@ -41,7 +41,7 @@ _TOOL_SECTION = re.compile(r"(?ms)^\[tool\.blueye\]\s*$(?P<body>.*?)(?=^\[|\Z)")
 _STRING_KEY = re.compile(r'(?m)^([A-Za-z0-9_-]+)\s*=\s*"([^"]*)"\s*$')
 
 #: Presence check for a top-level PEP 723 `dependencies` key (the value itself is
-#: never needed — `uv run` re-parses the block).
+#: never needed — uv re-parses the block when it layers the dependencies).
 _HAS_DEPS = re.compile(r"(?m)^dependencies\s*=")
 
 #: Tool names must be usable as `blueye <name>`: lowercase, digits, hyphens, starting
@@ -63,8 +63,8 @@ class ToolMetadata:
         min_sdk_version: Optional minimum blueye.sdk version; mismatches warn at
             dispatch time but never block execution.
         has_dependencies: True when the PEP 723 block declares `dependencies` —
-            execution then prefers ``uv run`` so the script gets an isolated
-            environment.
+            execution then asks uv (when available) to layer them on top of the
+            CLI's environment.
         parsed_with_fallback: True when the regex fallback (not a real TOML parser)
             produced this metadata.
     """

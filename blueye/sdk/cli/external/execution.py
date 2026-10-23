@@ -49,10 +49,12 @@ def _warn_min_sdk_version(tool: DiscoveredTool) -> None:
 def run_tool(tool: DiscoveredTool, args: list[str]) -> int:
     """Run a discovered tool as a subprocess and return its exit code.
 
-    Scripts that declare PEP 723 `dependencies` are run with ``uv run`` when uv is
-    available, giving them an isolated environment with those dependencies; otherwise
-    the current interpreter runs the script directly (its dependencies may already be
-    importable here).
+    The tool always runs on the CLI's own interpreter, so it can import the same
+    ``blueye.sdk`` the CLI runs on (and anything else installed next to it). When the
+    script declares PEP 723 ``dependencies`` and uv is available, uv layers those
+    packages on top of this environment (``uv run --with-requirements``); they live in
+    uv's cache and nothing is installed into the CLI's environment. Without uv, the
+    declared dependencies must already be importable here.
 
     Args:
         tool: The tool to run (must have valid metadata).
@@ -61,7 +63,18 @@ def run_tool(tool: DiscoveredTool, args: list[str]) -> int:
     _warn_min_sdk_version(tool)
 
     if tool.metadata.has_dependencies and shutil.which("uv") is not None:
-        command = ["uv", "run", str(tool.path), *args]
+        command = [
+            "uv",
+            "run",
+            "--no-project",
+            "--python",
+            sys.executable,
+            "--with-requirements",
+            str(tool.path),
+            "python",
+            str(tool.path),
+            *args,
+        ]
     else:
         if tool.metadata.has_dependencies:
             logger.debug(
