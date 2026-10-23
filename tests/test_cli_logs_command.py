@@ -4,7 +4,9 @@ from blueye.sdk.cli.main import main
 from blueye.sdk.logs import LogFile
 
 
-def make_log(name: str, start_time: int, filesize: int = 2048, is_dive: bool = True) -> LogFile:
+def make_log(
+    name: str, start_time: int, filesize: int = 2048, is_dive: bool = True, is_open: bool = False
+) -> LogFile:
     return LogFile(
         name=name,
         is_dive=is_dive,
@@ -12,6 +14,7 @@ def make_log(name: str, start_time: int, filesize: int = 2048, is_dive: bool = T
         start_time=start_time,
         max_depth_magnitude=20,
         ip="192.168.1.101",
+        is_open=is_open,
     )
 
 
@@ -107,6 +110,70 @@ class TestDownload:
     def test_latest_negative_errors(self, drone, capsys):
         assert main(["logs", "download", "--latest", "-1"]) == 1
         assert "--latest must be a positive number" in capsys.readouterr().err
+
+
+class TestOpenLog:
+    """The drone is always writing one log while powered on; --latest must not pick it."""
+
+    @pytest.fixture
+    def drone_with_open_log(self, drone):
+        drone.logs = drone.logs + [
+            make_log("BYEDP000000_aaaa_00002", start_time=1700200000, is_dive=False, is_open=True)
+        ]
+        return drone
+
+    def test_latest_skips_open_log(self, drone_with_open_log, tmp_path, capsys):
+        assert main(["logs", "download", "--latest", "1", "-o", str(tmp_path)]) == 0
+        LogFile.download.assert_called_once()
+        assert LogFile.download.call_args.args[0].name == "BYEDP000000_aaaa_00001"
+        out = capsys.readouterr().out
+        assert "Skipping BYEDP000000_aaaa_00002" in out
+        assert "still writing" in out
+
+    def test_latest_counts_finished_logs_only(self, drone_with_open_log, tmp_path):
+        assert main(["logs", "download", "--latest", "2", "-o", str(tmp_path)]) == 0
+        names = [call.args[0].name for call in LogFile.download.call_args_list]
+        assert names == ["BYEDP000000_aaaa_00001", "BYEDP000000_aaaa_00000"]
+
+    def test_latest_with_only_open_logs_errors(self, drone, capsys):
+        drone.logs = [make_log("BYEDP000000_aaaa_00000", start_time=1700000000, is_open=True)]
+        assert main(["logs", "download", "--latest", "1"]) == 1
+        assert "still being written" in capsys.readouterr().err
+        LogFile.download.assert_not_called()
+
+    def test_open_log_downloads_by_name(self, drone_with_open_log, tmp_path):
+        assert main(["logs", "download", "BYEDP000000_aaaa_00002", "-o", str(tmp_path)]) == 0
+        assert LogFile.download.call_args.args[0].name == "BYEDP000000_aaaa_00002"
+
+    def test_all_includes_open_log(self, drone_with_open_log, tmp_path):
+        assert main(["logs", "download", "--all", "-o", str(tmp_path)]) == 0
+        assert LogFile.download.call_count == 3
+
+    def test_list_marks_open_log(self, drone_with_open_log, capsys):
+        assert main(["logs", "list"]) == 0
+        out = capsys.readouterr().out
+        assert "OPEN" in out
+        open_row = next(line for line in out.splitlines() if "BYEDP000000_aaaa_00002" in line)
+        assert open_row.rstrip().endswith("yes")
+        finished_row = next(line for line in out.splitlines() if "BYEDP000000_aaaa_00001" in line)
+        assert finished_row.rstrip().endswith("no")
+
+    def test_interactive_rows_tag_open_log(self, drone_with_open_log, mocker):
+        seen_choices = []
+
+        class FakePrompter:
+            def checkbox(self, question, choices, flag):
+                seen_choices.extend(choices)
+                return []
+
+        mocker.patch("sys.stdin.isatty", return_value=True)
+        mocker.patch("sys.stdout.isatty", return_value=True)
+        mocker.patch("blueye.sdk.cli.prompts.QuestionaryPrompter", return_value=FakePrompter())
+        assert main(["logs"]) == 0
+        open_row = next(row for row in seen_choices if "BYEDP000000_aaaa_00002" in row)
+        assert open_row.endswith("open")
+        dive_row = next(row for row in seen_choices if "BYEDP000000_aaaa_00000" in row)
+        assert dive_row.endswith("dive")
 
 
 class TestFailureHandling:
