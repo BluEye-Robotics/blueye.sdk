@@ -92,7 +92,7 @@ def Logs_object_with_two_logs(requests_mock, mocker):
                 "has_binlog": True,
                 "has_dive_info": True,
                 "is_dive": True,
-                "is_open": False,
+                "is_open": True,
                 "log_number": 2,
                 "name": "BYEDP123456_aabbccddeeff1234_00002",
                 "videos": [
@@ -151,6 +151,31 @@ def Logs_object_with_two_logs(requests_mock, mocker):
 
 def test_logs_len_return_two(Logs_object_with_two_logs):
     assert len(Logs_object_with_two_logs) == 2
+
+
+def test_logs_index_reads_is_open(Logs_object_with_two_logs):
+    assert Logs_object_with_two_logs[0].is_open is False
+    assert Logs_object_with_two_logs[1].is_open is True
+
+
+def test_logs_index_defaults_is_open_to_false(requests_mock, mocker):
+    """Indexes from older drones have no is_open field."""
+    index = [
+        {
+            "binlog_size": 1024,
+            "has_binlog": True,
+            "is_dive": True,
+            "max_depth_magnitude": 5,
+            "name": "BYEDP123456_aabbccddeeff1234_00001",
+            "start_time": 1690979463,
+        }
+    ]
+    requests_mock.get("http://192.168.1.101/logs", json=index)
+    mocked_drone = mocker.patch(
+        "blueye.sdk.Drone", autospec=True, _ip="192.168.1.101", software_version_short="3.3.0"
+    )
+    mocked_drone.connected = True
+    assert Logs(mocked_drone)[0].is_open is False
 
 
 def test_logs_filter(Logs_object_with_two_logs):
@@ -508,6 +533,48 @@ class TestLogStream:
         # Should raise StopIteration for third record
         with pytest.raises(StopIteration):
             next(log_stream)
+
+
+def make_log_file(is_open: bool) -> LogFile:
+    return LogFile(
+        name="BYEDP123456_aabbccddeeff1234_00001",
+        is_dive=True,
+        filesize=1024,
+        start_time=1690979463,
+        max_depth_magnitude=10,
+        ip="192.168.1.101",
+        is_open=is_open,
+    )
+
+
+class TestLogFileDownloadCache:
+    url = "http://192.168.1.101/logs/BYEDP123456_aabbccddeeff1234_00001/binlog"
+
+    def test_finished_log_is_downloaded_once(self, requests_mock):
+        requests_mock.get(self.url, content=b"finished")
+        log = make_log_file(is_open=False)
+        assert log.download(write_to_file=False) == b"finished"
+        assert log.download(write_to_file=False) == b"finished"
+        assert requests_mock.call_count == 1
+
+    def test_open_log_is_downloaded_every_time(self, requests_mock):
+        requests_mock.get(self.url, [{"content": b"first"}, {"content": b"first and more"}])
+        log = make_log_file(is_open=True)
+        assert log.download(write_to_file=False) == b"first"
+        assert log.download(write_to_file=False) == b"first and more"
+        assert requests_mock.call_count == 2
+
+    def test_open_log_download_warns(self, requests_mock, caplog):
+        requests_mock.get(self.url, content=b"snapshot")
+        with caplog.at_level("WARNING", logger="blueye.sdk.logs"):
+            make_log_file(is_open=True).download(write_to_file=False)
+        assert "still being written" in caplog.text
+
+    def test_finished_log_download_does_not_warn(self, requests_mock, caplog):
+        requests_mock.get(self.url, content=b"finished")
+        with caplog.at_level("WARNING", logger="blueye.sdk.logs"):
+            make_log_file(is_open=False).download(write_to_file=False)
+        assert caplog.text == ""
 
 
 class TestLogFileParseToStream:

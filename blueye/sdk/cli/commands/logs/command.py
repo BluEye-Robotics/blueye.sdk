@@ -63,7 +63,10 @@ def add_parser(subparsers) -> None:
         "--latest",
         type=int,
         metavar="N",
-        help="Download the N most recent logs",
+        help=(
+            "Download the N most recent finished logs. The log the drone is writing right "
+            "now is skipped; pass its name to download it anyway"
+        ),
     )
     download.add_argument("--all", action="store_true", help="Download every log")
     download.add_argument(
@@ -127,6 +130,16 @@ _TIME_WIDTH = 18
 _SIZE_WIDTH = 10
 
 
+def _tags(log) -> list:
+    """Short markers for the table rows: a dive, and a log the drone is still writing."""
+    tags = []
+    if log.is_dive:
+        tags.append("dive")
+    if log.is_open:
+        tags.append("open")
+    return tags
+
+
 def _format_row(log) -> str:
     from blueye.sdk.logs import human_readable_filesize
 
@@ -134,7 +147,7 @@ def _format_row(log) -> str:
         f"{log.name.ljust(_NAME_WIDTH)}"
         f"{log.start_time.strftime('%d. %b %Y %H:%M').ljust(_TIME_WIDTH)}"
         f"{human_readable_filesize(log.filesize).ljust(_SIZE_WIDTH)}"
-        f"{'dive' if log.is_dive else ''}"
+        f"{' '.join(_tags(log))}"
     )
 
 
@@ -144,7 +157,7 @@ def _print_logs_table(console, log_files) -> None:
     from blueye.sdk.logs import human_readable_filesize
 
     table = Table(show_header=True, header_style="bold", box=None, pad_edge=False)
-    for column in ("NAME", "TIME", "MAX DEPTH", "SIZE", "DIVE"):
+    for column in ("NAME", "TIME", "MAX DEPTH", "SIZE", "DIVE", "OPEN"):
         table.add_column(column)
     for log in log_files:
         table.add_row(
@@ -153,6 +166,7 @@ def _print_logs_table(console, log_files) -> None:
             f"{log.max_depth_magnitude} m",
             human_readable_filesize(log.filesize),
             "yes" if log.is_dive else "[dim]no[/dim]",
+            "yes" if log.is_open else "[dim]no[/dim]",
         )
     console.print(table)
 
@@ -216,8 +230,13 @@ def _run_convert(console, args) -> int:
     return 0
 
 
-def _select_downloads(args, log_files) -> list:
-    """Resolve the download selection from names/--latest/--all."""
+def _select_downloads(console, args, log_files) -> list:
+    """Resolve the download selection from names/--latest/--all.
+
+    ``--latest`` only counts finished logs. The drone is always writing one log while it is
+    powered on, and that log is usually the newest, so without this the "newest log" after a
+    dive would be the short, still-growing session log rather than the dive.
+    """
     selectors = [bool(args.names), args.latest is not None, args.all]
     if sum(selectors) > 1:
         raise CliError("Pass only one of log names, --latest N, or --all.")
@@ -227,7 +246,19 @@ def _select_downloads(args, log_files) -> list:
     if args.latest is not None:
         if args.latest < 1:
             raise CliError("--latest must be a positive number of logs.")
-        newest_first = sorted(log_files, key=lambda log: log.start_time, reverse=True)
+        open_logs = [log for log in log_files if log.is_open]
+        finished = [log for log in log_files if log not in open_logs]
+        for log in open_logs:
+            console.print(
+                f"Skipping {log.name}: the drone is still writing it. Pass the name to "
+                "download it anyway."
+            )
+        if not finished:
+            raise CliError(
+                "The only logs matching are still being written by the drone. Pass a log "
+                "name to download an open log anyway."
+            )
+        newest_first = sorted(finished, key=lambda log: log.start_time, reverse=True)
         return newest_first[: args.latest]
     if args.names:
         missing = [name for name in args.names if name not in by_name]
@@ -251,7 +282,7 @@ def _run_interactive(console, args, prompter, drone) -> int:
 
     by_row = {_format_row(log): log for log in log_files}
     header = (
-        f"{'NAME'.ljust(_NAME_WIDTH)}{'TIME'.ljust(_TIME_WIDTH)}{'SIZE'.ljust(_SIZE_WIDTH)}DIVE"
+        f"{'NAME'.ljust(_NAME_WIDTH)}{'TIME'.ljust(_TIME_WIDTH)}{'SIZE'.ljust(_SIZE_WIDTH)}TAGS"
     )
     console.print(f"[bold]  {header}[/bold]")
     selected = prompter.checkbox(
@@ -295,7 +326,7 @@ def run(args: argparse.Namespace) -> int:
     try:
         if action == "download":
             log_files = _log_rows(drone.logs, args)
-            selection = _select_downloads(args, log_files)
+            selection = _select_downloads(console, args, log_files)
             _download_logs(
                 console,
                 selection,
