@@ -482,20 +482,20 @@ class Logs:
 
 class LegacyLogFile:
     """
-    This class is a container for a log file stored on the drone
+    This class is a container for a legacy CSV log file stored on the drone
 
     The drone lists the file name, max depth, start time, and file size for each log,
     and you can show this information by printing the log object, eg. on a Drone
     object called `myDrone`:
 
     ```
-    print(myDrone.logs[0])
+    print(myDrone.legacy_logs[0])
     ```
 
     or, if you want to display the header you can format the object with `with_header`:
 
     ```
-    print(f"{myDrone.logs[0]:with_header}")
+    print(f"{myDrone.legacy_logs[0]:with_header}")
     ```
 
     Calling the download() method on a log object will pull the CSV (Comma Separated
@@ -574,9 +574,9 @@ class LegacyLogs:
     name and maxdepth.
 
     You can access logfile objects either by index or by name. Eg. if you want the first
-    logfile in the list you can do `myDrone.logs[0]`, or if you want some particular log you
-    can do `myDrone.logs["exampleName0001.csv"]`. You can even give it a slice, so if you want
-    the last 10 logs you can do `myDrone.logs[-10:]`.
+    logfile in the list you can do `myDrone.legacy_logs[0]`, or if you want some particular
+    log you can do `myDrone.legacy_logs["exampleName0001.csv"]`. You can even give it a
+    slice, so if you want the last 10 logs you can do `myDrone.legacy_logs[-10:]`.
     """
 
     def __init__(self, parent_drone, auto_download_index=False):
