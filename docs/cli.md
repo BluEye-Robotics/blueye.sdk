@@ -155,8 +155,9 @@ The command connects to the drone as an observer — taking no control:
 
 ```shell
 blueye logs list                       # table of logs on the drone
-blueye logs download --latest 1        # newest log to the current directory
+blueye logs download --latest 1        # newest finished log to the current directory
 blueye logs download --latest 1 --mcap # ...and convert it for Foxglove
+blueye logs download --latest 1 --dives-only  # newest dive, skipping power-on logs
 blueye logs download BYEDP000000_ea9ac92e1817a1d4_00002 -o ~/dives
 blueye logs convert mydive.bez         # convert an already-downloaded log (no drone)
 blueye logs                            # interactive: pick logs to download
@@ -165,6 +166,10 @@ blueye logs                            # interactive: pick logs to download
 `list`, `download`, and the interactive view accept `--dives-only`, `--since
 YYYY-MM-DD`, and `--until YYYY-MM-DD` to narrow the selection; the interactive view
 is a single scrollable table (type to filter, space to select, sorted newest first).
+The drone writes a new log from power-on to power-off, so one log is always open
+while you are connected. `--latest` skips it and says so; `list` and the interactive
+view mark it as open. Pass its name to download it anyway, knowing the file stops at
+the drone's last flush.
 `--mcap` converts each downloaded log to a Foxglove-ready `.mcap` next to the
 `.bez` — `blueye logs convert` does the same for files already on disk. See
 [visualizing dive logs with Foxglove](logs/foxglove-bez-to-mcap.md).

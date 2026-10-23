@@ -5,11 +5,15 @@ With some simple steps you can visualize dive log data with ease in Foxglove. Th
 1. Download Foxglove [here](https://foxglove.dev/download) and create an account.
 2. Install the SDK with the `cli` extra to get the [`blueye` CLI](../cli.md) and the
    `.mcap` converter: `pip install "blueye.sdk[cli]"`.
-3. Download a dive log from the drone and convert it in one step:
+3. Download the newest dive log from the drone and convert it in one step:
 
     ```shell
-    blueye logs download --latest 1 --mcap
+    blueye logs download --latest 1 --dives-only --mcap
     ```
+
+    `--latest` skips the log the drone is writing right now, and `--dives-only` skips
+    logs the drone did not count as dives: ones where it never went deeper than 25 cm
+    and no auto function was used, such as a power-on at the desk.
 
     Already have `.bez` files on disk? Convert them directly — no drone needed:
 
