@@ -33,12 +33,13 @@ dependencies = [
 blueye = "blueye.sdk.cli:main"
 
 [project.optional-dependencies]
-# Heavyweight dependencies for `blueye bundle-model` (ONNX model introspection).
-# The rest of the CLI works without this extra. Install with:
-# pip install "blueye.sdk[cli]"
+# Optional CLI dependencies. The commands that need them print the install command
+# (pip install "blueye.sdk[cli]") when they are missing; the rest of the CLI works
+# without this extra.
 cli = [
+    # ONNX model introspection (`blueye bundle-model`).
     "onnx>=1.16,<2",
-    # .bez -> .mcap conversion (`blueye logs download --mcap`).
+    # .bez -> .mcap conversion (`blueye logs download --mcap`, `blueye logs convert`).
     "mcap-protobuf-support>=0.5.3,<0.6",
 ]
 # These are dependencies that are not necessary for the core functionality of the SDK, but are

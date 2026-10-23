@@ -26,8 +26,8 @@ def add_parser(subparsers) -> None:
         description=(
             "Manage third-party blueye tools: single-file Python scripts with PEP 723 "
             "inline metadata, discovered from the tools directory and run as "
-            "`blueye <tool-name> ...`. See the 'Extending the blueye CLI' documentation "
-            "for how to write one."
+            "`blueye <tool-name> ...`. See the 'Third-party tools' section of the CLI "
+            "documentation for how to write one."
         ),
     )
     tools_subparsers = parser.add_subparsers(dest="tools_command", metavar="ACTION")

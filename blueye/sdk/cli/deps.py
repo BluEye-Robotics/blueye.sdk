@@ -1,9 +1,9 @@
 """Optional-dependency detection and install guidance for the `blueye` CLI.
 
-This module must only import from the standard library: it runs precisely when the
-optional `[cli]` extra (the heavyweight onnx dependency used by `bundle-model`) is
-not installed, and its job is to tell the user how to install it on their platform
-instead of failing with an ImportError.
+This module must only import from the standard library: it runs precisely when a
+package from the optional `[cli]` extra is not installed (onnx for `bundle-model`,
+mcap-protobuf-support for the .mcap conversion in `logs`), and its job is to tell the
+user how to install the extra on their platform instead of failing with an ImportError.
 """
 
 from __future__ import annotations
@@ -48,7 +48,7 @@ def print_install_guidance(missing: list[str]) -> None:
     Uses plain print() on purpose: rich may itself be one of the missing packages.
 
     Args:
-        missing: The import names reported by :func:`missing_cli_deps`.
+        missing: The import names reported by :func:`missing`.
     """
     print()
     print("The `blueye` CLI needs a few extra packages that are not installed:")
