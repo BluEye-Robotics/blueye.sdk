@@ -333,14 +333,13 @@ becomes the CLI's exit code. Invocation is strictly `blueye <tool-name> args...`
 command, so `blueye.sdk` and everything installed next to it are importable without
 being listed. Packages the tool needs beyond that go in the PEP 723 `dependencies`
 list. When [uv](https://docs.astral.sh/uv/) is installed, the CLI runs the tool as
-`uv run --with-requirements <script> python <script>`: uv puts the listed packages in
-a cached environment layered on top of the CLI's own, without installing anything into
-it. The first run of a tool downloads its packages, so do that before heading out on the
+`uv run --with <package> ... python <script>`: uv puts the listed packages in a cached
+environment layered on top of the CLI's own, without installing anything into it. The first run of a tool downloads its packages, so do that before heading out on the
 drone's Wi-Fi; later runs come from uv's cache. A package the CLI's environment already
 satisfies is never downloaded. Without uv, the listed packages must already be
 installed next to the SDK (`pip install pandas` into the same environment). The tool's
 `requires-python` is not enforced; the interpreter is the CLI's. uv's own
-`[tool.uv.sources]` table in the script is not applied either; dependencies come from
+`[tool.uv.sources]` table in the script is not read either; dependencies come from
 the package index.
 
 ### Installing and managing tools

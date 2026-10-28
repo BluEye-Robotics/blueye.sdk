@@ -57,11 +57,26 @@ class TestParseToolMetadata:
         assert parsed.name == "export-logs"
         assert parsed.description == "Export dive logs to CSV"
         assert parsed.min_sdk_version == "2.7.0"
+        assert parsed.dependencies == ("pandas",)
         assert parsed.has_dependencies is True
         assert parsed.parsed_with_fallback is False
 
     def test_no_dependencies_detected(self):
-        assert parse_tool_metadata(NO_DEPS_SCRIPT).has_dependencies is False
+        parsed = parse_tool_metadata(NO_DEPS_SCRIPT)
+        assert parsed.dependencies == ()
+        assert parsed.has_dependencies is False
+
+    def test_multiline_dependencies_with_markers(self):
+        script = VALID_SCRIPT.replace(
+            '# dependencies = ["pandas"]',
+            '# dependencies = [\n#   "pandas>=2",\n#   "tomli; python_version < \'3.11\'",\n# ]',
+        )
+        parsed = parse_tool_metadata(script)
+        assert parsed.dependencies == ("pandas>=2", "tomli; python_version < '3.11'")
+
+    def test_dependencies_must_be_a_list_of_strings(self):
+        with pytest.raises(MetadataError, match="dependencies"):
+            parse_tool_metadata(VALID_SCRIPT.replace('["pandas"]', '"pandas"'))
 
     def test_missing_block_raises(self):
         with pytest.raises(MetadataError, match="no '# /// script'"):
@@ -108,9 +123,15 @@ class TestFallbackParser:
         assert parsed.min_sdk_version == "2.7.0"
         assert parsed.parsed_with_fallback is True
 
-    def test_fallback_detects_dependencies(self):
-        assert parse_tool_metadata(VALID_SCRIPT).has_dependencies is True
-        assert parse_tool_metadata(NO_DEPS_SCRIPT).has_dependencies is False
+    def test_fallback_reads_dependencies(self):
+        assert parse_tool_metadata(VALID_SCRIPT).dependencies == ("pandas",)
+        assert parse_tool_metadata(NO_DEPS_SCRIPT).dependencies == ()
+
+    def test_fallback_reads_multiline_dependencies(self):
+        script = VALID_SCRIPT.replace(
+            '# dependencies = ["pandas"]', '# dependencies = [\n#   "pandas>=2",\n#   "rich",\n# ]'
+        )
+        assert parse_tool_metadata(script).dependencies == ("pandas>=2", "rich")
 
     def test_fallback_missing_table_raises(self):
         script = '# /// script\n# requires-python = ">=3.10"\n# ///\n'

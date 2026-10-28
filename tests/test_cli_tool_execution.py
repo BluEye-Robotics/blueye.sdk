@@ -76,8 +76,10 @@ class TestUvPreference:
 
     def test_uv_layers_dependencies_on_the_cli_interpreter(self, tools_dir, mocker):
         """Regression guard for #270: the tool must run on sys.executable (so it can
-        import the CLI's blueye.sdk), with the declared dependencies layered on top."""
-        tool = self._tool(tools_dir, dependencies=True)
+        import the CLI's blueye.sdk), with the declared dependencies layered on top.
+        Each requirement is a --with option; --with-requirements <script> needs
+        uv 0.9 or newer."""
+        tool = self._tool(tools_dir, dependencies=["nonexistent-package", "other>=1"])
         mocker.patch("shutil.which", return_value="/usr/bin/uv")
         run = mocker.patch("subprocess.run", return_value=mocker.Mock(returncode=0))
         assert execution.run_tool(tool, ["-x"]) == 0
@@ -87,8 +89,10 @@ class TestUvPreference:
             "--no-project",
             "--python",
             sys.executable,
-            "--with-requirements",
-            str(tool.path),
+            "--with",
+            "nonexistent-package",
+            "--with",
+            "other>=1",
             "python",
             str(tool.path),
             "-x",

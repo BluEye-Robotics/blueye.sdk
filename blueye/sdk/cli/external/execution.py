@@ -52,8 +52,10 @@ def run_tool(tool: DiscoveredTool, args: list[str]) -> int:
     The tool always runs on the CLI's own interpreter, so it can import the same
     ``blueye.sdk`` the CLI runs on (and anything else installed next to it). When the
     script declares PEP 723 ``dependencies`` and uv is available, uv layers those
-    packages on top of this environment (``uv run --with-requirements``); they live in
-    uv's cache and nothing is installed into the CLI's environment. Without uv, the
+    packages on top of this environment (``uv run --with <requirement>`` for each);
+    they live in uv's cache and nothing is installed into the CLI's environment. The
+    requirements are passed one by one rather than via ``--with-requirements
+    <script>``, which only reads PEP 723 scripts from uv 0.9 on. Without uv, the
     declared dependencies must already be importable here.
 
     Args:
@@ -63,14 +65,18 @@ def run_tool(tool: DiscoveredTool, args: list[str]) -> int:
     _warn_min_sdk_version(tool)
 
     if tool.metadata.has_dependencies and shutil.which("uv") is not None:
+        with_options = [
+            option
+            for requirement in tool.metadata.dependencies
+            for option in ("--with", requirement)
+        ]
         command = [
             "uv",
             "run",
             "--no-project",
             "--python",
             sys.executable,
-            "--with-requirements",
-            str(tool.path),
+            *with_options,
             "python",
             str(tool.path),
             *args,
