@@ -13,6 +13,9 @@ A callback is removed with [`remove_msg_callback`][blueye.sdk.drone.Telemetry.re
 ## Adjusting the publishing frequency of a telemetry message
 By using the [`set_msg_publish_frequency`][blueye.sdk.drone.Telemetry.set_msg_publish_frequency] function we can alter how often the drone should publish the specified telemetry message. The valid frequency range is 0 to 100 Hz.
 
+## Adjusting the logging frequency of a telemetry message
+The drone writes telemetry to the dive log at its own rate, separate from the publish rate. [`set_msg_log_frequency`][blueye.sdk.drone.Telemetry.set_msg_log_frequency] changes how often a message is logged, for example to get IMU or DVL data at a higher rate in the log without sending it to every client at that rate. It requires Blunux 5.1 or newer and takes the same frequency range as the publish frequency.
+
 ## Example
 The following example illustrates how can use a callback to print the depth reported by the drone.
 
