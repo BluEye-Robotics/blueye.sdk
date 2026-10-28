@@ -24,3 +24,12 @@ def test_deserialize_any_to_message():
     expected_message = blueye.sdk.utils.deserialize_any_to_message(any_message)
     assert expected_message[0] == bp.DepthTel
     assert expected_message[1] == message
+
+
+def test_event_driven_telemetry_lists_telemetry_messages():
+    from blueye.sdk.constants import EVENT_DRIVEN_TELEMETRY
+
+    assert EVENT_DRIVEN_TELEMETRY
+    for message in EVENT_DRIVEN_TELEMETRY:
+        assert message.meta.full_name.startswith("blueye.protocol.")
+        assert message.meta.full_name.endswith("Tel")

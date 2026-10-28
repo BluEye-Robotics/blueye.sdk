@@ -322,6 +322,44 @@ class TestTelemetry:
         assert mocked_drone.telemetry.get(bp.DepthTel, deserialize=True) == depth_tel
         assert mocked_drone.telemetry.get(bp.DepthTel, deserialize=False) == depth_tel_serialized
 
+    def test_set_msg_publish_frequency_sends_request(self, mocked_drone):
+        mocked_drone._req_rep_client.set_telemetry_msg_publish_frequency.return_value = (
+            bp.SetPubFrequencyRep(success=True)
+        )
+        mocked_drone.telemetry.set_msg_publish_frequency(bp.DepthTel, 5)
+        mocked_drone._req_rep_client.set_telemetry_msg_publish_frequency.assert_called_once_with(
+            bp.DepthTel, 5
+        )
+
+    @pytest.mark.parametrize("frequency", [0, -1, 100.5, float("nan")])
+    def test_set_msg_publish_frequency_rejects_frequency_outside_range(
+        self, mocked_drone, frequency
+    ):
+        with pytest.raises(ValueError, match="greater than 0 and at most 100"):
+            mocked_drone.telemetry.set_msg_publish_frequency(bp.DepthTel, frequency)
+        mocked_drone._req_rep_client.set_telemetry_msg_publish_frequency.assert_not_called()
+
+    def test_set_msg_publish_frequency_accepts_range_limits(self, mocked_drone):
+        mocked_drone._req_rep_client.set_telemetry_msg_publish_frequency.return_value = (
+            bp.SetPubFrequencyRep(success=True)
+        )
+        mocked_drone.telemetry.set_msg_publish_frequency(bp.DepthTel, 0.5)
+        mocked_drone.telemetry.set_msg_publish_frequency(bp.DepthTel, 100)
+
+    def test_set_msg_publish_frequency_explains_event_driven_message(self, mocked_drone):
+        mocked_drone._req_rep_client.set_telemetry_msg_publish_frequency.return_value = (
+            bp.SetPubFrequencyRep(success=False)
+        )
+        with pytest.raises(RuntimeError, match="LaserTel.*not on a timer"):
+            mocked_drone.telemetry.set_msg_publish_frequency(bp.LaserTel, 5)
+
+    def test_set_msg_publish_frequency_names_message_when_drone_refuses(self, mocked_drone):
+        mocked_drone._req_rep_client.set_telemetry_msg_publish_frequency.return_value = (
+            bp.SetPubFrequencyRep(success=False)
+        )
+        with pytest.raises(RuntimeError, match="publish frequency of ThicknessGaugeTel"):
+            mocked_drone.telemetry.set_msg_publish_frequency(bp.ThicknessGaugeTel, 5)
+
     def test_set_msg_log_frequency_sends_request(self, mocked_drone):
         mocked_drone.software_version_short = "5.1.0"
         mocked_drone._req_rep_client.set_telemetry_msg_log_frequency.return_value = (
@@ -337,8 +375,14 @@ class TestTelemetry:
         mocked_drone._req_rep_client.set_telemetry_msg_log_frequency.return_value = (
             bp.SetLogFrequencyRep(success=False)
         )
-        with pytest.raises(RuntimeError):
+        with pytest.raises(RuntimeError, match="log frequency of Imu1Tel"):
             mocked_drone.telemetry.set_msg_log_frequency(bp.Imu1Tel, 50)
+
+    def test_set_msg_log_frequency_rejects_frequency_outside_range(self, mocked_drone):
+        mocked_drone.software_version_short = "5.1.0"
+        with pytest.raises(ValueError, match="greater than 0 and at most 100"):
+            mocked_drone.telemetry.set_msg_log_frequency(bp.Imu1Tel, 0)
+        mocked_drone._req_rep_client.set_telemetry_msg_log_frequency.assert_not_called()
 
     def test_set_msg_log_frequency_requires_blunux_5_1(self, mocked_drone):
         mocked_drone.software_version_short = "5.0.30"

@@ -431,6 +431,15 @@ class CtrlClient(threading.Thread):
         self._messages_to_send.put(msg)
 
 
+def message_type_name(msg: proto.message.MessageMeta | str) -> str:
+    """Return the short name of a message type, as the drone's requests expect it.
+
+    Both `blueye.protocol.DepthTel` and `"blueye.protocol.DepthTel"` give `"DepthTel"`.
+    """
+    full_name = msg.meta.full_name if type(msg) is proto.message.MessageMeta else msg
+    return full_name.replace("blueye.protocol.", "")
+
+
 class ReqRepClient(threading.Thread):
     """A thread that handles request-reply messages to and from the drone."""
 
@@ -476,12 +485,7 @@ class ReqRepClient(threading.Thread):
         Returns:
             str: The parsed message type as a string.
         """
-        message_type = (
-            msg.meta.full_name.replace("blueye.protocol.", "")
-            if type(msg) is proto.message.MessageMeta
-            else msg.replace("blueye.protocol.", "")
-        )
-        return message_type
+        return message_type_name(msg)
 
     def run(self):
         """Run the request-reply client thread."""

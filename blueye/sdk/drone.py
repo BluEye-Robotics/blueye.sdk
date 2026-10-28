@@ -15,8 +15,14 @@ from packaging import version
 
 from .battery import Battery
 from .camera import Camera
-from .connection import CtrlClient, ReqRepClient, TelemetryClient, WatchdogPublisher
-from .constants import JETSON_MODELS, WaterDensities
+from .connection import (
+    CtrlClient,
+    ReqRepClient,
+    TelemetryClient,
+    WatchdogPublisher,
+    message_type_name,
+)
+from .constants import EVENT_DRIVEN_TELEMETRY, JETSON_MODELS, WaterDensities
 from .guestport import (
     GenericServo,
     Gripper,
@@ -100,6 +106,9 @@ class _NoConnectionClient:
         return method
 
 
+_EVENT_DRIVEN_TELEMETRY_NAMES = frozenset(message_type_name(msg) for msg in EVENT_DRIVEN_TELEMETRY)
+
+
 class Telemetry:
     """Handles the telemetry messages for the Blueye drone."""
 
@@ -111,48 +120,85 @@ class Telemetry:
         """
         self._parent_drone = parent_drone
 
+    @staticmethod
+    def _check_frequency(frequency: float):
+        """Reject a frequency the drone would refuse before sending the request."""
+        if not 0 < frequency <= 100:
+            raise ValueError(
+                f"Frequency must be greater than 0 and at most 100 Hz, got {frequency}"
+            )
+
     def set_msg_publish_frequency(self, msg: proto.message.Message, frequency: float):
         """Set the publishing frequency of a specific telemetry message.
+
+        The drone has one telemetry publisher shared by every connected client, so the new rate
+        also applies to the Blueye app and any other SDK client, and it stays in effect until the
+        drone reboots. Set the rate back before exiting if other clients depend on it.
+
+        Only messages the drone publishes on a timer have a publish frequency. The messages in
+        [`EVENT_DRIVEN_TELEMETRY`][blueye.sdk.constants.EVENT_DRIVEN_TELEMETRY] are published
+        when their data arrives, and messages from peripherals are only published while the
+        peripheral is connected.
 
         Args:
             msg (proto.message.Message): The message to set the frequency of. Needs to be one of the
                                          messages in blueye.protocol that end in Tel, e.g.,
                                          blueye.protocol.DepthTel.
-            frequency (float): The frequency in Hz. Valid range is (0 .. 100).
+            frequency (float): The frequency in Hz. Must be greater than 0 and at most 100.
 
         Raises:
+            ValueError: If the frequency is not greater than 0 and at most 100 Hz.
             RuntimeError:
-                If the drone fails to set the frequency.  Possible causes could be a frequency
-                outside the valid range, or an incorrect message type.
+                If the drone refuses to change the frequency, because the message is published
+                when its data arrives rather than on a timer, or because the connected drone does
+                not publish it.
         """
+        self._check_frequency(frequency)
         resp = self._parent_drone._req_rep_client.set_telemetry_msg_publish_frequency(
             msg, frequency
         )
         if not resp.success:
-            raise RuntimeError("Could not set telemetry message frequency")
+            name = message_type_name(msg)
+            if name in _EVENT_DRIVEN_TELEMETRY_NAMES:
+                raise RuntimeError(
+                    f"The drone publishes {name} when its data arrives, not on a timer, so its "
+                    "publish frequency cannot be changed"
+                )
+            raise RuntimeError(
+                f"The drone could not change the publish frequency of {name}. Either it is not a "
+                "telemetry message, or this drone does not publish it: messages from peripherals "
+                "are only published while the peripheral is connected"
+            )
 
     def set_msg_log_frequency(self, msg: proto.message.Message, frequency: float):
         """Set how often a specific telemetry message is written to the dive log.
 
         The log frequency is independent of the publish frequency, so a message can be logged at a
-        higher rate than it is published to clients, or the other way around.
+        higher rate than it is published to clients, or the other way around. Like the publish
+        frequency it is shared by every client and stays in effect until the drone reboots.
 
         Args:
             msg (proto.message.Message): The message to set the log frequency of. Needs to be one
                                          of the messages in blueye.protocol that end in Tel, e.g.,
                                          blueye.protocol.Imu1Tel.
-            frequency (float): The frequency in Hz. Valid range is (0 .. 100].
+            frequency (float): The frequency in Hz. Must be greater than 0 and at most 100.
 
         Raises:
+            ValueError: If the frequency is not greater than 0 and at most 100 Hz.
             RuntimeError:
                 If the connected drone is running a Blunux version older than 5.1.0, or if the
-                drone fails to set the frequency. Possible causes could be a frequency outside the
-                valid range, or an incorrect message type.
+                drone refuses to change the log frequency, because the connected drone does not
+                publish the message or logs it as its data arrives rather than on a timer.
         """
         self._parent_drone._verify_required_blunux_version("5.1.0")
+        self._check_frequency(frequency)
         resp = self._parent_drone._req_rep_client.set_telemetry_msg_log_frequency(msg, frequency)
         if not resp.success:
-            raise RuntimeError("Could not set telemetry message log frequency")
+            name = message_type_name(msg)
+            raise RuntimeError(
+                f"The drone could not change the log frequency of {name}. Either this drone does "
+                "not publish it, or it is logged when its data arrives rather than on a timer"
+            )
 
     def add_msg_callback(
         self,
