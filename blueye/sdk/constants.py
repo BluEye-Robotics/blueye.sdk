@@ -12,6 +12,32 @@ controls it offers (no hue control, 60 fps support, main camera calibration publ
 `DroneInfoTel`). `MODEL_NEXT` was a retired prototype and is not included.
 """
 
+EVENT_DRIVEN_TELEMETRY = frozenset(
+    {
+        bp.AquaTrollProbeMetadataTel,
+        bp.AquaTrollSensorMetadataTel,
+        bp.AquaTrollSensorParametersTel,
+        bp.CameraPanTiltZoomTel,
+        bp.ColorCorrectionTel,
+        bp.GnssStatusTel,
+        bp.LaserTel,
+        bp.LogEntryTel,
+        bp.MultibeamConfigTel,
+        bp.MultibeamPingTel,
+        bp.ObjectDetectionsTel,
+        bp.RemovableStorageTel,
+        bp.SotStateTel,
+        bp.TurbidityFilterTel,
+    }
+)
+"""Telemetry messages the drone publishes when their data arrives rather than on a timer.
+
+A new sonar ping, a detection, a changed camera filter or a plugged-in storage device is
+published as it happens, so these messages have no publish frequency and
+[`set_msg_publish_frequency`][blueye.sdk.drone.Telemetry.set_msg_publish_frequency] raises for
+them. Messages from peripherals are also only published while the peripheral is connected.
+"""
+
 
 class WaterDensities:
     """

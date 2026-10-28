@@ -6,9 +6,10 @@ import pytest
 import blueye.sdk
 
 
-@pytest.mark.parametrize("message", [bp.DepthTel, "blueye.protocol.DepthTel"])
+@pytest.mark.parametrize("message", [bp.DepthTel, "blueye.protocol.DepthTel", "DepthTel"])
 def test_parse_to_type(message):
     assert blueye.sdk.connection.ReqRepClient._parse_type_to_string(message) == "DepthTel"
+    assert blueye.sdk.connection.message_type_name(message) == "DepthTel"
 
 
 def test_stop_ends_the_thread_while_waiting_for_a_reply():
