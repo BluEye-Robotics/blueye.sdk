@@ -133,13 +133,13 @@ uv pip install ipython
 ```
 By instantiating a Drone object and using the completion key (normally the `tab-key ↹`), you can get an interactive list of
 the available methods on the drone, making it easy to try setting and getting the different values.
-![`iPython`](https://blueyenostorage.blob.core.windows.net/sdkimages/ipython-exploration.gif)
+![IPython: use Tab completion to discover motion methods and enable auto heading](media/ipython-exploration.gif)
 ///
 
 ### Watching the video stream
 The easiest way to open the RTSP video stream is by using [`VLC media player`](https://www.videolan.org/vlc/index.html).
 Once VLC is downloaded, you can start the stream like this. The RTSP URL is: `rtsp://192.168.1.101:8554/test`
-![text](https://blueyenostorage.blob.core.windows.net/sdkimages/rtsp-in-vlc.gif)
+![VLC: open the drone's RTSP network stream](media/rtsp-in-vlc.gif)
 
 
 For lower latency streaming (on a PC), you can see the instructions on using

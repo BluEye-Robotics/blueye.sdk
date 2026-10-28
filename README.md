@@ -12,7 +12,7 @@ _________________
 A Python package for remote control of the Blueye underwater drones.
 
 
-![SDK demo](https://user-images.githubusercontent.com/8504604/66751230-d05c7e00-ee8e-11e9-91cb-d46b433aafa5.gif)
+![SDK demo: connect with Drone(), set_lights(1.0), and motion.set_surge(0.3)](docs/media/sdk-demo.gif)
 
 ## About Blueye Underwater Drones
 Blueye produces and sells three models of underwater drones, the Blueye Pioneer, Blueye Pro, and Blueye X3. The Pioneer and the Pro are drones designed for inspection, while the X3 is extensible with three guest ports that allow attaching for example grippers or sonars.
