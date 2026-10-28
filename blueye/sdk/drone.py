@@ -131,6 +131,29 @@ class Telemetry:
         if not resp.success:
             raise RuntimeError("Could not set telemetry message frequency")
 
+    def set_msg_log_frequency(self, msg: proto.message.Message, frequency: float):
+        """Set how often a specific telemetry message is written to the dive log.
+
+        The log frequency is independent of the publish frequency, so a message can be logged at a
+        higher rate than it is published to clients, or the other way around.
+
+        Args:
+            msg (proto.message.Message): The message to set the log frequency of. Needs to be one
+                                         of the messages in blueye.protocol that end in Tel, e.g.,
+                                         blueye.protocol.Imu1Tel.
+            frequency (float): The frequency in Hz. Valid range is (0 .. 100].
+
+        Raises:
+            RuntimeError:
+                If the connected drone is running a Blunux version older than 5.1.0, or if the
+                drone fails to set the frequency. Possible causes could be a frequency outside the
+                valid range, or an incorrect message type.
+        """
+        self._parent_drone._verify_required_blunux_version("5.1.0")
+        resp = self._parent_drone._req_rep_client.set_telemetry_msg_log_frequency(msg, frequency)
+        if not resp.success:
+            raise RuntimeError("Could not set telemetry message log frequency")
+
     def add_msg_callback(
         self,
         msg_filter: List[proto.message.Message],

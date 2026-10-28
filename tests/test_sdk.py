@@ -322,6 +322,30 @@ class TestTelemetry:
         assert mocked_drone.telemetry.get(bp.DepthTel, deserialize=True) == depth_tel
         assert mocked_drone.telemetry.get(bp.DepthTel, deserialize=False) == depth_tel_serialized
 
+    def test_set_msg_log_frequency_sends_request(self, mocked_drone):
+        mocked_drone.software_version_short = "5.1.0"
+        mocked_drone._req_rep_client.set_telemetry_msg_log_frequency.return_value = (
+            bp.SetLogFrequencyRep(success=True)
+        )
+        mocked_drone.telemetry.set_msg_log_frequency(bp.Imu1Tel, 50)
+        mocked_drone._req_rep_client.set_telemetry_msg_log_frequency.assert_called_once_with(
+            bp.Imu1Tel, 50
+        )
+
+    def test_set_msg_log_frequency_raises_when_drone_refuses(self, mocked_drone):
+        mocked_drone.software_version_short = "5.1.0"
+        mocked_drone._req_rep_client.set_telemetry_msg_log_frequency.return_value = (
+            bp.SetLogFrequencyRep(success=False)
+        )
+        with pytest.raises(RuntimeError):
+            mocked_drone.telemetry.set_msg_log_frequency(bp.Imu1Tel, 50)
+
+    def test_set_msg_log_frequency_requires_blunux_5_1(self, mocked_drone):
+        mocked_drone.software_version_short = "5.0.30"
+        with pytest.raises(RuntimeError, match="5.1.0"):
+            mocked_drone.telemetry.set_msg_log_frequency(bp.Imu1Tel, 50)
+        mocked_drone._req_rep_client.set_telemetry_msg_log_frequency.assert_not_called()
+
 
 def test_water_temperature_returns_expected_value(mocked_drone):
     water_temp = 10.5

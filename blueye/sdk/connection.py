@@ -690,6 +690,26 @@ class ReqRepClient(threading.Thread):
         )
         return self._send_request_get_response(request, blueye.protocol.SetPubFrequencyRep, timeout)
 
+    def set_telemetry_msg_log_frequency(
+        self, msg: proto.message.MessageMeta | str, frequency: float, timeout: float = 0.05
+    ) -> blueye.protocol.SetLogFrequencyRep:
+        """Set how often a telemetry message is written to the dive log.
+
+        Args:
+            msg (proto.message.MessageMeta | str): The message type.
+            frequency (float): The log frequency.
+            timeout (float, optional): The timeout for the response.
+
+        Returns:
+            The set log frequency response.
+        """
+        message_type = self._parse_type_to_string(msg)
+        request = blueye.protocol.SetLogFrequencyReq(
+            message_type=message_type,
+            frequency=frequency,
+        )
+        return self._send_request_get_response(request, blueye.protocol.SetLogFrequencyRep, timeout)
+
     def get_telemetry_msg(
         self, msg: proto.message.MessageMeta | str, timeout: float = 0.05
     ) -> blueye.protocol.GetTelemetryRep:
