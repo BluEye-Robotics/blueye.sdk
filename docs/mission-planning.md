@@ -17,7 +17,7 @@ take_picture = bp.Instruction(camera_command={
 go_to_surface = bp.Instruction(go_to_surface_command={"desired_speed": 0.3})
 ```
 
-Next we create the mission using these instructions. The mission is created by passing a list of instructions to the [`prepare_new_mission`][blueye.sdk.mission.prepare_new_mission] function.
+Next we create the mission using these instructions. The mission is created by passing a list of instructions to the [`prepare_new_mission`][blueye.sdk.mission.prepare_new_mission] function. It copies the instructions and numbers them 1 to n in list order, the same numbering the Blueye app uses. The drone reports progress by these ids in [`MissionStatus.completed_instruction_ids`][blueye.protocol.types.mission_planning.MissionStatus] and [`ReferenceAutoPilot.active_instruction_id`][blueye.protocol.types.mission_planning.ReferenceAutoPilot].
 
 ```python
 from blueye.sdk.mission import prepare_new_mission

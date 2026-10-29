@@ -22,6 +22,7 @@ example_mission_json = (
     '  "name": "Example mission",\n'
     '  "instructions": [\n'
     "    {\n"
+    '      "id": 1,\n'
     '      "tiltMainCameraCommand": {\n'
     '        "tiltAngle": {\n'
     '          "value": 30.0\n'
@@ -29,13 +30,13 @@ example_mission_json = (
     "      }\n"
     "    },\n"
     "    {\n"
-    '      "id": 1,\n'
+    '      "id": 2,\n'
     '      "waitForCommand": {\n'
     '        "waitForSeconds": 4.0\n'
     "      }\n"
     "    },\n"
     "    {\n"
-    '      "id": 2,\n'
+    '      "id": 3,\n'
     '      "tiltMainCameraCommand": {\n'
     '        "tiltAngle": {\n'
     '          "value": -30.0\n'
@@ -43,13 +44,13 @@ example_mission_json = (
     "      }\n"
     "    },\n"
     "    {\n"
-    '      "id": 3,\n'
+    '      "id": 4,\n'
     '      "waitForCommand": {\n'
     '        "waitForSeconds": 4.0\n'
     "      }\n"
     "    },\n"
     "    {\n"
-    '      "id": 4,\n'
+    '      "id": 5,\n'
     '      "tiltMainCameraCommand": {\n'
     '        "tiltAngle": {}\n'
     "      }\n"
@@ -152,6 +153,51 @@ def test_import_from_json(mocked_open):
     mission = blueye.sdk.mission.import_from_json(Path("dummy_path.json"))
     assert mission == example_mission
     mocked_open.assert_called_once_with(Path("dummy_path.json"), "r")
+
+
+def test_prepare_new_mission_numbers_instructions_from_one():
+    mission = blueye.sdk.mission.prepare_new_mission([tilt_camera_top, wait, tilt_camera_bottom])
+
+    assert [instruction.id for instruction in mission.instructions] == [1, 2, 3]
+
+
+def test_prepare_new_mission_with_repeated_first_instruction():
+    # The go-to-waypoint example returns to its first waypoint. list.index() compared by value,
+    # so the copy of the last instruction overwrote the first slot and the ids came out scrambled.
+    mission = blueye.sdk.mission.prepare_new_mission(
+        [tilt_camera_top, wait, tilt_camera_bottom, wait, tilt_camera_top]
+    )
+
+    assert [instruction.id for instruction in mission.instructions] == [1, 2, 3, 4, 5]
+    assert mission.instructions[0].tilt_main_camera_command.tilt_angle.value == 30.0
+    assert mission.instructions[4].tilt_main_camera_command.tilt_angle.value == 30.0
+
+
+def test_prepare_new_mission_with_identical_instructions():
+    take_picture = bp.Instruction(
+        camera_command={"camera_action": bp.CameraAction.CAMERA_ACTION_TAKE_PHOTO}
+    )
+    mission = blueye.sdk.mission.prepare_new_mission([take_picture, take_picture, take_picture])
+
+    assert [instruction.id for instruction in mission.instructions] == [1, 2, 3]
+
+
+def test_prepare_new_mission_leaves_the_input_unchanged():
+    first = bp.Instruction(wait_for_command={"wait_for_seconds": 1}, id=7)
+    second = bp.Instruction(wait_for_command={"wait_for_seconds": 2})
+    instruction_list = [first, second]
+
+    mission = blueye.sdk.mission.prepare_new_mission(instruction_list)
+
+    assert instruction_list == [first, second]
+    assert first.id == 7
+    assert second.id == 0
+    assert [instruction.id for instruction in mission.instructions] == [1, 2]
+
+
+def test_prepare_new_mission_rejects_more_than_50_instructions():
+    with pytest.raises(ValueError, match="up to 50 instructions"):
+        blueye.sdk.mission.prepare_new_mission([wait] * 51)
 
 
 def test_create_waypoint_instruction():

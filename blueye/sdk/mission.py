@@ -78,7 +78,11 @@ def prepare_new_mission(
 ) -> bp.Mission:
     """Creates a mission from a list of instructions
 
-    Automatically assigns an ID to each instruction based on the order they are in the list.
+    The instructions are copied and numbered 1 to n in list order, which is the numbering the
+    Blueye app uses. The drone executes the instructions in list order and reports progress by
+    these ids: `MissionStatus.completed_instruction_ids` and
+    `ReferenceAutoPilot.active_instruction_id` refer to them. The instructions passed in are left
+    unchanged, so the same instruction object can appear more than once in the list.
 
     Args:
         mission_id: ID of the mission
@@ -100,15 +104,15 @@ def prepare_new_mission(
         f'Preparing the "{mission_name}" mission, with ID {mission_id} and '
         f"{len(instruction_list)} instructions"
     )
-    instruction_id = 0
 
-    # Deep copy the instructions to avoid modifying the original ones
-    for instruction in instruction_list:
+    # Copy the instructions so the caller's objects keep their ids. Number from 1: the drone
+    # reports progress by id, and 0 is also what an unset id reads back as.
+    instructions = []
+    for position, instruction in enumerate(instruction_list, start=1):
         instruction_copy = copy.deepcopy(instruction)
-        instruction_copy.id = instruction_id
-        instruction_id += 1
-        instruction_list[instruction_list.index(instruction)] = instruction_copy
-    return bp.Mission(id=mission_id, name=mission_name, instructions=instruction_list)
+        instruction_copy.id = position
+        instructions.append(instruction_copy)
+    return bp.Mission(id=mission_id, name=mission_name, instructions=instructions)
 
 
 def import_from_json(input_path: Path | str) -> bp.Mission:
