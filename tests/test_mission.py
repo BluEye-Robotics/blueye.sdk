@@ -294,11 +294,86 @@ def test_load_and_run_timeout(mocked_drone):
     mission_status_inactive_tel = bp.MissionStatusTel(mission_status=mission_status_inactive)
     mocked_drone.telemetry.get.side_effect = [mission_status_inactive_tel] * 10
 
-    with pytest.raises(TimeoutError):
+    with pytest.raises(TimeoutError, match="did not become ready.*MISSION_STATE_INACTIVE"):
         mocked_drone.mission.load_and_run(example_mission, timeout=0.1)
 
     mocked_drone._req_rep_client.set_mission.assert_called_once_with(example_mission)
     mocked_drone._ctrl_client.run_mission.assert_not_called()
+
+
+def _status_tel(state: bp.MissionState) -> bp.MissionStatusTel:
+    return bp.MissionStatusTel(mission_status=bp.MissionStatus({"state": state}))
+
+
+def test_load_and_run_waits_for_the_first_status(mocked_drone):
+    # The drone publishes the mission status once a second, so right after connecting there is none
+    mocked_drone.telemetry.get.side_effect = [
+        None,
+        None,
+        _status_tel(bp.MissionState.MISSION_STATE_INACTIVE),
+        _status_tel(bp.MissionState.MISSION_STATE_READY),
+    ]
+
+    mocked_drone.mission.load_and_run(example_mission)
+
+    mocked_drone._ctrl_client.clear_mission.assert_not_called()
+    mocked_drone._req_rep_client.set_mission.assert_called_once_with(example_mission)
+    mocked_drone._ctrl_client.run_mission.assert_called_once()
+
+
+def test_load_and_run_raises_when_no_status_arrives(mocked_drone):
+    mocked_drone.telemetry.get.return_value = None
+
+    with pytest.raises(TimeoutError, match="No mission status received"):
+        mocked_drone.mission.load_and_run(example_mission, timeout=0.1)
+
+    mocked_drone._ctrl_client.clear_mission.assert_not_called()
+    mocked_drone._req_rep_client.set_mission.assert_not_called()
+    mocked_drone._ctrl_client.run_mission.assert_not_called()
+
+
+def test_load_and_run_tolerates_a_missing_status_while_clearing(mocked_drone):
+    mocked_drone.telemetry.get.side_effect = [
+        _status_tel(bp.MissionState.MISSION_STATE_RUNNING),
+        None,
+        _status_tel(bp.MissionState.MISSION_STATE_INACTIVE),
+        _status_tel(bp.MissionState.MISSION_STATE_READY),
+    ]
+
+    mocked_drone.mission.load_and_run(example_mission)
+
+    mocked_drone._ctrl_client.clear_mission.assert_called_once()
+    mocked_drone._req_rep_client.set_mission.assert_called_once_with(example_mission)
+    mocked_drone._ctrl_client.run_mission.assert_called_once()
+
+
+def test_load_and_run_tolerates_a_missing_status_while_waiting_for_ready(mocked_drone):
+    mocked_drone.telemetry.get.side_effect = [
+        _status_tel(bp.MissionState.MISSION_STATE_COMPLETED),
+        None,
+        _status_tel(bp.MissionState.MISSION_STATE_READY),
+    ]
+
+    mocked_drone.mission.load_and_run(example_mission)
+
+    mocked_drone._ctrl_client.clear_mission.assert_not_called()
+    mocked_drone._ctrl_client.run_mission.assert_called_once()
+
+
+def test_load_and_run_clears_a_mission_that_failed_to_load_earlier(mocked_drone):
+    # A failed load from an earlier attempt is a previous mission to clear, not an error, also
+    # while the drone still reports it after the clear has been sent
+    mocked_drone.telemetry.get.side_effect = [
+        _status_tel(bp.MissionState.MISSION_STATE_FAILED_TO_LOAD_MISSION),
+        _status_tel(bp.MissionState.MISSION_STATE_FAILED_TO_LOAD_MISSION),
+        _status_tel(bp.MissionState.MISSION_STATE_INACTIVE),
+        _status_tel(bp.MissionState.MISSION_STATE_READY),
+    ]
+
+    mocked_drone.mission.load_and_run(example_mission)
+
+    mocked_drone._ctrl_client.clear_mission.assert_called_once()
+    mocked_drone._ctrl_client.run_mission.assert_called_once()
 
 
 def test_load_and_run_failed_to_load(mocked_drone):
