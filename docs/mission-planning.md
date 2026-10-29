@@ -31,12 +31,32 @@ go_to_seabed_mission = prepare_new_mission(
 ## Loading and running the mission
 With the mission created we can now transfer it to the drone and run it. The easiest way to do this is to use the [`load_and_run`][blueye.sdk.mission.Mission.load_and_run] method, which will transfer the mission the drone, wait for it to become ready and then start the mission.
 
+`load_and_run` returns as soon as the drone has been told to start. Keep the script connected until the mission has ended: the SDK pets the drone's watchdog from a background thread, and when the script exits the drone aborts the mission about 3 seconds later. See [Connecting to the drone](connecting.md) for what else the drone does then.
+
+A mission does not always end in `MISSION_STATE_COMPLETED`. The drone aborts it (`MISSION_STATE_ABORTED`) when it loses its position for more than 3 seconds, when it is stuck, when a waypoint is too far away, or when the watchdog fires. A mission with waypoints that is started without a valid position ends in `MISSION_STATE_FAILED_TO_START_MISSION`. Wait for all of these, and treat a status of `None` as not reported yet:
+
 ```python
+import time
+
+import blueye.protocol as bp
 from blueye.sdk import Drone
 
 d = Drone()
 
 d.mission.load_and_run(go_to_seabed_mission)
+
+end_states = (
+    bp.MissionState.MISSION_STATE_COMPLETED,
+    bp.MissionState.MISSION_STATE_ABORTED,
+    bp.MissionState.MISSION_STATE_FAILED_TO_START_MISSION,
+)
+status = d.mission.get_status()
+while status is None or status.state not in end_states:
+    time.sleep(0.1)
+    status = d.mission.get_status()
+print(f"Mission ended with state {status.state.name}")
+
+d.disconnect()
 ```
 
 ## Getting status updates from the mission
@@ -79,7 +99,7 @@ mission = import_from_json("exported_mission.json")
 
 d = Drone()
 d.mission.load_and_run(mission)
-
+# Stay connected until the mission has ended, as shown above
 ```
 
 ## Examples

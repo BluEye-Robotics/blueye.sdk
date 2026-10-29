@@ -90,6 +90,7 @@ extra:
 nav:
   - "About the Blueye Drones": "index.md"
   - "Quick Start": "quick_start.md"
+  - "Connecting to the drone": "connecting.md"
   - Movement:
       - "Control from the CLI": "movement/from-the-CLI.md"
       - "Control with a gamepad": "movement/with-a-gamepad.md"

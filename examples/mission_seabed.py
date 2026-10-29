@@ -35,7 +35,18 @@ d = Drone(log_notifications=True)
 # Send the mission to the drone and start it
 d.mission.load_and_run(mission)
 
-# Wait until the mission state becomes MISSION_STATE_COMPLETED
-while d.mission.get_status().state != bp.MissionState.MISSION_STATE_COMPLETED:
+# Stay connected until the mission has ended. If the script exits, the SDK stops petting the
+# drone's watchdog and the drone aborts the mission about 3 seconds later. The status is None
+# until the drone has reported one, and a mission can end aborted or failed as well as completed.
+end_states = (
+    bp.MissionState.MISSION_STATE_COMPLETED,
+    bp.MissionState.MISSION_STATE_ABORTED,
+    bp.MissionState.MISSION_STATE_FAILED_TO_START_MISSION,
+)
+status = d.mission.get_status()
+while status is None or status.state not in end_states:
     time.sleep(0.1)
-print("Mission completed successfully!")
+    status = d.mission.get_status()
+print(f"Mission ended with state {status.state.name}")
+
+d.disconnect()
