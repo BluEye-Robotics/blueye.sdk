@@ -61,6 +61,21 @@ print(f"Mission ended with state {status.state.name}")
 d.disconnect()
 ```
 
+## Sensor requirements
+
+Some instructions need a sensor the drone may not have. The drone checks them when the mission starts and while it runs:
+
+| Instruction | Needs | Without it |
+| --- | --- | --- |
+| Waypoint, go to home | A valid position estimate. A DVL, the drone's own Blueye GNSS, UGPS, USBL or NMEA input over UDP all count, unlike for station keeping. | The mission does not start: `MISSION_STATE_FAILED_TO_START_MISSION` with a `NOTIFICATION_TYPE_DRONE_POSITION_IS_UNKNOWN` notification. A running mission is aborted after 3 seconds without a valid position. |
+| Go to home | The pilot's position as well, sent to the drone as [`PilotGPSPositionCtrl`][blueye.protocol.types.control.PilotGPSPositionCtrl]. The Blueye app sends it; the SDK has no method for it yet. The drone reports the position it holds in [`PilotGPSPositionTel`][blueye.protocol.types.telemetry.PilotGPSPositionTel]. | The drone reports `NOTIFICATION_TYPE_USER_POSITION_IS_UNKNOWN` and does not move on from the instruction. Pause or clear the mission. |
+| Photos by distance (`CAMERA_ACTION_TAKE_PHOTOS_DISTANCE`) | A valid position estimate, as for waypoints. | The drone reports `NOTIFICATION_TYPE_DRONE_POSITION_IS_UNKNOWN` and takes no photos. |
+| Depth set point measured from the seabed | An altitude sensor: a DVL or a downward-facing Ping sonar. | Without any altitude report the instruction is skipped with `NOTIFICATION_TYPE_INSTRUCTION_SKIPPED`. With a sensor that has no valid reading yet, the drone descends as if the bottom were 50 m below until the sensor sees it. |
+| Tilt multibeam servo | A multibeam servo on a guest port. | The instruction is skipped with `NOTIFICATION_TYPE_INSTRUCTION_SKIPPED`. |
+| Go to seabed, go to surface, depth set point from the surface, single photo, photos by time, tilt, wait | Nothing beyond the built-in sensors. | |
+
+The drone also aborts a mission when a waypoint is more than 300 m away, when it detects that it is stuck (`NOTIFICATION_TYPE_DRONE_IS_STUCK`), and when the client in control stops petting the watchdog, see [Connecting to the drone](connecting.md). `PositionEstimateTel.position_estimate.is_valid` is the position validity the mission checks, `navigation_sensors` in the same message lists each sensor with its own validity, and [`get_altitude`][blueye.sdk.drone.Drone.get_altitude] returns `None` while the altitude is not valid.
+
 ## Getting status updates from the mission
 The mission progress is published through the [`NotificationTel`][blueye.protocol.types.telemetry.NotificationTel] messages. These messages can be read manually with the usual telemetry methods, ie. [`telemetry.get`][blueye.sdk.drone.Telemetry.get] or [`telemetry.add_msg_callback`][blueye.sdk.drone.Telemetry.add_msg_callback].
 

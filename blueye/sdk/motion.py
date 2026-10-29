@@ -339,6 +339,9 @@ class Motion:
         then attempt to maintain the wanted speed in the heave direction as long as auto depth is
         active.
 
+        Auto depth needs no extra sensor. Enabling it turns auto altitude off, since the two hold
+        the same axis.
+
         Args:
             enable (bool): Activate auto depth mode if true, de-activate if false.
         """
@@ -405,9 +408,15 @@ class Motion:
         speed set point instead of a force set point. A control loop on the drone will then attempt
         to maintain the wanted speed in the heave direction as long as auto altitude is active.
 
+        Auto altitude needs a valid altitude, which comes from a DVL or a downward-facing Ping
+        sonar on a guest port. `get_altitude()` returns `None` while there is none. Without it the
+        drone drops the request and only logs it on its own side, so check
+        `is_auto_altitude_active()` afterwards. Enabling auto altitude turns auto depth off, also
+        when the auto altitude request itself is dropped. If the altitude becomes invalid while
+        auto altitude is active, the drone switches to auto depth.
+
         Args:
-            enable (bool): Activate auto altitude mode if true, de-activate if false. If the drone
-                           does not have a valid altitude reading this command will be ignored.
+            enable (bool): Activate auto altitude mode if true, de-activate if false.
         """
         self._parent_drone._ctrl_client.set_auto_altitude_state(enable)
 
@@ -434,6 +443,15 @@ class Motion:
 
         When station keeping is active, the drone will attempt to maintain its current position
         and orientation in the water as long as the mode is active.
+
+        Station keeping needs a valid position from a DVL or from the drone's own Blueye GNSS.
+        Topside positioning (UGPS, USBL or NMEA input over UDP) is used for the map position but
+        does not count here: those fixes jump between samples, and the drone would chase every
+        jump. Without a valid position the drone drops the request and only logs it on
+        its own side, so check `is_station_keeping_active()` afterwards. An active hold is released
+        when the position has been invalid for 3 seconds.
+        `PositionEstimateTel.position_estimate.navigation_sensors` lists each sensor with its
+        validity.
 
         Args:
             enable (bool): Activate station keeping mode if true, de-activate if false.
@@ -466,9 +484,13 @@ class Motion:
         When weather vaning is active, the drone will attempt to maintain its current position
         in the water and orient itself parallel to the current.
 
+        Weather vaning is station keeping with a free heading, so it has the same requirement: a
+        valid position from a DVL or the drone's own Blueye GNSS, see `enable_station_keeping`.
+        Enabling it also turns station keeping on, and turning station keeping off turns weather
+        vaning off. An altitude reading is not needed.
+
         Args:
-            enable (bool): Activate weather vaning mode if true, de-activate if false. If the drone
-                           does not have a valid altitude reading this command will be ignored.
+            enable (bool): Activate weather vaning mode if true, de-activate if false.
         """
         self._parent_drone._ctrl_client.set_weather_vaning_state(enable)
 

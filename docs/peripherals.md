@@ -6,6 +6,35 @@ To list the peripherals that are currently attached to the drone, you can check 
 
 The SDK will also create attributes for supported peripherals to simplify access.
 
+## Navigation sensors
+
+The drone has no class for its navigation sensors yet; they appear in `peripherals` as plain [`Peripheral`][blueye.sdk.guestport.Peripheral] objects. What they provide decides which auto modes and mission instructions the drone will run:
+
+| Device | Provides |
+| --- | --- |
+| DVL (Water Linked A50 or A100, Nortek Nucleus, Cerulean Tracker 650) | Position for station keeping, weather vaning and waypoint missions. Altitude for auto altitude and seabed-relative depth set points. |
+| Blueye GNSS | Position for the same, while the drone is at the surface with a fix. |
+| Ping sonar, mounted downwards | Altitude for auto altitude and seabed-relative depth set points. |
+| UGPS, USBL, NMEA input over UDP | Position for the map and for waypoint missions. The drone does not hold position on these, so station keeping and weather vaning need a DVL or the Blueye GNSS as well. |
+
+`PositionEstimateTel.position_estimate.navigation_sensors` lists the position sensors the drone sees with an `is_valid` flag each, and [`get_altitude`][blueye.sdk.drone.Drone.get_altitude] returns `None` while the altitude is not valid:
+
+```python
+import blueye.protocol as bp
+from blueye.sdk import Drone
+
+myDrone = Drone()
+
+position = myDrone.telemetry.get(bp.PositionEstimateTel)
+if position is not None:
+    for sensor in position.position_estimate.navigation_sensors:
+        print(f"{sensor.sensor_id.name}: {'valid' if sensor.is_valid else 'not valid'}")
+
+print(f"Altitude: {myDrone.get_altitude()}")
+```
+
+See [the movement page](movement/from-the-CLI.md#auto-modes-and-what-they-need) for the auto modes and [Mission planning](mission-planning.md#sensor-requirements) for the instructions.
+
 ## External camera
 If the drone has a camera attached, the `Drone` class will have an `external_camera` attribute that is a [`GuestPortCamera`][blueye.sdk.guestport.GuestPortCamera] object. This object can be used to control the camera.
 
