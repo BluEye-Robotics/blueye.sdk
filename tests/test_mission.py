@@ -1,3 +1,4 @@
+import warnings
 from pathlib import Path
 
 import blueye.protocol as bp
@@ -358,6 +359,45 @@ def test_load_and_run_tolerates_a_missing_status_while_waiting_for_ready(mocked_
 
     mocked_drone._ctrl_client.clear_mission.assert_not_called()
     mocked_drone._ctrl_client.run_mission.assert_called_once()
+
+
+def _unknown_status_tel() -> bp.MissionStatusTel:
+    """A status with a state value the installed blueye.protocol does not know.
+
+    A drone on newer software can send one; proto-plus hands it over as a plain int.
+    """
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", UserWarning)
+        return _status_tel(42)
+
+
+def test_load_and_run_clears_an_unknown_state(mocked_drone):
+    mocked_drone.telemetry.get.side_effect = [
+        _unknown_status_tel(),
+        _status_tel(bp.MissionState.MISSION_STATE_INACTIVE),
+        _status_tel(bp.MissionState.MISSION_STATE_READY),
+    ]
+
+    # proto-plus warns when it hands over the unknown value
+    with pytest.warns(UserWarning, match="Unrecognized MissionState"):
+        mocked_drone.mission.load_and_run(example_mission)
+
+    mocked_drone._ctrl_client.clear_mission.assert_called_once()
+    mocked_drone._req_rep_client.set_mission.assert_called_once_with(example_mission)
+    mocked_drone._ctrl_client.run_mission.assert_called_once()
+
+
+def test_load_and_run_names_an_unknown_state_in_the_timeout(mocked_drone):
+    mocked_drone.telemetry.get.side_effect = [
+        _status_tel(bp.MissionState.MISSION_STATE_INACTIVE),
+        *([_unknown_status_tel()] * 10),
+    ]
+
+    with pytest.warns(UserWarning, match="Unrecognized MissionState"):
+        with pytest.raises(TimeoutError, match="did not become ready.*last state was 42"):
+            mocked_drone.mission.load_and_run(example_mission, timeout=0.1)
+
+    mocked_drone._ctrl_client.run_mission.assert_not_called()
 
 
 def test_load_and_run_clears_a_mission_that_failed_to_load_earlier(mocked_drone):

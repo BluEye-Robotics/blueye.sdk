@@ -277,19 +277,23 @@ class Mission:
 
     def _wait_for_state(
         self,
-        wanted: tuple[bp.MissionState, ...],
+        wanted: Optional[tuple[bp.MissionState, ...]],
         timeout: float,
         description: str,
         load_failure_is_error: bool = False,
         poll_interval: float = 0.1,
-    ) -> bp.MissionState:
+    ) -> bp.MissionState | int:
         """Poll the mission state until it is one of `wanted`.
 
         A missing status counts as not there yet, like any state other than the wanted ones. The
         drone has no status to give until its mission node has published the first one after boot.
 
+        A drone running newer software can report a state the installed `blueye.protocol` does not
+        know, which arrives as a plain `int`. It counts as a reported state, so it ends a wait for
+        any state and is named by its number in the `TimeoutError`.
+
         Args:
-            wanted: The states to wait for.
+            wanted: The states to wait for, or `None` to wait for any reported state.
             timeout: Seconds to wait before giving up.
             description: Names the wanted states in the `TimeoutError` message.
             load_failure_is_error: Raise on `MISSION_STATE_FAILED_TO_LOAD_MISSION` instead of
@@ -308,7 +312,7 @@ class Mission:
         deadline = time.monotonic() + timeout
         while True:
             state = self._get_state()
-            if state in wanted:
+            if state is not None and (wanted is None or state in wanted):
                 return state
             if (
                 load_failure_is_error
@@ -322,7 +326,7 @@ class Mission:
                     )
                 raise TimeoutError(
                     f"Mission status did not become {description} within {timeout} s, "
-                    f"last state was {state.name}."
+                    f"last state was {getattr(state, 'name', state)}."
                 )
             time.sleep(poll_interval)
 
@@ -349,7 +353,7 @@ class Mission:
         self._parent_drone._verify_required_blunux_version("4.0.5")
 
         # Wait for a status to know whether a previous mission has to be cleared first
-        state = self._wait_for_state(tuple(bp.MissionState), timeout, "known")
+        state = self._wait_for_state(None, timeout, "known")
         if state not in (
             bp.MissionState.MISSION_STATE_INACTIVE,
             bp.MissionState.MISSION_STATE_COMPLETED,
