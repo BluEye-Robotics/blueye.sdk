@@ -1,4 +1,5 @@
 import logging
+import warnings
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, List, Optional
 
@@ -330,7 +331,11 @@ class Laser(Peripheral):
 
 class GenericServo(Peripheral):
     """
-    Represents a servo connected to a guest port on the Blueye drone.
+    Represents a Blueye generic servo connected to a guest port on the Blueye drone.
+
+    The servo takes a position between 0 and 1, where 0 and 1 are the end stops. What that is in
+    degrees depends on the servo. The drone drives generic servos on guest ports 1 to 3 and
+    reports each one in its own `GenericServoTel`, which the SDK keeps per port.
     """
 
     def __init__(
@@ -348,32 +353,101 @@ class GenericServo(Peripheral):
         self.min_angle = -90
         Peripheral.__init__(self, parent_drone, port_number, device)
 
-    def set_angle(self, angle: float) -> None:
-        """Set the angle of the servo.
+    def set_position(self, position: float) -> None:
+        """Set the position of the servo.
 
         Args:
-            angle (float): The angle to set for the servo (-90 to 90 degrees).
+            position (float): The position (0..1), where 0 and 1 are the end stops.
+
+        Raises:
+            ValueError: If the position is not between 0 and 1.
+        """
+        if not 0 <= position <= 1:
+            raise ValueError(f"Position must be between 0 and 1, got {position}")
+        self.parent_drone._ctrl_client.set_generic_servo_position(position, self.port_number)
+
+    def _get_telemetry(self) -> Optional[bp.GenericServoTel]:
+        """The last `GenericServoTel` the drone sent for this port.
+
+        The drone publishes one message per port under the same type, so the generic telemetry
+        store would only keep the last of them. The drone keeps a copy per port instead, filled
+        by a callback. Before the first message has arrived the drone is asked, and the reply
+        is used if it is about this port.
+        """
+        telemetry_msg = self.parent_drone._generic_servo_tel.get(self.port_number)
+        if telemetry_msg is None:
+            telemetry_msg = self.parent_drone.telemetry.get(bp.GenericServoTel)
+            if telemetry_msg is None or telemetry_msg.servo.guest_port_number != self.port_number:
+                return None
+        return telemetry_msg
+
+    def get_position(self) -> Optional[float]:
+        """Get the current position of the servo.
+
+        Returns:
+            The position (0..1), or None if the drone has not reported it.
+        """
+        telemetry_msg = self._get_telemetry()
+        if telemetry_msg is None:
+            return None
+        return telemetry_msg.servo.value
+
+    def get_set_point(self) -> Optional[float]:
+        """Get the position the servo is moving towards.
+
+        Returns:
+            The commanded position (0..1), or None if the drone has not reported it.
+        """
+        telemetry_msg = self._get_telemetry()
+        if telemetry_msg is None:
+            return None
+        return telemetry_msg.set_point
+
+    def set_angle(self, angle: float) -> None:
+        """Set the position of the servo from an angle in degrees.
+
+        Deprecated, the servo takes a position and not an angle. Use
+        [`set_position`][blueye.sdk.guestport.GenericServo.set_position]. -90 maps to 0, 0 to
+        0.5 and 90 to 1, which is what the old degree calls drove the servo to.
+
+        Args:
+            angle (float): The angle (-90..90), mapped linearly onto the 0..1 position.
 
         Raises:
             ValueError: If the angle is not within the allowed range.
         """
+        warnings.warn(
+            "`GenericServo.set_angle` is deprecated and will be removed in the next major "
+            "version. Use `GenericServo.set_position()` with a 0..1 position instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         if not self.min_angle <= angle <= self.max_angle:
             raise ValueError(
                 f"Angle must be between {self.min_angle} and {self.max_angle} degrees."
             )
-        self.parent_drone._ctrl_client.set_generic_servo_angle(angle, self.port_number)
+        self.set_position((angle - self.min_angle) / (self.max_angle - self.min_angle))
 
-    def get_angle(self) -> float | None:
-        """Get the current angle of the servo.
+    def get_angle(self) -> Optional[float]:
+        """Get the current position of the servo as an angle in degrees.
+
+        Deprecated, the servo reports a position and not an angle. Use
+        [`get_position`][blueye.sdk.guestport.GenericServo.get_position]. Position 0 maps to
+        -90, 0.5 to 0 and 1 to 90.
 
         Returns:
-            The current angle of the servo in degrees. None if telemetry is not available.
+            The angle (-90..90), or None if the drone has not reported the position.
         """
-        telemetry_msg = self.parent_drone.telemetry.get(bp.GenericServoTel)
-        if telemetry_msg is None:
+        warnings.warn(
+            "`GenericServo.get_angle` is deprecated and will be removed in the next major "
+            "version. Use `GenericServo.get_position()`, which returns the 0..1 position.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        position = self.get_position()
+        if position is None:
             return None
-        else:
-            return telemetry_msg.servo.value
+        return self.min_angle + position * (self.max_angle - self.min_angle)
 
 
 class SkidServo(Peripheral):
