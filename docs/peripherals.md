@@ -90,7 +90,7 @@ drone.external_light.set_intensity(0.5)
 ```
 
 ## Scaling laser
-If the drone has a scaling laser attached, the `Drone` class will have a `laser` attribute that is a [`Laser`][blueye.sdk.guestport.Laser] object. This object can be used to control the scaling laser.
+If the drone has a scaling laser attached (the Blueye scaling laser, the Laser Tools Sea Beam or the Spot X laser scalers), the `Drone` class will have a `laser` attribute that is a [`Laser`][blueye.sdk.guestport.Laser] object. This object can be used to control the scaling laser. The dot spacing is 50 mm for the Blueye laser and 75 mm for the Sea Beam.
 
 ```python
 # Get the current intensity of the scaling laser
@@ -122,10 +122,25 @@ drone.gripper.set_rotation_velocity(-1.0)
 ## Servo
 If the drone has a servo attached, the `Drone` class will either have a `servo` attribute that is a [`GenericServo`][blueye.sdk.guestport.GenericServo] object, or a `skid_servo` attribute that is a [`SkidServo`][blueye.sdk.guestport.SkidServo] object. These objects can be used to control the servo.
 
+`skid_servo` covers every multibeam tilt servo: the skid-mounted servo (first and second generation), which tilts ±28 degrees, and the head-mounted servo, which tilts ±45 degrees. The allowed range of the connected servo is in `min_angle` and `max_angle`.
+
 ```python
 # Set the angle
 drone.skid_servo.set_angle(20.0)
 
-# Get the current angle
+# Get the current angle, and the angle the servo is moving towards
 drone.skid_servo.get_angle()
+drone.skid_servo.get_set_point()
 ```
+
+## Supported devices
+| Device                                                                 | SDK class                                                 | Attribute         |
+|------------------------------------------------------------------------|-----------------------------------------------------------|-------------------|
+| Blueye camera                                                          | [`GuestPortCamera`][blueye.sdk.guestport.GuestPortCamera] | `external_camera` |
+| Blueye light, Blueye light pair, Blue Robotics Lumen                   | [`GuestPortLight`][blueye.sdk.guestport.GuestPortLight]   | `external_light`  |
+| Blue Robotics Newton (fixed and detachable), Blueprint Lab Reach Alpha | [`Gripper`][blueye.sdk.guestport.Gripper]                 | `gripper`         |
+| Blueye scaling laser, Laser Tools Sea Beam, Spot X laser scalers       | [`Laser`][blueye.sdk.guestport.Laser]                     | `laser`           |
+| Blueye generic servo                                                   | [`GenericServo`][blueye.sdk.guestport.GenericServo]       | `servo`           |
+| Blueye multibeam servo (V1 and V2), Blueye multibeam head servo        | [`SkidServo`][blueye.sdk.guestport.SkidServo]             | `skid_servo`      |
+
+Every other device the drone discovers (sonars, DVLs, GNSS, sensors, USB storage) is listed in `peripherals` as a plain [`Peripheral`][blueye.sdk.guestport.Peripheral] with its name, port and device ID, and its data is read from the matching telemetry messages through `drone.telemetry.get()`.

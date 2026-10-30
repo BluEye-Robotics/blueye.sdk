@@ -4,7 +4,15 @@ import blueye.protocol as bp
 import pytest
 
 import blueye.sdk
-from blueye.sdk.guestport import GenericServo, SkidServo
+from blueye.sdk.guestport import (
+    GenericServo,
+    Gripper,
+    GuestPortCamera,
+    GuestPortLight,
+    Laser,
+    Peripheral,
+    SkidServo,
+)
 
 
 def test_peripheral_attribute_setter(mocked_drone):
@@ -468,3 +476,205 @@ def test_connect_with_a_cached_report_with_guest_ports(
 
     assert isinstance(drone.laser, blueye.sdk.guestport.Laser)
     drone._telemetry_watcher.add_callback.assert_not_called()
+
+
+def test_blueye_scaling_laser_is_a_laser(mocked_drone):
+    laser = bp.GuestPortDevice(
+        {"device_id": bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_SCALING_LASER}
+    )
+    gp_info = bp.GuestPortInfo(
+        gp1=_port(bp.GuestPortNumber.GUEST_PORT_NUMBER_PORT_1, devices=[laser])
+    )
+
+    mocked_drone._create_peripherals_from_drone_info(gp_info)
+
+    assert isinstance(mocked_drone.laser, blueye.sdk.guestport.Laser)
+    assert (
+        mocked_drone.laser.device_id
+        == bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_SCALING_LASER
+    )
+
+
+def _device_on_port_1(device_id):
+    device = bp.GuestPortDevice({"device_id": device_id})
+    return bp.GuestPortInfo(
+        gp1=_port(bp.GuestPortNumber.GUEST_PORT_NUMBER_PORT_1, devices=[device])
+    )
+
+
+@pytest.mark.parametrize(
+    "device_id, limit",
+    [
+        (bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_MULTIBEAM_SERVO, 28),
+        (bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_MULTIBEAM_SERVO_V2, 28),
+        (bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_MULTIBEAM_HEAD_SERVO, 45),
+    ],
+    ids=["skid_v1", "skid_v2", "head"],
+)
+def test_multibeam_servo_range_follows_device(mocked_drone, device_id, limit):
+    mocked_drone._create_peripherals_from_drone_info(_device_on_port_1(device_id))
+    servo = mocked_drone.skid_servo
+
+    assert (servo.min_angle, servo.max_angle) == (-limit, limit)
+    servo.set_angle(limit)
+    mocked_drone._ctrl_client.set_multibeam_servo_angle.assert_called_once_with(limit)
+    with pytest.raises(ValueError):
+        servo.set_angle(limit + 1)
+
+
+def test_multibeam_servo_set_point(mocked_drone):
+    mocked_drone._create_peripherals_from_drone_info(
+        _device_on_port_1(bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_MULTIBEAM_HEAD_SERVO)
+    )
+    assert mocked_drone.skid_servo.get_set_point() is None
+
+    mocked_drone._telemetry_watcher._state[bp.MultibeamServoTel] = bp.MultibeamServoTel.serialize(
+        bp.MultibeamServoTel(servo=bp.MultibeamServo(angle=10), set_point=40)
+    )
+    assert mocked_drone.skid_servo.get_angle() == 10
+    assert mocked_drone.skid_servo.get_set_point() == 40
+
+
+def test_guest_port_light_intensity(mocked_drone):
+    mocked_drone._create_peripherals_from_drone_info(
+        _device_on_port_1(bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_LIGHT)
+    )
+    light = mocked_drone.external_light
+
+    # The drone has not published the light state yet
+    assert light.get_intensity() is None
+
+    mocked_drone._telemetry_watcher._state[bp.GuestPortLightsTel] = bp.GuestPortLightsTel.serialize(
+        bp.GuestPortLightsTel(lights=bp.Lights(value=0.25))
+    )
+    assert light.get_intensity() == 0.25
+
+    light.set_intensity(0.5)
+    mocked_drone._ctrl_client.set_guest_port_lights.assert_called_once_with(0.5)
+    with pytest.raises(ValueError):
+        light.set_intensity(1.5)
+
+
+@pytest.mark.parametrize("bad", [float("nan"), -0.1, 1.1])
+def test_light_and_laser_reject_out_of_range_intensity(mocked_drone, bad):
+    light = bp.GuestPortDevice(
+        {"device_id": bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_LIGHT}
+    )
+    laser = bp.GuestPortDevice(
+        {"device_id": bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_SCALING_LASER}
+    )
+    mocked_drone._create_peripherals_from_drone_info(
+        bp.GuestPortInfo(
+            gp1=_port(bp.GuestPortNumber.GUEST_PORT_NUMBER_PORT_1, devices=[light, laser])
+        )
+    )
+
+    with pytest.raises(ValueError):
+        mocked_drone.external_light.set_intensity(bad)
+    with pytest.raises(ValueError):
+        mocked_drone.laser.set_intensity(bad)
+    mocked_drone._ctrl_client.set_guest_port_lights.assert_not_called()
+    mocked_drone._ctrl_client.set_laser_intensity.assert_not_called()
+
+
+def test_multibeam_servo_rejects_nan(mocked_drone):
+    mocked_drone._create_peripherals_from_drone_info(
+        _device_on_port_1(bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_MULTIBEAM_SERVO)
+    )
+    with pytest.raises(ValueError):
+        mocked_drone.skid_servo.set_angle(float("nan"))
+    mocked_drone._ctrl_client.set_multibeam_servo_angle.assert_not_called()
+
+
+SHORTCUTS = ("external_camera", "external_light", "gripper", "laser", "servo", "skid_servo")
+
+MAPPED_DEVICES = [
+    (bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_CAM, GuestPortCamera, "external_camera"),
+    (bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_LIGHT, GuestPortLight, "external_light"),
+    (
+        bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_LIGHT_PAIR,
+        GuestPortLight,
+        "external_light",
+    ),
+    (
+        bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUE_ROBOTICS_LUMEN,
+        GuestPortLight,
+        "external_light",
+    ),
+    (bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUE_ROBOTICS_NEWTON, Gripper, "gripper"),
+    (
+        bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUE_ROBOTICS_DETACHABLE_NEWTON,
+        Gripper,
+        "gripper",
+    ),
+    (bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEPRINT_LAB_REACH_ALPHA, Gripper, "gripper"),
+    (bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_SCALING_LASER, Laser, "laser"),
+    (bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_LASER_TOOLS_SEA_BEAM, Laser, "laser"),
+    (bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_SPOT_X_LASER_SCALERS, Laser, "laser"),
+    (bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_GENERIC_SERVO, GenericServo, "servo"),
+    (bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_MULTIBEAM_SERVO, SkidServo, "skid_servo"),
+    (
+        bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_MULTIBEAM_SERVO_V2,
+        SkidServo,
+        "skid_servo",
+    ),
+    (
+        bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_MULTIBEAM_HEAD_SERVO,
+        SkidServo,
+        "skid_servo",
+    ),
+]
+
+
+@pytest.mark.parametrize(
+    "device_id, peripheral_class, attribute",
+    MAPPED_DEVICES,
+    ids=[device_id.name for device_id, _, _ in MAPPED_DEVICES],
+)
+def test_device_id_maps_to_peripheral_class(mocked_drone, device_id, peripheral_class, attribute):
+    mocked_drone._create_peripherals_from_drone_info(_device_on_port_1(device_id))
+
+    (peripheral,) = mocked_drone.peripherals
+    assert type(peripheral) is peripheral_class
+    assert peripheral.device_id == device_id
+    assert peripheral.port_number == bp.GuestPortNumber.GUEST_PORT_NUMBER_PORT_1
+    assert getattr(mocked_drone, attribute) is peripheral
+    for other in SHORTCUTS:
+        if other != attribute:
+            assert getattr(mocked_drone, other) is None
+
+
+@pytest.mark.parametrize(
+    "device_id",
+    [
+        device_id
+        for device_id in bp.GuestPortDeviceID
+        if device_id not in {mapped for mapped, _, _ in MAPPED_DEVICES}
+    ],
+    ids=lambda device_id: device_id.name,
+)
+def test_unmapped_device_id_falls_back_to_plain_peripheral(mocked_drone, device_id):
+    mocked_drone._create_peripherals_from_drone_info(_device_on_port_1(device_id))
+
+    (peripheral,) = mocked_drone.peripherals
+    assert type(peripheral) is Peripheral
+    assert peripheral.device_id == device_id
+    for attribute in SHORTCUTS:
+        assert getattr(mocked_drone, attribute) is None
+
+
+def test_unknown_integer_device_id_falls_back_to_plain_peripheral(mocked_drone):
+    # A drone newer than blueye.protocol can report a device id this build does not know
+    device = bp.GuestPortDevice({"device_id": bp.GuestPortDeviceID.GUEST_PORT_DEVICE_ID_BLUEYE_CAM})
+    device._pb.device_id = 999
+    gp_info = bp.GuestPortInfo(
+        gp1=_port(bp.GuestPortNumber.GUEST_PORT_NUMBER_PORT_1, devices=[device])
+    )
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        mocked_drone._create_peripherals_from_drone_info(gp_info)
+
+    (peripheral,) = mocked_drone.peripherals
+    assert type(peripheral) is Peripheral
+    assert int(peripheral.device_id) == 999
