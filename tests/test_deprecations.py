@@ -183,6 +183,19 @@ def test_readonly_assignment_raises(mocked_drone, accessor, prop, getter, setter
         setattr(obj, prop, True)
 
 
+@pytest.mark.parametrize(
+    "accessor,prop,getter,setter", DEPRECATED_PROPERTIES, ids=[p[1] for p in DEPRECATED_PROPERTIES]
+)
+def test_shim_docstring_names_the_replacement(mocked_drone, accessor, prop, getter, setter):
+    """help() and IDEs show where to go, since mkdocstrings does not render the shims."""
+    owner = type(accessor(mocked_drone))
+    doc = vars(owner)[prop].__doc__
+    assert "Deprecated" in doc
+    assert getter in doc
+    if setter is not None:
+        assert setter in doc
+
+
 def test_setpoints_setter_keeps_helpful_error_message(mocked_drone):
     """The current_thruster_setpoints shim keeps its dedicated, helpful error message."""
     with pytest.raises(AttributeError, match="Do not set the setpoints directly"):
