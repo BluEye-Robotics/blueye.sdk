@@ -5,6 +5,7 @@ from datetime import datetime
 
 import blueye.protocol as bp
 import pytest
+import requests
 from google.protobuf.any_pb2 import Any
 from google.protobuf.internal.encoder import _VarintBytes
 from google.protobuf.timestamp_pb2 import Timestamp
@@ -53,6 +54,21 @@ def create_real_binlog_record(unix_timestamp: int, clock_monotonic: int, payload
     varint_bytes = _VarintBytes(message_size)
 
     return varint_bytes + serialized_record
+
+
+def make_raw_binlog_record(unix_timestamp: int, clock_monotonic: int, type_url: str, value: bytes):
+    """A BinlogRecord whose payload is an arbitrary Any, for types the SDK does not know"""
+    unix_ts = Timestamp()
+    unix_ts.FromSeconds(unix_timestamp)
+    mono_ts = Timestamp()
+    mono_ts.FromSeconds(clock_monotonic)
+    record = bp.BinlogRecord(
+        unix_timestamp=unix_ts,
+        clock_monotonic=mono_ts,
+        payload=Any(type_url=type_url, value=value),
+    )
+    serialized = bp.BinlogRecord.serialize(record)
+    return _VarintBytes(len(serialized)) + serialized
 
 
 def create_test_depth_message(depth_value: float) -> bp.DepthTel:
@@ -575,6 +591,187 @@ class TestLogFileDownloadCache:
         with caplog.at_level("WARNING", logger="blueye.sdk.logs"):
             make_log_file(is_open=False).download(write_to_file=False)
         assert caplog.text == ""
+
+
+UNKNOWN_URL = "type.googleapis.com/blueye.protocol.FutureTel"
+EMPTY_URL = "type.googleapis.com/google.protobuf.Empty"
+
+
+class TestLogStreamUnknownTypes:
+    """Records of types this SDK cannot decode: skipped and counted, or passed through raw"""
+
+    def stream_with_unknown_run(self, unknown_count: int) -> bytes:
+        data = create_real_binlog_record(1690979463, 1000, create_test_depth_message(1.0))
+        for i in range(unknown_count):
+            data += make_raw_binlog_record(1690979464 + i, 1001 + i, UNKNOWN_URL, b"\x08\x01")
+        data += create_real_binlog_record(
+            1690979464 + unknown_count, 1001 + unknown_count, create_test_depth_message(2.0)
+        )
+        return data
+
+    def test_long_run_of_unknown_records_does_not_recurse(self, caplog):
+        """1200 consecutive undecodable records used to raise RecursionError"""
+        stream = LogStream(self.stream_with_unknown_run(1500), decompress=False)
+        with caplog.at_level("INFO", logger="blueye.sdk.logs"):
+            records = list(stream)
+        assert [record[3].depth.value for record in records] == [1.0, 2.0]
+        assert stream.unknown_types == {UNKNOWN_URL: 1500}
+
+    def test_unknown_type_warns_once_then_counts(self, caplog):
+        stream = LogStream(self.stream_with_unknown_run(5), decompress=False)
+        with caplog.at_level("INFO", logger="blueye.sdk.logs"):
+            list(stream)
+        warnings = [r for r in caplog.records if r.levelname == "WARNING"]
+        assert len(warnings) == 1
+        assert UNKNOWN_URL in warnings[0].getMessage()
+        assert "unknown_types" in warnings[0].getMessage()
+        assert not [r for r in caplog.records if r.levelname == "ERROR"]
+
+    def test_summary_logged_once_at_end_of_stream(self, caplog):
+        stream = LogStream(self.stream_with_unknown_run(5), decompress=False)
+        with caplog.at_level("INFO", logger="blueye.sdk.logs"):
+            list(stream)
+            with pytest.raises(StopIteration):
+                next(stream)
+        summaries = [
+            r.getMessage() for r in caplog.records if r.getMessage().startswith("Skipped 5 ")
+        ]
+        assert len(summaries) == 1
+        assert "FutureTel" in summaries[0]
+
+    def test_delta_counts_from_first_record_even_if_unknown(self):
+        data = make_raw_binlog_record(1690979463, 1000, UNKNOWN_URL, b"")
+        data += create_real_binlog_record(1690979470, 1007, create_test_depth_message(1.0))
+        (record,) = list(LogStream(data, decompress=False))
+        assert record[1].total_seconds() == 7
+
+    def test_include_unknown_yields_raw_payload(self, caplog):
+        stream = LogStream(self.stream_with_unknown_run(2), decompress=False, include_unknown=True)
+        with caplog.at_level("INFO", logger="blueye.sdk.logs"):
+            records = list(stream)
+        assert len(records) == 4
+        unix_timestamp, delta, type_url, raw = records[1]
+        assert unix_timestamp.timestamp() == 1690979464
+        assert delta.total_seconds() == 1
+        assert type_url == UNKNOWN_URL
+        assert raw == b"\x08\x01"
+        assert stream.unknown_types == {UNKNOWN_URL: 2}
+        # The caller asked for them, so no warning and no summary.
+        assert not [r for r in caplog.records if r.levelname in ("WARNING", "ERROR")]
+        assert not [r for r in caplog.records if r.getMessage().startswith("Skipped")]
+
+    def test_empty_payload_is_a_known_type(self, caplog):
+        from google.protobuf.empty_pb2 import Empty
+
+        data = make_raw_binlog_record(1690979463, 1000, EMPTY_URL, b"")
+        with caplog.at_level("WARNING", logger="blueye.sdk.logs"):
+            (record,) = list(LogStream(data, decompress=False))
+        assert record[2] is Empty
+        assert record[3] == Empty()
+        assert caplog.text == ""
+
+    def test_record_without_timestamps_is_skipped(self, caplog):
+        """A zero-length record decodes to a BinlogRecord with no clocks"""
+        data = b"\x00" + create_real_binlog_record(1690979464, 1001, create_test_depth_message(1.0))
+        with caplog.at_level("ERROR", logger="blueye.sdk.logs"):
+            records = list(LogStream(data, decompress=False))
+        assert len(records) == 1
+        assert records[0][1].total_seconds() == 0
+        assert "without timestamps" in caplog.text
+
+    def test_corrupt_payload_of_known_type_is_counted(self, caplog):
+        data = make_raw_binlog_record(
+            1690979463, 1000, "type.googleapis.com/blueye.protocol.DepthTel", b"\xff\xff\xff"
+        )
+        data += create_real_binlog_record(1690979464, 1001, create_test_depth_message(1.0))
+        stream = LogStream(data, decompress=False)
+        with caplog.at_level("WARNING", logger="blueye.sdk.logs"):
+            records = list(stream)
+        assert len(records) == 1
+        assert stream.unknown_types == {"type.googleapis.com/blueye.protocol.DepthTel": 1}
+        assert "DepthTel" in caplog.text
+
+
+class TestLogHttp:
+    """Log HTTP calls time out and surface error responses"""
+
+    index = [
+        {
+            "binlog_size": 1024,
+            "has_binlog": True,
+            "is_dive": True,
+            "is_open": False,
+            "max_depth_magnitude": 5,
+            "name": "BYEDP123456_aabbccddeeff1234_00001",
+            "start_time": 1690979463,
+        }
+    ]
+
+    def drone(self, mocker, version="3.3.0"):
+        drone = mocker.patch(
+            "blueye.sdk.Drone", autospec=True, _ip="192.168.1.101", software_version_short=version
+        )
+        drone.connected = True
+        return drone
+
+    def test_index_request_has_timeout(self, requests_mock, mocker):
+        requests_mock.get("http://192.168.1.101/logs", json=self.index)
+        Logs(self.drone(mocker)).refresh_log_index()
+        assert requests_mock.last_request.timeout == 10
+
+    def test_index_timeout_is_configurable(self, requests_mock, mocker):
+        requests_mock.get("http://192.168.1.101/logs", json=self.index)
+        Logs(self.drone(mocker)).refresh_log_index(timeout=2.5)
+        assert requests_mock.last_request.timeout == 2.5
+
+    def test_dive_info_requests_have_timeout(self, requests_mock, mocker):
+        index = [dict(self.index[0])]
+        del index[0]["max_depth_magnitude"]
+        requests_mock.get("http://192.168.1.101/logs", json=index)
+        requests_mock.get(
+            "http://192.168.1.101/logs/BYEDP123456_aabbccddeeff1234_00001/dive_info",
+            json={"max_depth_magnitude": 5, "start_time": 1690979463, "is_dive": True},
+        )
+        Logs(self.drone(mocker, version="3.2.63")).refresh_log_index(timeout=4)
+        assert all(request.timeout == 4 for request in requests_mock.request_history)
+        assert len(requests_mock.request_history) == 2
+
+    def test_index_error_status_raises(self, requests_mock, mocker):
+        requests_mock.get("http://192.168.1.101/logs", status_code=500, text="<html>oops")
+        with pytest.raises(requests.HTTPError):
+            Logs(self.drone(mocker)).refresh_log_index()
+
+    def test_download_error_page_is_not_saved(self, requests_mock, tmp_path):
+        log = make_log_file(is_open=False)
+        requests_mock.get(log.download_url, status_code=404, text="<html>Not Found</html>")
+        with pytest.raises(requests.HTTPError):
+            log.download(output_path=tmp_path)
+        assert log.content is None
+        assert list(tmp_path.iterdir()) == []
+
+    def test_download_passes_timeout(self, requests_mock):
+        log = make_log_file(is_open=False)
+        requests_mock.get(log.download_url, content=b"log")
+        log.download(write_to_file=False, timeout=3)
+        assert requests_mock.last_request.timeout == 3
+
+    def test_legacy_index_has_timeout_and_raises(self, requests_mock, mocker):
+        requests_mock.get("http://192.168.1.101/logcsv", json=[])
+        legacy = LegacyLogs(self.drone(mocker))
+        legacy.refresh_log_index()
+        assert requests_mock.last_request.timeout == 10
+        requests_mock.get("http://192.168.1.101/logcsv", status_code=503)
+        with pytest.raises(requests.HTTPError):
+            legacy.refresh_log_index()
+
+    def test_legacy_download_has_timeout_and_raises(self, requests_mock, tmp_path):
+        log = LegacyLogFile(1000, "log.csv", "2018-10-24T09:40:00", 100, "192.168.1.101")
+        requests_mock.get("http://192.168.1.101/logcsv/log.csv", content=b"csv")
+        log.download(output_path=f"{tmp_path}/")
+        assert requests_mock.last_request.timeout == 10
+        requests_mock.get("http://192.168.1.101/logcsv/log.csv", status_code=500)
+        with pytest.raises(requests.HTTPError):
+            log.download(output_path=f"{tmp_path}/")
 
 
 class TestLogFileParseToStream:

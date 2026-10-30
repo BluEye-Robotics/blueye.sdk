@@ -4,6 +4,7 @@ import webbrowser
 from typing import Optional, Tuple
 
 import blueye.protocol as bp
+import google.protobuf.empty_pb2 as empty_pb2
 import google.protobuf.wrappers_pb2 as wrappers
 import proto
 from google.protobuf.any_pb2 import Any
@@ -75,27 +76,48 @@ def open_local_documentation():
     webbrowser.open(documentation_path)
 
 
-def deserialize_any_to_message(msg: Any) -> Tuple[proto.message.MessageMeta, proto.message.Message]:
+class UnknownMessageTypeError(ValueError):
+    """The type URL of an Any message names a type this SDK does not know
+
+    The drone logs and publishes every message type its firmware knows, so a newer drone
+    can produce types that an older blueye.protocol package has no class for.
+    """
+
+    def __init__(self, type_url: str):
+        super().__init__(f"Unknown message type {type_url}")
+        self.type_url = type_url
+
+
+def deserialize_any_to_message(msg: Any) -> Tuple[type, proto.message.Message]:
     """Deserialize a protobuf Any message to a concrete message type.
 
     Args:
         msg (Any): The Any message to deserialize. Needs to be a message defined in the
-                   blueye.protocol package or a well-known-type (FloatValue, Int32Value, etc) from
-                   google.protobuf.wrappers_pb2
+                   blueye.protocol package, a well-known wrapper type (FloatValue, Int32Value,
+                   etc) from google.protobuf.wrappers_pb2, or google.protobuf.Empty.
 
     Returns:
-        A tuple with the message type and the deserialized message.
-    """
-    if msg.type_url.startswith("type.googleapis.com/google.protobuf"):
-        payload_msg_name = msg.type_url.replace("type.googleapis.com/google.protobuf.", "")
-        payload_type = wrappers.__getattribute__(payload_msg_name)
-        payload_msg_deserialized = payload_type.FromString(msg.value)
-        return (payload_type, payload_msg_deserialized)
+        A tuple with the message type and the deserialized message. blueye.protocol types
+        come back as proto-plus messages, the google.protobuf types as plain protobuf messages.
 
-    payload_msg_name = msg.type_url.replace("type.googleapis.com/blueye.protocol.", "")
-    payload_type = bp.__getattribute__(payload_msg_name)
-    payload_msg_deserialized = payload_type.deserialize(msg.value)
-    return (payload_type, payload_msg_deserialized)
+    Raises:
+        UnknownMessageTypeError: The type URL names a type this SDK does not have a class for.
+    """
+    type_url = msg.type_url
+    google_prefix = "type.googleapis.com/google.protobuf."
+    blueye_prefix = "type.googleapis.com/blueye.protocol."
+    if type_url == google_prefix + "Empty":
+        return (empty_pb2.Empty, empty_pb2.Empty.FromString(msg.value))
+    if type_url.startswith(google_prefix):
+        payload_type = getattr(wrappers, type_url[len(google_prefix) :], None)
+        if payload_type is None:
+            raise UnknownMessageTypeError(type_url)
+        return (payload_type, payload_type.FromString(msg.value))
+    if type_url.startswith(blueye_prefix):
+        payload_type = getattr(bp, type_url[len(blueye_prefix) :], None)
+        if payload_type is not None:
+            return (payload_type, payload_type.deserialize(msg.value))
+    raise UnknownMessageTypeError(type_url)
 
 
 def is_scalar_type(msg: proto.message.Message) -> bool:
