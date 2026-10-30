@@ -1074,6 +1074,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#conventions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conventions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#bundling-cv-models-blueye-bundle-model" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1101,6 +1112,17 @@
     <span class="md-ellipsis">
       
         Scripted use
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#options" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Options
       
     </span>
   </a>
@@ -1952,6 +1974,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#conventions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conventions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#bundling-cv-models-blueye-bundle-model" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1979,6 +2012,17 @@
     <span class="md-ellipsis">
       
         Scripted use
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#options" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Options
       
     </span>
   </a>
@@ -2098,14 +2142,59 @@
 the terminal. It is installed together with the SDK:</p>
 <div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>blueye.sdk
 </code></pre></div>
-<p>Running <code>blueye --help</code> lists the available commands. One command needs an extra:
-<code>blueye bundle-model</code> inspects ONNX files and requires the heavyweight <code>onnx</code> package,
-installed with the SDK's <code>cli</code> extra:</p>
+<p>Running <code>blueye --help</code> lists the available commands. Two features need the SDK's
+<code>cli</code> extra:</p>
+<ul>
+<li><code>blueye bundle-model</code> inspects ONNX files and needs the <code>onnx</code> package.</li>
+<li><code>blueye logs download --mcap</code> and <code>blueye logs convert</code> write <code>.mcap</code> files and need
+  <code>mcap-protobuf-support</code>.</li>
+</ul>
 <div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;blueye.sdk[cli]&quot;</span>
 </code></pre></div>
-<p>(Keep the quotes — most shells treat square brackets specially.) If the extra is
-missing, <code>bundle-model</code> detects it and prints the install command for your platform
-instead of failing.</p>
+<p>(Keep the quotes — most shells treat square brackets specially.) Everything else works
+without the extra. When a command needs a package that is missing, it prints the install
+command for your platform instead of failing with an import error; <code>bundle-model</code> then
+exits with code 2, the <code>.mcap</code> paths of <code>logs</code> with code 1.</p>
+<h2 id="conventions">Conventions</h2>
+<p><strong>Drone address.</strong> Commands that talk to the drone take <code>--drone-ip</code> (default
+<code>192.168.1.101</code>) and <code>--timeout</code> in seconds (default 10 for <code>logs</code>, 5 for <code>models</code>).
+Give them after the action, as in <code>blueye logs list --drone-ip 192.168.1.102</code>; without
+an action (the interactive session) they follow the command name. <code>bundle-model</code> only
+contacts the drone with <code>--push</code> and takes <code>--drone-ip</code> for that.</p>
+<p><strong>Interactive and scripted use.</strong> <code>blueye logs</code> and <code>blueye models</code> run without an
+action open an interactive session when stdin and stdout are a terminal; piped or
+redirected, they print the list instead. <code>bundle-model</code> prompts for every value a flag
+did not supply; <code>--yes</code> accepts the inferred defaults and asks nothing. Every prompt
+names the flag that answers it.</p>
+<p><strong>Exit codes.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>Success</td>
+</tr>
+<tr>
+<td>1</td>
+<td>A user-facing error: the drone could not be reached, a file is missing, invalid metadata, a declined confirmation</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>bundle-model</code> needs the <code>cli</code> extra and it is missing, or the arguments were invalid</td>
+</tr>
+<tr>
+<td>130</td>
+<td>Interrupted with Ctrl-C</td>
+</tr>
+</tbody>
+</table>
+<p>Third-party tools (see <a href="#third-party-tools-blueye-tools">below</a>) propagate their own
+exit code.</p>
 <h2 id="bundling-cv-models-blueye-bundle-model">Bundling CV models — <code>blueye bundle-model</code></h2>
 <p>The Blueye X3 Ultra can run your own computer vision models: object
 detection, instance segmentation, and single-object tracking. The drone's vision
@@ -2155,6 +2244,167 @@ name, tracking algorithm, and the runtime configuration for the drone:</p>
 <p>Use <code>--dry-run</code> to print the generated <code>model_meta.json</code> without writing anything, and
 <code>--labels labels.txt</code> (one class name per line) when the model does not embed its class
 names.</p>
+<h3 id="options">Options</h3>
+<p>Package and output:</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>onnx_path</code></td>
+<td>The ONNX file. Prompted for when omitted.</td>
+</tr>
+<tr>
+<td><code>--name NAME</code></td>
+<td>Human-readable model name. Default: the name embedded in the model, else the file stem.</td>
+</tr>
+<tr>
+<td><code>--model-version VERSION</code></td>
+<td>Version string written to the metadata. Default <code>1.0.0</code>.</td>
+</tr>
+<tr>
+<td><code>--description</code>, <code>--author</code>, <code>--license</code></td>
+<td>Informational package fields. Passing any of them skips the "add package details?" prompt.</td>
+</tr>
+<tr>
+<td><code>-o</code>, <code>--output PATH</code></td>
+<td>Output zip. Default <code>&lt;name&gt;_package.zip</code> in the current directory.</td>
+</tr>
+<tr>
+<td><code>--force</code></td>
+<td>Overwrite an existing zip. Without it, interactive runs ask and scripted runs fail.</td>
+</tr>
+<tr>
+<td><code>--dry-run</code></td>
+<td>Print the generated <code>model_meta.json</code> and stop; nothing is written.</td>
+</tr>
+<tr>
+<td><code>--push</code></td>
+<td>Upload the zip to the drone after writing it.</td>
+</tr>
+<tr>
+<td><code>--drone-ip IP</code></td>
+<td>Drone address used by <code>--push</code>. Default <code>192.168.1.101</code>.</td>
+</tr>
+<tr>
+<td><code>-y</code>, <code>--yes</code></td>
+<td>Accept every inferred default; never prompt.</td>
+</tr>
+<tr>
+<td><code>--strict</code></td>
+<td>Treat <code>onnx.checker</code> failures as fatal instead of asking whether to continue.</td>
+</tr>
+<tr>
+<td><code>--quiet</code></td>
+<td>Print only errors and the result path.</td>
+</tr>
+</tbody>
+</table>
+<p>Model structure (all inferred from the ONNX graph when possible):</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--format FORMAT</code></td>
+<td>Decoder format; one of the values in the table below. Prompted for when inference is uncertain.</td>
+</tr>
+<tr>
+<td><code>--labels FILE</code></td>
+<td>Class names, one per line. Default: the labels embedded in the model.</td>
+</tr>
+<tr>
+<td><code>--num-classes N</code></td>
+<td>Number of classes. Default: inferred from the output shape or the label count.</td>
+</tr>
+<tr>
+<td><code>--input-size WxH</code></td>
+<td>Model input size, e.g. <code>640x640</code>. Needed when the model has dynamic dimensions.</td>
+</tr>
+<tr>
+<td><code>--anchors "W,H W,H ..."</code></td>
+<td>Anchor pairs in grid-cell units, <code>yolov2_grid</code> only.</td>
+</tr>
+<tr>
+<td><code>--grid-size N</code></td>
+<td>Feature-map grid size, <code>yolov2_grid</code> only. Default: inferred, else prompted (13).</td>
+</tr>
+<tr>
+<td><code>--one-indexed-classes</code></td>
+<td>Class IDs start at 1 (TensorFlow SSD exports), <code>ssd_multi</code> only.</td>
+</tr>
+<tr>
+<td><code>--template-size PX</code>, <code>--search-size PX</code></td>
+<td>Template and search crop sizes for single-object trackers. Defaults 128/256 (<code>ostrack</code>), 112/224 (<code>mixformerv2</code>).</td>
+</tr>
+</tbody>
+</table>
+<p>Preprocessing and decoding:</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--color-order {rgb,bgr}</code></td>
+<td>Channel order the model expects. Default <code>rgb</code>.</td>
+</tr>
+<tr>
+<td><code>--normalize-scale FLOAT</code></td>
+<td>Pixel scale. Default <code>1/255</code> for most formats, <code>1.0</code> for <code>yolov2_grid</code> and <code>ssd_multi</code>.</td>
+</tr>
+<tr>
+<td><code>--normalize-mean R,G,B</code>, <code>--normalize-std R,G,B</code></td>
+<td>Per-channel normalization. Default: ImageNet values for <code>detr</code>, <code>ostrack</code> and <code>mixformerv2</code>, none otherwise.</td>
+</tr>
+<tr>
+<td><code>--confidence-threshold FLOAT</code></td>
+<td>Detection confidence threshold, detection packages only. Default <code>0.3</code>. Trackers keep their package default (<code>0.5</code>).</td>
+</tr>
+<tr>
+<td><code>--nms-threshold FLOAT</code></td>
+<td>NMS IoU threshold. Default <code>0.45</code>.</td>
+</tr>
+<tr>
+<td><code>--tracking {none,iou,byte_track}</code></td>
+<td>Multi-object tracking algorithm for detection packages. Default <code>none</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>Runtime configuration on the drone:</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--runtime-device DEVICE</code></td>
+<td><code>cuda</code>, <code>tensorrt</code>, <code>tensorrt-dla0</code> or <code>tensorrt-dla1</code> on the drone. <code>cpu</code> and <code>coreml</code> are accepted for local desktop testing of the package.</td>
+</tr>
+<tr>
+<td><code>--runtime-hz HZ</code></td>
+<td>Maximum inference rate in Hz, or <code>max</code> for unlimited (the default).</td>
+</tr>
+<tr>
+<td><code>--runtime-enabled</code>, <code>--no-runtime-enabled</code></td>
+<td>Autolaunch the model on the drone. Default enabled.</td>
+</tr>
+</tbody>
+</table>
 <h3 id="supported-model-types">Supported model types</h3>
 <table>
 <thead>
@@ -2215,7 +2465,7 @@ the default <code>192.168.1.101</code>):</p>
 <div class="highlight"><pre><span></span><code>blueye<span class="w"> </span>bundle-model<span class="w"> </span>yolov8n.onnx<span class="w"> </span>--yes<span class="w"> </span>--push
 </code></pre></div>
 <p>If the drone cannot be reached, the command fails with a clear message — the zip is
-still written and can be pushed later.</p>
+still written and can be pushed later with <code>blueye models upload</code>.</p>
 <p>The same operations are available programmatically through the SDK:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">blueye.sdk</span>
 
@@ -2231,16 +2481,64 @@ multipart upload (field name <code>file</code>):</p>
 zip from the Computer Vision tab.</p>
 <h2 id="managing-models-on-the-drone-blueye-models">Managing models on the drone — <code>blueye models</code></h2>
 <p>Installed models are managed with the <code>blueye models</code> command, or interactively by
-running it without arguments on a terminal:</p>
+running it without an action on a terminal:</p>
 <div class="highlight"><pre><span></span><code>blueye<span class="w"> </span>models<span class="w"> </span>list
+blueye<span class="w"> </span>models<span class="w"> </span>upload<span class="w"> </span>yolov8n_package.zip
 blueye<span class="w"> </span>models<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>yolov8n-coco
 blueye<span class="w"> </span>models<span class="w"> </span>set-device<span class="w"> </span>yolov8n-coco<span class="w"> </span>tensorrt-dla0
+blueye<span class="w"> </span>models<span class="w"> </span>set-hz<span class="w"> </span>yolov8n-coco<span class="w"> </span><span class="m">10</span>
 blueye<span class="w"> </span>models<span class="w"> </span>warmup<span class="w"> </span>yolov8n-coco<span class="w">      </span><span class="c1"># pre-build the TensorRT engine</span>
-blueye<span class="w"> </span>models<span class="w"> </span>delete<span class="w"> </span>yolov8n-coco
+blueye<span class="w"> </span>models<span class="w"> </span>download<span class="w"> </span>yolov8n-coco<span class="w"> </span>-o<span class="w"> </span>~/packages
+blueye<span class="w"> </span>models<span class="w"> </span>delete<span class="w"> </span>yolov8n-coco<span class="w"> </span>--force
 </code></pre></div>
-<p>Model names are the directory slugs shown by <code>blueye models list</code>. Note: the
-<code>enabled</code> state is the autolaunch configuration; the API does not expose a live
-"running" status.</p>
+<p>Model names are the directory slugs shown by <code>blueye models list</code>. The <code>enabled</code> state
+is the autolaunch configuration; the API does not expose a live "running" status.</p>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>list</code></td>
+<td>Table of installed models: name, directory, type, format, size, enabled, device, rate.</td>
+</tr>
+<tr>
+<td><code>enable NAME</code>, <code>disable NAME</code></td>
+<td>Turn autolaunch on or off.</td>
+</tr>
+<tr>
+<td><code>set-device NAME DEVICE</code></td>
+<td>Execution provider: <code>cuda</code>, <code>tensorrt</code>, <code>tensorrt-dla0</code> or <code>tensorrt-dla1</code>.</td>
+</tr>
+<tr>
+<td><code>set-hz NAME HZ</code></td>
+<td>Maximum inference rate; one of <code>0</code>, <code>5</code>, <code>10</code>, <code>15</code>. <code>0</code> means unlimited, the same setting <code>bundle-model --runtime-hz max</code> writes into a package.</td>
+</tr>
+<tr>
+<td><code>warmup NAME</code></td>
+<td>Build the inference engine now so the first launch is instant. TensorRT builds take minutes; the command waits.</td>
+</tr>
+<tr>
+<td><code>delete NAME [--force]</code></td>
+<td>Remove the package. Asks for confirmation on a terminal; <code>--force</code> skips the question and is required when not interactive.</td>
+</tr>
+<tr>
+<td><code>upload PACKAGE</code></td>
+<td>Upload a package zip, as <code>bundle-model --push</code> does.</td>
+</tr>
+<tr>
+<td><code>download NAME [-o PATH]</code></td>
+<td>Save a package zip from the drone to a file or directory (default: current directory).</td>
+</tr>
+<tr>
+<td><code>rescan</code></td>
+<td>Ask the drone's vision pipeline to re-read the package directory.</td>
+</tr>
+</tbody>
+</table>
 <h2 id="downloading-dive-logs-blueye-logs">Downloading dive logs — <code>blueye logs</code></h2>
 <p>The drone's binary dive logs (<code>.bez</code>) can be listed and downloaded from the terminal.
 The command connects to the drone as an observer — taking no control:</p>
@@ -2248,14 +2546,38 @@ The command connects to the drone as an observer — taking no control:</p>
 blueye<span class="w"> </span>logs<span class="w"> </span>download<span class="w"> </span>--latest<span class="w"> </span><span class="m">1</span><span class="w">        </span><span class="c1"># newest log to the current directory</span>
 blueye<span class="w"> </span>logs<span class="w"> </span>download<span class="w"> </span>--latest<span class="w"> </span><span class="m">1</span><span class="w"> </span>--mcap<span class="w"> </span><span class="c1"># ...and convert it for Foxglove</span>
 blueye<span class="w"> </span>logs<span class="w"> </span>download<span class="w"> </span>BYEDP000000_ea9ac92e1817a1d4_00002<span class="w"> </span>-o<span class="w"> </span>~/dives
+blueye<span class="w"> </span>logs<span class="w"> </span>download<span class="w"> </span>--all<span class="w"> </span>--since<span class="w"> </span><span class="m">2026</span>-06-01<span class="w"> </span>--dives-only
 blueye<span class="w"> </span>logs<span class="w"> </span>convert<span class="w"> </span>mydive.bez<span class="w">         </span><span class="c1"># convert an already-downloaded log (no drone)</span>
 blueye<span class="w"> </span>logs<span class="w">                            </span><span class="c1"># interactive: pick logs to download</span>
 </code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>list</code></td>
+<td>Table of the logs on the drone: name, start time, max depth, size, dive flag.</td>
+</tr>
+<tr>
+<td><code>download [NAMES...]</code></td>
+<td>Download logs by name, or the <code>--latest N</code> newest, or <code>--all</code>. Exactly one of the three. <code>-o</code>/<code>--output DIR</code> sets the destination (default: current directory); <code>--mcap</code> also converts each log.</td>
+</tr>
+<tr>
+<td><code>convert FILES...</code></td>
+<td>Convert <code>.bez</code> files already on disk to <code>.mcap</code>. <code>-o</code>/<code>--output DIR</code> sets the destination (default: next to each input). Needs no drone.</td>
+</tr>
+</tbody>
+</table>
 <p><code>list</code>, <code>download</code>, and the interactive view accept <code>--dives-only</code>, <code>--since
 YYYY-MM-DD</code>, and <code>--until YYYY-MM-DD</code> to narrow the selection; the interactive view
 is a single scrollable table (type to filter, space to select, sorted newest first).
 <code>--mcap</code> converts each downloaded log to a Foxglove-ready <code>.mcap</code> next to the
-<code>.bez</code> — <code>blueye logs convert</code> does the same for files already on disk. See
+<code>.bez</code> — <code>blueye logs convert</code> does the same for files already on disk. Both need the
+<code>cli</code> extra. See
 <a href="../logs/foxglove-bez-to-mcap/">visualizing dive logs with Foxglove</a>.
 For working with logs from Python (streaming, filtering, plotting), see
 <a href="../logs/listing-and-downloading/">logs from the drone</a>.</p>
@@ -2266,23 +2588,31 @@ automatically, lists them in <code>blueye --help</code>, and runs them as
 <code>blueye &lt;tool-name&gt; ...</code> — no SDK changes needed.</p>
 <h3 id="writing-a-tool">Writing a tool</h3>
 <p>A tool is a normal Python script carrying <a href="https://peps.python.org/pep-0723/">PEP 723</a>
-inline metadata, extended with a <code>[tool.blueye]</code> table:</p>
+inline metadata, extended with a <code>[tool.blueye]</code> table. It can import <code>blueye.sdk</code>
+like any other script:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># /// script</span>
 <span class="c1"># requires-python = &quot;&gt;=3.10&quot;</span>
 <span class="c1"># dependencies = [&quot;pandas&quot;]</span>
 <span class="c1">#</span>
 <span class="c1"># [tool.blueye]</span>
 <span class="c1"># name = &quot;export-logs&quot;</span>
-<span class="c1"># description = &quot;Export dive logs to CSV&quot;</span>
+<span class="c1"># description = &quot;Export the dive log index to CSV&quot;</span>
 <span class="c1"># min-sdk-version = &quot;2.7.0&quot;</span>
 <span class="c1"># ///</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drone</span>
+
 
 <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;exporting with args: </span><span class="si">{</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">drone</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">(</span><span class="n">connect_as_observer</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">log</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="n">log</span><span class="o">.</span><span class="n">start_time</span><span class="p">,</span> <span class="s2">&quot;max_depth&quot;</span><span class="p">:</span> <span class="n">log</span><span class="o">.</span><span class="n">max_depth_magnitude</span><span class="p">}</span>
+        <span class="k">for</span> <span class="n">log</span> <span class="ow">in</span> <span class="n">drone</span><span class="o">.</span><span class="n">logs</span>
+    <span class="p">]</span>
+    <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="k">return</span> <span class="mi">0</span>
 
 
@@ -2318,14 +2648,25 @@ inline metadata, extended with a <code>[tool.blueye]</code> table:</p>
 </table>
 <p>Arguments after the tool name are passed to the script verbatim, and its exit code
 becomes the CLI's exit code. Invocation is strictly <code>blueye &lt;tool-name&gt; args...</code>.</p>
-<p><strong>Dependencies</strong>: when the script declares PEP 723 <code>dependencies</code> and
-<a href="https://docs.astral.sh/uv/">uv</a> is installed, the CLI runs it with <code>uv run</code>, giving
-the script an isolated environment with those dependencies — your tool can use pandas
-without pandas ever being installed next to the SDK. Without uv, the script runs with
-the current interpreter and must find its dependencies there.</p>
+<p><strong>Dependencies.</strong> A tool always runs on the same Python interpreter as the <code>blueye</code>
+command, so <code>blueye.sdk</code> and everything installed next to it are importable without
+being listed. Packages the tool needs beyond that go in the PEP 723 <code>dependencies</code>
+list. When <a href="https://docs.astral.sh/uv/">uv</a> is installed, the CLI runs the tool as
+<code>uv run --with &lt;package&gt; ... python &lt;script&gt;</code>: uv puts the listed packages in a cached
+environment layered on top of the CLI's own, without installing anything into it. The first run of a tool downloads its packages, so do that before heading out on the
+drone's Wi-Fi; later runs come from uv's cache. A package the CLI's environment already
+satisfies is never downloaded. An SDK installed in the per-user package folder
+(<code>pip install --user</code>, the fallback on system Pythons that refuse writes to
+<code>site-packages</code>) is added to the tool's module search path after uv's packages, since
+uv's layered environment does not read that folder on its own. Without uv, the listed packages must
+already be installed next to the SDK (<code>pip install pandas</code> into the same environment). The tool's
+<code>requires-python</code> is not enforced; the interpreter is the CLI's. uv's own
+<code>[tool.uv.sources]</code> table in the script is not read either; dependencies come from
+the package index.</p>
 <h3 id="installing-and-managing-tools">Installing and managing tools</h3>
 <div class="highlight"><pre><span></span><code>blueye<span class="w"> </span>tools<span class="w"> </span>validate<span class="w"> </span>my_script.py<span class="w">   </span><span class="c1"># check the metadata before installing</span>
 blueye<span class="w"> </span>tools<span class="w"> </span>install<span class="w"> </span>my_script.py<span class="w">    </span><span class="c1"># copy it into the tools directory</span>
+blueye<span class="w"> </span>tools<span class="w"> </span>install<span class="w"> </span>my_script.py<span class="w"> </span>--force<span class="w">   </span><span class="c1"># replace an installed tool of the same name</span>
 blueye<span class="w"> </span>tools<span class="w"> </span>list<span class="w">                    </span><span class="c1"># built-ins + installed tools</span>
 blueye<span class="w"> </span>tools<span class="w"> </span>uninstall<span class="w"> </span>export-logs
 blueye<span class="w"> </span>tools<span class="w"> </span>dir<span class="w">                     </span><span class="c1"># print the resolved tools directory</span>

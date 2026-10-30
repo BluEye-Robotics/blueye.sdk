@@ -1647,6 +1647,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label=" ToolMetadata">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#blueye.sdk.cli.external.metadata.ToolMetadata.has_dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;has_dependencies
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -2694,6 +2711,23 @@
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label=" ToolMetadata">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#blueye.sdk.cli.external.metadata.ToolMetadata.has_dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;has_dependencies
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -5619,9 +5653,9 @@ under their exact names because the .onnx references them by name).</p>
 <p>TOML parsing is tiered: :mod:<code>tomllib</code> (Python 3.11+), then :mod:<code>tomli</code> when
 installed (shipped in the <code>[cli]</code> extra for Python 3.10), then a minimal regex
 fallback so a stdlib-only Python 3.10 environment can still discover tools. The
-fallback only understands single-line double-quoted string values inside
-<code>[tool.blueye]</code> (arrays and multi-line strings need tomli) — enough for the keys the
-CLI reads.</p>
+fallback only understands double-quoted string values inside <code>[tool.blueye]</code> and
+double-quoted strings in the <code>dependencies</code> array (anything else needs tomli) —
+enough for the keys the CLI reads.</p>
 
 
 
@@ -5735,7 +5769,7 @@ CLI reads.</p>
     <span class="n">name</span><span class="p">:</span> <span class="n"><span title="str">str</span></span><span class="p">,</span>
     <span class="n">description</span><span class="p">:</span> <span class="n"><span title="str">str</span></span><span class="p">,</span>
     <span class="n">min_sdk_version</span><span class="p">:</span> <span class="n"><span title="str">str</span></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">has_dependencies</span><span class="p">:</span> <span class="n"><span title="bool">bool</span></span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">dependencies</span><span class="p">:</span> <span class="n"><span title="tuple">tuple</span></span><span class="p">[</span><span class="n"><span title="str">str</span></span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
     <span class="n">parsed_with_fallback</span><span class="p">:</span> <span class="n"><span title="bool">bool</span></span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span>
 </code></pre></div>
@@ -5774,13 +5808,12 @@ dispatch time but never block execution.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
-          <b><code><span title="blueye.sdk.cli.external.metadata.ToolMetadata.has_dependencies">has_dependencies</span></code></b>
-              (<code><span title="bool">bool</span></code>)
+          <b><code><span title="blueye.sdk.cli.external.metadata.ToolMetadata.dependencies">dependencies</span></code></b>
+              (<code><span title="tuple">tuple</span>[<span title="str">str</span>, ...]</code>)
           –
           <div class="doc-md-description">
-            <p>True when the PEP 723 block declares <code>dependencies</code> —
-execution then prefers <code>uv run</code> so the script gets an isolated
-environment.</p>
+            <p>The PEP 723 <code>dependencies</code> requirement strings. Execution asks
+uv (when available) to layer them on top of the CLI's environment.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -5814,6 +5847,30 @@ produced this metadata.</p>
 
 
 
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="blueye.sdk.cli.external.metadata.ToolMetadata.has_dependencies" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">has_dependencies</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">has_dependencies</span><span class="p">:</span> <span class="n"><span title="bool">bool</span></span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>True when the script declares at least one dependency.</p>
+
+    </div>
+
+</div>
 
 
 
@@ -5882,13 +5939,7 @@ PEP 723).</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/cli/external/metadata.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 94</span>
-<span class="normal"> 95</span>
-<span class="normal"> 96</span>
-<span class="normal"> 97</span>
-<span class="normal"> 98</span>
-<span class="normal"> 99</span>
-<span class="normal">100</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">100</span>
 <span class="normal">101</span>
 <span class="normal">102</span>
 <span class="normal">103</span>
@@ -5904,7 +5955,13 @@ PEP 723).</p>
 <span class="normal">113</span>
 <span class="normal">114</span>
 <span class="normal">115</span>
-<span class="normal">116</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">extract_script_block</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">extract_script_block</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract the un-commented TOML text of the PEP 723 ``script`` block.</span>
 
 <span class="sd">    Args:</span>
@@ -5999,15 +6056,7 @@ the required <code>[tool.blueye]</code> keys.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/cli/external/metadata.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">134</span>
-<span class="normal">135</span>
-<span class="normal">136</span>
-<span class="normal">137</span>
-<span class="normal">138</span>
-<span class="normal">139</span>
-<span class="normal">140</span>
-<span class="normal">141</span>
-<span class="normal">142</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">142</span>
 <span class="normal">143</span>
 <span class="normal">144</span>
 <span class="normal">145</span>
@@ -6052,7 +6101,20 @@ the required <code>[tool.blueye]</code> keys.</p>
 <span class="normal">184</span>
 <span class="normal">185</span>
 <span class="normal">186</span>
-<span class="normal">187</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">parse_tool_metadata</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ToolMetadata</span><span class="p">:</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">parse_tool_metadata</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ToolMetadata</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse a tool script&#39;s source into its ToolMetadata.</span>
 
 <span class="sd">    Args:</span>
@@ -6075,10 +6137,15 @@ the required <code>[tool.blueye]</code> keys.</p>
         <span class="n">table</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tool&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;blueye&quot;</span><span class="p">,</span> <span class="p">{})</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="n">table</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">has_dependencies</span> <span class="o">=</span> <span class="s2">&quot;dependencies&quot;</span> <span class="ow">in</span> <span class="n">data</span>
+        <span class="n">raw_dependencies</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dependencies&quot;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">raw_dependencies</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">raw_dependencies</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="n">MetadataError</span><span class="p">(</span><span class="s2">&quot;&#39;dependencies&#39; must be a list of requirement strings&quot;</span><span class="p">)</span>
+        <span class="n">dependencies</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">raw_dependencies</span><span class="p">)</span>
         <span class="n">used_fallback</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">table</span><span class="p">,</span> <span class="n">has_dependencies</span> <span class="o">=</span> <span class="n">_parse_with_fallback</span><span class="p">(</span><span class="n">block</span><span class="p">)</span>
+        <span class="n">table</span><span class="p">,</span> <span class="n">dependencies</span> <span class="o">=</span> <span class="n">_parse_with_fallback</span><span class="p">(</span><span class="n">block</span><span class="p">)</span>
         <span class="n">used_fallback</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">table</span><span class="p">:</span>
@@ -6103,7 +6170,7 @@ the required <code>[tool.blueye]</code> keys.</p>
         <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span>
         <span class="n">min_sdk_version</span><span class="o">=</span><span class="n">min_sdk_version</span><span class="p">,</span>
-        <span class="n">has_dependencies</span><span class="o">=</span><span class="n">has_dependencies</span><span class="p">,</span>
+        <span class="n">dependencies</span><span class="o">=</span><span class="n">dependencies</span><span class="p">,</span>
         <span class="n">parsed_with_fallback</span><span class="o">=</span><span class="n">used_fallback</span><span class="p">,</span>
     <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
@@ -6707,10 +6774,16 @@ conventional per-user data location. The directory is not created here — only
     <div class="doc doc-contents ">
 
         <p>Run a discovered tool as a subprocess and return its exit code.</p>
-<p>Scripts that declare PEP 723 <code>dependencies</code> are run with <code>uv run</code> when uv is
-available, giving them an isolated environment with those dependencies; otherwise
-the current interpreter runs the script directly (its dependencies may already be
-importable here).</p>
+<p>The tool always runs on the CLI's own interpreter, so it can import the same
+<code>blueye.sdk</code> the CLI runs on (and anything else installed next to it). When the
+script declares PEP 723 <code>dependencies</code> and uv is available, uv layers those
+packages on top of this environment (<code>uv run --with &lt;requirement&gt;</code> for each);
+they live in uv's cache and nothing is installed into the CLI's environment. The
+requirements are passed one by one rather than via ``--with-requirements</p>
+<script>``, which only reads PEP 723 scripts from uv 0.9 on. An SDK installed in
+the per-user package folder is added to the tool's search path after uv's
+packages, see ``_user_site_to_forward``. Without uv, the declared dependencies
+must already be importable here.
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -6741,39 +6814,71 @@ importable here).</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/cli/external/execution.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">49</span>
-<span class="normal">50</span>
-<span class="normal">51</span>
-<span class="normal">52</span>
-<span class="normal">53</span>
-<span class="normal">54</span>
-<span class="normal">55</span>
-<span class="normal">56</span>
-<span class="normal">57</span>
-<span class="normal">58</span>
-<span class="normal">59</span>
-<span class="normal">60</span>
-<span class="normal">61</span>
-<span class="normal">62</span>
-<span class="normal">63</span>
-<span class="normal">64</span>
-<span class="normal">65</span>
-<span class="normal">66</span>
-<span class="normal">67</span>
-<span class="normal">68</span>
-<span class="normal">69</span>
-<span class="normal">70</span>
-<span class="normal">71</span>
-<span class="normal">72</span>
-<span class="normal">73</span>
-<span class="normal">74</span>
-<span class="normal">75</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">run_tool</span><span class="p">(</span><span class="n">tool</span><span class="p">:</span> <span class="n">DiscoveredTool</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">run_tool</span><span class="p">(</span><span class="n">tool</span><span class="p">:</span> <span class="n">DiscoveredTool</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Run a discovered tool as a subprocess and return its exit code.</span>
 
-<span class="sd">    Scripts that declare PEP 723 `dependencies` are run with ``uv run`` when uv is</span>
-<span class="sd">    available, giving them an isolated environment with those dependencies; otherwise</span>
-<span class="sd">    the current interpreter runs the script directly (its dependencies may already be</span>
-<span class="sd">    importable here).</span>
+<span class="sd">    The tool always runs on the CLI&#39;s own interpreter, so it can import the same</span>
+<span class="sd">    ``blueye.sdk`` the CLI runs on (and anything else installed next to it). When the</span>
+<span class="sd">    script declares PEP 723 ``dependencies`` and uv is available, uv layers those</span>
+<span class="sd">    packages on top of this environment (``uv run --with &lt;requirement&gt;`` for each);</span>
+<span class="sd">    they live in uv&#39;s cache and nothing is installed into the CLI&#39;s environment. The</span>
+<span class="sd">    requirements are passed one by one rather than via ``--with-requirements</span>
+<span class="sd">    &lt;script&gt;``, which only reads PEP 723 scripts from uv 0.9 on. An SDK installed in</span>
+<span class="sd">    the per-user package folder is added to the tool&#39;s search path after uv&#39;s</span>
+<span class="sd">    packages, see ``_user_site_to_forward``. Without uv, the declared dependencies</span>
+<span class="sd">    must already be importable here.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        tool: The tool to run (must have valid metadata).</span>
@@ -6782,7 +6887,27 @@ importable here).</p>
     <span class="n">_warn_min_sdk_version</span><span class="p">(</span><span class="n">tool</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">tool</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">has_dependencies</span> <span class="ow">and</span> <span class="n">shutil</span><span class="o">.</span><span class="n">which</span><span class="p">(</span><span class="s2">&quot;uv&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">command</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;uv&quot;</span><span class="p">,</span> <span class="s2">&quot;run&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">tool</span><span class="o">.</span><span class="n">path</span><span class="p">),</span> <span class="o">*</span><span class="n">args</span><span class="p">]</span>
+        <span class="n">with_options</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">option</span>
+            <span class="k">for</span> <span class="n">requirement</span> <span class="ow">in</span> <span class="n">tool</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">dependencies</span>
+            <span class="k">for</span> <span class="n">option</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;--with&quot;</span><span class="p">,</span> <span class="n">requirement</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="n">user_site</span> <span class="o">=</span> <span class="n">_user_site_to_forward</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">user_site</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">script</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">tool</span><span class="o">.</span><span class="n">path</span><span class="p">)]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">script</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;-c&quot;</span><span class="p">,</span> <span class="n">_USER_SITE_BOOTSTRAP</span><span class="p">,</span> <span class="n">user_site</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">tool</span><span class="o">.</span><span class="n">path</span><span class="p">)]</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;uv&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;run&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;--no-project&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;--python&quot;</span><span class="p">,</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span>
+            <span class="o">*</span><span class="n">with_options</span><span class="p">,</span>
+            <span class="s2">&quot;python&quot;</span><span class="p">,</span>
+            <span class="o">*</span><span class="n">script</span><span class="p">,</span>
+            <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+        <span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">tool</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">has_dependencies</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
