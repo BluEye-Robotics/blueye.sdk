@@ -78,7 +78,11 @@ def prepare_new_mission(
 ) -> bp.Mission:
     """Creates a mission from a list of instructions
 
-    Automatically assigns an ID to each instruction based on the order they are in the list.
+    The instructions are copied and numbered 1 to n in list order, which is the numbering the
+    Blueye app uses. The drone executes the instructions in list order and reports progress by
+    these ids: `MissionStatus.completed_instruction_ids` and
+    `ReferenceAutoPilot.active_instruction_id` refer to them. The instructions passed in are left
+    unchanged, so the same instruction object can appear more than once in the list.
 
     Args:
         mission_id: ID of the mission
@@ -100,15 +104,15 @@ def prepare_new_mission(
         f'Preparing the "{mission_name}" mission, with ID {mission_id} and '
         f"{len(instruction_list)} instructions"
     )
-    instruction_id = 0
 
-    # Deep copy the instructions to avoid modifying the original ones
-    for instruction in instruction_list:
+    # Copy the instructions so the caller's objects keep their ids. Number from 1: the drone
+    # reports progress by id, and 0 is also what an unset id reads back as.
+    instructions = []
+    for position, instruction in enumerate(instruction_list, start=1):
         instruction_copy = copy.deepcopy(instruction)
-        instruction_copy.id = instruction_id
-        instruction_id += 1
-        instruction_list[instruction_list.index(instruction)] = instruction_copy
-    return bp.Mission(id=mission_id, name=mission_name, instructions=instruction_list)
+        instruction_copy.id = position
+        instructions.append(instruction_copy)
+    return bp.Mission(id=mission_id, name=mission_name, instructions=instructions)
 
 
 def import_from_json(input_path: Path | str) -> bp.Mission:
@@ -264,45 +268,101 @@ class Mission:
         self._parent_drone._verify_required_blunux_version("4.0.5")
         self._parent_drone._ctrl_client.clear_mission()
 
+    def _get_state(self) -> Optional[bp.MissionState]:
+        """The mission state from the latest status, or `None` when no status has arrived."""
+        status = self.get_status()
+        if status is None:
+            return None
+        return status.state
+
+    def _wait_for_state(
+        self,
+        wanted: Optional[tuple[bp.MissionState, ...]],
+        timeout: float,
+        description: str,
+        load_failure_is_error: bool = False,
+        poll_interval: float = 0.1,
+    ) -> bp.MissionState | int:
+        """Poll the mission state until it is one of `wanted`.
+
+        A missing status counts as not there yet, like any state other than the wanted ones. The
+        drone has no status to give until its mission node has published the first one after boot.
+
+        A drone running newer software can report a state the installed `blueye.protocol` does not
+        know, which arrives as a plain `int`. It counts as a reported state, so it ends a wait for
+        any state and is named by its number in the `TimeoutError`.
+
+        Args:
+            wanted: The states to wait for, or `None` to wait for any reported state.
+            timeout: Seconds to wait before giving up.
+            description: Names the wanted states in the `TimeoutError` message.
+            load_failure_is_error: Raise on `MISSION_STATE_FAILED_TO_LOAD_MISSION` instead of
+                waiting on. Set while waiting for the mission that was sent. Before that, a
+                failed load left over from an earlier mission is cleared like any other state.
+            poll_interval: Seconds between two reads of the state.
+
+        Returns:
+            The state that ended the wait.
+
+        Raises:
+            RuntimeError: If `load_failure_is_error` is set and the drone reports
+                `MISSION_STATE_FAILED_TO_LOAD_MISSION`.
+            TimeoutError: If none of the wanted states is reported within the timeout.
+        """
+        deadline = time.monotonic() + timeout
+        while True:
+            state = self._get_state()
+            if state is not None and (wanted is None or state in wanted):
+                return state
+            if (
+                load_failure_is_error
+                and state == bp.MissionState.MISSION_STATE_FAILED_TO_LOAD_MISSION
+            ):
+                raise RuntimeError("Failed to load the mission. Check the mission instructions.")
+            if time.monotonic() >= deadline:
+                if state is None:
+                    raise TimeoutError(
+                        f"No mission status received from the drone within {timeout} s."
+                    )
+                raise TimeoutError(
+                    f"Mission status did not become {description} within {timeout} s, "
+                    f"last state was {getattr(state, 'name', state)}."
+                )
+            time.sleep(poll_interval)
+
     def load_and_run(self, mission: bp.Mission, timeout: float = 2.0):
         """Clears any previous mission, loads the given mission, and runs it.
 
+        The method returns once the drone has been told to run the mission. Use
+        [`get_status`][blueye.sdk.mission.Mission.get_status] to follow it from there.
+
+        For about a second after the drone boots there is no mission status to read. The method
+        waits for it like for any other state, within the same timeout.
+
         Args:
             mission: The mission to load and run.
-            timeout: The maximum time to wait for the mission to be ready before raising an exception.
+            timeout: Seconds to wait for each step: for a mission status to arrive, for the drone to
+                clear a previous mission, and for the new mission to become ready.
 
         Raises:
-            RuntimeError: If the connected drone does not meet the required Blunux version.
-            TimeoutError: If the mission does not become ready within the specified timeout.
+            RuntimeError: If the connected drone does not meet the required Blunux version, or the
+                drone fails to load the mission.
+            TimeoutError: If no mission status arrives, or the mission does not become inactive or
+                ready, within the timeout.
         """
         self._parent_drone._verify_required_blunux_version("4.0.5")
-        if self.get_status().state not in (
+
+        # Wait for a status to know whether a previous mission has to be cleared first
+        state = self._wait_for_state(None, timeout, "known")
+        if state not in (
             bp.MissionState.MISSION_STATE_INACTIVE,
             bp.MissionState.MISSION_STATE_COMPLETED,
         ):
-            # Clear the previous mission if it exists
             self.clear()
+            self._wait_for_state((bp.MissionState.MISSION_STATE_INACTIVE,), timeout, "inactive")
 
-            # Wait until the mission state becomes MISSION_STATE_INACTIVE
-            start_time = time.time()
-            while self.get_status().state != bp.MissionState.MISSION_STATE_INACTIVE:
-                if time.time() - start_time > timeout:
-                    raise TimeoutError(
-                        "Mission status did not become inactive within the timeout period."
-                    )
-                time.sleep(0.1)
-
-        # Send the new mission
         self.send_new(mission)
-
-        # Wait until the mission state becomes MISSION_STATE_READY
-        start_time = time.time()
-        while self.get_status().state != bp.MissionState.MISSION_STATE_READY:
-            if time.time() - start_time > timeout:
-                raise TimeoutError("Mission status did not become ready within the timeout period.")
-            if self.get_status().state == bp.MissionState.MISSION_STATE_FAILED_TO_LOAD_MISSION:
-                raise RuntimeError("Failed to load the mission. Check the mission instructions.")
-            time.sleep(0.1)
-
-        # Run the mission
+        self._wait_for_state(
+            (bp.MissionState.MISSION_STATE_READY,), timeout, "ready", load_failure_is_error=True
+        )
         self.run()

@@ -1,3 +1,4 @@
+import warnings
 from pathlib import Path
 
 import blueye.protocol as bp
@@ -22,6 +23,7 @@ example_mission_json = (
     '  "name": "Example mission",\n'
     '  "instructions": [\n'
     "    {\n"
+    '      "id": 1,\n'
     '      "tiltMainCameraCommand": {\n'
     '        "tiltAngle": {\n'
     '          "value": 30.0\n'
@@ -29,13 +31,13 @@ example_mission_json = (
     "      }\n"
     "    },\n"
     "    {\n"
-    '      "id": 1,\n'
+    '      "id": 2,\n'
     '      "waitForCommand": {\n'
     '        "waitForSeconds": 4.0\n'
     "      }\n"
     "    },\n"
     "    {\n"
-    '      "id": 2,\n'
+    '      "id": 3,\n'
     '      "tiltMainCameraCommand": {\n'
     '        "tiltAngle": {\n'
     '          "value": -30.0\n'
@@ -43,13 +45,13 @@ example_mission_json = (
     "      }\n"
     "    },\n"
     "    {\n"
-    '      "id": 3,\n'
+    '      "id": 4,\n'
     '      "waitForCommand": {\n'
     '        "waitForSeconds": 4.0\n'
     "      }\n"
     "    },\n"
     "    {\n"
-    '      "id": 4,\n'
+    '      "id": 5,\n'
     '      "tiltMainCameraCommand": {\n'
     '        "tiltAngle": {}\n'
     "      }\n"
@@ -154,6 +156,51 @@ def test_import_from_json(mocked_open):
     mocked_open.assert_called_once_with(Path("dummy_path.json"), "r")
 
 
+def test_prepare_new_mission_numbers_instructions_from_one():
+    mission = blueye.sdk.mission.prepare_new_mission([tilt_camera_top, wait, tilt_camera_bottom])
+
+    assert [instruction.id for instruction in mission.instructions] == [1, 2, 3]
+
+
+def test_prepare_new_mission_with_repeated_first_instruction():
+    # The go-to-waypoint example returns to its first waypoint. list.index() compared by value,
+    # so the copy of the last instruction overwrote the first slot and the ids came out scrambled.
+    mission = blueye.sdk.mission.prepare_new_mission(
+        [tilt_camera_top, wait, tilt_camera_bottom, wait, tilt_camera_top]
+    )
+
+    assert [instruction.id for instruction in mission.instructions] == [1, 2, 3, 4, 5]
+    assert mission.instructions[0].tilt_main_camera_command.tilt_angle.value == 30.0
+    assert mission.instructions[4].tilt_main_camera_command.tilt_angle.value == 30.0
+
+
+def test_prepare_new_mission_with_identical_instructions():
+    take_picture = bp.Instruction(
+        camera_command={"camera_action": bp.CameraAction.CAMERA_ACTION_TAKE_PHOTO}
+    )
+    mission = blueye.sdk.mission.prepare_new_mission([take_picture, take_picture, take_picture])
+
+    assert [instruction.id for instruction in mission.instructions] == [1, 2, 3]
+
+
+def test_prepare_new_mission_leaves_the_input_unchanged():
+    first = bp.Instruction(wait_for_command={"wait_for_seconds": 1}, id=7)
+    second = bp.Instruction(wait_for_command={"wait_for_seconds": 2})
+    instruction_list = [first, second]
+
+    mission = blueye.sdk.mission.prepare_new_mission(instruction_list)
+
+    assert instruction_list == [first, second]
+    assert first.id == 7
+    assert second.id == 0
+    assert [instruction.id for instruction in mission.instructions] == [1, 2]
+
+
+def test_prepare_new_mission_rejects_more_than_50_instructions():
+    with pytest.raises(ValueError, match="up to 50 instructions"):
+        blueye.sdk.mission.prepare_new_mission([wait] * 51)
+
+
 def test_create_waypoint_instruction():
     waypoint = blueye.sdk.mission.create_waypoint_instruction(
         waypoint_name="waypoint",
@@ -248,11 +295,125 @@ def test_load_and_run_timeout(mocked_drone):
     mission_status_inactive_tel = bp.MissionStatusTel(mission_status=mission_status_inactive)
     mocked_drone.telemetry.get.side_effect = [mission_status_inactive_tel] * 10
 
-    with pytest.raises(TimeoutError):
+    with pytest.raises(TimeoutError, match="did not become ready.*MISSION_STATE_INACTIVE"):
         mocked_drone.mission.load_and_run(example_mission, timeout=0.1)
 
     mocked_drone._req_rep_client.set_mission.assert_called_once_with(example_mission)
     mocked_drone._ctrl_client.run_mission.assert_not_called()
+
+
+def _status_tel(state: bp.MissionState) -> bp.MissionStatusTel:
+    return bp.MissionStatusTel(mission_status=bp.MissionStatus({"state": state}))
+
+
+def test_load_and_run_waits_for_the_first_status(mocked_drone):
+    # The drone publishes the mission status once a second, so right after connecting there is none
+    mocked_drone.telemetry.get.side_effect = [
+        None,
+        None,
+        _status_tel(bp.MissionState.MISSION_STATE_INACTIVE),
+        _status_tel(bp.MissionState.MISSION_STATE_READY),
+    ]
+
+    mocked_drone.mission.load_and_run(example_mission)
+
+    mocked_drone._ctrl_client.clear_mission.assert_not_called()
+    mocked_drone._req_rep_client.set_mission.assert_called_once_with(example_mission)
+    mocked_drone._ctrl_client.run_mission.assert_called_once()
+
+
+def test_load_and_run_raises_when_no_status_arrives(mocked_drone):
+    mocked_drone.telemetry.get.return_value = None
+
+    with pytest.raises(TimeoutError, match="No mission status received"):
+        mocked_drone.mission.load_and_run(example_mission, timeout=0.1)
+
+    mocked_drone._ctrl_client.clear_mission.assert_not_called()
+    mocked_drone._req_rep_client.set_mission.assert_not_called()
+    mocked_drone._ctrl_client.run_mission.assert_not_called()
+
+
+def test_load_and_run_tolerates_a_missing_status_while_clearing(mocked_drone):
+    mocked_drone.telemetry.get.side_effect = [
+        _status_tel(bp.MissionState.MISSION_STATE_RUNNING),
+        None,
+        _status_tel(bp.MissionState.MISSION_STATE_INACTIVE),
+        _status_tel(bp.MissionState.MISSION_STATE_READY),
+    ]
+
+    mocked_drone.mission.load_and_run(example_mission)
+
+    mocked_drone._ctrl_client.clear_mission.assert_called_once()
+    mocked_drone._req_rep_client.set_mission.assert_called_once_with(example_mission)
+    mocked_drone._ctrl_client.run_mission.assert_called_once()
+
+
+def test_load_and_run_tolerates_a_missing_status_while_waiting_for_ready(mocked_drone):
+    mocked_drone.telemetry.get.side_effect = [
+        _status_tel(bp.MissionState.MISSION_STATE_COMPLETED),
+        None,
+        _status_tel(bp.MissionState.MISSION_STATE_READY),
+    ]
+
+    mocked_drone.mission.load_and_run(example_mission)
+
+    mocked_drone._ctrl_client.clear_mission.assert_not_called()
+    mocked_drone._ctrl_client.run_mission.assert_called_once()
+
+
+def _unknown_status_tel() -> bp.MissionStatusTel:
+    """A status with a state value the installed blueye.protocol does not know.
+
+    A drone on newer software can send one; proto-plus hands it over as a plain int.
+    """
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", UserWarning)
+        return _status_tel(42)
+
+
+def test_load_and_run_clears_an_unknown_state(mocked_drone):
+    mocked_drone.telemetry.get.side_effect = [
+        _unknown_status_tel(),
+        _status_tel(bp.MissionState.MISSION_STATE_INACTIVE),
+        _status_tel(bp.MissionState.MISSION_STATE_READY),
+    ]
+
+    # proto-plus warns when it hands over the unknown value
+    with pytest.warns(UserWarning, match="Unrecognized MissionState"):
+        mocked_drone.mission.load_and_run(example_mission)
+
+    mocked_drone._ctrl_client.clear_mission.assert_called_once()
+    mocked_drone._req_rep_client.set_mission.assert_called_once_with(example_mission)
+    mocked_drone._ctrl_client.run_mission.assert_called_once()
+
+
+def test_load_and_run_names_an_unknown_state_in_the_timeout(mocked_drone):
+    mocked_drone.telemetry.get.side_effect = [
+        _status_tel(bp.MissionState.MISSION_STATE_INACTIVE),
+        *([_unknown_status_tel()] * 10),
+    ]
+
+    with pytest.warns(UserWarning, match="Unrecognized MissionState"):
+        with pytest.raises(TimeoutError, match="did not become ready.*last state was 42"):
+            mocked_drone.mission.load_and_run(example_mission, timeout=0.1)
+
+    mocked_drone._ctrl_client.run_mission.assert_not_called()
+
+
+def test_load_and_run_clears_a_mission_that_failed_to_load_earlier(mocked_drone):
+    # A failed load from an earlier attempt is a previous mission to clear, not an error, also
+    # while the drone still reports it after the clear has been sent
+    mocked_drone.telemetry.get.side_effect = [
+        _status_tel(bp.MissionState.MISSION_STATE_FAILED_TO_LOAD_MISSION),
+        _status_tel(bp.MissionState.MISSION_STATE_FAILED_TO_LOAD_MISSION),
+        _status_tel(bp.MissionState.MISSION_STATE_INACTIVE),
+        _status_tel(bp.MissionState.MISSION_STATE_READY),
+    ]
+
+    mocked_drone.mission.load_and_run(example_mission)
+
+    mocked_drone._ctrl_client.clear_mission.assert_called_once()
+    mocked_drone._ctrl_client.run_mission.assert_called_once()
 
 
 def test_load_and_run_failed_to_load(mocked_drone):

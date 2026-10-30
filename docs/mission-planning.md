@@ -17,7 +17,7 @@ take_picture = bp.Instruction(camera_command={
 go_to_surface = bp.Instruction(go_to_surface_command={"desired_speed": 0.3})
 ```
 
-Next we create the mission using these instructions. The mission is created by passing a list of instructions to the [`prepare_new_mission`][blueye.sdk.mission.prepare_new_mission] function.
+Next we create the mission using these instructions. The mission is created by passing a list of instructions to the [`prepare_new_mission`][blueye.sdk.mission.prepare_new_mission] function. It copies the instructions and numbers them 1 to n in list order, the same numbering the Blueye app uses. The drone reports progress by these ids in [`MissionStatus.completed_instruction_ids`][blueye.protocol.types.mission_planning.MissionStatus] and [`ReferenceAutoPilot.active_instruction_id`][blueye.protocol.types.mission_planning.ReferenceAutoPilot].
 
 ```python
 from blueye.sdk.mission import prepare_new_mission
@@ -31,13 +31,50 @@ go_to_seabed_mission = prepare_new_mission(
 ## Loading and running the mission
 With the mission created we can now transfer it to the drone and run it. The easiest way to do this is to use the [`load_and_run`][blueye.sdk.mission.Mission.load_and_run] method, which will transfer the mission the drone, wait for it to become ready and then start the mission.
 
+`load_and_run` returns as soon as the drone has been told to start. Keep the script connected until the mission has ended: the SDK pets the drone's watchdog from a background thread, and when the script exits the drone aborts the mission about 3 seconds later. See [Connecting to the drone](connecting.md) for what else the drone does then.
+
+A mission does not always end in `MISSION_STATE_COMPLETED`. The drone aborts it (`MISSION_STATE_ABORTED`) when it loses its position for more than 3 seconds, when it is stuck, when a waypoint is too far away, or when the watchdog fires. A mission with waypoints that is started without a valid position ends in `MISSION_STATE_FAILED_TO_START_MISSION`. Another client can clear the mission, which shows as `MISSION_STATE_INACTIVE`, or load its own in place of yours, which passes through `MISSION_STATE_INACTIVE` to `MISSION_STATE_READY` or `MISSION_STATE_FAILED_TO_LOAD_MISSION`. A restart of the drone's mission node also reports `MISSION_STATE_INACTIVE`. Wait for all of these, and treat a status of `None` as not reported yet. `load_and_run` returns after the drone has reported `MISSION_STATE_READY` for the new mission, so an `INACTIVE` read afterwards is not left over from before it. A replacement loaded within the same second can show `MISSION_STATE_READY` without an `INACTIVE` in between, which the loop below does not catch; a script that must detect that can give its mission a nonzero `mission_id` and compare it with `MissionStatus.id`, which the drone reports for the mission it holds.
+
 ```python
+import time
+
+import blueye.protocol as bp
 from blueye.sdk import Drone
 
 d = Drone()
 
 d.mission.load_and_run(go_to_seabed_mission)
+
+end_states = (
+    bp.MissionState.MISSION_STATE_COMPLETED,
+    bp.MissionState.MISSION_STATE_ABORTED,
+    bp.MissionState.MISSION_STATE_FAILED_TO_START_MISSION,
+    bp.MissionState.MISSION_STATE_FAILED_TO_LOAD_MISSION,
+    bp.MissionState.MISSION_STATE_INACTIVE,
+)
+status = d.mission.get_status()
+while status is None or status.state not in end_states:
+    time.sleep(0.1)
+    status = d.mission.get_status()
+print(f"Mission ended with state {status.state.name}")
+
+d.disconnect()
 ```
+
+## Sensor requirements
+
+Some instructions need a sensor the drone may not have. The drone checks them when the mission starts and while it runs:
+
+| Instruction | Needs | Without it |
+| --- | --- | --- |
+| Waypoint, go to home | A valid position estimate. A DVL, the drone's own Blueye GNSS, UGPS, USBL or NMEA input over UDP all count, unlike for station keeping. | The mission does not start: `MISSION_STATE_FAILED_TO_START_MISSION` with a `NOTIFICATION_TYPE_DRONE_POSITION_IS_UNKNOWN` notification. A running mission is aborted after 3 seconds without a valid position. |
+| Go to home | The pilot's position as well, sent to the drone as [`PilotGPSPositionCtrl`][blueye.protocol.types.control.PilotGPSPositionCtrl]. The Blueye app sends it; the SDK has no method for it yet. The drone reports the position it holds in [`PilotGPSPositionTel`][blueye.protocol.types.telemetry.PilotGPSPositionTel]. | The drone reports `NOTIFICATION_TYPE_USER_POSITION_IS_UNKNOWN` and does not move on from the instruction. Pause or clear the mission. |
+| Photos by distance (`CAMERA_ACTION_TAKE_PHOTOS_DISTANCE`) | A valid position estimate, as for waypoints. | The drone reports `NOTIFICATION_TYPE_DRONE_POSITION_IS_UNKNOWN` and takes no photos. |
+| Depth set point measured from the seabed | An altitude sensor: a DVL or a downward-facing Ping sonar. | Without any altitude report the instruction is skipped with `NOTIFICATION_TYPE_INSTRUCTION_SKIPPED`. With a sensor that has no valid reading yet, the drone descends as if the bottom were 50 m below until the sensor sees it. |
+| Tilt multibeam servo | A multibeam servo on a guest port. | The instruction is skipped with `NOTIFICATION_TYPE_INSTRUCTION_SKIPPED`. |
+| Go to seabed, go to surface, depth set point from the surface, single photo, photos by time, tilt, wait | Nothing beyond the built-in sensors. | |
+
+The drone also aborts a mission when a waypoint is more than 300 m away, when it detects that it is stuck (`NOTIFICATION_TYPE_DRONE_IS_STUCK`), and when the client in control stops petting the watchdog, see [Connecting to the drone](connecting.md). `PositionEstimateTel.position_estimate.is_valid` is the position validity the mission checks, `navigation_sensors` in the same message lists each sensor with its own validity, and [`get_altitude`][blueye.sdk.drone.Drone.get_altitude] returns `None` while the altitude is not valid.
 
 ## Getting status updates from the mission
 The mission progress is published through the [`NotificationTel`][blueye.protocol.types.telemetry.NotificationTel] messages. These messages can be read manually with the usual telemetry methods, ie. [`telemetry.get`][blueye.sdk.drone.Telemetry.get] or [`telemetry.add_msg_callback`][blueye.sdk.drone.Telemetry.add_msg_callback].
@@ -79,7 +116,7 @@ mission = import_from_json("exported_mission.json")
 
 d = Drone()
 d.mission.load_and_run(mission)
-
+# Stay connected until the mission has ended, as shown above
 ```
 
 ## Examples
