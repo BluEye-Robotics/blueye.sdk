@@ -241,16 +241,20 @@ class TestTilt:
 
 
 class TestConfig:
-    def test_water_density_returns_correct_value(self, mocked_drone: Drone):
-        mocked_drone.config._water_density = 1000.0
-        assert mocked_drone.config.get_water_density() == 1000.0
+    def test_water_density_is_unknown_until_set(self, mocked_drone: Drone):
+        # The drone does not report the density it uses, so the SDK cannot know it before sending one
+        assert mocked_drone.config.get_water_density() is None
 
     def test_setting_density(self, mocked_drone: Drone):
-        old_value = mocked_drone.config.get_water_density()
-        new_value = old_value + 10
-        mocked_drone.config.set_water_density(new_value)
-        assert mocked_drone.config.get_water_density() == new_value
-        mocked_drone._ctrl_client.set_water_density.assert_called_once()
+        mocked_drone.config.set_water_density(997.0)
+        assert mocked_drone.config.get_water_density() == 997.0
+        mocked_drone._ctrl_client.set_water_density.assert_called_once_with(997.0)
+
+    def test_failed_send_does_not_record_the_density(self, mocked_drone: Drone):
+        mocked_drone._ctrl_client.set_water_density.side_effect = ConnectionError
+        with pytest.raises(ConnectionError):
+            mocked_drone.config.set_water_density(997.0)
+        assert mocked_drone.config.get_water_density() is None
 
     def test_set_drone_time_is_called_on_connection(self, mocked_drone: Drone):
         with freeze_time("2019-01-01"):

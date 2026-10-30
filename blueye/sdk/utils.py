@@ -38,6 +38,14 @@ class deprecated_property:
     def __set_name__(self, owner, name):
         self.owner = owner.__name__
         self.name = name
+        if self.__doc__ is None:
+            replacement = f"`{self.owner}.{self.fget}()`"
+            if self.fset is not None:
+                replacement += f" and `{self.owner}.{self.fset}()`"
+            self.__doc__ = (
+                f"Deprecated since v2.8.0, removed in v3: use {replacement}. "
+                "See the deprecated properties page in the documentation."
+            )
 
     def __get__(self, obj, objtype=None):
         if obj is None:

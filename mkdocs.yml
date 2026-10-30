@@ -113,6 +113,7 @@ nav:
   - "The blueye CLI": "cli.md"
   - "Odometer forwarding": odometer-to-831l.md
   - "Updating from v1 to v2": "migrating-to-v2.md"
+  - "Deprecated properties": "deprecations.md"
   - "HTTP API": "http-api.md"
   - Reference:
       - blueye.sdk.battery: "reference/blueye/sdk/battery.md"
