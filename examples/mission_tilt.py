@@ -37,10 +37,14 @@ d.mission.load_and_run(mission)
 # Stay connected until the mission has ended. If the script exits, the SDK stops petting the
 # drone's watchdog and the drone aborts the mission about 3 seconds later. The status is None
 # until the drone has reported one, and a mission can end aborted or failed as well as completed.
+# It is also over when another client clears it (INACTIVE) or loads its own in its place
+# (INACTIVE, then READY or FAILED_TO_LOAD_MISSION).
 end_states = (
     bp.MissionState.MISSION_STATE_COMPLETED,
     bp.MissionState.MISSION_STATE_ABORTED,
     bp.MissionState.MISSION_STATE_FAILED_TO_START_MISSION,
+    bp.MissionState.MISSION_STATE_FAILED_TO_LOAD_MISSION,
+    bp.MissionState.MISSION_STATE_INACTIVE,
 )
 status = d.mission.get_status()
 while status is None or status.state not in end_states:
