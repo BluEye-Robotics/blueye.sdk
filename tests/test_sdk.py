@@ -453,3 +453,122 @@ class TestMockedDroneX7:
         from blueye.sdk.guestport import GuestPortLight
 
         assert isinstance(mocked_drone_x7.external_light, GuestPortLight)
+
+
+class TestFailedConnect:
+    """A connect() that fails must not leave threads behind.
+
+    A watchdog thread that outlives a failed connect() pets the drone as client 0, which the
+    drone takes as the client in control whenever nobody is, so the drone's failsafe never trips.
+    """
+
+    @staticmethod
+    def _clients(drone):
+        return (
+            drone._telemetry_watcher,
+            drone._req_rep_client,
+            drone._ctrl_client,
+            drone._watchdog_publisher,
+        )
+
+    def _assert_torn_down(self, drone, started):
+        from blueye.sdk.drone import _NoConnectionClient
+
+        for client in started:
+            client.stop.assert_called_once()
+        for client in self._clients(drone):
+            assert isinstance(client, _NoConnectionClient)
+        assert drone.connected is False
+        assert drone.in_control is False
+
+    def test_failed_ping_stops_the_threads(
+        self,
+        mocked_drone_not_connected,
+        mocked_req_rep_client,
+        mocked_telemetry_client,
+        mocked_ctrl_client,
+        mocked_watchdog_publisher,
+    ):
+        drone = mocked_drone_not_connected
+        mocked_req_rep_client.return_value.ping.side_effect = bp.exceptions.ResponseTimeout
+        with pytest.raises(ConnectionError):
+            drone.connect()
+        started = [
+            m.return_value
+            for m in (mocked_req_rep_client, mocked_telemetry_client, mocked_ctrl_client)
+        ]
+        self._assert_torn_down(drone, started)
+        mocked_watchdog_publisher.return_value.start.assert_not_called()
+
+    def test_failed_connect_request_stops_the_threads(
+        self,
+        mocked_drone_not_connected,
+        mocked_req_rep_client,
+        mocked_telemetry_client,
+        mocked_ctrl_client,
+        mocked_watchdog_publisher,
+    ):
+        drone = mocked_drone_not_connected
+        req_rep = mocked_req_rep_client.return_value
+        req_rep.connect_client.side_effect = bp.exceptions.ResponseTimeout
+        with pytest.raises(ConnectionError):
+            drone.connect()
+        started = [
+            m.return_value
+            for m in (mocked_req_rep_client, mocked_telemetry_client, mocked_ctrl_client)
+        ]
+        self._assert_torn_down(drone, started)
+        mocked_watchdog_publisher.return_value.start.assert_not_called()
+
+    def test_failure_after_the_connect_request_stops_everything(
+        self,
+        mocked_drone_not_connected,
+        mocked_req_rep_client,
+        mocked_telemetry_client,
+        mocked_ctrl_client,
+        mocked_watchdog_publisher,
+    ):
+        drone = mocked_drone_not_connected
+        req_rep = mocked_req_rep_client.return_value
+        req_rep.connect_client.return_value = bp.ConnectClientRep(
+            client_id=1, client_id_in_control=1
+        )
+        req_rep.sync_time.side_effect = RuntimeError("boom")
+        with pytest.raises(RuntimeError, match="boom"):
+            drone.connect()
+        started = [
+            m.return_value
+            for m in (
+                mocked_req_rep_client,
+                mocked_telemetry_client,
+                mocked_ctrl_client,
+                mocked_watchdog_publisher,
+            )
+        ]
+        self._assert_torn_down(drone, started)
+
+    def test_watchdog_starts_once_the_client_id_is_known(
+        self, mocked_drone_not_connected, mocked_req_rep_client, mocked_watchdog_publisher
+    ):
+        drone = mocked_drone_not_connected
+        watchdog = mocked_watchdog_publisher.return_value
+
+        def connect_client(**kwargs):
+            watchdog.start.assert_not_called()
+            assert drone.client_id is None
+            return bp.ConnectClientRep(client_id=7, client_id_in_control=7)
+
+        mocked_req_rep_client.return_value.connect_client.side_effect = connect_client
+        drone.connect()
+        watchdog.start.assert_called_once()
+        assert drone.client_id == 7
+
+    def test_disconnect_after_a_failed_connect_is_harmless(
+        self, mocked_drone_not_connected, mocked_req_rep_client
+    ):
+        drone = mocked_drone_not_connected
+        mocked_req_rep_client.return_value.ping.side_effect = bp.exceptions.ResponseTimeout
+        with pytest.raises(ConnectionError):
+            drone.connect()
+        with pytest.raises(ConnectionError):
+            drone.disconnect()
