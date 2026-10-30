@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import atexit
 import logging
 import time
+import weakref
 from datetime import datetime
 from json import JSONDecodeError
 from typing import Any, Callable, Dict, List, Optional
@@ -208,6 +210,28 @@ class Telemetry:
             return msg_type.deserialize(msg)
         else:
             return msg
+
+
+# The drones that are connected right now, so that the interpreter can disconnect them on exit.
+# A weak set, so a dropped Drone object is not kept alive by it.
+_connected_drones: "weakref.WeakSet[Drone]" = weakref.WeakSet()
+
+
+def _disconnect_at_exit():
+    """Zero the thrusters and disconnect every drone still connected when the interpreter exits.
+
+    A script that ends without disconnecting, through an exception or Ctrl-C, would otherwise
+    leave its last motion input on the drone. The drone keeps it until its watchdog times out,
+    and on a handover to another client it does not.
+    """
+    for drone in list(_connected_drones):
+        try:
+            drone.disconnect()
+        except Exception as e:  # The interpreter is going down, there is nothing else to do
+            logger.warning(f"Could not disconnect from the drone at exit: {e}")
+
+
+atexit.register(_disconnect_at_exit)
 
 
 class Drone:
@@ -539,10 +563,19 @@ class Drone:
         self.client_id = connect_resp.client_id
         self.in_control = connect_resp.client_id == connect_resp.client_id_in_control
         self.connected = True
-        # The watchdog pets with our client id, so it starts once the drone has handed one out
-        self._watchdog_publisher.start()
         if disconnect_other_clients and not self.in_control and not connect_as_observer:
             self.take_control()
+        if self.in_control:
+            # The drone keeps the last motion input it got, from whoever had control before.
+            # Clear it, and make sure it has gone out, before the watchdog thread starts. The
+            # control socket was opened moments ago and a PUB socket drops what it is given
+            # before its subscription is in place, so the zero is sent again at the end of the
+            # connection setup, still ahead of the first pet a second from now.
+            logger.debug("Disabling thrusters")
+            self.motion.zero_setpoints()
+            self._ctrl_client.flush()
+        # The watchdog pets with our client id, so it starts once the drone has handed one out
+        self._watchdog_publisher.start()
 
         # Populate the peripherals from the drone's guest port information. Discovery is driven by
         # the DroneInfoTel message alone, rather than the "gpdrone" entry in the HTTP feature list,
@@ -582,8 +615,9 @@ class Drone:
             time_formatted = datetime.fromtimestamp(current_time).strftime("%d. %b %Y %H:%M")
             logger.debug(f"Setting current time to {current_time} ({time_formatted})")
             self.config.set_drone_time(current_time)
-            logger.debug("Disabling thrusters")
-            self.motion.send_thruster_setpoint(0, 0, 0, 0)
+            # Second zero, see above
+            self.motion.zero_setpoints()
+        _connected_drones.add(self)
 
     def _stop_clients(self):
         """Stop the connection threads and leave clients that refuse to be used in their place."""
@@ -608,9 +642,24 @@ class Drone:
         # The peripherals belong to the connection that discovered them
         self._reset_peripherals(reported=False)
 
-    def disconnect(self):
-        """Disconnects the connection, allowing another client to take control of the drone."""
+    def disconnect(self, timeout: float = 1.0):
+        """Disconnects the connection, allowing another client to take control of the drone.
+
+        The drone keeps the last motion input it received until a new one arrives or its
+        watchdog times out, and on a handover to another client the watchdog never times out.
+        So when this client is in control, every setpoint is zeroed and sent before the drone is
+        told that the client is leaving.
+
+        Args:
+            timeout (float, optional): Seconds to wait for the zero setpoint and any other
+                queued control message to go out before the disconnect request is sent.
+        """
+        if self.connected and self._has_control_now():
+            self.motion.zero_setpoints()
+            if not self._ctrl_client.flush(timeout):
+                logger.warning("The zero thruster setpoint did not go out before disconnecting")
         self.connected = False
+        _connected_drones.discard(self)
         try:
             self._req_rep_client.disconnect_client(self.client_id)
         except blueye.protocol.exceptions.ResponseTimeout:
@@ -618,6 +667,55 @@ class Drone:
             # continue to stop threads and disconnect
             pass
         self._stop_clients()
+
+    def _has_control_now(self) -> bool:
+        """Whether this client should zero the thrusters before leaving.
+
+        `in_control` is set on connect and take_control, but it goes stale both ways: the drone
+        hands control to the oldest remaining client when the one in control leaves, and
+        another client can take control away. Motion input carries no client id, so a zero
+        from a displaced client would cut the new pilot's input. So the drone is asked for a
+        fresh report, rather than the cached telemetry, and:
+
+        - another client in control: no zero
+        - this client in control: zero
+        - nobody in control, which the drone reports for a moment after a handover, or no
+          report at all: whatever the flag says
+        """
+        try:
+            if version.parse(self.software_version_short) >= version.parse("3.3"):
+                # Fresh from the drone rather than the cached telemetry
+                payload = self._req_rep_client.get_telemetry_msg(
+                    blueye.protocol.ConnectedClientsTel
+                ).payload.value
+                if payload == b"":
+                    return self.in_control
+                report = blueye.protocol.ConnectedClientsTel.deserialize(payload)
+                client_in_control = report.client_id_in_control
+            else:
+                client_in_control = self.get_client_in_control()
+        except blueye.protocol.exceptions.ResponseTimeout:
+            return self.in_control
+        if not client_in_control:
+            return self.in_control
+        return client_in_control == self.client_id
+
+    def __enter__(self) -> Drone:
+        """Use the drone in a `with` block, see [`__exit__`][blueye.sdk.drone.Drone.__exit__]."""
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        """Disconnect when the `with` block ends, however it ends.
+
+        Usage::
+
+            with Drone() as drone:
+                drone.motion.set_surge(0.5)
+                ...
+            # Thrusters zeroed and the drone told that we left, even after an exception
+        """
+        if self.connected:
+            self.disconnect()
 
     def get_connected_clients(self) -> Optional[List[blueye.protocol.ConnectedClient]]:
         """Get a list of connected clients.
