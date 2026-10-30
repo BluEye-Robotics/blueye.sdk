@@ -26,8 +26,8 @@ def add_parser(subparsers) -> None:
         description=(
             "Manage third-party blueye tools: single-file Python scripts with PEP 723 "
             "inline metadata, discovered from the tools directory and run as "
-            "`blueye <tool-name> ...`. See the 'Extending the blueye CLI' documentation "
-            "for how to write one."
+            "`blueye <tool-name> ...`. See the 'Third-party tools' section of the CLI "
+            "documentation for how to write one."
         ),
     )
     tools_subparsers = parser.add_subparsers(dest="tools_command", metavar="ACTION")
@@ -157,7 +157,10 @@ def _run_validate(script: Path) -> int:
             "" if well_formed else "must be dotted integers (e.g. 2.7.0)",
         )
     if parsed.has_dependencies:
-        print("note: script declares dependencies; it will run via `uv run` when available")
+        print(
+            "note: script declares dependencies; uv (when installed) adds them on top of "
+            "the CLI's environment at run time"
+        )
 
     return 0 if failures == 0 else 1
 

@@ -16,9 +16,9 @@ A tool script declares itself with the standard PEP 723 block, extended with a
 TOML parsing is tiered: :mod:`tomllib` (Python 3.11+), then :mod:`tomli` when
 installed (shipped in the ``[cli]`` extra for Python 3.10), then a minimal regex
 fallback so a stdlib-only Python 3.10 environment can still discover tools. The
-fallback only understands single-line double-quoted string values inside
-``[tool.blueye]`` (arrays and multi-line strings need tomli) — enough for the keys the
-CLI reads.
+fallback only understands double-quoted string values inside ``[tool.blueye]`` and
+double-quoted strings in the ``dependencies`` array (anything else needs tomli) —
+enough for the keys the CLI reads.
 """
 
 from __future__ import annotations
@@ -40,9 +40,11 @@ _TOOL_SECTION = re.compile(r"(?ms)^\[tool\.blueye\]\s*$(?P<body>.*?)(?=^\[|\Z)")
 #: Fallback extraction of simple `key = "value"` pairs.
 _STRING_KEY = re.compile(r'(?m)^([A-Za-z0-9_-]+)\s*=\s*"([^"]*)"\s*$')
 
-#: Presence check for a top-level PEP 723 `dependencies` key (the value itself is
-#: never needed — `uv run` re-parses the block).
-_HAS_DEPS = re.compile(r"(?m)^dependencies\s*=")
+#: Fallback extraction of the top-level PEP 723 `dependencies` array.
+_DEPS_ARRAY = re.compile(r"(?ms)^dependencies\s*=\s*\[(?P<items>.*?)\]")
+
+#: Fallback extraction of the quoted strings inside that array.
+_QUOTED = re.compile(r'"([^"]*)"')
 
 #: Tool names must be usable as `blueye <name>`: lowercase, digits, hyphens, starting
 #: with a letter, at most 32 characters.
@@ -62,9 +64,8 @@ class ToolMetadata:
         description: One-line description shown in listings and ``blueye --help``.
         min_sdk_version: Optional minimum blueye.sdk version; mismatches warn at
             dispatch time but never block execution.
-        has_dependencies: True when the PEP 723 block declares `dependencies` —
-            execution then prefers ``uv run`` so the script gets an isolated
-            environment.
+        dependencies: The PEP 723 `dependencies` requirement strings. Execution asks
+            uv (when available) to layer them on top of the CLI's environment.
         parsed_with_fallback: True when the regex fallback (not a real TOML parser)
             produced this metadata.
     """
@@ -72,8 +73,13 @@ class ToolMetadata:
     name: str
     description: str
     min_sdk_version: str | None = None
-    has_dependencies: bool = False
+    dependencies: tuple[str, ...] = ()
     parsed_with_fallback: bool = False
+
+    @property
+    def has_dependencies(self) -> bool:
+        """True when the script declares at least one dependency."""
+        return bool(self.dependencies)
 
 
 def _load_toml() -> object | None:
@@ -124,11 +130,13 @@ def _parse_with_toml(toml_module, block: str) -> dict | None:
         raise MetadataError(f"invalid TOML in the script block: {error}") from error
 
 
-def _parse_with_fallback(block: str) -> tuple[dict, bool]:
-    """Extract [tool.blueye] string keys and dependency presence via regex."""
+def _parse_with_fallback(block: str) -> tuple[dict, tuple[str, ...]]:
+    """Extract [tool.blueye] string keys and the dependencies array via regex."""
     section = _TOOL_SECTION.search(block)
     table = dict(_STRING_KEY.findall(section.group("body"))) if section else {}
-    return table, bool(_HAS_DEPS.search(block))
+    array = _DEPS_ARRAY.search(block)
+    dependencies = tuple(_QUOTED.findall(array.group("items"))) if array else ()
+    return table, dependencies
 
 
 def parse_tool_metadata(source: str) -> ToolMetadata:
@@ -154,10 +162,15 @@ def parse_tool_metadata(source: str) -> ToolMetadata:
         table = data.get("tool", {}).get("blueye", {})
         if not isinstance(table, dict):
             table = {}
-        has_dependencies = "dependencies" in data
+        raw_dependencies = data.get("dependencies", [])
+        if not isinstance(raw_dependencies, list) or not all(
+            isinstance(item, str) for item in raw_dependencies
+        ):
+            raise MetadataError("'dependencies' must be a list of requirement strings")
+        dependencies = tuple(raw_dependencies)
         used_fallback = False
     else:
-        table, has_dependencies = _parse_with_fallback(block)
+        table, dependencies = _parse_with_fallback(block)
         used_fallback = True
 
     if not table:
@@ -182,6 +195,6 @@ def parse_tool_metadata(source: str) -> ToolMetadata:
         name=name,
         description=description,
         min_sdk_version=min_sdk_version,
-        has_dependencies=has_dependencies,
+        dependencies=dependencies,
         parsed_with_fallback=used_fallback,
     )
