@@ -336,8 +336,11 @@ list. When [uv](https://docs.astral.sh/uv/) is installed, the CLI runs the tool 
 `uv run --with <package> ... python <script>`: uv puts the listed packages in a cached
 environment layered on top of the CLI's own, without installing anything into it. The first run of a tool downloads its packages, so do that before heading out on the
 drone's Wi-Fi; later runs come from uv's cache. A package the CLI's environment already
-satisfies is never downloaded. Without uv, the listed packages must already be
-installed next to the SDK (`pip install pandas` into the same environment). The tool's
+satisfies is never downloaded. An SDK installed in the per-user package folder
+(`pip install --user`, the fallback on system Pythons that refuse writes to
+`site-packages`) is added to the tool's module search path after uv's packages, since
+uv's layered environment does not read that folder on its own. Without uv, the listed packages must
+already be installed next to the SDK (`pip install pandas` into the same environment). The tool's
 `requires-python` is not enforced; the interpreter is the CLI's. uv's own
 `[tool.uv.sources]` table in the script is not read either; dependencies come from
 the package index.
