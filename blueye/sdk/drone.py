@@ -16,7 +16,7 @@ from packaging import version
 from .battery import Battery
 from .camera import Camera
 from .connection import CtrlClient, ReqRepClient, TelemetryClient, WatchdogPublisher
-from .constants import JETSON_MODELS, WaterDensities
+from .constants import JETSON_MODELS
 from .guestport import (
     GenericServo,
     Gripper,
@@ -46,32 +46,38 @@ class Config:
             parent_drone (Drone): The parent drone instance.
         """
         self._parent_drone = parent_drone
-        self._water_density = WaterDensities.salty
+        self._water_density: Optional[float] = None
 
-    def get_water_density(self) -> float:
-        """Get the water density used for increased pressure sensor accuracy.
+    def get_water_density(self) -> Optional[float]:
+        """Get the water density this SDK instance last sent to the drone.
 
-        The [WaterDensities][blueye.sdk.constants.WaterDensities] class contains typical densities
-        for salty-, brackish-, and fresh water (these are the same values that the Blueye app uses).
+        The drone does not report the density it uses, and the Blueye app sends its own value
+        whenever it takes control, so the drone's value cannot be read here. This method returns
+        what `set_water_density` sent, or `None` if nothing has been sent in this session.
+
+        The drone starts with salt water, 1025 grams per liter, until a client sets another value.
 
         Returns:
-            The currently configured water density in grams per liter.
+            The water density in grams per liter last set through this object, or `None`.
         """
         return self._water_density
 
     def set_water_density(self, density: float):
-        """Set the current water density for increased pressure sensor accuracy.
+        """Set the water density the drone uses to convert pressure to depth.
 
-        Older software versions will assume a water density of 1025 grams per liter.
+        The drone starts with salt water, 1025 grams per liter. The Blueye app sends the salinity
+        chosen by the pilot each time it takes control, so a value set here lasts until the app
+        or another client sends a new one. The drone rescales its current depth reading when the
+        density changes.
 
         The [WaterDensities][blueye.sdk.constants.WaterDensities] class contains typical densities
         for salty-, brackish-, and fresh water (these are the same values that the Blueye app uses).
 
         Args:
-            density (float): The water density to set.
+            density (float): The water density in grams per liter.
         """
-        self._water_density = density
         self._parent_drone._ctrl_client.set_water_density(density)
+        self._water_density = density
 
     water_density = deprecated_property("get_water_density", "set_water_density")
 
