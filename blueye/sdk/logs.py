@@ -185,6 +185,15 @@ class LogStream:
 
 
 class LogFile:
+    """A binary log stored on the drone
+
+    The drone opens a new log at every power-on and keeps writing to it until it is powered
+    off, so the log for the current power cycle is always `is_open`. The drone flushes an
+    open log to disk every 10 seconds, so downloading it gives a snapshot that stops
+    mid-record. `download()` does not cache open logs, and `blueye logs download --latest`
+    skips them.
+    """
+
     def __init__(
         self,
         name: str,
@@ -193,9 +202,11 @@ class LogFile:
         start_time: int,
         max_depth_magnitude: int,
         ip: str,
+        is_open: bool = False,
     ):
         self.name = name
         self.is_dive = is_dive
+        self.is_open = is_open
         self.filesize = filesize
         self.start_time: datetime = datetime.fromtimestamp(start_time, tz=timezone.utc)
         self.max_depth_magnitude = max_depth_magnitude
@@ -231,12 +242,19 @@ class LogFile:
             Seconds to wait for response
         * `overwrite_cache`:
             If True, the log will be downloaded even if it is already been downloaded.
+            Open logs (`is_open`) are always downloaded again, since the drone is still
+            writing to them.
 
         *Returns*:
 
         The compressed log file as a bytes object.
         """
-        if self.content is None or overwrite_cache:
+        if self.is_open:
+            logger.warning(
+                f"Log {self.name} is still being written by the drone, so the download is a "
+                "snapshot that stops mid-record"
+            )
+        if self.content is None or overwrite_cache or self.is_open:
             self.content = requests.get(self.download_url, timeout=timeout).content
         if write_to_file:
             if output_path is None:
@@ -320,6 +338,7 @@ class Logs:
                     log["start_time"],
                     log["max_depth_magnitude"],
                     self._parent_drone._ip,
+                    is_open=log.get("is_open", False),
                 )
             else:
                 logger.info(f"Log {log['name']} does not have a binlog, ignoring")

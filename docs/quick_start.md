@@ -157,8 +157,12 @@ The SDK also installs a [`blueye` command](cli.md) for common tasks straight fro
 terminal — for example, grabbing the newest dive log from the drone:
 
 ```shell
-blueye logs download --latest 1
+blueye logs download --latest 1 --dives-only
 ```
+
+The drone is always writing a log while it is powered on, so `--latest` skips that
+open log and `--dives-only` leaves out the short logs from powering the drone on at
+the desk.
 
 Run `blueye --help` to see everything it can do, or read more on
 [the blueye CLI page](cli.md).
