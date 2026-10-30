@@ -197,9 +197,12 @@ The same operations are available programmatically through the SDK:
 ```python
 import blueye.sdk
 
-drone = blueye.sdk.Drone(auto_connect=False)  # HTTP only, takes no control
+# An observer takes no control, but lets the SDK send the rescan the drone needs to pick
+# up the change
+drone = blueye.sdk.Drone(connect_as_observer=True)
 model = drone.cv_models.upload("yolov8n_package.zip")
 drone.cv_models.set_enabled(model.directory, True)
+drone.disconnect()
 ```
 
 Without the SDK installed, the drone's HTTP endpoint accepts the package zip as a

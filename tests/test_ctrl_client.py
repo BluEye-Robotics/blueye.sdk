@@ -63,11 +63,15 @@ class TestFlush:
         assert ctrl_client.flush(timeout=0.2) is False
 
     def test_stop_sends_what_is_queued_first(self, running_client):
-        running_client.rescan_cv_models()
+        # A slow socket keeps messages queued when stop() is called, so they are only all
+        # sent if stop() waits for them
+        running_client._drone_pub_socket.send_multipart.side_effect = lambda *_: time.sleep(0.05)
+        for _ in range(3):
+            running_client.rescan_cv_models()
         running_client.stop()
         running_client.join(timeout=1)
         assert not running_client.is_alive()
-        running_client._drone_pub_socket.send_multipart.assert_called_once()
+        assert running_client._drone_pub_socket.send_multipart.call_count == 3
 
     def test_stop_on_a_thread_that_never_ran_does_not_wait(self, ctrl_client):
         ctrl_client.rescan_cv_models()

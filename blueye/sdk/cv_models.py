@@ -5,9 +5,10 @@ The Blueye X3 Ultra runs CV model packages (an ONNX model plus a
 drone's HTTP API for managing those packages: listing, uploading, deleting,
 downloading, configuring (autolaunch/device/rate), and pre-building inference engines.
 
-The API is plain HTTP and independent of the drone's control connection, so these
-methods work on a `Drone(auto_connect=False)` instance as well — no control over the
-drone is taken.
+The API is plain HTTP, so listing and downloading work on a `Drone(auto_connect=False)`
+instance as well. The drone only picks up a change after a rescan, which is a control
+message, so make changes from a `Drone(connect_as_observer=True)` instance: an observer
+takes no control over the drone.
 """
 
 from __future__ import annotations
