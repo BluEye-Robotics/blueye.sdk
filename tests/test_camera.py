@@ -894,6 +894,42 @@ class Test4kCameraFeatures:
             0.0, 0.0, 0.8
         )
 
+    def test_set_pan_tilt_zoom_keeps_values_from_the_previous_call(self, jetson_camera):
+        """Two calls in a row: the drone reports the first change about 0.1 s after the
+        command, so the second call must not read the state from before the first."""
+        self._seed(
+            jetson_camera,
+            bp.CameraPanTiltZoomTel,
+            bp.CameraPanTiltZoomTel(camera_pan_tilt_zoom={"pan": 0.0, "tilt": 0.0, "zoom": 0.0}),
+        )
+        jetson_camera.set_pan_tilt_zoom(zoom=0.5)
+        jetson_camera.set_pan_tilt_zoom(pan=-0.3, tilt=0.2)
+        calls = jetson_camera._parent_drone._ctrl_client.set_camera_pan_tilt_zoom.call_args_list
+        assert [c.args for c in calls] == [
+            pytest.approx((0.0, 0.0, 0.5)),
+            pytest.approx((-0.3, 0.2, 0.5)),
+        ]
+
+    def test_set_pan_tilt_zoom_reads_telemetry_only_before_the_first_call(self, jetson_camera):
+        self._seed(
+            jetson_camera,
+            bp.CameraPanTiltZoomTel,
+            bp.CameraPanTiltZoomTel(camera_pan_tilt_zoom={"pan": 0.2, "tilt": -0.3, "zoom": 0.5}),
+        )
+        jetson_camera.set_pan_tilt_zoom(zoom=0.8)
+        # A later report, from another client say, is not consulted any more
+        self._seed(
+            jetson_camera,
+            bp.CameraPanTiltZoomTel,
+            bp.CameraPanTiltZoomTel(camera_pan_tilt_zoom={"pan": 0.9, "tilt": 0.9, "zoom": 0.9}),
+        )
+        jetson_camera.set_pan_tilt_zoom(pan=0.0)
+        calls = jetson_camera._parent_drone._ctrl_client.set_camera_pan_tilt_zoom.call_args_list
+        assert [c.args for c in calls] == [
+            pytest.approx((0.2, -0.3, 0.8)),
+            pytest.approx((0.0, -0.3, 0.8)),
+        ]
+
     def test_set_pan_tilt_zoom_with_all_values_does_not_read_telemetry(self, jetson_camera):
         jetson_camera.set_pan_tilt_zoom(0.0, 0.0, 0.0)
         jetson_camera._parent_drone._req_rep_client.get_telemetry_msg.assert_not_called()

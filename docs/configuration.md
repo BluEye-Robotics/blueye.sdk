@@ -100,7 +100,8 @@ myDrone.camera.set_turbidity_filter(enabled=True, intensity=0.5)
 # Color correction: restores the red and blue the water absorbs with depth
 myDrone.camera.set_color_correction(enabled=True, intensity=0.8)
 
-# Digital pan, tilt and zoom. Values left out keep what the drone last reported.
+# Digital pan, tilt and zoom. Values left out keep what was last sent from this object, so
+# the second call keeps the zoom of the first.
 myDrone.camera.set_pan_tilt_zoom(zoom=0.5)
 myDrone.camera.set_pan_tilt_zoom(pan=-0.3, tilt=0.2)
 
@@ -109,5 +110,7 @@ print(myDrone.camera.get_pan_tilt_zoom())  # CameraPanTiltZoom with pan, tilt an
 ```
 
 The drone publishes `TurbidityFilterTel`, `ColorCorrectionTel` and `CameraPanTiltZoomTel` when the state changes, not at a fixed rate. The getters return what the drone reported on the last change, and ask the drone directly if nothing has been received since connecting, so there is no need to wait for a periodic update. A drone that has never applied a filter has nothing to report, and the getter returns `None` until the first change.
+
+The report arrives about 0.1 s after the command, so `set_pan_tilt_zoom` fills in the values you leave out from what it last sent, and from the drone's report only before the first call. A change made by the Blueye app after your last call is not picked up that way; pass all three values when that matters.
 
 Laser dot tracking works on the full, unzoomed image. The Blueye app resets pan, tilt and zoom to 0 while a laser is modulated for tracking, so call `set_pan_tilt_zoom(0, 0, 0)` before starting tracking from a script.

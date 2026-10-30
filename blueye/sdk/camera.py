@@ -1008,6 +1008,10 @@ class Camera:
             self.tilt = Tilt(parent_drone)
             self.overlay = Overlay(parent_drone)
         self._camera_parameters = None
+        # Pan, tilt and zoom as last sent from this object, filled in for arguments left out of
+        # set_pan_tilt_zoom(). The drone reports a change about 0.1 s after the command, so two
+        # calls in a row would read the state from before the first one.
+        self._last_pan_tilt_zoom: Optional[tuple[float, float, float]] = None
 
     def _get_record_state(self) -> Optional[blueye.protocol.RecordState]:
         record_state_tel = self._parent_drone.telemetry.get(blueye.protocol.RecordStateTel)
@@ -2048,8 +2052,13 @@ class Camera:
         """Set the digital pan, tilt and zoom of the main camera.
 
         The three values are sent together in one message. An argument that is left out keeps
-        the value the drone last reported, or 0 if it has not reported one. Pan and tilt only
-        have an effect while zoomed in, since at zoom 0 the whole sensor image is already shown.
+        the value this object last sent. Before the first call it keeps the value the drone last
+        reported, or 0 if it has not reported one. The drone reports a change about 0.1 s after
+        the command, which is why the last sent values are used rather than the report: two
+        calls in a row would otherwise undo each other. A change made by another client after
+        the last call from this object is not picked up; pass all three values to be sure. Pan
+        and tilt only have an effect while zoomed in, since at zoom 0 the whole sensor image is
+        already shown.
 
         Laser dot tracking works on the full, unzoomed image, so the Blueye app resets pan, tilt
         and zoom to 0 while a laser is modulated for tracking. Do the same before starting it.
@@ -2072,13 +2081,24 @@ class Camera:
         if zoom is not None:
             self._verify_in_range("Zoom", zoom, 0.0, 1.0)
         if None in (pan, tilt, zoom):
-            current = self.get_pan_tilt_zoom()
-            if current is None:
-                current = blueye.protocol.CameraPanTiltZoom(pan=0.0, tilt=0.0, zoom=0.0)
-            pan = current.pan if pan is None else pan
-            tilt = current.tilt if tilt is None else tilt
-            zoom = current.zoom if zoom is None else zoom
+            if self._last_pan_tilt_zoom is not None:
+                current = self._last_pan_tilt_zoom
+            else:
+                reported = self.get_pan_tilt_zoom()
+                current = (
+                    (reported.pan, reported.tilt, reported.zoom)
+                    if reported is not None
+                    else (0.0, 0.0, 0.0)
+                )
+            pan = current[0] if pan is None else pan
+            tilt = current[1] if tilt is None else tilt
+            zoom = current[2] if zoom is None else zoom
+        self._send_pan_tilt_zoom(pan, tilt, zoom)
+
+    def _send_pan_tilt_zoom(self, pan: float, tilt: float, zoom: float):
+        """Send pan, tilt and zoom and remember them for the next partial call."""
         self._parent_drone._ctrl_client.set_camera_pan_tilt_zoom(pan, tilt, zoom)
+        self._last_pan_tilt_zoom = (pan, tilt, zoom)
 
     def take_picture(self):
         """Take a still picture and store it locally on the drone.
