@@ -777,3 +777,230 @@ class TestCalibration:
 
         with pytest.raises(ValueError):
             scale_calibration(bp.CameraCalibration(fx=1000.0), 1920, 1080)
+
+
+class Test4kCameraFeatures:
+    """The turbidity and color correction filters and digital pan, tilt and zoom.
+
+    They are main-camera-only features of the X3 Ultra and X7 running Blunux 5.0.0 or newer,
+    sent as control messages and read back from change-driven telemetry.
+    """
+
+    @staticmethod
+    def _seed_model(drone, model):
+        drone_info_tel = bp.DroneInfoTel(drone_info=bp.DroneInfo(model=model))
+        drone._telemetry_watcher._state[bp.DroneInfoTel] = bp.DroneInfoTel.serialize(drone_info_tel)
+
+    @staticmethod
+    def _seed(camera, msg_type, msg):
+        camera._parent_drone._telemetry_watcher._state[msg_type] = msg_type.serialize(msg)
+
+    @pytest.fixture
+    def jetson_camera(self, mocked_drone: Drone):
+        """The main camera of an X7 running Blunux 5.0.0."""
+        from blueye.sdk.camera import Camera
+
+        mocked_drone.software_version_short = "5.0.0"
+        self._seed_model(mocked_drone, bp.Model.MODEL_X7)
+        return Camera(mocked_drone)
+
+    @staticmethod
+    def _no_telemetry(camera):
+        camera._parent_drone._req_rep_client.get_telemetry_msg.return_value = bp.GetTelemetryRep()
+
+    # Getters
+
+    def test_get_turbidity_filter(self, jetson_camera):
+        self._seed(
+            jetson_camera,
+            bp.TurbidityFilterTel,
+            bp.TurbidityFilterTel(turbidity_filter={"enabled": True, "intensity": 0.4}),
+        )
+        settings = jetson_camera.get_turbidity_filter()
+        assert settings.enabled is True
+        assert settings.intensity == pytest.approx(0.4)
+
+    def test_get_color_correction(self, jetson_camera):
+        self._seed(
+            jetson_camera,
+            bp.ColorCorrectionTel,
+            bp.ColorCorrectionTel(color_correction_filter={"enabled": False, "intensity": 0.9}),
+        )
+        settings = jetson_camera.get_color_correction()
+        assert settings.enabled is False
+        assert settings.intensity == pytest.approx(0.9)
+
+    def test_get_pan_tilt_zoom(self, jetson_camera):
+        self._seed(
+            jetson_camera,
+            bp.CameraPanTiltZoomTel,
+            bp.CameraPanTiltZoomTel(camera_pan_tilt_zoom={"pan": 0.2, "tilt": -0.3, "zoom": 0.5}),
+        )
+        state = jetson_camera.get_pan_tilt_zoom()
+        assert (state.pan, state.tilt, state.zoom) == pytest.approx((0.2, -0.3, 0.5))
+
+    @pytest.mark.parametrize(
+        "getter", ["get_turbidity_filter", "get_color_correction", "get_pan_tilt_zoom"]
+    )
+    def test_getters_are_none_without_telemetry(self, jetson_camera, getter):
+        self._no_telemetry(jetson_camera)
+        assert getattr(jetson_camera, getter)() is None
+
+    @pytest.mark.parametrize(
+        "getter", ["get_turbidity_filter", "get_color_correction", "get_pan_tilt_zoom"]
+    )
+    def test_getters_are_none_for_guestport_camera(self, mocked_drone, getter):
+        from blueye.sdk.camera import Camera
+
+        guestport_camera = Camera(mocked_drone, is_guestport_camera=True)
+        assert getattr(guestport_camera, getter)() is None
+        mocked_drone._req_rep_client.get_telemetry_msg.assert_not_called()
+
+    # Setters
+
+    def test_set_turbidity_filter(self, jetson_camera):
+        jetson_camera.set_turbidity_filter(True, 0.6)
+        jetson_camera._parent_drone._ctrl_client.set_turbidity_filter.assert_called_once_with(
+            True, 0.6
+        )
+
+    def test_set_color_correction(self, jetson_camera):
+        jetson_camera.set_color_correction(False, 1.0)
+        jetson_camera._parent_drone._ctrl_client.set_color_correction.assert_called_once_with(
+            False, 1.0
+        )
+
+    def test_set_pan_tilt_zoom(self, jetson_camera):
+        jetson_camera.set_pan_tilt_zoom(pan=-0.5, tilt=0.25, zoom=1.0)
+        jetson_camera._parent_drone._ctrl_client.set_camera_pan_tilt_zoom.assert_called_once_with(
+            -0.5, 0.25, 1.0
+        )
+
+    def test_set_pan_tilt_zoom_keeps_omitted_values(self, jetson_camera):
+        self._seed(
+            jetson_camera,
+            bp.CameraPanTiltZoomTel,
+            bp.CameraPanTiltZoomTel(camera_pan_tilt_zoom={"pan": 0.2, "tilt": -0.3, "zoom": 0.5}),
+        )
+        jetson_camera.set_pan_tilt_zoom(zoom=0.8)
+        ctrl = jetson_camera._parent_drone._ctrl_client
+        (pan, tilt, zoom), _ = ctrl.set_camera_pan_tilt_zoom.call_args
+        assert (pan, tilt, zoom) == pytest.approx((0.2, -0.3, 0.8))
+
+    def test_set_pan_tilt_zoom_defaults_to_centre_without_telemetry(self, jetson_camera):
+        self._no_telemetry(jetson_camera)
+        jetson_camera.set_pan_tilt_zoom(zoom=0.8)
+        jetson_camera._parent_drone._ctrl_client.set_camera_pan_tilt_zoom.assert_called_once_with(
+            0.0, 0.0, 0.8
+        )
+
+    def test_set_pan_tilt_zoom_keeps_values_from_the_previous_call(self, jetson_camera):
+        """Two calls in a row: the drone reports the first change about 0.1 s after the
+        command, so the second call must not read the state from before the first."""
+        self._seed(
+            jetson_camera,
+            bp.CameraPanTiltZoomTel,
+            bp.CameraPanTiltZoomTel(camera_pan_tilt_zoom={"pan": 0.0, "tilt": 0.0, "zoom": 0.0}),
+        )
+        jetson_camera.set_pan_tilt_zoom(zoom=0.5)
+        jetson_camera.set_pan_tilt_zoom(pan=-0.3, tilt=0.2)
+        calls = jetson_camera._parent_drone._ctrl_client.set_camera_pan_tilt_zoom.call_args_list
+        assert [c.args for c in calls] == [
+            pytest.approx((0.0, 0.0, 0.5)),
+            pytest.approx((-0.3, 0.2, 0.5)),
+        ]
+
+    def test_set_pan_tilt_zoom_reads_telemetry_only_before_the_first_call(self, jetson_camera):
+        self._seed(
+            jetson_camera,
+            bp.CameraPanTiltZoomTel,
+            bp.CameraPanTiltZoomTel(camera_pan_tilt_zoom={"pan": 0.2, "tilt": -0.3, "zoom": 0.5}),
+        )
+        jetson_camera.set_pan_tilt_zoom(zoom=0.8)
+        # A later report, from another client say, is not consulted any more
+        self._seed(
+            jetson_camera,
+            bp.CameraPanTiltZoomTel,
+            bp.CameraPanTiltZoomTel(camera_pan_tilt_zoom={"pan": 0.9, "tilt": 0.9, "zoom": 0.9}),
+        )
+        jetson_camera.set_pan_tilt_zoom(pan=0.0)
+        calls = jetson_camera._parent_drone._ctrl_client.set_camera_pan_tilt_zoom.call_args_list
+        assert [c.args for c in calls] == [
+            pytest.approx((0.2, -0.3, 0.8)),
+            pytest.approx((0.0, -0.3, 0.8)),
+        ]
+
+    def test_set_pan_tilt_zoom_with_all_values_does_not_read_telemetry(self, jetson_camera):
+        jetson_camera.set_pan_tilt_zoom(0.0, 0.0, 0.0)
+        jetson_camera._parent_drone._req_rep_client.get_telemetry_msg.assert_not_called()
+
+    # Validation
+
+    @pytest.mark.parametrize("intensity", [-0.1, 1.1, float("nan")])
+    def test_filters_reject_out_of_range_intensity(self, jetson_camera, intensity):
+        with pytest.raises(ValueError):
+            jetson_camera.set_turbidity_filter(True, intensity)
+        with pytest.raises(ValueError):
+            jetson_camera.set_color_correction(True, intensity)
+        jetson_camera._parent_drone._ctrl_client.set_turbidity_filter.assert_not_called()
+        jetson_camera._parent_drone._ctrl_client.set_color_correction.assert_not_called()
+
+    @pytest.mark.parametrize(
+        "kwargs",
+        [
+            {"pan": -1.1},
+            {"pan": 1.1},
+            {"tilt": -1.1},
+            {"tilt": 1.1},
+            {"zoom": -0.1},
+            {"zoom": 1.1},
+            {"zoom": float("nan")},
+        ],
+    )
+    def test_pan_tilt_zoom_rejects_out_of_range_values(self, jetson_camera, kwargs):
+        with pytest.raises(ValueError):
+            jetson_camera.set_pan_tilt_zoom(**kwargs)
+        jetson_camera._parent_drone._ctrl_client.set_camera_pan_tilt_zoom.assert_not_called()
+
+    # Gating
+
+    SETTERS = [
+        ("set_turbidity_filter", (True, 0.5)),
+        ("set_color_correction", (True, 0.5)),
+        ("set_pan_tilt_zoom", (0.0, 0.0, 0.5)),
+    ]
+
+    @pytest.mark.parametrize("setter, args", SETTERS)
+    def test_setters_require_blunux_5(self, mocked_drone, setter, args):
+        from blueye.sdk.camera import Camera
+
+        mocked_drone.software_version_short = "4.5.10"
+        self._seed_model(mocked_drone, bp.Model.MODEL_X7)
+        with pytest.raises(RuntimeError, match="5.0.0"):
+            getattr(Camera(mocked_drone), setter)(*args)
+
+    @pytest.mark.parametrize("setter, args", SETTERS)
+    def test_setters_require_a_jetson_model(self, mocked_drone, setter, args):
+        from blueye.sdk.camera import Camera
+
+        mocked_drone.software_version_short = "5.0.0"
+        self._seed_model(mocked_drone, bp.Model.MODEL_X3)
+        with pytest.raises(RuntimeError, match="X3 Ultra and X7"):
+            getattr(Camera(mocked_drone), setter)(*args)
+
+    @pytest.mark.parametrize("setter, args", SETTERS)
+    def test_setters_pass_when_the_model_is_unknown(self, mocked_drone, setter, args):
+        from blueye.sdk.camera import Camera
+
+        mocked_drone.software_version_short = "5.0.0"
+        mocked_drone._req_rep_client.get_telemetry_msg.return_value = bp.GetTelemetryRep()
+        getattr(Camera(mocked_drone), setter)(*args)
+
+    @pytest.mark.parametrize("setter, args", SETTERS)
+    def test_setters_reject_the_guestport_camera(self, mocked_drone, setter, args):
+        from blueye.sdk.camera import Camera
+
+        mocked_drone.software_version_short = "5.0.0"
+        self._seed_model(mocked_drone, bp.Model.MODEL_X7)
+        with pytest.raises(RuntimeError, match="main camera"):
+            getattr(Camera(mocked_drone, is_guestport_camera=True), setter)(*args)
