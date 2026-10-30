@@ -927,6 +927,41 @@ class TestLaserTracking:
         laser.enable_tracking(True)
         mocked_drone._ctrl_client.set_laser_intensity.assert_called_with(pytest.approx(0.3), True)
 
+    def test_an_inherited_flag_does_not_restart_the_window(self, mocked_drone, mocker):
+        """A script that sets the intensity more often than every two seconds must still pick
+        up a change another client made to tracking, so only an explicit choice of the flag
+        starts the two seconds."""
+        clock = mocker.patch("blueye.sdk.guestport.time.monotonic", return_value=100.0)
+        laser = self._laser(mocked_drone)
+        laser.enable_tracking(True)
+        # The app stops tracking; the drone reports it
+        self._seed(mocked_drone, bp.LaserTel(laser=bp.Laser(value=1.0, modulated=False)))
+        sent = []
+        for clock.return_value in (100.8, 101.6, 102.4, 103.2):
+            laser.set_intensity(0.5)
+            sent.append(mocked_drone._ctrl_client.set_laser_intensity.call_args.args[1])
+        assert sent == [True, True, False, False]
+
+    def test_an_explicit_flag_restarts_the_window(self, mocked_drone, mocker):
+        clock = mocker.patch("blueye.sdk.guestport.time.monotonic", return_value=100.0)
+        laser = self._laser(mocked_drone)
+        laser.enable_tracking(True)
+        clock.return_value = 101.0
+        laser.set_intensity(0.5, modulated=True)
+        self._seed(mocked_drone, bp.LaserTel(laser=bp.Laser(value=0.5, modulated=False)))
+        clock.return_value = 102.5
+        laser.set_intensity(0.5)
+        mocked_drone._ctrl_client.set_laser_intensity.assert_called_with(0.5, True)
+        clock.return_value = 103.5
+        laser.set_intensity(0.5)
+        mocked_drone._ctrl_client.set_laser_intensity.assert_called_with(0.5, False)
+
+    def test_enable_tracking_records_the_pan_tilt_zoom_in_the_camera(self, mocked_drone):
+        # So that a later partial set_pan_tilt_zoom() fills in the zeros tracking left behind
+        self._seed_model(mocked_drone, bp.Model.MODEL_X7)
+        self._laser(mocked_drone).enable_tracking(True)
+        assert mocked_drone.camera._last_pan_tilt_zoom == (0.0, 0.0, 0.0)
+
     def test_is_tracking(self, mocked_drone):
         laser = self._laser(mocked_drone)
         assert laser.is_tracking() is None
@@ -944,6 +979,21 @@ class TestLaserTracking:
         assert detection.pixel_distance == pytest.approx(120.0)
         assert detection.dot2.x == pytest.approx(1020.0)
         assert laser.get_estimated_distance() == pytest.approx(1.25)
+
+    def test_get_detection_with_a_bare_not_detected_report(self, mocked_drone):
+        # A report carrying only detected=False serializes to no bytes but is still a report
+        self._seed(
+            mocked_drone,
+            bp.LaserTel(
+                laser=bp.Laser(value=1.0, modulated=True),
+                laser_detection=bp.LaserDetection(detected=False),
+            ),
+        )
+        laser = self._laser(mocked_drone)
+        detection = laser.get_detection()
+        assert detection is not None
+        assert detection.detected is False
+        assert laser.get_estimated_distance() is None
 
     def test_get_detection_is_none_when_the_drone_does_not_report_one(self, mocked_drone):
         self._seed(mocked_drone, bp.LaserTel(laser=bp.Laser(value=1.0)))

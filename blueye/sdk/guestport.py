@@ -307,10 +307,13 @@ class Laser(Peripheral):
         """
         Peripheral.__init__(self, parent_drone, port_number, device)
         # What was last commanded from this object and when. The drone reports the laser once a
-        # second, so for a short while after a command the report may predate it.
+        # second, so for a short while after a command the report may predate it. The modulation
+        # has its own clock: it is only restarted when the flag is chosen explicitly, so a script
+        # that keeps setting the intensity picks up a change another client made to tracking.
         self._commanded_intensity: Optional[float] = None
+        self._intensity_commanded_at: Optional[float] = None
         self._commanded_modulated = False
-        self._commanded_at: Optional[float] = None
+        self._modulation_commanded_at: Optional[float] = None
 
     def _get_laser(self) -> Optional[bp.Laser]:
         telemetry_msg = self.parent_drone.telemetry.get(bp.LaserTel)
@@ -321,17 +324,17 @@ class Laser(Peripheral):
     # How long a command from this object counts over the reported state, two publish periods
     _COMMAND_WINDOW = 2.0
 
-    def _send(self, intensity: float, modulated: bool):
+    def _send(self, intensity: float, modulated: bool, modulation_explicit: bool):
+        now = time.monotonic()
         self._commanded_intensity = intensity
-        self._commanded_modulated = modulated
-        self._commanded_at = time.monotonic()
+        self._intensity_commanded_at = now
+        if modulation_explicit:
+            self._commanded_modulated = modulated
+            self._modulation_commanded_at = now
         self.parent_drone._ctrl_client.set_laser_intensity(intensity, modulated)
 
-    def _command_is_fresh(self) -> bool:
-        return (
-            self._commanded_at is not None
-            and time.monotonic() - self._commanded_at < self._COMMAND_WINDOW
-        )
+    def _is_fresh(self, commanded_at: Optional[float]) -> bool:
+        return commanded_at is not None and time.monotonic() - commanded_at < self._COMMAND_WINDOW
 
     def set_intensity(self, intensity: float, modulated: Optional[bool] = None):
         """Set the intensity of the laser.
@@ -343,9 +346,11 @@ class Laser(Peripheral):
             intensity (float): The intensity of the laser (0..1).
             modulated (bool, optional): Whether the laser is modulated for dot tracking. Left out,
                 the setting the drone last reported is kept, so an intensity change does not
-                switch tracking off. For two seconds after a command from this object that
-                command is kept instead, since the drone reports the laser once a second and the
-                report may predate it. See
+                switch tracking off. For two seconds after the flag was chosen from this object,
+                with this argument or with `enable_tracking`, that choice is kept instead, since
+                the drone reports the laser once a second and the report may predate it. A call
+                that leaves the flag out does not restart those two seconds, so a script that
+                sets the intensity often still follows what another client does to tracking. See
                 [`enable_tracking`][blueye.sdk.guestport.Laser.enable_tracking].
 
         Raises:
@@ -353,13 +358,14 @@ class Laser(Peripheral):
         """
         if not 0 <= intensity <= 1:
             raise ValueError("Laser intensity must be between 0 and 1.")
+        explicit = modulated is not None
         if modulated is None:
             laser = self._get_laser()
-            if self._command_is_fresh() or laser is None:
+            if self._is_fresh(self._modulation_commanded_at) or laser is None:
                 modulated = self._commanded_modulated
             else:
                 modulated = laser.modulated
-        self._send(intensity, modulated)
+        self._send(intensity, modulated, modulation_explicit=explicit)
 
     def get_intensity(self) -> Optional[float]:
         """Get the current intensity of the laser.
@@ -393,15 +399,16 @@ class Laser(Peripheral):
         if self.parent_drone.is_jetson_platform() is False:
             raise RuntimeError("Laser tracking is only available on the X3 Ultra and X7")
         intensity = self.get_intensity()
-        if intensity is None or self._command_is_fresh():
+        if intensity is None or self._is_fresh(self._intensity_commanded_at):
             intensity = self._commanded_intensity
         if enabled and not intensity:
             intensity = 1.0
         elif intensity is None:
             intensity = 0.0
         if enabled:
-            self.parent_drone._ctrl_client.set_camera_pan_tilt_zoom(0.0, 0.0, 0.0)
-        self._send(intensity, enabled)
+            # Through the camera, so its record of the last sent values stays right
+            self.parent_drone.camera._send_pan_tilt_zoom(0.0, 0.0, 0.0)
+        self._send(intensity, enabled, modulation_explicit=True)
 
     def is_tracking(self) -> Optional[bool]:
         """Check whether the laser is modulated for dot tracking.
@@ -427,7 +434,7 @@ class Laser(Peripheral):
             The detection, or None if the drone has not reported one.
         """
         telemetry_msg = self.parent_drone.telemetry.get(bp.LaserTel)
-        if telemetry_msg is None or telemetry_msg.laser_detection._pb.ByteSize() == 0:
+        if telemetry_msg is None or "laser_detection" not in telemetry_msg:
             return None
         return telemetry_msg.laser_detection
 
