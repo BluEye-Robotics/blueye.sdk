@@ -276,7 +276,7 @@ class TestUserSiteBootstrap:
     observe. It is run on the test interpreter directly, without uv, which is enough: uv
     only changes which interpreter runs it."""
 
-    def _run(self, user_site, script, *args):
+    def _run(self, user_site, script, *args, cwd=None):
         import subprocess
 
         return subprocess.run(
@@ -290,6 +290,7 @@ class TestUserSiteBootstrap:
             ],
             capture_output=True,
             text=True,
+            cwd=cwd,
         )
 
     def test_module_globals_match_a_plain_run(self, tmp_path):
@@ -305,14 +306,24 @@ class TestUserSiteBootstrap:
             "print(json.dumps(dict(name=__name__, file=__file__, spec=__spec__, argv=sys.argv,\n"
             "      path0=sys.path[0], user_site_last=sys.path[-1], sibling=sibling.X)))\n"
         )
-        result = self._run(user_site, os.path.relpath(script), "--flag", "x")
+        # A relative script path, resolved from the working directory as python does. It is
+        # relative to tmp_path rather than to the repository: on the Windows CI runners the
+        # two sit on different drives, where no relative path exists.
+        relative = os.path.join("tools", "tool.py")
+        result = self._run(user_site, relative, "--flag", "x", cwd=tmp_path)
         assert result.returncode == 0, result.stderr
-        assert json.loads(result.stdout) == {
+        seen = json.loads(result.stdout)
+        # Compared through realpath: Windows may spell the temp directory with a short name
+        # such as RUNNER~1 in one place and the long name in another
+        file = seen.pop("file")
+        assert os.path.isabs(file)
+        assert os.path.realpath(file) == os.path.realpath(script)
+        assert os.path.realpath(seen["path0"]) == os.path.realpath(tools)
+        assert seen == {
             "name": "__main__",
-            "file": str(script),
             "spec": None,
-            "argv": [os.path.relpath(script), "--flag", "x"],
-            "path0": str(tools),
+            "argv": [relative, "--flag", "x"],
+            "path0": seen["path0"],
             "user_site_last": str(user_site),
             "sibling": "sibling ok",
         }
