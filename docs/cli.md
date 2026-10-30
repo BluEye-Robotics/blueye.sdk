@@ -197,9 +197,12 @@ The same operations are available programmatically through the SDK:
 ```python
 import blueye.sdk
 
-drone = blueye.sdk.Drone(auto_connect=False)  # HTTP only, takes no control
+# An observer takes no control, but lets the SDK send the rescan the drone needs to pick
+# up the change
+drone = blueye.sdk.Drone(connect_as_observer=True)
 model = drone.cv_models.upload("yolov8n_package.zip")
 drone.cv_models.set_enabled(model.directory, True)
+drone.disconnect()
 ```
 
 Without the SDK installed, the drone's HTTP endpoint accepts the package zip as a
@@ -242,6 +245,13 @@ is the autolaunch configuration; the API does not expose a live "running" status
 | `upload PACKAGE`               | Upload a package zip, as `bundle-model --push` does.                          |
 | `download NAME [-o PATH]`      | Save a package zip from the drone to a file or directory (default: current directory). |
 | `rescan`                       | Ask the drone's vision pipeline to re-read the package directory.            |
+
+`list` and `download` only talk to the drone's HTTP API. The commands that change a
+model (`upload`, `delete`, `enable`, `disable`, `set-device`, `set-hz`) and the
+interactive session connect to the drone as an observer, taking no control, because the
+drone only picks a change up after the rescan message that the command sends once the
+change is in. `blueye models rescan` sends that message on its own, for changes made
+some other way. A rescan restarts every running model.
 
 ## Downloading dive logs — `blueye logs`
 
