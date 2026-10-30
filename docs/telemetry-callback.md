@@ -11,7 +11,16 @@ To add a callback we need to use the [`add_msg_callback`][blueye.sdk.drone.Telem
 A callback is removed with [`remove_msg_callback`][blueye.sdk.drone.Telemetry.remove_msg_callback] using the ID returned when creating the callback.
 
 ## Adjusting the publishing frequency of a telemetry message
-By using the [`set_msg_publish_frequency`][blueye.sdk.drone.Telemetry.set_msg_publish_frequency] function we can alter how often the drone should publish the specified telemetry message. The valid frequency range is 0 to 100 Hz.
+[`set_msg_publish_frequency`][blueye.sdk.drone.Telemetry.set_msg_publish_frequency] changes how often the drone publishes a telemetry message. The frequency must be greater than 0 and at most 100 Hz.
+
+The drone has a single telemetry publisher shared by every connected client, so the new rate also applies to the Blueye app and any other SDK client, and it stays in effect until the drone reboots. There is no request for restoring the default, so set the rate back yourself before your program exits if other clients depend on it, as the example at the bottom of this page does.
+
+Not every message has a publish frequency. The messages in [`EVENT_DRIVEN_TELEMETRY`][blueye.sdk.constants.EVENT_DRIVEN_TELEMETRY] are published when their data arrives, such as a sonar ping or a detection, rather than on a timer. Messages from peripherals, like the thickness gauge, only exist while that peripheral is connected. The drone refuses to change the frequency in both cases, and the SDK raises a `RuntimeError` that names the message and the reason.
+
+On Blunux versions older than 5.1, changing a rate could stop the drone from publishing that message until it restarts, while the request still reported success. If a message goes quiet after a rate change on such a drone, a reboot brings it back.
+
+## Adjusting the logging frequency of a telemetry message
+The drone writes telemetry to the dive log at its own rate, separate from the publish rate. [`set_msg_log_frequency`][blueye.sdk.drone.Telemetry.set_msg_log_frequency] changes how often a message is logged, for example to get IMU or DVL data at a higher rate in the log without sending it to every client at that rate. It requires Blunux 5.1 or newer and takes the same frequency range as the publish frequency.
 
 ## Example
 The following example illustrates how can use a callback to print the depth reported by the drone.

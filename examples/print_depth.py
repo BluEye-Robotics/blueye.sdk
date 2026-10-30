@@ -35,3 +35,7 @@ if __name__ == "__main__":
     # Remove the callback using the ID we stored when it was created (not really necessary here
     # since the my_drone object goes out of scope immediately afterwards)
     my_drone.telemetry.remove_msg_callback(callback_id)
+
+    # The publishing frequency is shared by every client and stays in effect until the drone
+    # reboots, so set it back to the default of 10 Hz before exiting
+    my_drone.telemetry.set_msg_publish_frequency(bp.DepthTel, 10)
