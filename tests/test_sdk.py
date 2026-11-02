@@ -719,6 +719,35 @@ class TestZeroThrustOnDisconnect:
         req_rep.disconnect_client.assert_called_once_with(1)
         assert mocked_drone.connected is False
 
+    def test_motion_set_while_disconnecting_does_not_follow_the_zero(self, mocked_drone):
+        """A control loop on another thread or a telemetry callback keeps running until the
+        threads stop, and what it sets must not reach the drone after the zero."""
+        mocked_drone.connect()
+        ctrl = mocked_drone._ctrl_client
+        req_rep = mocked_drone._req_rep_client
+        mocked_drone.motion.set_surge(0.7)
+
+        def disconnect_client(client_id):
+            mocked_drone.motion.set_surge(0.7)
+            mocked_drone.motion.send_thruster_setpoint(0.1, 0.2, 0.3, 0.4)
+            return bp.DisconnectClientRep()
+
+        req_rep.disconnect_client.side_effect = disconnect_client
+        mocked_drone.disconnect()
+        req_rep.disconnect_client.assert_called_once()
+        ctrl.set_motion_input.assert_called_with(0, 0, 0, 0, 0, 0, roll=0, pitch=0)
+
+    def test_motion_after_disconnect_raises_and_works_after_reconnecting(self, mocked_drone):
+        mocked_drone.connect()
+        mocked_drone.disconnect()
+        with pytest.raises(ConnectionError):
+            mocked_drone.motion.set_surge(0.5)
+        mocked_drone.connect()
+        mocked_drone.motion.set_surge(0.5)
+        mocked_drone._ctrl_client.set_motion_input.assert_called_with(
+            0.5, 0, 0, 0, 0, 0, roll=0, pitch=0
+        )
+
     def test_disconnect_passes_the_flush_timeout(self, mocked_drone):
         mocked_drone.connect()
         ctrl = mocked_drone._ctrl_client

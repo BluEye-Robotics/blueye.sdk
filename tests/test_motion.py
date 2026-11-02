@@ -215,3 +215,27 @@ def test_zero_setpoints_clears_every_axis_and_gain(mocked_drone):
     assert mocked_drone.motion.get_boost() == 0
     assert mocked_drone.motion.get_slow() == 0
     mocked_drone._ctrl_client.set_motion_input.assert_called_with(0, 0, 0, 0, 0, 0, roll=0, pitch=0)
+
+
+def test_stopped_input_drops_later_setpoints(mocked_drone):
+    ctrl = mocked_drone._ctrl_client
+    mocked_drone.motion.set_surge(0.5)
+    mocked_drone.motion._stop_input(zero=True)
+    ctrl.set_motion_input.assert_called_with(0, 0, 0, 0, 0, 0, roll=0, pitch=0)
+    ctrl.set_motion_input.reset_mock()
+    mocked_drone.motion.set_surge(0.5)
+    mocked_drone.motion.send_thruster_setpoint(0.1, 0.2, 0.3, 0.4)
+    mocked_drone.motion.zero_setpoints()
+    ctrl.set_motion_input.assert_not_called()
+    mocked_drone.motion._resume_input()
+    mocked_drone.motion.set_surge(0.5)
+    # The zero_setpoints() above still cleared the stored setpoints
+    ctrl.set_motion_input.assert_called_once_with(0.5, 0, 0, 0, 0, 0, roll=0, pitch=0)
+
+
+def test_stop_input_without_zero_sends_nothing(mocked_drone):
+    ctrl = mocked_drone._ctrl_client
+    ctrl.set_motion_input.reset_mock()
+    mocked_drone.motion._stop_input(zero=False)
+    mocked_drone.motion.set_surge(0.5)
+    ctrl.set_motion_input.assert_not_called()

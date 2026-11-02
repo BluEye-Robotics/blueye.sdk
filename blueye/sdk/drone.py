@@ -638,6 +638,8 @@ class Drone:
         self._telemetry_watcher = _NoConnectionClient()
         self._req_rep_client = _NoConnectionClient()
         self._ctrl_client = _NoConnectionClient()
+        # Motion input goes to the placeholder again, which raises like the other clients do
+        self.motion._resume_input()
 
         # The peripherals belong to the connection that discovered them
         self._reset_peripherals(reported=False)
@@ -660,9 +662,12 @@ class Drone:
         if isinstance(self._req_rep_client, _NoConnectionClient):
             # Never connected, already disconnected, or connect() failed and stopped the threads
             return
-        if self.connected and self._has_control_now():
-            self.motion.zero_setpoints()
-            if not self._ctrl_client.flush(timeout):
+        if self.connected:
+            # No motion input from other threads or callbacks after this, so that the zero is
+            # the last input the drone gets from this client
+            in_control = self._has_control_now()
+            self.motion._stop_input(zero=in_control)
+            if in_control and not self._ctrl_client.flush(timeout):
                 logger.warning("The zero thruster setpoint did not go out before disconnecting")
         self.connected = False
         _connected_drones.discard(self)
@@ -680,8 +685,11 @@ class Drone:
         `in_control` is set on connect and take_control, but it goes stale both ways: the drone
         hands control to the oldest remaining client when the one in control leaves, and
         another client can take control away. Motion input carries no client id, so a zero
-        from a displaced client would cut the new pilot's input. So the drone is asked for a
-        fresh report, rather than the cached telemetry, and:
+        from a displaced client would cut the new pilot's input. So the drone is asked for its
+        report rather than the cached telemetry is read. The drone answers with the last
+        `ConnectedClientsTel` it published, and it publishes once a second, so the report can be
+        up to about a second old: a client that lost control within that second still zeroes
+        once. Then:
 
         - another client in control: no zero
         - this client in control: zero
@@ -690,7 +698,7 @@ class Drone:
         """
         try:
             if version.parse(self.software_version_short) >= version.parse("3.3"):
-                # Fresh from the drone rather than the cached telemetry
+                # From the drone rather than the cached telemetry, at most a second old
                 payload = self._req_rep_client.get_telemetry_msg(
                     blueye.protocol.ConnectedClientsTel
                 ).payload.value
