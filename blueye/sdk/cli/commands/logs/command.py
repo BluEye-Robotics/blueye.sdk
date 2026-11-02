@@ -253,11 +253,16 @@ def _select_downloads(console, args, log_files) -> list:
                 f"Skipping {log.name}: the drone is still writing it. Pass the name to "
                 "download it anyway."
             )
-        if not finished:
+        if not finished and open_logs:
             raise CliError(
                 "The only logs matching are still being written by the drone. Pass a log "
                 "name to download an open log anyway."
             )
+        if not finished:
+            console.print(
+                "No logs match the filters." if _has_filters(args) else "No logs on the drone."
+            )
+            return []
         newest_first = sorted(finished, key=lambda log: log.start_time, reverse=True)
         return newest_first[: args.latest]
     if args.names:

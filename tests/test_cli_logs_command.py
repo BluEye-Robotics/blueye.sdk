@@ -141,6 +141,20 @@ class TestOpenLog:
         assert "still being written" in capsys.readouterr().err
         LogFile.download.assert_not_called()
 
+    def test_latest_with_nothing_matching_says_so(self, drone, capsys):
+        assert main(["logs", "download", "--latest", "1", "--since", "2030-01-01"]) == 0
+        captured = capsys.readouterr()
+        assert "No logs match the filters." in captured.out
+        assert "still being written" not in captured.err
+        LogFile.download.assert_not_called()
+
+    def test_latest_on_a_drone_without_logs_says_so(self, drone, capsys):
+        drone.logs = []
+        assert main(["logs", "download", "--latest", "1"]) == 0
+        captured = capsys.readouterr()
+        assert "No logs on the drone." in captured.out
+        assert "still being written" not in captured.err
+
     def test_open_log_downloads_by_name(self, drone_with_open_log, tmp_path):
         assert main(["logs", "download", "BYEDP000000_aaaa_00002", "-o", str(tmp_path)]) == 0
         assert LogFile.download.call_args.args[0].name == "BYEDP000000_aaaa_00002"
