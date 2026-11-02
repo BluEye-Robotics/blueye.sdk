@@ -10,6 +10,8 @@ python -W always::DeprecationWarning my_script.py
 
 `Motion.current_thruster_setpoints` is read-only, like the other properties without a setter below. Set the setpoints with [`send_thruster_setpoint()`][blueye.sdk.motion.Motion.send_thruster_setpoint] or the individual setters. Assigning to a read-only property raises `AttributeError`.
 
+`Camera.resolution` maps to [`get_resolution()`][blueye.sdk.camera.Camera.get_resolution] and [`set_resolution()`][blueye.sdk.camera.Camera.set_resolution], which are deprecated as well, and drones running Blunux 4.4 or newer ignore that resolution. Use [`set_stream_resolution()`][blueye.sdk.camera.Camera.set_stream_resolution] and [`set_recording_resolution()`][blueye.sdk.camera.Camera.set_recording_resolution] instead, and their getters to read the values back.
+
 The tables are generated from the list the test suite checks, so every row has a test behind it.
 
 {{deprecated_properties_table()}}

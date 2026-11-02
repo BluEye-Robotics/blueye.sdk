@@ -196,6 +196,18 @@ def test_shim_docstring_names_the_replacement(mocked_drone, accessor, prop, gett
         assert setter in doc
 
 
+def test_resolution_docstring_points_past_the_deprecated_methods(mocked_drone):
+    """get_resolution and set_resolution are deprecated too, so help() names their replacements."""
+    doc = vars(type(mocked_drone.camera))["resolution"].__doc__
+    for method in (
+        "get_stream_resolution",
+        "set_stream_resolution",
+        "get_recording_resolution",
+        "set_recording_resolution",
+    ):
+        assert method in doc
+
+
 def test_setpoints_setter_keeps_helpful_error_message(mocked_drone):
     """The current_thruster_setpoints shim keeps its dedicated, helpful error message."""
     with pytest.raises(AttributeError, match="Do not set the setpoints directly"):
