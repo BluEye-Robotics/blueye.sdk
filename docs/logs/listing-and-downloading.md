@@ -67,7 +67,7 @@ Each entry in the index is a [`LogFile`][blueye.sdk.logs.LogFile] with these att
 | --------------------- | ---------- | ----------------------------------------------------------------------------------------------- |
 | `name`                | `str`      | The log name, as listed above, without the `.bez` extension.                                    |
 | `start_time`          | `datetime` | When the log was started, in UTC.                                                               |
-| `is_dive`             | `bool`     | `True` if the drone went deeper than 25 cm or an auto function was used during the log.        |
+| `is_dive`             | `bool`     | `True` if the drone went deeper than 25 cm during the log. Depending on the Blunux version, an auto function, thruster input, a running mission or a camera or multibeam recording also counts. |
 | `is_open`             | `bool`     | `True` if the drone is still writing to the log. See [Limits](#limits).                         |
 | `filesize`            | `int`      | Size of the compressed log on the drone, in bytes.                                              |
 | `max_depth_magnitude` | `int`      | Deepest point of the log in meters, rounded down as described above.                            |
@@ -82,6 +82,8 @@ There are multiple ways to select a log file from the logs index, here are some 
     type: example
 
 ```python
+from blueye.sdk.logs import LogFile
+
 first_log: LogFile = myDrone.logs[0]
 last_log: LogFile = myDrone.logs[-1]
 ```
@@ -91,6 +93,8 @@ last_log: LogFile = myDrone.logs[-1]
     type: example
 
 ```python
+from blueye.sdk.logs import LogFile
+
 log: LogFile = myDrone.logs["BYEDP000000_ea9ac92e1817a1d4_00000"]
 ```
 ///
@@ -99,6 +103,8 @@ log: LogFile = myDrone.logs["BYEDP000000_ea9ac92e1817a1d4_00000"]
     type: example
 
 ```python
+from blueye.sdk.logs import Logs
+
 first_three_logs: Logs = myDrone.logs[:3]
 last_three_logs: Logs = myDrone.logs[-3:]
 every_other_log: Logs = myDrone.logs[::2]
@@ -197,7 +203,16 @@ with open("BYEDP000000_ea9ac92e1817a1d4_00000.bez", "rb") as f:
 
 ### Message types this SDK does not know
 
-The drone logs every message type its firmware knows, so a drone on a newer release than your `blueye.protocol` package can produce records the SDK has no class for. `LogStream` skips those by default: the first record of each type logs a warning, and all of them are counted per type URL in `stream.unknown_types`. To get them anyway, pass `include_unknown=True` and the stream yields them as `(wall_time, since_start, type_url, raw_bytes)` tuples, where `type_url` is a string such as `"type.googleapis.com/blueye.protocol.PowerCanisterTel"` and `raw_bytes` is the undecoded payload. Upgrading `blueye.protocol` is the way to decode them.
+The drone logs every message type its firmware knows, so a drone on a newer release than your `blueye.protocol` package can produce records the SDK has no class for. `LogStream` skips those by default: the first record of each type logs a warning, and all of them are counted per type URL in `stream.unknown_types`. To get them anyway, pass `include_unknown=True` and the stream yields them as `(wall_time, since_start, type_url, raw_bytes)` tuples, where `type_url` is a string such as `"type.googleapis.com/blueye.protocol.PowerCanisterTel"` and `raw_bytes` is the undecoded payload. `parse_to_stream()` does not take the argument, so build the stream yourself:
+
+```python
+from blueye.sdk.logs import LogStream
+
+log = myDrone.logs[0]
+stream = LogStream(log.download(write_to_file=False), include_unknown=True)
+```
+
+Upgrading `blueye.protocol` is the way to decode them.
 
 ## Limits
 
@@ -237,9 +252,11 @@ myDrone.legacy_logs.refresh_log_index(get_all_logs=True)
 Select by index, by name or by slice. Slicing a legacy index gives a list rather than a new index:
 
 ```python
+from blueye.sdk.logs import LegacyLogFile
+
 first_log: LegacyLogFile = myDrone.legacy_logs[0]
 log: LegacyLogFile = myDrone.legacy_logs["ea9add4d40f69d4-00000.csv"]
-first_three_logs: List[LegacyLogFile] = myDrone.legacy_logs[:3]
+first_three_logs: list[LegacyLogFile] = myDrone.legacy_logs[:3]
 ```
 
 `download()` takes `output_path`, the directory to save to, and `output_name`, the file name to use. The drone samples at 10 Hz, and `downsample_divisor` (default 10) picks every n-th sample:
