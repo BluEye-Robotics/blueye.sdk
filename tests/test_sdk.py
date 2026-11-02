@@ -567,8 +567,16 @@ class TestFailedConnect:
         self, mocked_drone_not_connected, mocked_req_rep_client
     ):
         drone = mocked_drone_not_connected
-        mocked_req_rep_client.return_value.ping.side_effect = bp.exceptions.ResponseTimeout
+        req_rep = mocked_req_rep_client.return_value
+        req_rep.ping.side_effect = bp.exceptions.ResponseTimeout
         with pytest.raises(ConnectionError):
             drone.connect()
-        with pytest.raises(ConnectionError):
-            drone.disconnect()
+        drone.disconnect()
+        req_rep.disconnect_client.assert_not_called()
+
+    def test_disconnect_twice_is_harmless(self, mocked_drone_not_connected, mocked_req_rep_client):
+        drone = mocked_drone_not_connected
+        drone.connect()
+        drone.disconnect()
+        drone.disconnect()
+        mocked_req_rep_client.return_value.disconnect_client.assert_called_once()

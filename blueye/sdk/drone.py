@@ -609,7 +609,14 @@ class Drone:
         self._reset_peripherals(reported=False)
 
     def disconnect(self):
-        """Disconnects the connection, allowing another client to take control of the drone."""
+        """Disconnects the connection, allowing another client to take control of the drone.
+
+        Does nothing when there is no connection, such as after a failed `connect()`, so it is
+        safe in a `finally` block.
+        """
+        if isinstance(self._req_rep_client, _NoConnectionClient):
+            # Never connected, already disconnected, or connect() failed and stopped the threads
+            return
         self.connected = False
         try:
             self._req_rep_client.disconnect_client(self.client_id)
