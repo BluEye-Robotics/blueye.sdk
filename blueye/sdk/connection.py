@@ -566,24 +566,45 @@ class ReqRepClient(threading.Thread):
 
     def run(self):
         """Run the request-reply client thread."""
-        while not self._exit_flag.is_set():
-            try:
-                msg, response_type, response_callback_queue = self._requests_to_send.get(
-                    timeout=0.1
-                )
-                self._socket.send_multipart(
-                    [
-                        bytes(msg._pb.DESCRIPTOR.full_name, "utf-8"),
-                        msg.__class__.serialize(msg),
-                    ]
-                )
-            except queue.Empty:
-                # No requests to send, so we can
-                continue
-            # TODO: Deal with timeout
-            resp = self._socket.recv_multipart()
-            resp_deserialized = response_type.deserialize(resp[1])
-            response_callback_queue.put(resp_deserialized)
+        try:
+            while not self._exit_flag.is_set():
+                try:
+                    msg, response_type, response_callback_queue = self._requests_to_send.get(
+                        timeout=0.1
+                    )
+                    self._socket.send_multipart(
+                        [
+                            bytes(msg._pb.DESCRIPTOR.full_name, "utf-8"),
+                            msg.__class__.serialize(msg),
+                        ]
+                    )
+                except queue.Empty:
+                    # No requests to send, so we can
+                    continue
+                # TODO: Deal with timeout
+                if not self._wait_for_reply():
+                    break
+                resp = self._socket.recv_multipart()
+                resp_deserialized = response_type.deserialize(resp[1])
+                response_callback_queue.put(resp_deserialized)
+        finally:
+            # A failed connect() leaves no reference to this client behind, so close the socket
+            # here rather than leave its file descriptors to the garbage collector
+            self._socket.close(linger=0)
+
+    def _wait_for_reply(self) -> bool:
+        """Wait for the reply to the request just sent, in short steps so that stop() is seen.
+
+        A drone that never answers would otherwise keep the thread, and its socket, alive for as
+        long as the script runs, one more for every failed connect() in a retry loop.
+
+        Returns:
+            bool: True when the reply has arrived, False when the thread was stopped first.
+        """
+        while not self._socket.poll(100):
+            if self._exit_flag.is_set():
+                return False
+        return True
 
     def stop(self):
         """Stop the request-reply client thread."""
