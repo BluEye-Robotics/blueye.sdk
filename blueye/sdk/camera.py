@@ -1074,9 +1074,15 @@ class Camera:
             start_recording (bool): Set to True to start a recording, set to False to stop the
                                     current recording.
 
-        Warns:
-            RuntimeWarning: If no recording state telemetry data is received.
+        Raises:
+            RuntimeError: If a recording is started while the drone's storage settings have
+                videos switched off, in which case the drone would not record.
         """
+        if start_recording and self._parent_drone._media_is_enabled("videos") is False:
+            raise RuntimeError(
+                "The drone's storage settings have video recording switched off, so it would not "
+                "record. Enable videos under the drone's storage settings in the Blueye app."
+            )
         record_state = self._get_record_state()
         if record_state is None:
             logger.warning("Unable to set recording state, no record state telemetry received")
@@ -2122,5 +2128,14 @@ class Camera:
         """Take a still picture and store it locally on the drone.
 
         These pictures can be downloaded with the Blueye App, or by any WebDAV compatible client.
+
+        Raises:
+            RuntimeError: If the drone's storage settings have images switched off, in which case
+                the drone would drop the picture.
         """
+        if self._parent_drone._media_is_enabled("images") is False:
+            raise RuntimeError(
+                "The drone's storage settings have images switched off, so it would drop the "
+                "picture. Enable images under the drone's storage settings in the Blueye app."
+            )
         self._parent_drone._ctrl_client.take_still_picture()

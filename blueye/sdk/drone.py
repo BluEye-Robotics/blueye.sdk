@@ -6,7 +6,6 @@ import logging
 import time
 import weakref
 from datetime import datetime
-from json import JSONDecodeError
 from typing import Any, Callable, Dict, List, Optional
 
 import blueye.protocol
@@ -359,6 +358,9 @@ class Drone:
         self.connected = False
         self.client_id: int = None
         self.in_control: bool = False
+        # The drone's persistent storage settings from drone_info, which say which media the
+        # drone writes at all. None until read, and on drones that do not report them.
+        self._storage_settings: Optional[Dict[str, bool]] = None
         self._watchdog_publisher = _NoConnectionClient()
         self._telemetry_watcher = _NoConnectionClient()
         self._req_rep_client = _NoConnectionClient()
@@ -424,17 +426,7 @@ class Drone:
         Raises:
             ConnectionError: If the connection to the drone could not be established.
         """
-        try:
-            response = requests.get(
-                f"http://{self._ip}/diagnostics/drone_info", timeout=timeout
-            ).json()
-        except (
-            requests.ConnectTimeout,
-            requests.ReadTimeout,
-            requests.ConnectionError,
-            JSONDecodeError,
-        ) as e:
-            raise ConnectionError("Could not establish connection with drone") from e
+        response = self._fetch_drone_info(timeout)
         try:
             self.features = list(filter(None, response["features"].split(",")))
         except KeyError:
@@ -444,6 +436,49 @@ class Drone:
         self.software_version_short = self.software_version.split("-")[0]
         self.serial_number = response["serial_number"]
         self.uuid = response["hardware_id"]
+        storage = response.get("persistent_storage")
+        self._storage_settings = dict(storage) if isinstance(storage, dict) else None
+
+    def _fetch_drone_info(self, timeout: float) -> dict:
+        """The drone_info document from the drone's HTTP API.
+
+        Raises:
+            ConnectionError: If the drone does not answer with a JSON document in time.
+        """
+        try:
+            response = requests.get(
+                f"http://{self._ip}/diagnostics/drone_info", timeout=timeout
+            ).json()
+        except (requests.RequestException, ValueError) as e:
+            raise ConnectionError("Could not establish connection with drone") from e
+        if not isinstance(response, dict):
+            raise ConnectionError("Could not establish connection with drone")
+        return response
+
+    def _media_is_enabled(self, kind: str) -> Optional[bool]:
+        """Whether the drone writes a kind of media, per its persistent storage settings.
+
+        The settings are read from drone_info when connecting. A disabled flag is checked again
+        with a fresh request before it is reported, since the Blueye app can change the settings
+        during a session. Returns None when the drone does not report the settings.
+
+        Args:
+            kind: `"videos"`, `"images"`, `"multibeam"` or `"binlog"`.
+        """
+        settings = self._storage_settings
+        if settings is not None and settings.get(kind) is False:
+            # Only the storage settings are taken from the fresh document, so a bad answer
+            # cannot disturb the rest of what connect() read
+            try:
+                fresh = self._fetch_drone_info(timeout=1).get("persistent_storage")
+            except ConnectionError:
+                logger.debug("Could not refresh the storage settings, using the cached ones")
+            else:
+                if isinstance(fresh, dict):
+                    self._storage_settings = settings = dict(fresh)
+        if settings is None or kind not in settings:
+            return None
+        return bool(settings[kind])
 
     @staticmethod
     def _drone_info_callback(msg_type: str, msg: blueye.protocol.DroneInfoTel, drone: Drone):
