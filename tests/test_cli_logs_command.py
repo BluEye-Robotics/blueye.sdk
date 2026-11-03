@@ -175,7 +175,8 @@ class TestOpenLog:
         LogFile.download.assert_not_called()
 
     def test_latest_on_a_drone_without_logs_says_so(self, drone, capsys):
-        drone.logs = []
+        # An index, not a bare list: the command refreshes it with the user's --timeout
+        drone.logs = fake_index(drone._mocker, [])
         assert main(["logs", "download", "--latest", "1"]) == 0
         captured = capsys.readouterr()
         assert "No logs on the drone." in captured.out
