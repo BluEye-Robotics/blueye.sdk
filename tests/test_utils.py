@@ -78,3 +78,12 @@ def test_describe_enum_falls_back_to_the_number_for_unknown_values():
     from blueye.sdk.utils import describe_enum
 
     assert describe_enum(34) == "UNKNOWN(34)"
+
+
+def test_event_driven_telemetry_lists_telemetry_messages():
+    from blueye.sdk.constants import EVENT_DRIVEN_TELEMETRY
+
+    assert EVENT_DRIVEN_TELEMETRY
+    for message in EVENT_DRIVEN_TELEMETRY:
+        assert message.meta.full_name.startswith("blueye.protocol.")
+        assert message.meta.full_name.endswith("Tel")
