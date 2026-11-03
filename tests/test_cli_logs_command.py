@@ -1,10 +1,13 @@
 import pytest
 
+from blueye.sdk.cli.commands.logs.mcap import ConversionSummary
 from blueye.sdk.cli.main import main
-from blueye.sdk.logs import LogFile
+from blueye.sdk.logs import LogFile, Logs
 
 
-def make_log(name: str, start_time: int, filesize: int = 2048, is_dive: bool = True) -> LogFile:
+def make_log(
+    name: str, start_time: int, filesize: int = 2048, is_dive: bool = True, is_open: bool = False
+) -> LogFile:
     return LogFile(
         name=name,
         is_dive=is_dive,
@@ -12,7 +15,17 @@ def make_log(name: str, start_time: int, filesize: int = 2048, is_dive: bool = T
         start_time=start_time,
         max_depth_magnitude=20,
         ip="192.168.1.101",
+        is_open=is_open,
     )
+
+
+def fake_index(mocker, log_files) -> Logs:
+    """A real Logs index holding the given files, with the drone request mocked out."""
+    logs = Logs(mocker.Mock(_ip="192.168.1.101"))
+    logs._logs = {log.name: log for log in log_files}
+    logs.index_downloaded = True
+    logs.refresh_log_index = mocker.Mock()
+    return logs
 
 
 @pytest.fixture
@@ -26,9 +39,9 @@ def drone(mocker, monkeypatch):
     mocker.patch.object(LogFile, "download", autospec=True, return_value=b"")
     drone_cls = mocker.patch("blueye.sdk.Drone", autospec=True)
     instance = drone_cls.return_value
-    instance.logs = logs  # `list(drone.logs)` works on a plain list.
-    instance._logs = {log.name: log for log in logs}
+    instance.logs = fake_index(mocker, logs)
     instance._drone_cls = drone_cls
+    instance._mocker = mocker
     return instance
 
 
@@ -53,9 +66,17 @@ class TestList:
         assert drone._drone_cls.call_args.kwargs["ip"] == "192.168.1.42"
 
     def test_empty_logs(self, drone, capsys):
-        drone.logs = []
+        drone.logs = fake_index(drone._mocker, [])
         assert main(["logs", "list"]) == 0
         assert "No logs" in capsys.readouterr().out
+
+    def test_index_is_fetched_with_the_cli_timeout(self, drone):
+        assert main(["logs", "list", "--timeout", "60"]) == 0
+        drone.logs.refresh_log_index.assert_called_once_with(timeout=60.0)
+
+    def test_index_is_fetched_with_the_default_timeout(self, drone):
+        assert main(["logs", "list"]) == 0
+        drone.logs.refresh_log_index.assert_called_once_with(timeout=10.0)
 
     def test_bare_invocation_without_tty_lists(self, drone, mocker, capsys):
         mocker.patch("sys.stdin.isatty", return_value=False)
@@ -107,6 +128,93 @@ class TestDownload:
     def test_latest_negative_errors(self, drone, capsys):
         assert main(["logs", "download", "--latest", "-1"]) == 1
         assert "--latest must be a positive number" in capsys.readouterr().err
+
+
+class TestOpenLog:
+    """The drone is always writing one log while powered on; --latest must not pick it."""
+
+    @pytest.fixture
+    def drone_with_open_log(self, drone):
+        drone.logs = fake_index(
+            drone._mocker,
+            list(drone.logs)
+            + [
+                make_log(
+                    "BYEDP000000_aaaa_00002", start_time=1700200000, is_dive=False, is_open=True
+                )
+            ],
+        )
+        return drone
+
+    def test_latest_skips_open_log(self, drone_with_open_log, tmp_path, capsys):
+        assert main(["logs", "download", "--latest", "1", "-o", str(tmp_path)]) == 0
+        LogFile.download.assert_called_once()
+        assert LogFile.download.call_args.args[0].name == "BYEDP000000_aaaa_00001"
+        out = capsys.readouterr().out
+        assert "Skipping BYEDP000000_aaaa_00002" in out
+        assert "still writing" in out
+
+    def test_latest_counts_finished_logs_only(self, drone_with_open_log, tmp_path):
+        assert main(["logs", "download", "--latest", "2", "-o", str(tmp_path)]) == 0
+        names = [call.args[0].name for call in LogFile.download.call_args_list]
+        assert names == ["BYEDP000000_aaaa_00001", "BYEDP000000_aaaa_00000"]
+
+    def test_latest_with_only_open_logs_errors(self, drone, capsys):
+        drone.logs = fake_index(
+            drone._mocker, [make_log("BYEDP000000_aaaa_00000", start_time=1700000000, is_open=True)]
+        )
+        assert main(["logs", "download", "--latest", "1"]) == 1
+        assert "still being written" in capsys.readouterr().err
+        LogFile.download.assert_not_called()
+
+    def test_latest_with_nothing_matching_says_so(self, drone, capsys):
+        assert main(["logs", "download", "--latest", "1", "--since", "2030-01-01"]) == 0
+        captured = capsys.readouterr()
+        assert "No logs match the filters." in captured.out
+        assert "still being written" not in captured.err
+        LogFile.download.assert_not_called()
+
+    def test_latest_on_a_drone_without_logs_says_so(self, drone, capsys):
+        # An index, not a bare list: the command refreshes it with the user's --timeout
+        drone.logs = fake_index(drone._mocker, [])
+        assert main(["logs", "download", "--latest", "1"]) == 0
+        captured = capsys.readouterr()
+        assert "No logs on the drone." in captured.out
+        assert "still being written" not in captured.err
+
+    def test_open_log_downloads_by_name(self, drone_with_open_log, tmp_path):
+        assert main(["logs", "download", "BYEDP000000_aaaa_00002", "-o", str(tmp_path)]) == 0
+        assert LogFile.download.call_args.args[0].name == "BYEDP000000_aaaa_00002"
+
+    def test_all_includes_open_log(self, drone_with_open_log, tmp_path):
+        assert main(["logs", "download", "--all", "-o", str(tmp_path)]) == 0
+        assert LogFile.download.call_count == 3
+
+    def test_list_marks_open_log(self, drone_with_open_log, capsys):
+        assert main(["logs", "list"]) == 0
+        out = capsys.readouterr().out
+        assert "OPEN" in out
+        open_row = next(line for line in out.splitlines() if "BYEDP000000_aaaa_00002" in line)
+        assert open_row.rstrip().endswith("yes")
+        finished_row = next(line for line in out.splitlines() if "BYEDP000000_aaaa_00001" in line)
+        assert finished_row.rstrip().endswith("no")
+
+    def test_interactive_rows_tag_open_log(self, drone_with_open_log, mocker):
+        seen_choices = []
+
+        class FakePrompter:
+            def checkbox(self, question, choices, flag):
+                seen_choices.extend(choices)
+                return []
+
+        mocker.patch("sys.stdin.isatty", return_value=True)
+        mocker.patch("sys.stdout.isatty", return_value=True)
+        mocker.patch("blueye.sdk.cli.prompts.QuestionaryPrompter", return_value=FakePrompter())
+        assert main(["logs"]) == 0
+        open_row = next(row for row in seen_choices if "BYEDP000000_aaaa_00002" in row)
+        assert open_row.endswith("open")
+        dive_row = next(row for row in seen_choices if "BYEDP000000_aaaa_00000" in row)
+        assert dive_row.endswith("dive")
 
 
 class TestFailureHandling:
@@ -191,11 +299,67 @@ class TestMcapConversion:
         from blueye.sdk.cli.commands.logs.mcap import convert_bez_to_mcap
 
         mcap_path = tmp_path / "dive.mcap"
-        count = convert_bez_to_mcap(bez_file, mcap_path)
-        assert count == 3
+        summary = convert_bez_to_mcap(bez_file, mcap_path)
+        assert summary.message_count == 3
+        assert summary.unknown_types == {}
         content = mcap_path.read_bytes()
         assert content.startswith(b"\x89MCAP")  # MCAP magic bytes.
         assert len(content) > 100
+
+    def test_convert_keeps_unknown_types_and_empty(self, tmp_path):
+        """Records the SDK cannot decode are written raw; Empty replies are written too."""
+        import blueye.protocol as bp
+        from google.protobuf.any_pb2 import Any
+        from google.protobuf.empty_pb2 import Empty
+        from mcap.reader import make_reader
+
+        from blueye.sdk.cli.commands.logs.mcap import convert_bez_to_mcap
+        from tests.test_logs import create_real_binlog_record, make_raw_binlog_record
+
+        records = create_real_binlog_record(1700000100, 100, bp.DepthTel(depth={"value": 1.0}))
+        records += make_raw_binlog_record(
+            1700000101, 101, "example.com/blueye.protocol.FutureTel", b"\x08\x01"
+        )
+        records += make_raw_binlog_record(
+            1700000102, 102, "type.googleapis.com/google.protobuf.Empty", b""
+        )
+        bez_path = tmp_path / "dive.bez"
+        bez_path.write_bytes(records)
+        mcap_path = tmp_path / "dive.mcap"
+
+        summary = convert_bez_to_mcap(bez_path, mcap_path)
+        assert summary.message_count == 3
+        assert summary.unknown_types == {"example.com/blueye.protocol.FutureTel": 1}
+
+        with mcap_path.open("rb") as f:
+            written = [
+                (channel.topic, schema.name, message.data)
+                for schema, channel, message in make_reader(f).iter_messages()
+            ]
+        topics = [topic for topic, _, _ in written]
+        assert topics == ["DepthTel", "blueye.protocol.FutureTel", "Empty"]
+        _, schema_name, data = written[1]
+        assert schema_name == "google.protobuf.Any"
+        raw = Any.FromString(data)
+        assert raw.type_url == "example.com/blueye.protocol.FutureTel"  # prefix kept as logged
+        assert raw.value == b"\x08\x01"
+        assert written[2][1] == Empty.DESCRIPTOR.full_name
+
+    def test_convert_reports_unknown_types_once(self, drone, mocker, tmp_path, capsys):
+        bez = tmp_path / "dive.bez"
+        bez.write_bytes(b"")
+        mocker.patch(
+            "blueye.sdk.cli.commands.logs.mcap.convert_bez_to_mcap",
+            return_value=ConversionSummary(
+                12, {"type.googleapis.com/blueye.protocol.PowerCanisterTel": 9}
+            ),
+        )
+        assert main(["logs", "convert", str(bez)]) == 0
+        out = capsys.readouterr().out
+        assert "12 messages" in out
+        assert "9 records" in out
+        assert "PowerCanisterTel" in out
+        assert "blueye.protocol" in out  # the upgrade hint
 
     def test_convert_empty_log_errors(self, tmp_path):
         from blueye.sdk.cli.commands.logs.mcap import convert_bez_to_mcap
@@ -208,7 +372,8 @@ class TestMcapConversion:
 
     def test_download_mcap_flag_converts(self, drone, mocker, tmp_path):
         convert = mocker.patch(
-            "blueye.sdk.cli.commands.logs.mcap.convert_bez_to_mcap", return_value=5
+            "blueye.sdk.cli.commands.logs.mcap.convert_bez_to_mcap",
+            return_value=ConversionSummary(5, {}),
         )
         assert (
             main(
@@ -245,7 +410,8 @@ class TestMcapConversion:
 
     def test_interactive_offers_mcap_conversion(self, drone, mocker, tmp_path):
         convert = mocker.patch(
-            "blueye.sdk.cli.commands.logs.mcap.convert_bez_to_mcap", return_value=5
+            "blueye.sdk.cli.commands.logs.mcap.convert_bez_to_mcap",
+            return_value=ConversionSummary(5, {}),
         )
 
         class FakePrompter:
@@ -316,7 +482,8 @@ class TestConvert:
 
     def test_convert_writes_sibling_mcap(self, drone, mocker, bez_on_disk, capsys):
         convert = mocker.patch(
-            "blueye.sdk.cli.commands.logs.mcap.convert_bez_to_mcap", return_value=7
+            "blueye.sdk.cli.commands.logs.mcap.convert_bez_to_mcap",
+            return_value=ConversionSummary(7, {}),
         )
         assert main(["logs", "convert", str(bez_on_disk)]) == 0
         convert.assert_called_once_with(bez_on_disk, bez_on_disk.parent / "mydive.mcap")
@@ -326,7 +493,8 @@ class TestConvert:
 
     def test_convert_with_output_dir(self, drone, mocker, bez_on_disk, tmp_path):
         convert = mocker.patch(
-            "blueye.sdk.cli.commands.logs.mcap.convert_bez_to_mcap", return_value=7
+            "blueye.sdk.cli.commands.logs.mcap.convert_bez_to_mcap",
+            return_value=ConversionSummary(7, {}),
         )
         out_dir = tmp_path / "converted"
         assert main(["logs", "convert", str(bez_on_disk), "-o", str(out_dir)]) == 0
@@ -335,7 +503,8 @@ class TestConvert:
 
     def test_convert_multiple_files(self, drone, mocker, tmp_path):
         convert = mocker.patch(
-            "blueye.sdk.cli.commands.logs.mcap.convert_bez_to_mcap", return_value=1
+            "blueye.sdk.cli.commands.logs.mcap.convert_bez_to_mcap",
+            return_value=ConversionSummary(1, {}),
         )
         files = []
         for name in ("a.bez", "b.bez"):
