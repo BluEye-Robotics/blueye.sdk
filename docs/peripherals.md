@@ -68,15 +68,19 @@ See [the movement page](movement/from-the-CLI.md#auto-modes-and-what-they-need) 
 If the drone has a camera attached, the `Drone` class will have an `external_camera` attribute that is a [`GuestPortCamera`][blueye.sdk.guestport.GuestPortCamera] object. This object can be used to control the camera.
 
 ```python
-# Capture an image from the external camera
-drone.external_camera.take_picture()
-
 # Set bitrate for external camera to 2 Mbps
 drone.external_camera.set_bitrate(2_000_000)
 
-# Start recording video from the external camera
+# Start recording video from the external camera. The main camera and the multibeam keep
+# whatever they were doing.
 drone.external_camera.set_recording(True)
+
+# Take a picture. The drone has one picture command for both cameras, so this captures from
+# the main camera and the external camera in one go, as drone.camera.take_picture() does.
+drone.external_camera.take_picture()
 ```
+
+See [Recording video and taking pictures](video/recording-and-stills.md) for the details.
 
 ## External light
 If the drone has an external light attached, the `Drone` class will have an `external_light` attribute that is a [`GuestPortLight`][blueye.sdk.guestport.GuestPortLight] object. This object can be used to control the light.

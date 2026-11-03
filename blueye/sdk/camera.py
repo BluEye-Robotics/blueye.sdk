@@ -2127,6 +2127,11 @@ class Camera:
     def take_picture(self):
         """Take a still picture and store it locally on the drone.
 
+        The picture command has no camera selector: the drone captures from the main camera and,
+        if a guest port camera is attached, from that camera too, whichever `Camera` object the
+        call is made on. See [Recording video and taking
+        pictures](../../../video/recording-and-stills.md).
+
         These pictures can be downloaded with the Blueye App, or by any WebDAV compatible client.
 
         Raises:

@@ -96,6 +96,7 @@ nav:
       - "Control with a gamepad": "movement/with-a-gamepad.md"
   - Video:
       - "GStreamer for video streaming": "video/gstreamer-for-video-streaming.md"
+      - "Recording video and taking pictures": "video/recording-and-stills.md"
       - "Downloading videos and images": "video/downloading.md"
       - "Camera calibration": "video/camera-calibration.md"
   - Logs:
