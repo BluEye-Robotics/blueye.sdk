@@ -972,6 +972,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#adjusting-the-logging-frequency-of-a-telemetry-message" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Adjusting the logging frequency of a telemetry message
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1961,6 +1972,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#adjusting-the-logging-frequency-of-a-telemetry-message" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Adjusting the logging frequency of a telemetry message
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1999,7 +2021,18 @@
 <h2 id="removing-a-callback">Removing a callback</h2>
 <p>A callback is removed with <a class="autorefs autorefs-internal" title="            remove_msg_callback" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Telemetry.remove_msg_callback"><code>remove_msg_callback</code></a> using the ID returned when creating the callback.</p>
 <h2 id="adjusting-the-publishing-frequency-of-a-telemetry-message">Adjusting the publishing frequency of a telemetry message</h2>
-<p>By using the <a class="autorefs autorefs-internal" title="            set_msg_publish_frequency" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Telemetry.set_msg_publish_frequency"><code>set_msg_publish_frequency</code></a> function we can alter how often the drone should publish the specified telemetry message. The valid frequency range is 0 to 100 Hz.</p>
+<p><a class="autorefs autorefs-internal" title="            set_msg_publish_frequency" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Telemetry.set_msg_publish_frequency"><code>set_msg_publish_frequency</code></a> changes how often the drone publishes a telemetry message. The frequency must be greater than 0 and at most 100 Hz.</p>
+<p>The drone has a single telemetry publisher shared by every connected client, so the new rate also applies to the Blueye app and any other SDK client, and it stays in effect until the drone reboots. There is no request for restoring the default, so set the rate back yourself before your program exits if other clients depend on it, as the example at the bottom of this page does.</p>
+<p>Not every message has a publish frequency. The messages in <a class="autorefs autorefs-internal" title="            EVENT_DRIVEN_TELEMETRY
+
+
+  
+      module-attribute
+  " href="../reference/blueye/sdk/constants/#blueye.sdk.constants.EVENT_DRIVEN_TELEMETRY"><code>EVENT_DRIVEN_TELEMETRY</code></a> are published when their data arrives, such as a sonar ping or a detection, rather than on a timer. Messages from peripherals, like the thickness gauge, only exist while that peripheral is connected. The drone refuses to change the frequency in both cases, and the SDK raises a <code>RuntimeError</code> that names the message and the reason.</p>
+<p>On Blunux versions older than 5.1, changing a rate could stop the drone from publishing that message until it restarts, while the request still reported success. If a message goes quiet after a rate change on such a drone, a reboot brings it back.</p>
+<h2 id="adjusting-the-logging-frequency-of-a-telemetry-message">Adjusting the logging frequency of a telemetry message</h2>
+<p>The drone writes telemetry to the dive log at its own rate, separate from the publish rate. <a class="autorefs autorefs-internal" title="            set_msg_log_frequency" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Telemetry.set_msg_log_frequency"><code>set_msg_log_frequency</code></a> changes how often a message is logged, for example to get IMU or DVL data at a higher rate in the log without sending it to every client at that rate. It requires Blunux 5.1 or newer and takes the same frequency range as the publish frequency.</p>
+<p>On the X3 Ultra and X7 a multibeam recording raises the log rate of six messages while it runs (<code>PositionEstimateTel</code>, <code>AttitudeTel</code>, <code>CalibratedImuTel</code>, <code>CalibratedImuHpTel</code>, <code>DepthTel</code> and <code>AltitudeTel</code>) and restores their defaults when it stops. A rate set for one of those is replaced both times.</p>
 <h2 id="example">Example</h2>
 <p>The following example illustrates how can use a callback to print the depth reported by the drone.</p>
 <div class="highlight"><pre><span></span><code><span class="sd">&quot;&quot;&quot;print_depth.py</span>
@@ -2030,15 +2063,20 @@
     <span class="c1"># Add a callback for the DepthTel message, storing the ID for later use</span>
     <span class="n">callback_id</span> <span class="o">=</span> <span class="n">my_drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">add_msg_callback</span><span class="p">([</span><span class="n">bp</span><span class="o">.</span><span class="n">DepthTel</span><span class="p">],</span> <span class="n">callback_depth</span><span class="p">)</span>
 
-    <span class="c1"># Adjust the publishing frequency to 5 Hz</span>
-    <span class="n">my_drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">set_msg_publish_frequency</span><span class="p">(</span><span class="n">bp</span><span class="o">.</span><span class="n">DepthTel</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Adjust the publishing frequency to 5 Hz</span>
+        <span class="n">my_drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">set_msg_publish_frequency</span><span class="p">(</span><span class="n">bp</span><span class="o">.</span><span class="n">DepthTel</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
 
-    <span class="c1"># Callback is triggered by a separate thread while we sleep here</span>
-    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+        <span class="c1"># Callback is triggered by a separate thread while we sleep here</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="c1"># Remove the callback using the ID we stored when it was created (not really necessary</span>
+        <span class="c1"># here since the my_drone object goes out of scope immediately afterwards)</span>
+        <span class="n">my_drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">remove_msg_callback</span><span class="p">(</span><span class="n">callback_id</span><span class="p">)</span>
 
-    <span class="c1"># Remove the callback using the ID we stored when it was created (not really necessary here</span>
-    <span class="c1"># since the my_drone object goes out of scope immediately afterwards)</span>
-    <span class="n">my_drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">remove_msg_callback</span><span class="p">(</span><span class="n">callback_id</span><span class="p">)</span>
+        <span class="c1"># The publishing frequency is shared by every client and stays in effect until the drone</span>
+        <span class="c1"># reboots, so set it back to the default of 10 Hz before exiting, also on Ctrl-C</span>
+        <span class="n">my_drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">set_msg_publish_frequency</span><span class="p">(</span><span class="n">bp</span><span class="o">.</span><span class="n">DepthTel</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
 </code></pre></div>
 
 
