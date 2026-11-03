@@ -940,6 +940,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#image-filters-and-digital-pan-tilt-and-zoom" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Image filters and digital pan, tilt and zoom
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1916,6 +1927,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#image-filters-and-digital-pan-tilt-and-zoom" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Image filters and digital pan, tilt and zoom
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2003,6 +2025,29 @@
 </code></pre></div>
 <p>The <code>timeout</code> parameter (default: 0.5s) controls how long to wait for the drone to respond. Increase it when changing parameters that trigger pipeline restarts (e.g. codec, resolution).</p>
 <p>Due to a bug in the camera streaming on the drone a camera stream has to have been opened at least once before camera parameters can be set on the drone, see issue <a href="https://github.com/BluEye-Robotics/blueye.sdk/issues/67">#67</a>. For instructions on how to start a video stream see, the <a href="../quick_start/#watching-the-video-stream"><code>Quick Start Guide</code></a>.</p>
+<h3 id="image-filters-and-digital-pan-tilt-and-zoom">Image filters and digital pan, tilt and zoom</h3>
+<p>The 4K camera in the X3 Ultra and X7 has two image filters and a digital pan, tilt and zoom. They are not camera parameters, each is sent as its own control message, and the drone reports the state it applied in a telemetry message. The setters raise <code>RuntimeError</code> on other models, on the guestport camera and on drones running Blunux older than 5.0.0.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drone</span>
+
+<span class="n">myDrone</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">()</span>
+
+<span class="c1"># Turbidity filter: contrast enhancement (CLAHE) for murky water</span>
+<span class="n">myDrone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">set_turbidity_filter</span><span class="p">(</span><span class="n">enabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">intensity</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+
+<span class="c1"># Color correction: restores the red and blue the water absorbs with depth</span>
+<span class="n">myDrone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">set_color_correction</span><span class="p">(</span><span class="n">enabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">intensity</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+
+<span class="c1"># Digital pan, tilt and zoom. Values left out keep what was last sent from this object, so</span>
+<span class="c1"># the second call keeps the zoom of the first.</span>
+<span class="n">myDrone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">set_pan_tilt_zoom</span><span class="p">(</span><span class="n">zoom</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">myDrone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">set_pan_tilt_zoom</span><span class="p">(</span><span class="n">pan</span><span class="o">=-</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">tilt</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">myDrone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">get_turbidity_filter</span><span class="p">())</span>  <span class="c1"># FilterMessage with enabled and intensity</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">myDrone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">get_pan_tilt_zoom</span><span class="p">())</span>  <span class="c1"># CameraPanTiltZoom with pan, tilt and zoom</span>
+</code></pre></div>
+<p>The drone publishes <code>TurbidityFilterTel</code>, <code>ColorCorrectionTel</code> and <code>CameraPanTiltZoomTel</code> when the state changes, not at a fixed rate. The getters return what the drone reported on the last change, and ask the drone directly if nothing has been received since connecting, so there is no need to wait for a periodic update. A drone that has never applied a filter has nothing to report, and the getter returns <code>None</code> until the first change.</p>
+<p>The report arrives about 0.1 s after the command, so <code>set_pan_tilt_zoom</code> fills in the values you leave out from what it last sent, and from the drone's report only before the first call. A change made by the Blueye app after your last call is not picked up that way; pass all three values when that matters.</p>
+<p>Laser dot tracking works on the full, unzoomed image, so <a class="autorefs autorefs-internal" title="            enable_tracking" href="../reference/blueye/sdk/guestport/#blueye.sdk.guestport.Laser.enable_tracking"><code>enable_tracking</code></a> resets pan, tilt and zoom to 0 when it starts, as the Blueye app does.</p>
 
 
 

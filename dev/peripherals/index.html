@@ -993,6 +993,28 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#discovery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Discovery
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#guest-ports" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Guest ports
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#navigation-sensors" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1034,6 +1056,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Scaling laser">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laser-dot-tracking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Laser dot tracking
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1052,6 +1091,17 @@
     <span class="md-ellipsis">
       
         Servo
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#supported-devices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported devices
       
     </span>
   </a>
@@ -1923,6 +1973,28 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#discovery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Discovery
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#guest-ports" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Guest ports
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#navigation-sensors" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1964,6 +2036,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Scaling laser">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laser-dot-tracking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Laser dot tracking
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1982,6 +2071,17 @@
     <span class="md-ellipsis">
       
         Servo
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#supported-devices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported devices
       
     </span>
   </a>
@@ -2016,7 +2116,34 @@
   
       instance-attribute
   " href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Drone.peripherals"><code>peripherals</code></a> attribute of the <code>Drone</code> class. This attribute is a list of <a class="autorefs autorefs-internal" title="            Peripheral" href="../reference/blueye/sdk/guestport/#blueye.sdk.guestport.Peripheral"><code>Peripheral</code></a> objects.</p>
-<p>The SDK will also create attributes for supported peripherals to simplify access.</p>
+<p>The SDK also has an attribute for each supported kind of peripheral (<code>external_camera</code>, <code>external_light</code>, <code>gripper</code>, <code>laser</code>, <code>servo</code> and <code>skid_servo</code>) to simplify access. If the drone carries two devices of the same kind, the attribute refers to the last one discovered; the full set is always in <code>peripherals</code>.</p>
+<h2 id="discovery">Discovery</h2>
+<p>Peripherals are discovered once per connection, from the first <code>DroneInfoTel</code> telemetry message in which the drone lists its guest ports and the devices on them. Until then, <code>peripherals</code> and <code>get_guest_ports()</code> return <code>None</code> and every peripheral attribute is <code>None</code>; a drone that has reported but has no guest ports gives empty lists. Devices plugged in or removed later in the session are not picked up until the next <code>connect()</code>. Disconnecting clears the lists and the attributes.</p>
+<div class="highlight"><pre><span></span><code><span class="k">if</span> <span class="n">drone</span><span class="o">.</span><span class="n">laser</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No scaling laser on this drone&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">drone</span><span class="o">.</span><span class="n">laser</span><span class="o">.</span><span class="n">set_intensity</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+</code></pre></div>
+<p>Every <a class="autorefs autorefs-internal" title="            Peripheral" href="../reference/blueye/sdk/guestport/#blueye.sdk.guestport.Peripheral"><code>Peripheral</code></a> records which port it sits on, the interfaces it requires from that port, and which ports on the drone fully support it. For detachable devices, <a class="autorefs autorefs-internal" title="            get_detach_status" href="../reference/blueye/sdk/guestport/#blueye.sdk.guestport.Peripheral.get_detach_status"><code>get_detach_status()</code></a> reports whether the device is currently attached.</p>
+<h2 id="guest-ports">Guest ports</h2>
+<p>To see the state of each guest port, including ports with nothing connected or with a connector fault, use <a class="autorefs autorefs-internal" title="            get_guest_ports" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Drone.get_guest_ports"><code>get_guest_ports()</code></a>. It returns one <a class="autorefs autorefs-internal" title="            GuestPort
+
+
+  
+      dataclass
+  " href="../reference/blueye/sdk/guestport/#blueye.sdk.guestport.GuestPort"><code>GuestPort</code></a> per port the drone reports, or <code>None</code> if no guest port information has been received yet. A port either carries a list of devices or reports a connector error, never both; an empty port reports <code>GUEST_PORT_ERROR_NOT_CONNECTED</code>. Connector errors other than "not connected" are also logged as warnings when the ports are discovered.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">blueye.protocol</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">bp</span>
+
+<span class="k">for</span> <span class="n">port</span> <span class="ow">in</span> <span class="n">drone</span><span class="o">.</span><span class="n">get_guest_ports</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">port</span><span class="o">.</span><span class="n">error</span> <span class="o">==</span> <span class="n">bp</span><span class="o">.</span><span class="n">GuestPortError</span><span class="o">.</span><span class="n">GUEST_PORT_ERROR_NOT_CONNECTED</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">port</span><span class="o">.</span><span class="n">number</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: empty&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">port</span><span class="o">.</span><span class="n">error</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">port</span><span class="o">.</span><span class="n">number</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: connector error </span><span class="si">{</span><span class="n">port</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">device</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">device</span> <span class="ow">in</span> <span class="n">port</span><span class="o">.</span><span class="n">devices</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">port</span><span class="o">.</span><span class="n">number</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">names</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  provides </span><span class="si">{</span><span class="p">[</span><span class="n">cap</span><span class="o">.</span><span class="n">name</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">cap</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">port</span><span class="o">.</span><span class="n">capabilities</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
 <h2 id="navigation-sensors">Navigation sensors</h2>
 <p>The drone has no class for its navigation sensors yet; they appear in <code>peripherals</code> as plain <a class="autorefs autorefs-internal" title="            Peripheral" href="../reference/blueye/sdk/guestport/#blueye.sdk.guestport.Peripheral"><code>Peripheral</code></a> objects. What they provide decides which auto modes and mission instructions the drone will run:</p>
 <table>
@@ -2079,12 +2206,25 @@
 <span class="n">drone</span><span class="o">.</span><span class="n">external_light</span><span class="o">.</span><span class="n">set_intensity</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
 </code></pre></div>
 <h2 id="scaling-laser">Scaling laser</h2>
-<p>If the drone has a scaling laser attached, the <code>Drone</code> class will have a <code>laser</code> attribute that is a <a class="autorefs autorefs-internal" title="            Laser" href="../reference/blueye/sdk/guestport/#blueye.sdk.guestport.Laser"><code>Laser</code></a> object. This object can be used to control the scaling laser.</p>
+<p>If the drone has a scaling laser attached (the Blueye scaling laser, the Laser Tools Sea Beam or the Spot X laser scalers), the <code>Drone</code> class will have a <code>laser</code> attribute that is a <a class="autorefs autorefs-internal" title="            Laser" href="../reference/blueye/sdk/guestport/#blueye.sdk.guestport.Laser"><code>Laser</code></a> object. This object can be used to control the scaling laser. The dot spacing is 50 mm for the Blueye laser and 75 mm for the Sea Beam.</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Get the current intensity of the scaling laser</span>
 <span class="n">intensity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">drone</span><span class="o">.</span><span class="n">laser</span><span class="o">.</span><span class="n">get_intensity</span><span class="p">()</span>
 
 <span class="c1"># Set the intensity of the scaling laser to 0.5</span>
 <span class="n">drone</span><span class="o">.</span><span class="n">laser</span><span class="o">.</span><span class="n">set_intensity</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="laser-dot-tracking">Laser dot tracking</h3>
+<p>On the X3 Ultra and X7 the drone can track the laser dots in the main camera image. <a class="autorefs autorefs-internal" title="            enable_tracking" href="../reference/blueye/sdk/guestport/#blueye.sdk.guestport.Laser.enable_tracking"><code>enable_tracking</code></a> modulates the laser at 5 Hz, and the drone then reports the dot positions, their distance in pixels and the estimated distance to the subject in <code>LaserTel</code>. The drone overwrites the modulation flag with every intensity command, so <code>set_intensity</code> keeps the reported flag unless you pass <code>modulated</code> yourself. Tracking works on the full camera image, so <code>enable_tracking(True)</code> also resets the digital pan, tilt and zoom to 0, as the Blueye app does.</p>
+<div class="highlight"><pre><span></span><code><span class="n">drone</span><span class="o">.</span><span class="n">laser</span><span class="o">.</span><span class="n">enable_tracking</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">detection</span> <span class="o">=</span> <span class="n">drone</span><span class="o">.</span><span class="n">laser</span><span class="o">.</span><span class="n">get_detection</span><span class="p">()</span>  <span class="c1"># blueye.protocol.LaserDetection, or None</span>
+<span class="k">if</span> <span class="n">detection</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">detection</span><span class="o">.</span><span class="n">detected</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">detection</span><span class="o">.</span><span class="n">estimated_distance</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> m, dots </span><span class="si">{</span><span class="n">detection</span><span class="o">.</span><span class="n">pixel_distance</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> px apart&quot;</span><span class="p">)</span>
+
+<span class="c1"># Or just the distance, None while the dots are not detected</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">drone</span><span class="o">.</span><span class="n">laser</span><span class="o">.</span><span class="n">get_estimated_distance</span><span class="p">())</span>
+
+<span class="n">drone</span><span class="o">.</span><span class="n">laser</span><span class="o">.</span><span class="n">enable_tracking</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
 </code></pre></div>
 <h2 id="gripper">Gripper</h2>
 <p>If the drone has a gripper attached, the <code>Drone</code> class will have a <code>gripper</code> attribute that is a <a class="autorefs autorefs-internal" title="            Gripper" href="../reference/blueye/sdk/guestport/#blueye.sdk.guestport.Gripper"><code>Gripper</code></a> object. This object can be used to control the grip and rotation of the gripper.</p>
@@ -2103,12 +2243,70 @@
 </code></pre></div>
 <h2 id="servo">Servo</h2>
 <p>If the drone has a servo attached, the <code>Drone</code> class will either have a <code>servo</code> attribute that is a <a class="autorefs autorefs-internal" title="            GenericServo" href="../reference/blueye/sdk/guestport/#blueye.sdk.guestport.GenericServo"><code>GenericServo</code></a> object, or a <code>skid_servo</code> attribute that is a <a class="autorefs autorefs-internal" title="            SkidServo" href="../reference/blueye/sdk/guestport/#blueye.sdk.guestport.SkidServo"><code>SkidServo</code></a> object. These objects can be used to control the servo.</p>
+<p><code>servo</code> is the Blueye generic servo. It takes a position between 0 and 1, where 0 and 1 are the end stops, since the drone has no idea what that is in degrees for the servo you have fitted. The drone drives generic servos on guest ports 1 to 3 only. The old <code>set_angle</code> and <code>get_angle</code> still work but warn, they map -90..90 degrees onto the 0..1 position.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Move to the middle</span>
+<span class="n">drone</span><span class="o">.</span><span class="n">servo</span><span class="o">.</span><span class="n">set_position</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+
+<span class="c1"># The reported position, and the position it is moving towards</span>
+<span class="n">drone</span><span class="o">.</span><span class="n">servo</span><span class="o">.</span><span class="n">get_position</span><span class="p">()</span>
+<span class="n">drone</span><span class="o">.</span><span class="n">servo</span><span class="o">.</span><span class="n">get_set_point</span><span class="p">()</span>
+</code></pre></div>
+<p>With two generic servos, <code>drone.servo</code> is the last one discovered. Each servo in <code>drone.peripherals</code> reports its own port, so pick by <code>port_number</code> when you have more than one:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk.guestport</span><span class="w"> </span><span class="kn">import</span> <span class="n">GenericServo</span>
+
+<span class="n">servos</span> <span class="o">=</span> <span class="p">{</span><span class="n">p</span><span class="o">.</span><span class="n">port_number</span><span class="p">:</span> <span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">drone</span><span class="o">.</span><span class="n">peripherals</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">GenericServo</span><span class="p">)}</span>
+</code></pre></div>
+<p><code>skid_servo</code> covers every multibeam tilt servo: the skid-mounted servo (first and second generation), which tilts ±28 degrees, and the head-mounted servo, which tilts ±45 degrees. The allowed range of the connected servo is in <code>min_angle</code> and <code>max_angle</code>.</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Set the angle</span>
 <span class="n">drone</span><span class="o">.</span><span class="n">skid_servo</span><span class="o">.</span><span class="n">set_angle</span><span class="p">(</span><span class="mf">20.0</span><span class="p">)</span>
 
-<span class="c1"># Get the current angle</span>
+<span class="c1"># Get the current angle, and the angle the servo is moving towards</span>
 <span class="n">drone</span><span class="o">.</span><span class="n">skid_servo</span><span class="o">.</span><span class="n">get_angle</span><span class="p">()</span>
+<span class="n">drone</span><span class="o">.</span><span class="n">skid_servo</span><span class="o">.</span><span class="n">get_set_point</span><span class="p">()</span>
 </code></pre></div>
+<h2 id="supported-devices">Supported devices</h2>
+<table>
+<thead>
+<tr>
+<th>Device</th>
+<th>SDK class</th>
+<th>Attribute</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Blueye camera</td>
+<td><a class="autorefs autorefs-internal" title="            GuestPortCamera" href="../reference/blueye/sdk/guestport/#blueye.sdk.guestport.GuestPortCamera"><code>GuestPortCamera</code></a></td>
+<td><code>external_camera</code></td>
+</tr>
+<tr>
+<td>Blueye light, Blueye light pair, Blue Robotics Lumen</td>
+<td><a class="autorefs autorefs-internal" title="            GuestPortLight" href="../reference/blueye/sdk/guestport/#blueye.sdk.guestport.GuestPortLight"><code>GuestPortLight</code></a></td>
+<td><code>external_light</code></td>
+</tr>
+<tr>
+<td>Blue Robotics Newton (fixed and detachable), Blueprint Lab Reach Alpha</td>
+<td><a class="autorefs autorefs-internal" title="            Gripper" href="../reference/blueye/sdk/guestport/#blueye.sdk.guestport.Gripper"><code>Gripper</code></a></td>
+<td><code>gripper</code></td>
+</tr>
+<tr>
+<td>Blueye scaling laser, Laser Tools Sea Beam, Spot X laser scalers</td>
+<td><a class="autorefs autorefs-internal" title="            Laser" href="../reference/blueye/sdk/guestport/#blueye.sdk.guestport.Laser"><code>Laser</code></a></td>
+<td><code>laser</code></td>
+</tr>
+<tr>
+<td>Blueye generic servo</td>
+<td><a class="autorefs autorefs-internal" title="            GenericServo" href="../reference/blueye/sdk/guestport/#blueye.sdk.guestport.GenericServo"><code>GenericServo</code></a></td>
+<td><code>servo</code></td>
+</tr>
+<tr>
+<td>Blueye multibeam servo (V1 and V2), Blueye multibeam head servo</td>
+<td><a class="autorefs autorefs-internal" title="            SkidServo" href="../reference/blueye/sdk/guestport/#blueye.sdk.guestport.SkidServo"><code>SkidServo</code></a></td>
+<td><code>skid_servo</code></td>
+</tr>
+</tbody>
+</table>
+<p>Every other device the drone discovers (sonars, DVLs, GNSS, sensors, USB storage) is listed in <code>peripherals</code> as a plain <a class="autorefs autorefs-internal" title="            Peripheral" href="../reference/blueye/sdk/guestport/#blueye.sdk.guestport.Peripheral"><code>Peripheral</code></a> with its name, port and device ID, and its data is read from the matching telemetry messages through <code>drone.telemetry.get()</code>.</p>
 
 
 

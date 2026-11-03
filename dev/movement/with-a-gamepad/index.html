@@ -1921,17 +1921,18 @@ mapping them to the functions you want.</p>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">myDrone</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">()</span>
+    <span class="c1"># Leaving the `with` block disconnects, which zeroes the thrusters first. That holds for</span>
+    <span class="c1"># Ctrl-C and for any exception, so the drone is never left running the last stick position.</span>
+    <span class="k">with</span> <span class="n">Drone</span><span class="p">()</span> <span class="k">as</span> <span class="n">myDrone</span><span class="p">:</span>
         <span class="n">handler</span> <span class="o">=</span> <span class="n">JoystickHandler</span><span class="p">(</span><span class="n">myDrone</span><span class="p">)</span>
-        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="n">events</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">get_gamepad</span><span class="p">()</span>
-            <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">events</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">code</span> <span class="ow">in</span> <span class="n">handler</span><span class="o">.</span><span class="n">event_to_function_map</span><span class="p">:</span>
-                    <span class="n">handler</span><span class="o">.</span><span class="n">event_to_function_map</span><span class="p">[</span><span class="n">event</span><span class="o">.</span><span class="n">code</span><span class="p">](</span><span class="n">event</span><span class="o">.</span><span class="n">state</span><span class="p">)</span>
-
-    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
-        <span class="k">pass</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">events</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">get_gamepad</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">events</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">code</span> <span class="ow">in</span> <span class="n">handler</span><span class="o">.</span><span class="n">event_to_function_map</span><span class="p">:</span>
+                        <span class="n">handler</span><span class="o">.</span><span class="n">event_to_function_map</span><span class="p">[</span><span class="n">event</span><span class="o">.</span><span class="n">code</span><span class="p">](</span><span class="n">event</span><span class="o">.</span><span class="n">state</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+            <span class="k">pass</span>
 </code></pre></div>
 
 
