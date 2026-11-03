@@ -2163,8 +2163,11 @@ spectator and can be used together with the SDK.</p>
 <h3 id="try-the-command-line-interface">Try the command line interface</h3>
 <p>The SDK also installs a <a href="../cli/"><code>blueye</code> command</a> for common tasks straight from the
 terminal — for example, grabbing the newest dive log from the drone:</p>
-<div class="highlight"><pre><span></span><code>blueye<span class="w"> </span>logs<span class="w"> </span>download<span class="w"> </span>--latest<span class="w"> </span><span class="m">1</span>
+<div class="highlight"><pre><span></span><code>blueye<span class="w"> </span>logs<span class="w"> </span>download<span class="w"> </span>--latest<span class="w"> </span><span class="m">1</span><span class="w"> </span>--dives-only
 </code></pre></div>
+<p>The drone is always writing a log while it is powered on, so <code>--latest</code> skips that
+open log and <code>--dives-only</code> leaves out the short logs from powering the drone on at
+the desk.</p>
 <p>Run <code>blueye --help</code> to see everything it can do, or read more on
 <a href="../cli/">the blueye CLI page</a>.</p>
 <h3 id="explore-the-examples">Explore the examples</h3>

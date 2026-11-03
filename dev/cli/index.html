@@ -2579,8 +2579,9 @@ some other way. A rescan restarts every running model.</p>
 <p>The drone's binary dive logs (<code>.bez</code>) can be listed and downloaded from the terminal.
 The command connects to the drone as an observer — taking no control:</p>
 <div class="highlight"><pre><span></span><code>blueye<span class="w"> </span>logs<span class="w"> </span>list<span class="w">                       </span><span class="c1"># table of logs on the drone</span>
-blueye<span class="w"> </span>logs<span class="w"> </span>download<span class="w"> </span>--latest<span class="w"> </span><span class="m">1</span><span class="w">        </span><span class="c1"># newest log to the current directory</span>
+blueye<span class="w"> </span>logs<span class="w"> </span>download<span class="w"> </span>--latest<span class="w"> </span><span class="m">1</span><span class="w">        </span><span class="c1"># newest finished log to the current directory</span>
 blueye<span class="w"> </span>logs<span class="w"> </span>download<span class="w"> </span>--latest<span class="w"> </span><span class="m">1</span><span class="w"> </span>--mcap<span class="w"> </span><span class="c1"># ...and convert it for Foxglove</span>
+blueye<span class="w"> </span>logs<span class="w"> </span>download<span class="w"> </span>--latest<span class="w"> </span><span class="m">1</span><span class="w"> </span>--dives-only<span class="w">  </span><span class="c1"># newest dive, skipping power-on logs</span>
 blueye<span class="w"> </span>logs<span class="w"> </span>download<span class="w"> </span>BYEDP000000_ea9ac92e1817a1d4_00002<span class="w"> </span>-o<span class="w"> </span>~/dives
 blueye<span class="w"> </span>logs<span class="w"> </span>download<span class="w"> </span>--all<span class="w"> </span>--since<span class="w"> </span><span class="m">2026</span>-06-01<span class="w"> </span>--dives-only
 blueye<span class="w"> </span>logs<span class="w"> </span>convert<span class="w"> </span>mydive.bez<span class="w">         </span><span class="c1"># convert an already-downloaded log (no drone)</span>
@@ -2611,6 +2612,10 @@ blueye<span class="w"> </span>logs<span class="w">                            </
 <p><code>list</code>, <code>download</code>, and the interactive view accept <code>--dives-only</code>, <code>--since
 YYYY-MM-DD</code>, and <code>--until YYYY-MM-DD</code> to narrow the selection; the interactive view
 is a single scrollable table (type to filter, space to select, sorted newest first).
+The drone writes a new log from power-on to power-off, so one log is always open
+while you are connected. <code>--latest</code> skips it and says so; <code>list</code> and the interactive
+view mark it as open. Pass its name to download it anyway, knowing the file stops at
+the drone's last flush.
 <code>--mcap</code> converts each downloaded log to a Foxglove-ready <code>.mcap</code> next to the
 <code>.bez</code> — <code>blueye logs convert</code> does the same for files already on disk. Both need the
 <code>cli</code> extra. See

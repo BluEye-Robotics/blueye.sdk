@@ -1837,13 +1837,11 @@
 <p>This example shows how one can pull a log file from the drone and use
 <a href="https://pandas.pydata.org/">pandas</a> and <a href="https://matplotlib.org/">matplotlib</a> to plot
 it.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Binary logs</label><label for="__tabbed_1_2">Legacy Logs</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<p>We'll start by downloading a log file from the drone</p>
+<p>We'll start by picking a log file from the drone, connecting as an observer since we
+do not need control:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drone</span>
 
-<span class="n">myDrone</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">()</span>
+<span class="n">myDrone</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">(</span><span class="n">connect_as_observer</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">log</span> <span class="o">=</span> <span class="n">myDrone</span><span class="o">.</span><span class="n">logs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 </code></pre></div>
 <p>Next we'll parse the log to a stream and create a pandas dataframe from the records. We'll also specify the column names to make it easier to work with the dataframe later.</p>
@@ -1854,6 +1852,9 @@ it.</p>
 <span class="n">log_stream</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">parse_to_stream</span><span class="p">()</span>
 <span class="n">divelog</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_records</span><span class="p">(</span><span class="n">log_stream</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
 </code></pre></div>
+<p>The four columns are the record tuple described in
+<a href="../listing-and-downloading/#streaming-the-records">Streaming the records</a>: the wall
+clock time, the time since the first record, the message type and the message.</p>
 <p>We'll now filter out all entries that are not depth telemetry messages and messages that were logged before the start of the dive.</p>
 <div class="highlight"><pre><span></span><code><span class="n">depth_log</span> <span class="o">=</span> <span class="n">divelog</span><span class="p">[</span><span class="n">divelog</span><span class="o">.</span><span class="n">meta</span> <span class="o">==</span> <span class="n">bp</span><span class="o">.</span><span class="n">DepthTel</span><span class="p">]</span>
 <span class="n">depth_log</span> <span class="o">=</span> <span class="n">depth_log</span><span class="p">[</span><span class="n">depth_log</span><span class="o">.</span><span class="n">rt</span> <span class="o">&gt;</span> <span class="n">log</span><span class="o">.</span><span class="n">start_time</span><span class="p">]</span>
@@ -1865,29 +1866,6 @@ it.</p>
 <div class="highlight"><pre><span></span><code><span class="n">x</span> <span class="o">=</span> <span class="n">depth_log</span><span class="p">[</span><span class="s2">&quot;rt&quot;</span><span class="p">]</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">depth_log</span><span class="p">[</span><span class="s2">&quot;depth&quot;</span><span class="p">]</span>
 </code></pre></div>
-</div>
-<div class="tabbed-block">
-<p>We'll start by downloading a log file from the drone</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drone</span>
-
-<span class="n">myDrone</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">()</span>
-<span class="n">myDrone</span><span class="o">.</span><span class="n">legacy_logs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="n">output_name</span><span class="o">=</span><span class="s2">&quot;log0.csv&quot;</span><span class="p">)</span>
-</code></pre></div>
-<p>We can now read the csv-file into a pandas object for easy manipulation</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
-
-<span class="n">divelog</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;log0.csv&quot;</span><span class="p">)</span>
-</code></pre></div>
-<p>and then we'll convert the unix timestamp in <code>rt_clock</code> into a more readable format:</p>
-<div class="highlight"><pre><span></span><code><span class="n">divelog</span><span class="p">[</span><span class="s2">&quot;rt_clock&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">divelog</span><span class="p">[</span><span class="s2">&quot;rt_clock&quot;</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;s&quot;</span><span class="p">)</span>
-</code></pre></div>
-<p>We'll prepare our axes for plotting</p>
-<div class="highlight"><pre><span></span><code><span class="n">x</span> <span class="o">=</span> <span class="n">divelog</span><span class="p">[</span><span class="s2">&quot;rt_clock&quot;</span><span class="p">]</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">divelog</span><span class="p">[</span><span class="s2">&quot;depth&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="mi">1000</span>  <span class="c1"># Dividing by 1000 to get depth in meters</span>
-</code></pre></div>
-</div>
-</div>
-</div>
 <p>Next we will plot depth vs time with matplotlib:
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
@@ -1910,6 +1888,28 @@ it.</p>
 <img alt="plot" src="../../media/depth_plot.svg" /></p>
 <p>See the <a href="https://matplotlib.org/contents.html">matplotlib documentation</a> for more ways
 to plot your data.</p>
+<details>
+<summary>Blunux older than 3.0 (CSV logs)</summary>
+<p>Drones on Blunux older than 3.0 store CSV logs instead. Download one with the legacy
+index and read it into pandas:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drone</span>
+
+<span class="n">myDrone</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">(</span><span class="n">connect_as_observer</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">myDrone</span><span class="o">.</span><span class="n">legacy_logs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="n">output_name</span><span class="o">=</span><span class="s2">&quot;log0.csv&quot;</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="n">divelog</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;log0.csv&quot;</span><span class="p">)</span>
+</code></pre></div>
+<p>Convert the unix timestamp in <code>rt_clock</code> into a more readable format, and prepare the
+axes. Depth is logged in millimeters:</p>
+<div class="highlight"><pre><span></span><code><span class="n">divelog</span><span class="p">[</span><span class="s2">&quot;rt_clock&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">divelog</span><span class="p">[</span><span class="s2">&quot;rt_clock&quot;</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;s&quot;</span><span class="p">)</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">divelog</span><span class="p">[</span><span class="s2">&quot;rt_clock&quot;</span><span class="p">]</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">divelog</span><span class="p">[</span><span class="s2">&quot;depth&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="mi">1000</span>  <span class="c1"># Dividing by 1000 to get depth in meters</span>
+</code></pre></div>
+<p>The matplotlib part above is the same from here.</p>
+</details>
 
 
 

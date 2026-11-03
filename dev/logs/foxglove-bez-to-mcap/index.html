@@ -1840,9 +1840,12 @@
 <li>Install the SDK with the <code>cli</code> extra to get the <a href="../../cli/"><code>blueye</code> CLI</a> and the
    <code>.mcap</code> converter: <code>pip install "blueye.sdk[cli]"</code>.</li>
 <li>
-<p>Download a dive log from the drone and convert it in one step:</p>
-<div class="highlight"><pre><span></span><code>blueye<span class="w"> </span>logs<span class="w"> </span>download<span class="w"> </span>--latest<span class="w"> </span><span class="m">1</span><span class="w"> </span>--mcap
+<p>Download the newest dive log from the drone and convert it in one step:</p>
+<div class="highlight"><pre><span></span><code>blueye<span class="w"> </span>logs<span class="w"> </span>download<span class="w"> </span>--latest<span class="w"> </span><span class="m">1</span><span class="w"> </span>--dives-only<span class="w"> </span>--mcap
 </code></pre></div>
+<p><code>--latest</code> skips the log the drone is writing right now, and <code>--dives-only</code> skips
+logs the drone did not count as dives: ones where it never went deeper than 25 cm
+and no auto function was used, such as a power-on at the desk.</p>
 <p>Already have <code>.bez</code> files on disk? Convert them directly — no drone needed:</p>
 <div class="highlight"><pre><span></span><code>blueye<span class="w"> </span>logs<span class="w"> </span>convert<span class="w"> </span>mydive.bez
 </code></pre></div>

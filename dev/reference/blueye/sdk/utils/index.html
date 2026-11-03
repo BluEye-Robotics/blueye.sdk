@@ -1546,6 +1546,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#blueye.sdk.utils.UnknownMessageTypeError" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;UnknownMessageTypeError
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#blueye.sdk.utils.deprecated_property" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1937,6 +1948,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#blueye.sdk.utils.UnknownMessageTypeError" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;UnknownMessageTypeError
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#blueye.sdk.utils.deprecated_property" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2040,6 +2062,13 @@
 <p><span class="doc-section-title">Classes:</span></p>
     <ul>
         <li class="doc-section-item field-body">
+          <b><code><a class="autorefs autorefs-internal" title="            UnknownMessageTypeError (blueye.sdk.utils.UnknownMessageTypeError)" href="#blueye.sdk.utils.UnknownMessageTypeError">UnknownMessageTypeError</a></code></b>
+          –
+          <div class="doc-md-description">
+            <p>The type URL of an Any message names a type this SDK does not know</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
           <b><code><a class="autorefs autorefs-internal" title="            deprecated_property (blueye.sdk.utils.deprecated_property)" href="#blueye.sdk.utils.deprecated_property">deprecated_property</a></code></b>
           –
           <div class="doc-md-description">
@@ -2100,6 +2129,65 @@
 
 
 
+<h3 id="blueye.sdk.utils.UnknownMessageTypeError" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <span class="doc doc-object-name doc-class-name">UnknownMessageTypeError</span>
+
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">UnknownMessageTypeError</span><span class="p">(</span><span class="n">type_url</span><span class="p">:</span> <span class="n"><span title="str">str</span></span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+        <p>The type URL of an Any message names a type this SDK does not know</p>
+<p>The drone logs and publishes every message type its firmware knows, so a newer drone
+can produce types that an older blueye.protocol package has no class for.</p>
+
+
+
+
+
+
+
+
+
+
+
+                  <details class="quote">
+                    <summary>Source code in <code>blueye/sdk/utils.py</code></summary>
+                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">96</span>
+<span class="normal">97</span>
+<span class="normal">98</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">type_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown message type </span><span class="si">{</span><span class="n">type_url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">type_url</span> <span class="o">=</span> <span class="n">type_url</span>
+</code></pre></div></td></tr></table></div>
+                  </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
 <h3 id="blueye.sdk.utils.deprecated_property" class="doc doc-heading">
 <code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <span class="doc doc-object-name doc-class-name">deprecated_property</span>
 
@@ -2132,10 +2220,10 @@ raise an AttributeError instead of silently shadowing the descriptor with an ins
 
                   <details class="quote">
                     <summary>Source code in <code>blueye/sdk/utils.py</code></summary>
-                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">33</span>
-<span class="normal">34</span>
+                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">34</span>
 <span class="normal">35</span>
-<span class="normal">36</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fget</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">fset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">doc</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="normal">36</span>
+<span class="normal">37</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fget</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">fset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">doc</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">fget</span> <span class="o">=</span> <span class="n">fget</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">fset</span> <span class="o">=</span> <span class="n">fset</span>
     <span class="bp">self</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">doc</span>
@@ -2184,14 +2272,14 @@ know, and proto-plus surfaces those as a plain int rather than an enum member. F
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/utils.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">78</span>
-<span class="normal">79</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">79</span>
 <span class="normal">80</span>
 <span class="normal">81</span>
 <span class="normal">82</span>
 <span class="normal">83</span>
 <span class="normal">84</span>
-<span class="normal">85</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">describe_enum</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="normal">85</span>
+<span class="normal">86</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">describe_enum</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Render a protocol enum value for a log or error message.</span>
 
 <span class="sd">    A drone running a newer Blunux than the SDK can report an enum value this build does not</span>
@@ -2215,7 +2303,7 @@ know, and proto-plus surfaces those as a plain int rather than an enum member. F
 </h3>
 <div class="doc-signature highlight"><pre><span></span><code><span class="nf">deserialize_any_to_message</span><span class="p">(</span>
     <span class="n">msg</span><span class="p">:</span> <span class="n"><span title="google.protobuf.any_pb2.Any">Any</span></span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><span title="typing.Tuple">Tuple</span></span><span class="p">[</span><span class="n"><span title="proto.message.MessageMeta">MessageMeta</span></span><span class="p">,</span> <span class="n"><span title="proto.message.Message">Message</span></span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><span title="typing.Tuple">Tuple</span></span><span class="p">[</span><span class="n"><span title="type">type</span></span><span class="p">,</span> <span class="n"><span title="proto.message.Message">Message</span></span><span class="p">]</span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
@@ -2231,8 +2319,8 @@ know, and proto-plus surfaces those as a plain int rather than an enum member. F
           –
           <div class="doc-md-description">
             <p>The Any message to deserialize. Needs to be a message defined in the
-       blueye.protocol package or a well-known-type (FloatValue, Int32Value, etc) from
-       google.protobuf.wrappers_pb2</p>
+       blueye.protocol package, a well-known wrapper type (FloatValue, Int32Value,
+       etc) from google.protobuf.wrappers_pb2, or google.protobuf.Empty.</p>
           </div>
         </li>
     </ul>
@@ -2241,10 +2329,23 @@ know, and proto-plus surfaces those as a plain int rather than an enum member. F
 <p><span class="doc-section-title">Returns:</span></p>
     <ul>
         <li class="doc-section-item field-body">
-              <code><span title="typing.Tuple">Tuple</span>[<span title="proto.message.MessageMeta">MessageMeta</span>, <span title="proto.message.Message">Message</span>]</code>
+              <code><span title="typing.Tuple">Tuple</span>[<span title="type">type</span>, <span title="proto.message.Message">Message</span>]</code>
           –
           <div class="doc-md-description">
-            <p>A tuple with the message type and the deserialized message.</p>
+            <p>A tuple with the message type and the deserialized message. blueye.protocol types
+come back as proto-plus messages, the google.protobuf types as plain protobuf messages.</p>
+          </div>
+        </li>
+    </ul>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code><a class="autorefs autorefs-internal" title="            UnknownMessageTypeError (blueye.sdk.utils.UnknownMessageTypeError)" href="#blueye.sdk.utils.UnknownMessageTypeError">UnknownMessageTypeError</a></code>
+            –
+          <div class="doc-md-description">
+            <p>The type URL names a type this SDK does not have a class for.</p>
           </div>
         </li>
     </ul>
@@ -2252,47 +2353,65 @@ know, and proto-plus surfaces those as a plain int rather than an enum member. F
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/utils.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 88</span>
-<span class="normal"> 89</span>
-<span class="normal"> 90</span>
-<span class="normal"> 91</span>
-<span class="normal"> 92</span>
-<span class="normal"> 93</span>
-<span class="normal"> 94</span>
-<span class="normal"> 95</span>
-<span class="normal"> 96</span>
-<span class="normal"> 97</span>
-<span class="normal"> 98</span>
-<span class="normal"> 99</span>
-<span class="normal">100</span>
-<span class="normal">101</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">101</span>
 <span class="normal">102</span>
 <span class="normal">103</span>
 <span class="normal">104</span>
 <span class="normal">105</span>
 <span class="normal">106</span>
 <span class="normal">107</span>
-<span class="normal">108</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">deserialize_any_to_message</span><span class="p">(</span><span class="n">msg</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">proto</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">MessageMeta</span><span class="p">,</span> <span class="n">proto</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">Message</span><span class="p">]:</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">deserialize_any_to_message</span><span class="p">(</span><span class="n">msg</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="n">proto</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">Message</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Deserialize a protobuf Any message to a concrete message type.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        msg (Any): The Any message to deserialize. Needs to be a message defined in the</span>
-<span class="sd">                   blueye.protocol package or a well-known-type (FloatValue, Int32Value, etc) from</span>
-<span class="sd">                   google.protobuf.wrappers_pb2</span>
+<span class="sd">                   blueye.protocol package, a well-known wrapper type (FloatValue, Int32Value,</span>
+<span class="sd">                   etc) from google.protobuf.wrappers_pb2, or google.protobuf.Empty.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        A tuple with the message type and the deserialized message.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">msg</span><span class="o">.</span><span class="n">type_url</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;type.googleapis.com/google.protobuf&quot;</span><span class="p">):</span>
-        <span class="n">payload_msg_name</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">type_url</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;type.googleapis.com/google.protobuf.&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-        <span class="n">payload_type</span> <span class="o">=</span> <span class="n">wrappers</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">payload_msg_name</span><span class="p">)</span>
-        <span class="n">payload_msg_deserialized</span> <span class="o">=</span> <span class="n">payload_type</span><span class="o">.</span><span class="n">FromString</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">payload_type</span><span class="p">,</span> <span class="n">payload_msg_deserialized</span><span class="p">)</span>
+<span class="sd">        A tuple with the message type and the deserialized message. blueye.protocol types</span>
+<span class="sd">        come back as proto-plus messages, the google.protobuf types as plain protobuf messages.</span>
 
-    <span class="n">payload_msg_name</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">type_url</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;type.googleapis.com/blueye.protocol.&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-    <span class="n">payload_type</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">payload_msg_name</span><span class="p">)</span>
-    <span class="n">payload_msg_deserialized</span> <span class="o">=</span> <span class="n">payload_type</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">payload_type</span><span class="p">,</span> <span class="n">payload_msg_deserialized</span><span class="p">)</span>
+<span class="sd">    Raises:</span>
+<span class="sd">        UnknownMessageTypeError: The type URL names a type this SDK does not have a class for.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">type_url</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">type_url</span>
+    <span class="n">google_prefix</span> <span class="o">=</span> <span class="s2">&quot;type.googleapis.com/google.protobuf.&quot;</span>
+    <span class="n">blueye_prefix</span> <span class="o">=</span> <span class="s2">&quot;type.googleapis.com/blueye.protocol.&quot;</span>
+    <span class="k">if</span> <span class="n">type_url</span> <span class="o">==</span> <span class="n">google_prefix</span> <span class="o">+</span> <span class="s2">&quot;Empty&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">empty_pb2</span><span class="o">.</span><span class="n">Empty</span><span class="p">,</span> <span class="n">empty_pb2</span><span class="o">.</span><span class="n">Empty</span><span class="o">.</span><span class="n">FromString</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">value</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">type_url</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">google_prefix</span><span class="p">):</span>
+        <span class="n">payload_type</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">wrappers</span><span class="p">,</span> <span class="n">type_url</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">google_prefix</span><span class="p">)</span> <span class="p">:],</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">payload_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">UnknownMessageTypeError</span><span class="p">(</span><span class="n">type_url</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">payload_type</span><span class="p">,</span> <span class="n">payload_type</span><span class="o">.</span><span class="n">FromString</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">value</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">type_url</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">blueye_prefix</span><span class="p">):</span>
+        <span class="n">payload_type</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">bp</span><span class="p">,</span> <span class="n">type_url</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">blueye_prefix</span><span class="p">)</span> <span class="p">:],</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">payload_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">payload_type</span><span class="p">,</span> <span class="n">payload_type</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">value</span><span class="p">))</span>
+    <span class="k">raise</span> <span class="n">UnknownMessageTypeError</span><span class="p">(</span><span class="n">type_url</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2342,28 +2461,28 @@ know, and proto-plus surfaces those as a plain int rather than an enum member. F
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/utils.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">111</span>
-<span class="normal">112</span>
-<span class="normal">113</span>
-<span class="normal">114</span>
-<span class="normal">115</span>
-<span class="normal">116</span>
-<span class="normal">117</span>
-<span class="normal">118</span>
-<span class="normal">119</span>
-<span class="normal">120</span>
-<span class="normal">121</span>
-<span class="normal">122</span>
-<span class="normal">123</span>
-<span class="normal">124</span>
-<span class="normal">125</span>
-<span class="normal">126</span>
-<span class="normal">127</span>
-<span class="normal">128</span>
-<span class="normal">129</span>
-<span class="normal">130</span>
-<span class="normal">131</span>
-<span class="normal">132</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">is_scalar_type</span><span class="p">(</span><span class="n">msg</span><span class="p">:</span> <span class="n">proto</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">Message</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">is_scalar_type</span><span class="p">(</span><span class="n">msg</span><span class="p">:</span> <span class="n">proto</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">Message</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if a message is a scalar type</span>
 
 <span class="sd">    Args:</span>
@@ -2410,8 +2529,7 @@ know, and proto-plus surfaces those as a plain int rather than an enum member. F
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/utils.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">65</span>
-<span class="normal">66</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">66</span>
 <span class="normal">67</span>
 <span class="normal">68</span>
 <span class="normal">69</span>
@@ -2420,7 +2538,8 @@ know, and proto-plus surfaces those as a plain int rather than an enum member. F
 <span class="normal">72</span>
 <span class="normal">73</span>
 <span class="normal">74</span>
-<span class="normal">75</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">open_local_documentation</span><span class="p">():</span>
+<span class="normal">75</span>
+<span class="normal">76</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">open_local_documentation</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Open a pre-built local version of the SDK documentation</span>
 
 <span class="sd">    Useful when you are connected to the drone wifi, and don&#39;t have access to the online version.</span>
