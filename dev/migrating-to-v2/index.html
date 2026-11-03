@@ -12,7 +12,7 @@
         <link rel="prev" href="../odometer-to-831l/">
       
       
-        <link rel="next" href="../http-api/">
+        <link rel="next" href="../deprecations/">
       
       
         
@@ -1210,10 +1210,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#changed-return-type-in-active_video_streams-property" class="md-nav__link">
+  <a href="#changed-return-type-for-the-active-video-streams" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Changed return type in active_video_streams property
+        Changed return type for the active video streams
       
     </span>
   </a>
@@ -1221,10 +1221,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#water-density-unit-changed-from-gl-to-kgl" class="md-nav__link">
+  <a href="#water-density-is-still-in-gl" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Water Density Unit changed from g/L to kg/L
+        Water density is still in g/L
       
     </span>
   </a>
@@ -1276,10 +1276,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#telemetry-properties-will-now-return-none-if-no-data-exists" class="md-nav__link">
+  <a href="#telemetry-getters-return-none-if-no-data-exists" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Telemetry properties will now return None if no data exists
+        Telemetry getters return None if no data exists
       
     </span>
   </a>
@@ -1301,6 +1301,33 @@
   
 </nav>
       
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../deprecations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deprecated properties
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -1347,10 +1374,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_18" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_19" >
         
           
-          <label class="md-nav__link" for="__nav_18" id="__nav_18_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_19" id="__nav_19_label" tabindex="0">
             
   
   
@@ -1368,8 +1395,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_18_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_18">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_19_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_19">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1730,10 +1757,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_18_13" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_19_13" >
         
           
-          <label class="md-nav__link" for="__nav_18_13" id="__nav_18_13_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_19_13" id="__nav_19_13_label" tabindex="0">
             
   
   
@@ -1751,8 +1778,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_18_13_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_18_13">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_19_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_19_13">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2055,10 +2082,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#changed-return-type-in-active_video_streams-property" class="md-nav__link">
+  <a href="#changed-return-type-for-the-active-video-streams" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Changed return type in active_video_streams property
+        Changed return type for the active video streams
       
     </span>
   </a>
@@ -2066,10 +2093,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#water-density-unit-changed-from-gl-to-kgl" class="md-nav__link">
+  <a href="#water-density-is-still-in-gl" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Water Density Unit changed from g/L to kg/L
+        Water density is still in g/L
       
     </span>
   </a>
@@ -2121,10 +2148,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#telemetry-properties-will-now-return-none-if-no-data-exists" class="md-nav__link">
+  <a href="#telemetry-getters-return-none-if-no-data-exists" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Telemetry properties will now return None if no data exists
+        Telemetry getters return None if no data exists
       
     </span>
   </a>
@@ -2163,7 +2190,8 @@
 
 
 <h1 id="upgrading-to-v2">Upgrading to v2</h1>
-<p>Version 2 of the Blueye SDK (unfortunately) introduces a few breaking changes. The following guide outlines what has changed, and what you need to change to be compatible with the new version.</p>
+<p>Version 2 of the Blueye SDK introduces a few breaking changes. The following guide outlines what has changed, and what you need to change to be compatible with the new version.</p>
+<p>The examples below use the getter and setter methods introduced in v2.8.0. The v2.0 to v2.7 property names still work but emit a <code>DeprecationWarning</code>; the <a href="../deprecations/">deprecated properties</a> page maps each of them to its replacement.</p>
 <h2 id="change-of-underlying-communication-protocol">Change of underlying communication protocol</h2>
 <p>The underlying communications protocol has been changed from UDP/TCP to protobuf messages sent over ZeroMQ sockets. This means that the drone now supports multiple simultaneous clients, and as such, the 'slave-mode' functionality is no longer necessary and has been removed.</p>
 <p>Another added benefit is the ability to list and disconnect other clients connected to the drone.</p>
@@ -2172,12 +2200,12 @@
 <h2 id="dropped-support-python-37">Dropped support Python 3.7</h2>
 <p>One or several of our subdependencies has dropped support for 3.7, and in an effort to reduce the maintenance burden we decided to drop support for 3.7 when adding support for 3.11.</p>
 <h2 id="new-range-for-lights-control">New range for lights control</h2>
-<p>Previously the valid range for the <code>lights</code> property was an <code>int</code> between 0 and 255, it has now been updated to a <code>float</code> in the range 0 to 1.</p>
+<p>Previously the valid range for the lights was an <code>int</code> between 0 and 255, it has now been updated to a <code>float</code> in the range 0 to 1.</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Previously</span>
 <span class="n">my_drone</span><span class="o">.</span><span class="n">lights</span> <span class="o">=</span> <span class="mi">64</span>
 
 <span class="c1"># Updated</span>
-<span class="n">my_drone</span><span class="o">.</span><span class="n">lights</span> <span class="o">=</span> <span class="mf">0.25</span>
+<span class="n">my_drone</span><span class="o">.</span><span class="n">set_lights</span><span class="p">(</span><span class="mf">0.25</span><span class="p">)</span>
 </code></pre></div>
 <h2 id="error-flags-are-a-dictionary-of-bools">Error flags are a dictionary of bools</h2>
 <p>Error flags are now represented as a dictionary of bools instead of bitflags in an <code>int</code>. See the <a class="autorefs autorefs-internal" title="            ErrorFlags" href="../reference/blueye/protocol/message_formats/#blueye.protocol.types.message_formats.ErrorFlags">ErrorFlags message</a> for an overview of the possible error states.</p>
@@ -2185,35 +2213,31 @@
 <span class="n">depth_read_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">my_drone</span><span class="o">.</span><span class="n">error_flags</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">2</span><span class="p">)</span>
 
 <span class="c1"># Updated</span>
-<span class="n">depth_read_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">my_drone</span><span class="o">.</span><span class="n">error_flags</span><span class="p">[</span><span class="s2">&quot;depth_read&quot;</span><span class="p">]</span>
+<span class="n">depth_read_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">my_drone</span><span class="o">.</span><span class="n">get_error_flags</span><span class="p">()[</span><span class="s2">&quot;depth_read&quot;</span><span class="p">]</span>
 </code></pre></div>
-<h2 id="changed-return-type-in-active_video_streams-property">Changed return type in <code>active_video_streams</code> property</h2>
-<p>The <code>active_video_streams</code> property has been modified to return a dictionary containing <code>"main"</code> and <code>"guestport"</code> as keys. This change provides the option to be able to read the number of active video streams for both the main camera and (optinally) a guestport camera.
+<h2 id="changed-return-type-for-the-active-video-streams">Changed return type for the active video streams</h2>
+<p>The active video streams are returned as a dictionary containing <code>"main"</code> and <code>"guestport"</code> as keys. This change provides the option to be able to read the number of active video streams for both the main camera and (optionally) a guestport camera.
 <div class="highlight"><pre><span></span><code><span class="c1"># Previously</span>
 <span class="n">streams_on_main_camera</span> <span class="o">=</span> <span class="n">my_drone</span><span class="o">.</span><span class="n">active_video_streams</span>
 
 <span class="c1"># Updated</span>
-<span class="n">streams_on_main_camera</span> <span class="o">=</span> <span class="n">my_drone</span><span class="o">.</span><span class="n">active_video_streams</span><span class="p">[</span><span class="s2">&quot;main&quot;</span><span class="p">]</span>
+<span class="n">streams_on_main_camera</span> <span class="o">=</span> <span class="n">my_drone</span><span class="o">.</span><span class="n">get_active_video_streams</span><span class="p">()[</span><span class="s2">&quot;main&quot;</span><span class="p">]</span>
 </code></pre></div></p>
-<h2 id="water-density-unit-changed-from-gl-to-kgl">Water Density Unit changed from g/L to kg/L</h2>
-<p>The unit for water density has been updated from grams per liter (g/L) to kilograms per liter (kg/L). Make sure to adjust your calculations or conversions accordingly.</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Previously</span>
-<span class="n">density</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">my_drone</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">water_density</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">density</span><span class="p">)</span> <span class="c1"># Will print 1025</span>
+<h2 id="water-density-is-still-in-gl">Water density is still in g/L</h2>
+<p>An earlier version of this guide said that the water density unit changed from grams per liter to kilograms per liter. It did not. The SDK, the protocol and the drone all use grams per liter, and salt water is <code>1025</code>, which is also <a class="autorefs autorefs-internal" title="            WaterDensities" href="../reference/blueye/sdk/constants/#blueye.sdk.constants.WaterDensities"><code>WaterDensities.salty</code></a>. Code that followed the old advice and sent <code>1.025</code> gave the drone a density a thousand times too low for its depth calculation.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">WaterDensities</span>
 
-<span class="c1"># Updated</span>
-<span class="n">density</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">my_drone</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">water_density</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">density</span><span class="p">)</span> <span class="c1"># Will print 1.025</span>
+<span class="n">my_drone</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">set_water_density</span><span class="p">(</span><span class="n">WaterDensities</span><span class="o">.</span><span class="n">salty</span><span class="p">)</span>  <span class="c1"># 1025 g/L</span>
 </code></pre></div>
 <h2 id="camera-stabilization-uses-onoff-instead-of-toggle">Camera Stabilization uses on/off instead of toggle</h2>
-<p>The camera stabilization functionality now uses separate methods for enabling and disabling instead of a single toggle method. Update your code to use the appropriate methods based on the desired behavior.</p>
+<p>The camera stabilization functionality now uses separate methods for enabling and disabling instead of a single toggle method. The methods live on <code>camera.tilt</code>.</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Previously</span>
 <span class="n">my_drone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">toggle_stabilization</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">my_drone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">stabilization_enabled</span><span class="p">)</span>
 
 <span class="c1"># Updated</span>
-<span class="n">my_drone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">stabilization_enabled</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">my_drone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">stabilization_enabled</span><span class="p">)</span>
+<span class="n">my_drone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">tilt</span><span class="o">.</span><span class="n">enable_stabilization</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">my_drone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">tilt</span><span class="o">.</span><span class="n">is_stabilization_enabled</span><span class="p">())</span>
 </code></pre></div>
 <h2 id="tilt_speed-has-been-renamed-to-tilt_velocity"><code>tilt_speed</code> has been renamed to <code>tilt_velocity</code></h2>
 <p>The function tilt_speed has been renamed to tilt_velocity to better reflect its purpose and usage. Update your code to use the new function name.
@@ -2224,12 +2248,12 @@
 <span class="n">my_drone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">tilt</span><span class="o">.</span><span class="n">set_velocity</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </code></pre></div></p>
 <h2 id="new-subclass-for-battery-data">New subclass for battery data</h2>
-<p>The <code>battery_state_of_charge</code> property has been moved to a subclass on the <code>Drone</code>-object. In addition the state of charge range for the battery has been adjusted to a scale of 0 to 1, instead of the previous 0 to 100 range.</p>
+<p>The battery state of charge has been moved to a subclass on the <code>Drone</code>-object. In addition the state of charge range for the battery has been adjusted to a scale of 0 to 1, instead of the previous 0 to 100 range.</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Previously</span>
 <span class="n">state_of_charge</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">my_drone</span><span class="o">.</span><span class="n">battery_state_of_charge</span>
 
 <span class="c1"># Updated</span>
-<span class="n">state_of_charge</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">my_drone</span><span class="o">.</span><span class="n">battery</span><span class="o">.</span><span class="n">state_of_charge</span>
+<span class="n">state_of_charge</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">my_drone</span><span class="o">.</span><span class="n">battery</span><span class="o">.</span><span class="n">get_state_of_charge</span><span class="p">()</span>
 </code></pre></div>
 <h2 id="custom-overlay-classes-replaced-with-enums">Custom Overlay Classes Replaced with Enums</h2>
 <p>Custom overlay classes have been replaced with enums defined in the <code>blueye.protocol</code> package. Make sure to update your code to use the new enums for overlay functionality.</p>
@@ -2244,18 +2268,18 @@
 <span class="c1"># Updated</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">blueye.protocol</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">bp</span>
 
-<span class="n">my_drone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">overlay</span><span class="o">.</span><span class="n">depth_unit</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">DepthUnit</span><span class="o">.</span><span class="n">DEPTH_UNIT_METERS</span>
-<span class="n">my_drone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">overlay</span><span class="o">.</span><span class="n">font_size</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">FontSize</span><span class="o">.</span><span class="n">FONT_SIZE_PX15</span>
-<span class="n">my_drone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">overlay</span><span class="o">.</span><span class="n">logo</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">LogoType</span><span class="o">.</span><span class="n">LOGO_TYPE_DEFAULT</span>
-<span class="n">my_drone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">overlay</span><span class="o">.</span><span class="n">temperature_unit</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">TemperatureUnit</span><span class="o">.</span><span class="n">TEMPERATURE_UNIT_CELSIUS</span>
+<span class="n">my_drone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">overlay</span><span class="o">.</span><span class="n">set_depth_unit</span><span class="p">(</span><span class="n">bp</span><span class="o">.</span><span class="n">DepthUnit</span><span class="o">.</span><span class="n">DEPTH_UNIT_METERS</span><span class="p">)</span>
+<span class="n">my_drone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">overlay</span><span class="o">.</span><span class="n">set_font_size</span><span class="p">(</span><span class="n">bp</span><span class="o">.</span><span class="n">FontSize</span><span class="o">.</span><span class="n">FONT_SIZE_PX15</span><span class="p">)</span>
+<span class="n">my_drone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">overlay</span><span class="o">.</span><span class="n">set_logo</span><span class="p">(</span><span class="n">bp</span><span class="o">.</span><span class="n">LogoType</span><span class="o">.</span><span class="n">LOGO_TYPE_DEFAULT</span><span class="p">)</span>
+<span class="n">my_drone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">overlay</span><span class="o">.</span><span class="n">set_temperature_unit</span><span class="p">(</span><span class="n">bp</span><span class="o">.</span><span class="n">TemperatureUnit</span><span class="o">.</span><span class="n">TEMPERATURE_UNIT_CELSIUS</span><span class="p">)</span>
 </code></pre></div>
-<h2 id="telemetry-properties-will-now-return-none-if-no-data-exists">Telemetry properties will now return <code>None</code> if no data exists</h2>
-<p>Properties that read telemetry data, such as <code>lights</code>, <code>tilt_angle</code>, <code>depth</code>, <code>pose</code>, <code>battery_state_of_charge</code>, <code>error_flags</code>, <code>active_video_streams</code>, <code>auto_depth_active</code>, and <code>auto_heading_active</code>, will now return <code>None</code> if no telemetry message has been received from the drone. Previously if a UDP message had not arrived, a <code>KeyError</code> exception would have been raised.</p>
+<h2 id="telemetry-getters-return-none-if-no-data-exists">Telemetry getters return <code>None</code> if no data exists</h2>
+<p>Getters that read telemetry data, such as <code>get_lights</code>, <code>camera.tilt.get_angle</code>, <code>get_depth</code>, <code>get_pose</code>, <code>battery.get_state_of_charge</code>, <code>get_error_flags</code>, <code>get_active_video_streams</code>, <code>motion.is_auto_depth_active</code>, and <code>motion.is_auto_heading_active</code>, return <code>None</code> if no telemetry message has been received from the drone. Previously if a UDP message had not arrived, a <code>KeyError</code> exception would have been raised.</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Previously</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">my_drone</span><span class="o">.</span><span class="n">pose</span><span class="p">)</span> <span class="c1"># If no state message has been received yet this could throw a KeyError</span>
 
 <span class="c1"># Updated</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">my_drone</span><span class="o">.</span><span class="n">pose</span><span class="p">)</span> <span class="c1"># This will now print &quot;None&quot; if no AttitudeTel-message has been received.</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">my_drone</span><span class="o">.</span><span class="n">get_pose</span><span class="p">())</span> <span class="c1"># This will now print &quot;None&quot; if no AttitudeTel-message has been received.</span>
 </code></pre></div>
 <h2 id="new-initialization-parameters-to-the-drone-object">New initialization parameters to the <code>Drone</code> object</h2>
 <p>The <code>AutoConnect</code> parameter has been renamed to <code>auto_connect</code> for consistency and clarity.
@@ -2325,14 +2349,14 @@
     
     
     
-    <a href="../http-api/" class="md-footer__link md-footer__link--next"
-      aria-label="Next: HTTP API" rel="next">
+    <a href="../deprecations/" class="md-footer__link md-footer__link--next"
+      aria-label="Next: Deprecated properties" rel="next">
       <div class="md-footer__title">
         <div class="md-ellipsis">
           <span class="md-footer__direction">
             Next
           </span>
-          HTTP API
+          Deprecated properties
         </div>
       </div>
       <div class="md-footer__button md-icon">

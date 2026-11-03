@@ -1122,6 +1122,33 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../../deprecations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deprecated properties
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../../http-api/" class="md-nav__link">
         
   
@@ -1159,10 +1186,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_18" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_19" checked>
         
           
-          <label class="md-nav__link" for="__nav_18" id="__nav_18_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_19" id="__nav_19_label" tabindex="0">
             
   
   
@@ -1180,8 +1207,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_18_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_18">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_19_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_19">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1544,10 +1571,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_18_13" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_19_13" checked>
         
           
-          <label class="md-nav__link" for="__nav_18_13" id="__nav_18_13_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_19_13" id="__nav_19_13_label" tabindex="0">
             
   
   
@@ -1565,8 +1592,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_18_13_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_18_13">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_19_13_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_19_13">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2021,10 +2048,11 @@
 <p>Request-Reply messages are used for synchronous communication where a request is sent, and a response is expected. Examples of request-reply messages include getting camera parameters, setting overlay parameters, and synchronizing time. These messages are handled by the <a class="autorefs autorefs-internal" title="            ReqRepClient" href="../../sdk/connection/#blueye.sdk.connection.ReqRepClient">ReqRepClient</a> class. They are used to query the drone for information or to set configurations that require confirmation.</p>
 <h2 id="message-formats">Message Formats</h2>
 <p>Message formats define the structure and serialization of messages. These include Protobuf message definitions for telemetry, control, and request-reply messages. Message formats are used internally by the SDK to serialize and deserialize messages, ensuring consistent communication between the SDK and the drone. For example, the telemetry message "DepthTel" will have a "Depth" message from message formats.</p>
+<p>Each message on the reference pages lists its fields under "Attributes", with the unit, range and frame of the field where the protocol defines one. Enums list their values the same way.</p>
 <h2 id="mission-planning-messages">Mission Planning Messages</h2>
 <p>Mission planning messages are used for planning and executing missions. Examples of mission planning messages include waypoints and mission start/stop commands. These messages are used to define and control autonomous missions for the drone, allowing for pre-programmed routes and actions to be executed by the drone.</p>
 <h2 id="aquatroll-messages">Aquatroll Messages</h2>
-<p>Aquatroll messages are used for communication with Aquatroll sensors. Examples of Aquatroll messages include sensor data requests and configuration commands. These messages are used to interface with Aquatroll sensors connected to the drone, allowing for the collection and management of environmental data from the sensors.</p>
+<p>Aquatroll messages describe an In-Situ Aqua TROLL water quality probe connected to a guest port. The readings arrive as telemetry in <a class="autorefs autorefs-internal" title="            AquaTrollSensorParametersTel" href="../telemetry/#blueye.protocol.types.telemetry.AquaTrollSensorParametersTel">AquaTrollSensorParametersTel</a>, one parameter block per sensor. <a class="autorefs autorefs-internal" title="            AquaTrollProbeMetadataTel" href="../telemetry/#blueye.protocol.types.telemetry.AquaTrollProbeMetadataTel">AquaTrollProbeMetadataTel</a> and <a class="autorefs autorefs-internal" title="            AquaTrollSensorMetadataTel" href="../telemetry/#blueye.protocol.types.telemetry.AquaTrollSensorMetadataTel">AquaTrollSensorMetadataTel</a> describe the probe and its sensors. Two control messages set the unit of a parameter and the connection status of the probe. There are no request messages for sensor data; read the telemetry instead.</p>
 
 
 

@@ -1,0 +1,2601 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../migrating-to-v2/">
+      
+      
+        <link rel="next" href="../http-api/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../media/blueye_b.svg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>Deprecated properties - Blueye SDK</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.618322db.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../css/mkdocsoad.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#deprecated-properties" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      <!--
+  Copyright (c) 2016-2023 Martin Donath <martin.donath@squidfunk.com>
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to
+  deal in the Software without restriction, including without limitation the
+  rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+  sell copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+  IN THE SOFTWARE.
+-->
+
+<!-- Determine classes -->
+
+
+
+
+
+<!-- Header -->
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+
+    <!-- Link to home -->
+    <a href=".." title="Blueye SDK"
+      class="md-header__button md-logo" aria-label="Blueye SDK" data-md-component="logo">
+      
+  <img src="../media/blueye_sdk_logo_darkblue.svg" alt="logo">
+
+    </a>
+
+    <!-- Button to open drawer -->
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+
+    <!-- Header title -->
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+            Deprecated properties
+            
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Color palette toggle -->
+    
+    
+    <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="blue"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="blue"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+    
+    
+
+    <!-- Site language selector -->
+    
+
+    <!-- Button to open search modal -->
+    
+    <label class="md-header__button md-icon" for="__search">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+    </label>
+
+    <!-- Search interface -->
+    <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    <!-- Repository information -->
+    
+    <div class="md-header__source">
+      <a href="https://github.com/BluEye-Robotics/blueye.sdk" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    
+  </div>
+</a>
+    </div>
+    
+  </nav>
+
+  <!-- Navigation tabs (sticky) -->
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <!--
+  Copyright (c) 2016-2023 Martin Donath <martin.donath@squidfunk.com>
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to
+  deal in the Software without restriction, including without limitation the
+  rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+  sell copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+  IN THE SOFTWARE.
+-->
+
+
+
+<!-- Determine classes -->
+
+
+
+
+<!-- Navigation -->
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+
+  <!-- Site title -->
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Blueye SDK"
+      class="md-nav__button md-logo" aria-label="Blueye SDK" data-md-component="logo">
+      
+  <img src="../media/blueye_sdk_logo_darkblue.svg" alt="logo">
+
+    </a>
+  </label>
+
+  <!-- Repository information -->
+  
+  <div class="md-nav__source">
+    <a href="https://github.com/BluEye-Robotics/blueye.sdk" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    
+  </div>
+</a>
+  </div>
+  
+
+  <!-- Navigation list -->
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About the Blueye Drones
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../quick_start/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quick Start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../connecting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Connecting to the drone
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Movement
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Movement
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../movement/from-the-CLI/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Control from the CLI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../movement/with-a-gamepad/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Control with a gamepad
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Video
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Video
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../video/gstreamer-for-video-streaming/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GStreamer for video streaming
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../video/downloading/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Downloading videos and images
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../video/camera-calibration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Camera calibration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Logs
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Logs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../logs/listing-and-downloading/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Listing and downloading log files
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../logs/foxglove-bez-to-mcap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visualize dive log data in Foxglove
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../logs/plotting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plotting log files
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../logs/runtime-logs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Runtime logs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../logs/legacy-log-file-format/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Legacy log file format
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configure drone parameters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../telemetry-callback/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Subscribing to a telemetry message
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../drone-info/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Drone model and hardware
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../peripherals/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Peripherals
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../foxglove-bridge/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visualize live sensor data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../nmea-publisher/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Forwarding positioning to NMEA
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mission-planning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mission Planning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The blueye CLI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../odometer-to-831l/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Odometer forwarding
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../migrating-to-v2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Updating from v1 to v2
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deprecated properties
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deprecated properties
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#drone" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Drone
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Config
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#battery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Battery
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#motion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Motion
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gripper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gripper
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tilt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tilt
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#overlay" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overlay
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#camera" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Camera
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../http-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HTTP API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_19" >
+        
+          
+          <label class="md-nav__link" for="__nav_19" id="__nav_19_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_19_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_19">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/blueye/sdk/battery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    blueye.sdk.battery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/blueye/sdk/camera/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    blueye.sdk.camera
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/blueye/sdk/cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    blueye.sdk.cli
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/blueye/sdk/connection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    blueye.sdk.connection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/blueye/sdk/constants/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    blueye.sdk.constants
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/blueye/sdk/cv_models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    blueye.sdk.cv_models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/blueye/sdk/drone/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    blueye.sdk.drone
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/blueye/sdk/guestport/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    blueye.sdk.guestport
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/blueye/sdk/logs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    blueye.sdk.logs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/blueye/sdk/motion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    blueye.sdk.motion
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/blueye/sdk/utils/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    blueye.sdk.utils
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/blueye/sdk/mission/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    blueye.sdk.mission
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_19_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_19_13" id="__nav_19_13_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    blueye.protocol
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_19_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_19_13">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    blueye.protocol
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/blueye/protocol/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/blueye/protocol/telemetry/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Telemetry
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/blueye/protocol/control/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/blueye/protocol/req_rep/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ReqRep
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/blueye/protocol/message_formats/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Message Formats
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/blueye/protocol/mission_planning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mission Planning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/blueye/protocol/aquatroll/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Aquatroll
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#drone" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Drone
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Config
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#battery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Battery
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#motion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Motion
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gripper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gripper
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tilt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tilt
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#overlay" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overlay
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#camera" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Camera
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="deprecated-properties">Deprecated properties</h1>
+<p>v2.8.0 replaced the properties that exposed drone state and control with explicit getter and setter methods. The old names still work but emit a <code>DeprecationWarning</code> on every read and write, and they will be removed in v3. Code written for v2.0 to v2.7 can be updated one name at a time with the tables below.</p>
+<p>The warning names the replacement. Python shows each deprecation warning once per location by default; to see every use a script makes while it runs, turn them all on:</p>
+<div class="highlight"><pre><span></span><code>python<span class="w"> </span>-W<span class="w"> </span>always::DeprecationWarning<span class="w"> </span>my_script.py
+</code></pre></div>
+<p><code>Motion.current_thruster_setpoints</code> is read-only, like the other properties without a setter below. Set the setpoints with <a class="autorefs autorefs-internal" title="            send_thruster_setpoint" href="../reference/blueye/sdk/motion/#blueye.sdk.motion.Motion.send_thruster_setpoint"><code>send_thruster_setpoint()</code></a> or the individual setters. Assigning to a read-only property raises <code>AttributeError</code>.</p>
+<p><code>Camera.resolution</code> maps to <a class="autorefs autorefs-internal" title="            get_resolution" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.get_resolution"><code>get_resolution()</code></a> and <a class="autorefs autorefs-internal" title="            set_resolution" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.set_resolution"><code>set_resolution()</code></a>, which are deprecated as well, and drones running Blunux 4.4 or newer ignore that resolution. Use <a class="autorefs autorefs-internal" title="            set_stream_resolution" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.set_stream_resolution"><code>set_stream_resolution()</code></a> and <a class="autorefs autorefs-internal" title="            set_recording_resolution" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.set_recording_resolution"><code>set_recording_resolution()</code></a> instead, and their getters to read the values back.</p>
+<p>The tables are generated from the list the test suite checks, so every row has a test behind it.</p>
+<h3 id="drone"><a class="autorefs autorefs-internal" title="            Drone" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Drone"><code>Drone</code></a></h3>
+<table>
+<thead>
+<tr>
+<th>Deprecated property</th>
+<th>Read with</th>
+<th>Write with</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>lights</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_lights" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Drone.get_lights"><code>get_lights()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            set_lights" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Drone.set_lights"><code>set_lights()</code></a></td>
+</tr>
+<tr>
+<td><code>connected_clients</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_connected_clients" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Drone.get_connected_clients"><code>get_connected_clients()</code></a></td>
+<td>read-only</td>
+</tr>
+<tr>
+<td><code>client_in_control</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_client_in_control" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Drone.get_client_in_control"><code>get_client_in_control()</code></a></td>
+<td>read-only</td>
+</tr>
+<tr>
+<td><code>depth</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_depth" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Drone.get_depth"><code>get_depth()</code></a></td>
+<td>read-only</td>
+</tr>
+<tr>
+<td><code>pose</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_pose" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Drone.get_pose"><code>get_pose()</code></a></td>
+<td>read-only</td>
+</tr>
+<tr>
+<td><code>altitude</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_altitude" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Drone.get_altitude"><code>get_altitude()</code></a></td>
+<td>read-only</td>
+</tr>
+<tr>
+<td><code>error_flags</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_error_flags" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Drone.get_error_flags"><code>get_error_flags()</code></a></td>
+<td>read-only</td>
+</tr>
+<tr>
+<td><code>active_video_streams</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_active_video_streams" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Drone.get_active_video_streams"><code>get_active_video_streams()</code></a></td>
+<td>read-only</td>
+</tr>
+<tr>
+<td><code>water_temperature</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_water_temperature" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Drone.get_water_temperature"><code>get_water_temperature()</code></a></td>
+<td>read-only</td>
+</tr>
+<tr>
+<td><code>dive_time</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_dive_time" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Drone.get_dive_time"><code>get_dive_time()</code></a></td>
+<td>read-only</td>
+</tr>
+</tbody>
+</table>
+<h3 id="config"><a class="autorefs autorefs-internal" title="            Config" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Config"><code>Config</code></a></h3>
+<table>
+<thead>
+<tr>
+<th>Deprecated property</th>
+<th>Read with</th>
+<th>Write with</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>water_density</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_water_density" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Config.get_water_density"><code>get_water_density()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            set_water_density" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Config.set_water_density"><code>set_water_density()</code></a></td>
+</tr>
+</tbody>
+</table>
+<h3 id="battery"><a class="autorefs autorefs-internal" title="            Battery" href="../reference/blueye/sdk/battery/#blueye.sdk.battery.Battery"><code>Battery</code></a></h3>
+<table>
+<thead>
+<tr>
+<th>Deprecated property</th>
+<th>Read with</th>
+<th>Write with</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>state_of_charge</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_state_of_charge" href="../reference/blueye/sdk/battery/#blueye.sdk.battery.Battery.get_state_of_charge"><code>get_state_of_charge()</code></a></td>
+<td>read-only</td>
+</tr>
+</tbody>
+</table>
+<h3 id="motion"><a class="autorefs autorefs-internal" title="            Motion" href="../reference/blueye/sdk/motion/#blueye.sdk.motion.Motion"><code>Motion</code></a></h3>
+<table>
+<thead>
+<tr>
+<th>Deprecated property</th>
+<th>Read with</th>
+<th>Write with</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>surge</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_surge" href="../reference/blueye/sdk/motion/#blueye.sdk.motion.Motion.get_surge"><code>get_surge()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            set_surge" href="../reference/blueye/sdk/motion/#blueye.sdk.motion.Motion.set_surge"><code>set_surge()</code></a></td>
+</tr>
+<tr>
+<td><code>sway</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_sway" href="../reference/blueye/sdk/motion/#blueye.sdk.motion.Motion.get_sway"><code>get_sway()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            set_sway" href="../reference/blueye/sdk/motion/#blueye.sdk.motion.Motion.set_sway"><code>set_sway()</code></a></td>
+</tr>
+<tr>
+<td><code>heave</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_heave" href="../reference/blueye/sdk/motion/#blueye.sdk.motion.Motion.get_heave"><code>get_heave()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            set_heave" href="../reference/blueye/sdk/motion/#blueye.sdk.motion.Motion.set_heave"><code>set_heave()</code></a></td>
+</tr>
+<tr>
+<td><code>yaw</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_yaw" href="../reference/blueye/sdk/motion/#blueye.sdk.motion.Motion.get_yaw"><code>get_yaw()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            set_yaw" href="../reference/blueye/sdk/motion/#blueye.sdk.motion.Motion.set_yaw"><code>set_yaw()</code></a></td>
+</tr>
+<tr>
+<td><code>boost</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_boost" href="../reference/blueye/sdk/motion/#blueye.sdk.motion.Motion.get_boost"><code>get_boost()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            set_boost" href="../reference/blueye/sdk/motion/#blueye.sdk.motion.Motion.set_boost"><code>set_boost()</code></a></td>
+</tr>
+<tr>
+<td><code>slow</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_slow" href="../reference/blueye/sdk/motion/#blueye.sdk.motion.Motion.get_slow"><code>get_slow()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            set_slow" href="../reference/blueye/sdk/motion/#blueye.sdk.motion.Motion.set_slow"><code>set_slow()</code></a></td>
+</tr>
+<tr>
+<td><code>current_thruster_setpoints</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_current_thruster_setpoints" href="../reference/blueye/sdk/motion/#blueye.sdk.motion.Motion.get_current_thruster_setpoints"><code>get_current_thruster_setpoints()</code></a></td>
+<td>read-only</td>
+</tr>
+<tr>
+<td><code>auto_depth_active</code></td>
+<td><a class="autorefs autorefs-internal" title="            is_auto_depth_active" href="../reference/blueye/sdk/motion/#blueye.sdk.motion.Motion.is_auto_depth_active"><code>is_auto_depth_active()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            enable_auto_depth" href="../reference/blueye/sdk/motion/#blueye.sdk.motion.Motion.enable_auto_depth"><code>enable_auto_depth()</code></a></td>
+</tr>
+<tr>
+<td><code>auto_heading_active</code></td>
+<td><a class="autorefs autorefs-internal" title="            is_auto_heading_active" href="../reference/blueye/sdk/motion/#blueye.sdk.motion.Motion.is_auto_heading_active"><code>is_auto_heading_active()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            enable_auto_heading" href="../reference/blueye/sdk/motion/#blueye.sdk.motion.Motion.enable_auto_heading"><code>enable_auto_heading()</code></a></td>
+</tr>
+<tr>
+<td><code>auto_altitude_active</code></td>
+<td><a class="autorefs autorefs-internal" title="            is_auto_altitude_active" href="../reference/blueye/sdk/motion/#blueye.sdk.motion.Motion.is_auto_altitude_active"><code>is_auto_altitude_active()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            enable_auto_altitude" href="../reference/blueye/sdk/motion/#blueye.sdk.motion.Motion.enable_auto_altitude"><code>enable_auto_altitude()</code></a></td>
+</tr>
+<tr>
+<td><code>station_keeping_active</code></td>
+<td><a class="autorefs autorefs-internal" title="            is_station_keeping_active" href="../reference/blueye/sdk/motion/#blueye.sdk.motion.Motion.is_station_keeping_active"><code>is_station_keeping_active()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            enable_station_keeping" href="../reference/blueye/sdk/motion/#blueye.sdk.motion.Motion.enable_station_keeping"><code>enable_station_keeping()</code></a></td>
+</tr>
+<tr>
+<td><code>weather_vaning_active</code></td>
+<td><a class="autorefs autorefs-internal" title="            is_weather_vaning_active" href="../reference/blueye/sdk/motion/#blueye.sdk.motion.Motion.is_weather_vaning_active"><code>is_weather_vaning_active()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            enable_weather_vaning" href="../reference/blueye/sdk/motion/#blueye.sdk.motion.Motion.enable_weather_vaning"><code>enable_weather_vaning()</code></a></td>
+</tr>
+</tbody>
+</table>
+<h3 id="gripper"><a class="autorefs autorefs-internal" title="            Gripper" href="../reference/blueye/sdk/guestport/#blueye.sdk.guestport.Gripper"><code>Gripper</code></a></h3>
+<table>
+<thead>
+<tr>
+<th>Deprecated property</th>
+<th>Read with</th>
+<th>Write with</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>grip_velocity</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_grip_velocity" href="../reference/blueye/sdk/guestport/#blueye.sdk.guestport.Gripper.get_grip_velocity"><code>get_grip_velocity()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            set_grip_velocity" href="../reference/blueye/sdk/guestport/#blueye.sdk.guestport.Gripper.set_grip_velocity"><code>set_grip_velocity()</code></a></td>
+</tr>
+<tr>
+<td><code>rotation_velocity</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_rotation_velocity" href="../reference/blueye/sdk/guestport/#blueye.sdk.guestport.Gripper.get_rotation_velocity"><code>get_rotation_velocity()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            set_rotation_velocity" href="../reference/blueye/sdk/guestport/#blueye.sdk.guestport.Gripper.set_rotation_velocity"><code>set_rotation_velocity()</code></a></td>
+</tr>
+</tbody>
+</table>
+<h3 id="tilt"><a class="autorefs autorefs-internal" title="            Tilt" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Tilt"><code>Tilt</code></a></h3>
+<table>
+<thead>
+<tr>
+<th>Deprecated property</th>
+<th>Read with</th>
+<th>Write with</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>angle</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_angle" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Tilt.get_angle"><code>get_angle()</code></a></td>
+<td>read-only</td>
+</tr>
+<tr>
+<td><code>stabilization_enabled</code></td>
+<td><a class="autorefs autorefs-internal" title="            is_stabilization_enabled" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Tilt.is_stabilization_enabled"><code>is_stabilization_enabled()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            enable_stabilization" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Tilt.enable_stabilization"><code>enable_stabilization()</code></a></td>
+</tr>
+</tbody>
+</table>
+<h3 id="overlay"><a class="autorefs autorefs-internal" title="            Overlay" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay"><code>Overlay</code></a></h3>
+<table>
+<thead>
+<tr>
+<th>Deprecated property</th>
+<th>Read with</th>
+<th>Write with</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>temperature_enabled</code></td>
+<td><a class="autorefs autorefs-internal" title="            is_temperature_enabled" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.is_temperature_enabled"><code>is_temperature_enabled()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            enable_temperature" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.enable_temperature"><code>enable_temperature()</code></a></td>
+</tr>
+<tr>
+<td><code>depth_enabled</code></td>
+<td><a class="autorefs autorefs-internal" title="            is_depth_enabled" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.is_depth_enabled"><code>is_depth_enabled()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            enable_depth" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.enable_depth"><code>enable_depth()</code></a></td>
+</tr>
+<tr>
+<td><code>heading_enabled</code></td>
+<td><a class="autorefs autorefs-internal" title="            is_heading_enabled" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.is_heading_enabled"><code>is_heading_enabled()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            enable_heading" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.enable_heading"><code>enable_heading()</code></a></td>
+</tr>
+<tr>
+<td><code>tilt_enabled</code></td>
+<td><a class="autorefs autorefs-internal" title="            is_tilt_enabled" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.is_tilt_enabled"><code>is_tilt_enabled()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            enable_tilt" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.enable_tilt"><code>enable_tilt()</code></a></td>
+</tr>
+<tr>
+<td><code>date_enabled</code></td>
+<td><a class="autorefs autorefs-internal" title="            is_date_enabled" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.is_date_enabled"><code>is_date_enabled()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            enable_date" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.enable_date"><code>enable_date()</code></a></td>
+</tr>
+<tr>
+<td><code>logo</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_logo" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.get_logo"><code>get_logo()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            set_logo" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.set_logo"><code>set_logo()</code></a></td>
+</tr>
+<tr>
+<td><code>depth_unit</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_depth_unit" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.get_depth_unit"><code>get_depth_unit()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            set_depth_unit" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.set_depth_unit"><code>set_depth_unit()</code></a></td>
+</tr>
+<tr>
+<td><code>temperature_unit</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_temperature_unit" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.get_temperature_unit"><code>get_temperature_unit()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            set_temperature_unit" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.set_temperature_unit"><code>set_temperature_unit()</code></a></td>
+</tr>
+<tr>
+<td><code>cp_probe_enabled</code></td>
+<td><a class="autorefs autorefs-internal" title="            is_cp_probe_enabled" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.is_cp_probe_enabled"><code>is_cp_probe_enabled()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            enable_cp_probe" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.enable_cp_probe"><code>enable_cp_probe()</code></a></td>
+</tr>
+<tr>
+<td><code>distance_enabled</code></td>
+<td><a class="autorefs autorefs-internal" title="            is_distance_enabled" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.is_distance_enabled"><code>is_distance_enabled()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            enable_distance" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.enable_distance"><code>enable_distance()</code></a></td>
+</tr>
+<tr>
+<td><code>altitude_enabled</code></td>
+<td><a class="autorefs autorefs-internal" title="            is_altitude_enabled" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.is_altitude_enabled"><code>is_altitude_enabled()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            enable_altitude" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.enable_altitude"><code>enable_altitude()</code></a></td>
+</tr>
+<tr>
+<td><code>thickness_enabled</code></td>
+<td><a class="autorefs autorefs-internal" title="            is_thickness_enabled" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.is_thickness_enabled"><code>is_thickness_enabled()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            enable_thickness" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.enable_thickness"><code>enable_thickness()</code></a></td>
+</tr>
+<tr>
+<td><code>thickness_unit</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_thickness_unit" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.get_thickness_unit"><code>get_thickness_unit()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            set_thickness_unit" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.set_thickness_unit"><code>set_thickness_unit()</code></a></td>
+</tr>
+<tr>
+<td><code>drone_location_enabled</code></td>
+<td><a class="autorefs autorefs-internal" title="            is_drone_location_enabled" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.is_drone_location_enabled"><code>is_drone_location_enabled()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            enable_drone_location" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.enable_drone_location"><code>enable_drone_location()</code></a></td>
+</tr>
+<tr>
+<td><code>shading</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_shading" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.get_shading"><code>get_shading()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            set_shading" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.set_shading"><code>set_shading()</code></a></td>
+</tr>
+<tr>
+<td><code>gamma_ray_measurement_enabled</code></td>
+<td><a class="autorefs autorefs-internal" title="            is_gamma_ray_measurement_enabled" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.is_gamma_ray_measurement_enabled"><code>is_gamma_ray_measurement_enabled()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            enable_gamma_ray_measurement" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.enable_gamma_ray_measurement"><code>enable_gamma_ray_measurement()</code></a></td>
+</tr>
+<tr>
+<td><code>timezone_offset</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_timezone_offset" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.get_timezone_offset"><code>get_timezone_offset()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            set_timezone_offset" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.set_timezone_offset"><code>set_timezone_offset()</code></a></td>
+</tr>
+<tr>
+<td><code>margin_width</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_margin_width" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.get_margin_width"><code>get_margin_width()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            set_margin_width" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.set_margin_width"><code>set_margin_width()</code></a></td>
+</tr>
+<tr>
+<td><code>margin_height</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_margin_height" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.get_margin_height"><code>get_margin_height()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            set_margin_height" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.set_margin_height"><code>set_margin_height()</code></a></td>
+</tr>
+<tr>
+<td><code>font_size</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_font_size" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.get_font_size"><code>get_font_size()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            set_font_size" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.set_font_size"><code>set_font_size()</code></a></td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_title" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.get_title"><code>get_title()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            set_title" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.set_title"><code>set_title()</code></a></td>
+</tr>
+<tr>
+<td><code>subtitle</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_subtitle" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.get_subtitle"><code>get_subtitle()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            set_subtitle" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.set_subtitle"><code>set_subtitle()</code></a></td>
+</tr>
+<tr>
+<td><code>date_format</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_date_format" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.get_date_format"><code>get_date_format()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            set_date_format" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.set_date_format"><code>set_date_format()</code></a></td>
+</tr>
+</tbody>
+</table>
+<h3 id="camera"><a class="autorefs autorefs-internal" title="            Camera" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera"><code>Camera</code></a></h3>
+<table>
+<thead>
+<tr>
+<th>Deprecated property</th>
+<th>Read with</th>
+<th>Write with</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>is_recording</code></td>
+<td><a class="autorefs autorefs-internal" title="            is_recording_active" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.is_recording_active"><code>is_recording_active()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            set_recording" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.set_recording"><code>set_recording()</code></a></td>
+</tr>
+<tr>
+<td><code>record_time</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_record_time" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.get_record_time"><code>get_record_time()</code></a></td>
+<td>read-only</td>
+</tr>
+<tr>
+<td><code>bitrate</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_bitrate" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.get_bitrate"><code>get_bitrate()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            set_bitrate" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.set_bitrate"><code>set_bitrate()</code></a></td>
+</tr>
+<tr>
+<td><code>bitrate_still_picture</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_bitrate_still_picture" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.get_bitrate_still_picture"><code>get_bitrate_still_picture()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            set_bitrate_still_picture" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.set_bitrate_still_picture"><code>set_bitrate_still_picture()</code></a></td>
+</tr>
+<tr>
+<td><code>exposure</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_exposure" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.get_exposure"><code>get_exposure()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            set_exposure" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.set_exposure"><code>set_exposure()</code></a></td>
+</tr>
+<tr>
+<td><code>whitebalance</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_whitebalance" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.get_whitebalance"><code>get_whitebalance()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            set_whitebalance" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.set_whitebalance"><code>set_whitebalance()</code></a></td>
+</tr>
+<tr>
+<td><code>hue</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_hue" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.get_hue"><code>get_hue()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            set_hue" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.set_hue"><code>set_hue()</code></a></td>
+</tr>
+<tr>
+<td><code>resolution</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_resolution" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.get_resolution"><code>get_resolution()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            set_resolution" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.set_resolution"><code>set_resolution()</code></a></td>
+</tr>
+<tr>
+<td><code>stream_resolution</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_stream_resolution" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.get_stream_resolution"><code>get_stream_resolution()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            set_stream_resolution" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.set_stream_resolution"><code>set_stream_resolution()</code></a></td>
+</tr>
+<tr>
+<td><code>recording_resolution</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_recording_resolution" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.get_recording_resolution"><code>get_recording_resolution()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            set_recording_resolution" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.set_recording_resolution"><code>set_recording_resolution()</code></a></td>
+</tr>
+<tr>
+<td><code>framerate</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_framerate" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.get_framerate"><code>get_framerate()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            set_framerate" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.set_framerate"><code>set_framerate()</code></a></td>
+</tr>
+<tr>
+<td><code>recording_codec</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_recording_codec" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.get_recording_codec"><code>get_recording_codec()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            set_recording_codec" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.set_recording_codec"><code>set_recording_codec()</code></a></td>
+</tr>
+<tr>
+<td><code>recording_bitrate</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_recording_bitrate" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.get_recording_bitrate"><code>get_recording_bitrate()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            set_recording_bitrate" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.set_recording_bitrate"><code>set_recording_bitrate()</code></a></td>
+</tr>
+<tr>
+<td><code>streaming_protocol</code></td>
+<td><a class="autorefs autorefs-internal" title="            get_streaming_protocol" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.get_streaming_protocol"><code>get_streaming_protocol()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="            set_streaming_protocol" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.set_streaming_protocol"><code>set_streaming_protocol()</code></a></td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+  <nav class="md-footer__inner md-grid" aria-label="footer.title">
+    
+    
+    <a href="../migrating-to-v2/" class="md-footer__link md-footer__link--prev"
+      aria-label="Previous: Updating from v1 to v2" rel="prev">
+      <div class="md-footer__button md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </div>
+      <div class="md-footer__title">
+        <div class="md-ellipsis">
+          <span class="md-footer__direction">
+            Previous
+          </span>
+          Updating from v1 to v2
+        </div>
+      </div>
+    </a>
+    
+    
+    
+    <a href="../http-api/" class="md-footer__link md-footer__link--next"
+      aria-label="Next: HTTP API" rel="next">
+      <div class="md-footer__title">
+        <div class="md-ellipsis">
+          <span class="md-footer__direction">
+            Next
+          </span>
+          HTTP API
+        </div>
+      </div>
+      <div class="md-footer__button md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+      </div>
+    </a>
+    
+  </nav>
+  
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["content.tabs.link", "navigation.top"], "search": "../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+        <script src="../js/deprecated-toc.js"></script>
+      
+    
+  </body>
+</html>
