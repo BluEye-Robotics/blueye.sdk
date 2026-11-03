@@ -282,16 +282,152 @@ def test_altitude_is_correct_on_valid_readings(mocked_drone):
     assert mocked_drone.get_altitude() == 10.5
 
 
-def test_gp_cam_recording(mocked_drone):
-    mocked_drone.gp_cam = Camera(mocked_drone, is_guestport_camera=True)
+def _seed_record_state(drone, main=False, guestport=False, multibeam=False):
     record_state_tel = bp.RecordStateTel(
-        record_state={"main_is_recording": False, "guestport_is_recording": False}
+        record_state={
+            "main_is_recording": main,
+            "guestport_is_recording": guestport,
+            "multibeam_is_recording": multibeam,
+        }
     )
-    mocked_drone._telemetry_watcher._state[bp.RecordStateTel] = bp.RecordStateTel.serialize(
+    drone._telemetry_watcher._state[bp.RecordStateTel] = bp.RecordStateTel.serialize(
         record_state_tel
     )
+
+
+def test_gp_cam_recording(mocked_drone):
+    mocked_drone.gp_cam = Camera(mocked_drone, is_guestport_camera=True)
+    _seed_record_state(mocked_drone)
     mocked_drone.gp_cam.set_recording(True)
-    mocked_drone._ctrl_client.set_recording_state.assert_called_with(False, True)
+    mocked_drone._ctrl_client.set_recording_state.assert_called_with(False, True, False)
+
+
+DRONE_INFO_URL = "http://192.168.1.101/diagnostics/drone_info"
+
+
+class TestStorageSettings:
+    """The drone drops recordings and pictures when its persistent storage settings have the
+    matching media switched off, without telling the client. #251: the SDK reads the settings
+    from drone_info and refuses instead of sending a command that does nothing."""
+
+    @staticmethod
+    def _drone_info(**storage):
+        from tests.conftest import DRONE_INFO_X3
+
+        settings = {"videos": True, "images": True, "binlog": True, "multibeam": True}
+        settings.update(storage)
+        return {**DRONE_INFO_X3, "persistent_storage": settings}
+
+    def test_settings_are_read_from_drone_info(self, mocked_drone, requests_mock):
+        requests_mock.get(DRONE_INFO_URL, json=self._drone_info(videos=False))
+        mocked_drone._update_drone_info()
+        assert mocked_drone._storage_settings["videos"] is False
+        assert mocked_drone._storage_settings["images"] is True
+
+    def test_old_drones_without_the_field_are_not_checked(self, mocked_drone):
+        # The fixture's drone_info has no persistent_storage
+        assert mocked_drone._storage_settings is None
+        _seed_record_state(mocked_drone)
+        mocked_drone.camera.set_recording(True)
+        mocked_drone.camera.take_picture()
+        mocked_drone._ctrl_client.set_recording_state.assert_called_once()
+        mocked_drone._ctrl_client.take_still_picture.assert_called_once()
+
+    def test_starting_a_recording_refuses_when_videos_are_off(self, mocked_drone, requests_mock):
+        requests_mock.get(DRONE_INFO_URL, json=self._drone_info(videos=False))
+        mocked_drone._update_drone_info()
+        _seed_record_state(mocked_drone)
+        with pytest.raises(RuntimeError, match="video recording switched off"):
+            mocked_drone.camera.set_recording(True)
+        mocked_drone._ctrl_client.set_recording_state.assert_not_called()
+
+    def test_stopping_a_recording_is_sent_when_videos_are_off(self, mocked_drone, requests_mock):
+        requests_mock.get(DRONE_INFO_URL, json=self._drone_info(videos=False))
+        mocked_drone._update_drone_info()
+        _seed_record_state(mocked_drone, main=True)
+        mocked_drone.camera.set_recording(False)
+        mocked_drone._ctrl_client.set_recording_state.assert_called_once_with(False, False, False)
+
+    def test_take_picture_refuses_when_images_are_off(self, mocked_drone, requests_mock):
+        requests_mock.get(DRONE_INFO_URL, json=self._drone_info(images=False))
+        mocked_drone._update_drone_info()
+        with pytest.raises(RuntimeError, match="images switched off"):
+            mocked_drone.camera.take_picture()
+        mocked_drone._ctrl_client.take_still_picture.assert_not_called()
+
+    def test_a_disabled_flag_is_checked_again_before_refusing(self, mocked_drone, requests_mock):
+        # The app switched videos back on after the SDK connected
+        mocked_drone._storage_settings = {"videos": False, "images": True}
+        requests_mock.get(DRONE_INFO_URL, json=self._drone_info(videos=True))
+        _seed_record_state(mocked_drone)
+        mocked_drone.camera.set_recording(True)
+        mocked_drone._ctrl_client.set_recording_state.assert_called_once_with(True, False, False)
+        assert mocked_drone._storage_settings["videos"] is True
+
+    def test_an_enabled_flag_is_not_fetched_again(self, mocked_drone, requests_mock):
+        mocked_drone._storage_settings = {"videos": True, "images": True}
+        requests_mock.get(DRONE_INFO_URL, json=self._drone_info(videos=False))
+        requests_before = requests_mock.call_count
+        _seed_record_state(mocked_drone)
+        mocked_drone.camera.set_recording(True)
+        mocked_drone._ctrl_client.set_recording_state.assert_called_once()
+        assert requests_mock.call_count == requests_before
+
+    @pytest.mark.parametrize(
+        "bad_answer",
+        [
+            {"exc": requests.exceptions.ChunkedEncodingError},
+            {"text": "<html>maintenance</html>"},
+            {"json": {"serial_number": "BYEDP230000"}},
+        ],
+        ids=["interrupted", "not json", "no storage block"],
+    )
+    def test_a_bad_refresh_keeps_the_cached_settings_and_the_rest(
+        self, mocked_drone, requests_mock, bad_answer
+    ):
+        mocked_drone._storage_settings = {"videos": False, "images": True}
+        features_before = list(mocked_drone.features)
+        version_before = mocked_drone.software_version
+        requests_mock.get(DRONE_INFO_URL, **bad_answer)
+        _seed_record_state(mocked_drone)
+        with pytest.raises(RuntimeError, match="video recording switched off"):
+            mocked_drone.camera.set_recording(True)
+        assert mocked_drone._storage_settings == {"videos": False, "images": True}
+        assert mocked_drone.features == features_before
+        assert mocked_drone.software_version == version_before
+
+    def test_refusal_stands_when_the_refresh_fails(self, mocked_drone, requests_mock):
+        mocked_drone._storage_settings = {"videos": False, "images": True}
+        requests_mock.get(DRONE_INFO_URL, exc=requests.ConnectTimeout)
+        _seed_record_state(mocked_drone)
+        with pytest.raises(RuntimeError, match="video recording switched off"):
+            mocked_drone.camera.set_recording(True)
+
+
+class TestRecordingKeepsTheOtherRecorders:
+    """The drone applies all three flags of a RecordCtrl, so a camera start or stop has to carry
+    the current state of the other camera and of the multibeam. #225: the multibeam was always
+    sent as False, which stopped a sonar recording started from the app."""
+
+    @pytest.mark.parametrize("start", [True, False])
+    def test_main_camera_keeps_a_multibeam_recording(self, mocked_drone, start):
+        _seed_record_state(mocked_drone, main=not start, guestport=False, multibeam=True)
+        mocked_drone.camera.set_recording(start)
+        mocked_drone._ctrl_client.set_recording_state.assert_called_once_with(start, False, True)
+
+    @pytest.mark.parametrize("start", [True, False])
+    def test_guestport_camera_keeps_main_and_multibeam(self, mocked_drone, start):
+        gp_cam = Camera(mocked_drone, is_guestport_camera=True)
+        _seed_record_state(mocked_drone, main=True, guestport=not start, multibeam=True)
+        gp_cam.set_recording(start)
+        mocked_drone._ctrl_client.set_recording_state.assert_called_once_with(True, start, True)
+
+    def test_without_record_state_nothing_is_sent(self, mocked_drone, caplog):
+        mocked_drone._req_rep_client.get_telemetry_msg.return_value = bp.GetTelemetryRep()
+        with caplog.at_level("WARNING"):
+            mocked_drone.camera.set_recording(True)
+        mocked_drone._ctrl_client.set_recording_state.assert_not_called()
+        assert "no record state telemetry" in caplog.text
 
 
 class TestTelemetry:

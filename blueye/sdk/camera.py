@@ -1074,20 +1074,32 @@ class Camera:
             start_recording (bool): Set to True to start a recording, set to False to stop the
                                     current recording.
 
-        Warns:
-            RuntimeWarning: If no recording state telemetry data is received.
+        Raises:
+            RuntimeError: If a recording is started while the drone's storage settings have
+                videos switched off, in which case the drone would not record.
         """
+        if start_recording and self._parent_drone._media_is_enabled("videos") is False:
+            raise RuntimeError(
+                "The drone's storage settings have video recording switched off, so it would not "
+                "record. Enable videos under the drone's storage settings in the Blueye app."
+            )
         record_state = self._get_record_state()
         if record_state is None:
             logger.warning("Unable to set recording state, no record state telemetry received")
             return
+        # The drone applies all three recorders from one message, so the other camera and the
+        # multibeam are sent as they are, from the latest RecordStateTel
         if self._is_guestport_camera:
             self._parent_drone._ctrl_client.set_recording_state(
-                record_state.main_is_recording, start_recording
+                record_state.main_is_recording,
+                start_recording,
+                record_state.multibeam_is_recording,
             )
         else:
             self._parent_drone._ctrl_client.set_recording_state(
-                start_recording, record_state.guestport_is_recording
+                start_recording,
+                record_state.guestport_is_recording,
+                record_state.multibeam_is_recording,
             )
 
     is_recording = deprecated_property("is_recording_active", "set_recording")
@@ -2115,6 +2127,20 @@ class Camera:
     def take_picture(self):
         """Take a still picture and store it locally on the drone.
 
+        The picture command has no camera selector: the drone captures from the main camera and,
+        if a guest port camera is attached, from that camera too, whichever `Camera` object the
+        call is made on. See [Recording video and taking
+        pictures](../../../video/recording-and-stills.md).
+
         These pictures can be downloaded with the Blueye App, or by any WebDAV compatible client.
+
+        Raises:
+            RuntimeError: If the drone's storage settings have images switched off, in which case
+                the drone would drop the picture.
         """
+        if self._parent_drone._media_is_enabled("images") is False:
+            raise RuntimeError(
+                "The drone's storage settings have images switched off, so it would drop the "
+                "picture. Enable images under the drone's storage settings in the Blueye app."
+            )
         self._parent_drone._ctrl_client.take_still_picture()

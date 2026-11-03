@@ -8,7 +8,7 @@ import threading
 import time
 import warnings
 import uuid
-from typing import Any, Callable, Dict, List, NamedTuple, Tuple
+from typing import Any, Callable, Dict, List, NamedTuple, Optional, Tuple
 
 import blueye.protocol
 import proto
@@ -413,15 +413,36 @@ class CtrlClient(threading.Thread):
         msg = blueye.protocol.WeatherVaningCtrl(state={"enabled": enabled})
         self._messages_to_send.put(msg)
 
-    def set_recording_state(self, main_enabled: bool, guestport_enabled: bool):
-        """Enable or disable recording.
+    def set_recording_state(
+        self,
+        main_enabled: bool,
+        guestport_enabled: bool,
+        multibeam_enabled: Optional[bool] = None,
+    ):
+        """Set the recording state of every recorder at once.
+
+        The drone applies all three flags from one `RecordCtrl`, so a recorder left out of the
+        message is stopped. Pass the current state of the recorders that should not change.
 
         Args:
-            main_enabled (bool): Whether to enable main recording.
-            guestport_enabled (bool): Whether to enable guest port recording.
+            main_enabled (bool): Whether the main camera records.
+            guestport_enabled (bool): Whether the guest port camera records.
+            multibeam_enabled (bool, optional): Whether the multibeam records. Left out, the
+                state the drone last reported in `RecordStateTel` is kept, or off if the drone
+                has not reported one.
         """
+        if multibeam_enabled is None:
+            record_state_tel = self._parent_drone.telemetry.get(blueye.protocol.RecordStateTel)
+            multibeam_enabled = (
+                record_state_tel is not None
+                and record_state_tel.record_state.multibeam_is_recording
+            )
         msg = blueye.protocol.RecordCtrl(
-            record_on={"main": main_enabled, "guestport": guestport_enabled}
+            record_on={
+                "main": main_enabled,
+                "guestport": guestport_enabled,
+                "multibeam": multibeam_enabled,
+            }
         )
         self._messages_to_send.put(msg)
 
