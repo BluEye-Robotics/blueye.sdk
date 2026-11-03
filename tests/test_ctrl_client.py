@@ -36,6 +36,41 @@ def test_set_camera_pan_tilt_zoom_queues_message(ctrl_client):
     assert (ptz.pan, ptz.tilt, ptz.zoom) == pytest.approx((-0.5, 0.25, 1.0))
 
 
+@pytest.mark.parametrize(
+    "flags", [(True, False, True), (False, True, False), (False, False, False)]
+)
+def test_set_recording_state_carries_all_three_recorders(ctrl_client, flags):
+    ctrl_client.set_recording_state(*flags)
+    msg = ctrl_client._messages_to_send.get_nowait()
+    assert isinstance(msg, bp.RecordCtrl)
+    assert (msg.record_on.main, msg.record_on.guestport, msg.record_on.multibeam) == flags
+
+
+def test_set_recording_state_without_the_multibeam_flag_keeps_the_reported_state(mocker):
+    # Callers written for the two-argument form must not stop a sonar recording (#225)
+    drone = mocker.MagicMock(_ip="192.168.1.101")
+    drone.telemetry.get.return_value = bp.RecordStateTel(
+        record_state={"multibeam_is_recording": True}
+    )
+    client = CtrlClient(drone)
+    client.set_recording_state(True, False)
+    msg = client._messages_to_send.get_nowait()
+    assert (msg.record_on.main, msg.record_on.guestport, msg.record_on.multibeam) == (
+        True,
+        False,
+        True,
+    )
+    drone.telemetry.get.assert_called_once_with(bp.RecordStateTel)
+
+
+def test_set_recording_state_without_the_multibeam_flag_or_telemetry_sends_off(mocker):
+    drone = mocker.MagicMock(_ip="192.168.1.101")
+    drone.telemetry.get.return_value = None
+    client = CtrlClient(drone)
+    client.set_recording_state(False, False)
+    assert client._messages_to_send.get_nowait().record_on.multibeam is False
+
+
 def test_rescan_cv_models_queues_message(ctrl_client):
     ctrl_client.rescan_cv_models()
     assert isinstance(ctrl_client._messages_to_send.get_nowait(), bp.RescanCvModelsCtrl)

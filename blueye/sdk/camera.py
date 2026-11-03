@@ -1081,13 +1081,19 @@ class Camera:
         if record_state is None:
             logger.warning("Unable to set recording state, no record state telemetry received")
             return
+        # The drone applies all three recorders from one message, so the other camera and the
+        # multibeam are sent as they are, from the latest RecordStateTel
         if self._is_guestport_camera:
             self._parent_drone._ctrl_client.set_recording_state(
-                record_state.main_is_recording, start_recording
+                record_state.main_is_recording,
+                start_recording,
+                record_state.multibeam_is_recording,
             )
         else:
             self._parent_drone._ctrl_client.set_recording_state(
-                start_recording, record_state.guestport_is_recording
+                start_recording,
+                record_state.guestport_is_recording,
+                record_state.multibeam_is_recording,
             )
 
     is_recording = deprecated_property("is_recording_active", "set_recording")

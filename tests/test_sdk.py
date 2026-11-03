@@ -282,16 +282,50 @@ def test_altitude_is_correct_on_valid_readings(mocked_drone):
     assert mocked_drone.get_altitude() == 10.5
 
 
-def test_gp_cam_recording(mocked_drone):
-    mocked_drone.gp_cam = Camera(mocked_drone, is_guestport_camera=True)
+def _seed_record_state(drone, main=False, guestport=False, multibeam=False):
     record_state_tel = bp.RecordStateTel(
-        record_state={"main_is_recording": False, "guestport_is_recording": False}
+        record_state={
+            "main_is_recording": main,
+            "guestport_is_recording": guestport,
+            "multibeam_is_recording": multibeam,
+        }
     )
-    mocked_drone._telemetry_watcher._state[bp.RecordStateTel] = bp.RecordStateTel.serialize(
+    drone._telemetry_watcher._state[bp.RecordStateTel] = bp.RecordStateTel.serialize(
         record_state_tel
     )
+
+
+def test_gp_cam_recording(mocked_drone):
+    mocked_drone.gp_cam = Camera(mocked_drone, is_guestport_camera=True)
+    _seed_record_state(mocked_drone)
     mocked_drone.gp_cam.set_recording(True)
-    mocked_drone._ctrl_client.set_recording_state.assert_called_with(False, True)
+    mocked_drone._ctrl_client.set_recording_state.assert_called_with(False, True, False)
+
+
+class TestRecordingKeepsTheOtherRecorders:
+    """The drone applies all three flags of a RecordCtrl, so a camera start or stop has to carry
+    the current state of the other camera and of the multibeam. #225: the multibeam was always
+    sent as False, which stopped a sonar recording started from the app."""
+
+    @pytest.mark.parametrize("start", [True, False])
+    def test_main_camera_keeps_a_multibeam_recording(self, mocked_drone, start):
+        _seed_record_state(mocked_drone, main=not start, guestport=False, multibeam=True)
+        mocked_drone.camera.set_recording(start)
+        mocked_drone._ctrl_client.set_recording_state.assert_called_once_with(start, False, True)
+
+    @pytest.mark.parametrize("start", [True, False])
+    def test_guestport_camera_keeps_main_and_multibeam(self, mocked_drone, start):
+        gp_cam = Camera(mocked_drone, is_guestport_camera=True)
+        _seed_record_state(mocked_drone, main=True, guestport=not start, multibeam=True)
+        gp_cam.set_recording(start)
+        mocked_drone._ctrl_client.set_recording_state.assert_called_once_with(True, start, True)
+
+    def test_without_record_state_nothing_is_sent(self, mocked_drone, caplog):
+        mocked_drone._req_rep_client.get_telemetry_msg.return_value = bp.GetTelemetryRep()
+        with caplog.at_level("WARNING"):
+            mocked_drone.camera.set_recording(True)
+        mocked_drone._ctrl_client.set_recording_state.assert_not_called()
+        assert "no record state telemetry" in caplog.text
 
 
 class TestTelemetry:
