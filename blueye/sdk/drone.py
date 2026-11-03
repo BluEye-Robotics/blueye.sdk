@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import atexit
 import logging
 import time
+import weakref
 from datetime import datetime
 from json import JSONDecodeError
 from typing import Any, Callable, Dict, List, Optional
@@ -20,18 +22,24 @@ from .constants import JETSON_MODELS, WaterDensities
 from .guestport import (
     GenericServo,
     Gripper,
+    GuestPort,
     GuestPortCamera,
     GuestPortLight,
     Laser,
     Peripheral,
     SkidServo,
-    device_to_peripheral,
+    connector_info_to_guest_port,
 )
 from .cv_models import CvModels
 from .logs import LegacyLogs, Logs
 from .mission import Mission
 from .motion import Motion
-from .utils import deprecated_property, deserialize_any_to_message, is_scalar_type
+from .utils import (
+    deprecated_property,
+    describe_enum,
+    deserialize_any_to_message,
+    is_scalar_type,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -150,7 +158,9 @@ class Telemetry:
             callback (Callable[[str, proto.message.Message], None]):
                 The callback function. It should be minimal and return as fast as possible to not
                 block the telemetry communication. It is called with two arguments, the message
-                type name and the message object.
+                type name and the message object. An exception raised by the callback is logged
+                and otherwise ignored, so it does not stop the telemetry thread or the other
+                callbacks.
             raw (bool, optional):
                 Pass the raw data instead of the deserialized message to the callback function.
             **kwargs:
@@ -200,6 +210,28 @@ class Telemetry:
             return msg_type.deserialize(msg)
         else:
             return msg
+
+
+# The drones that are connected right now, so that the interpreter can disconnect them on exit.
+# A weak set, so a dropped Drone object is not kept alive by it.
+_connected_drones: "weakref.WeakSet[Drone]" = weakref.WeakSet()
+
+
+def _disconnect_at_exit():
+    """Zero the thrusters and disconnect every drone still connected when the interpreter exits.
+
+    A script that ends without disconnecting, through an exception or Ctrl-C, would otherwise
+    leave its last motion input on the drone. The drone keeps it until its watchdog times out,
+    and on a handover to another client it does not.
+    """
+    for drone in list(_connected_drones):
+        try:
+            drone.disconnect()
+        except Exception as e:  # The interpreter is going down, there is nothing else to do
+            logger.warning(f"Could not disconnect from the drone at exit: {e}")
+
+
+atexit.register(_disconnect_at_exit)
 
 
 class Drone:
@@ -254,8 +286,31 @@ class Drone:
         self._ctrl_client = _NoConnectionClient()
 
         self.peripherals: Optional[List[Peripheral]] = None
-        """This list holds the peripherals connected to the drone. If it is `None`, then no
-        Guestport telemetry message has been received yet."""
+        """This list holds the peripherals connected to the drone. It is `None` until the drone has
+        reported its guest ports (through `DroneInfoTel`), and an empty list when the drone
+        reports no peripherals."""
+        self._guest_ports: Optional[List[GuestPort]] = None
+        self.external_camera: Optional[GuestPortCamera] = None
+        """Camera on a guest port, or `None` if none has been discovered."""
+        self.external_light: Optional[GuestPortLight] = None
+        """Light on a guest port, or `None` if none has been discovered."""
+        self.gripper: Optional[Gripper] = None
+        """Gripper on a guest port, or `None` if none has been discovered."""
+        self.laser: Optional[Laser] = None
+        """Scaling laser on a guest port, or `None` if none has been discovered."""
+        self.servo: Optional[GenericServo] = None
+        """Generic servo on a guest port, or `None` if none has been discovered."""
+        self.skid_servo: Optional[SkidServo] = None
+        """Multibeam (skid) servo on a guest port, or `None` if none has been discovered."""
+        self._guest_ports_known = False
+        self._drone_info_cb_id: Optional[str] = None
+        # The drone publishes one GenericServoTel per guest port under the same message type, so
+        # the telemetry store only keeps the last one. This keeps the latest per port, filled by
+        # a callback that is registered while a generic servo is discovered.
+        self._generic_servo_tel: Dict[
+            blueye.protocol.GuestPortNumber, blueye.protocol.GenericServoTel
+        ] = {}
+        self._generic_servo_cb_id: Optional[str] = None
 
         if auto_connect is True:
             self.connect(
@@ -313,12 +368,55 @@ class Drone:
 
     @staticmethod
     def _drone_info_callback(msg_type: str, msg: blueye.protocol.DroneInfoTel, drone: Drone):
-        # Check if the GuestPortInfo has been initialized
+        if not drone.connected:
+            # A message that was already in flight when disconnect() ran
+            return
         if msg.drone_info.gp._pb.ByteSize() != 0:
             drone._create_peripherals_from_drone_info(msg.drone_info.gp)
+            # The guest ports are known, so the callback can go. If this ran before connect()
+            # received the callback id, connect() removes it.
+            if drone._drone_info_cb_id is not None:
+                drone.telemetry.remove_msg_callback(drone._drone_info_cb_id)
+                drone._drone_info_cb_id = None
+        else:
+            # The drone has reported, but without any guest port information. Drones without
+            # guest ports never fill it in; a drone that is still discovering its peripherals
+            # fills it in on a later message, so keep listening.
+            drone._reset_peripherals(reported=True)
 
-        # Remove the callback after the first message has been received
-        drone.telemetry.remove_msg_callback(drone._drone_info_cb_id)
+    def _reset_peripherals(self, reported: bool):
+        """Forget every discovered peripheral.
+
+        Args:
+            reported (bool): `True` when the drone has reported that it has no peripherals, so
+                `peripherals` becomes an empty list. `False` when nothing is known, so it
+                becomes `None`.
+        """
+        self.peripherals = [] if reported else None
+        self._guest_ports = [] if reported else None
+        self._guest_ports_known = False
+        self.external_camera = None
+        self.external_light = None
+        self.gripper = None
+        self.laser = None
+        self.servo = None
+        self.skid_servo = None
+        self._track_generic_servos(False)
+
+    @staticmethod
+    def _generic_servo_callback(msg_type: str, msg: blueye.protocol.GenericServoTel, drone: Drone):
+        drone._generic_servo_tel[msg.servo.guest_port_number] = msg
+
+    def _track_generic_servos(self, present: bool):
+        """Keep the per-port servo telemetry callback registered only while a servo is present."""
+        if present and self._generic_servo_cb_id is None:
+            self._generic_servo_cb_id = self.telemetry.add_msg_callback(
+                [blueye.protocol.GenericServoTel], Drone._generic_servo_callback, False, drone=self
+            )
+        elif not present and self._generic_servo_cb_id is not None:
+            self.telemetry.remove_msg_callback(self._generic_servo_cb_id)
+            self._generic_servo_cb_id = None
+            self._generic_servo_tel = {}
 
     @staticmethod
     def notification_callback(msg_type: str, msg: blueye.protocol.NotificationTel, drone: Drone):
@@ -332,7 +430,9 @@ class Drone:
 
         drone._last_notification_timestamp = msg.notification.timestamp
 
-        log_msg = f"{msg.notification.timestamp.astimezone()} - {notification_type.name}"
+        # A drone running a newer Blunux than blueye.protocol can send a notification type this
+        # build does not know; proto-plus hands those over as a plain int without a `name`.
+        log_msg = f"{msg.notification.timestamp.astimezone()} - {describe_enum(notification_type)}"
         if notification_msg.type_url != "":
             _, unpacked_msg = deserialize_any_to_message(notification_msg)
             if is_scalar_type(unpacked_msg):
@@ -350,23 +450,37 @@ class Drone:
             logger.debug(log_msg)
 
     def _create_peripherals_from_drone_info(self, gp_info: blueye.protocol.GuestPortInfo):
-        self.peripherals = []
-        for port in (gp_info.gp1, gp_info.gp2, gp_info.gp3):
-            for device in port.device_list.devices:
-                peripheral = device_to_peripheral(self, port.guest_port_number, device)
-                self.peripherals.append(peripheral)
-                if isinstance(peripheral, GuestPortLight):
-                    self.external_light = peripheral
-                elif isinstance(peripheral, GuestPortCamera):
-                    self.external_camera = peripheral
-                elif isinstance(peripheral, Gripper):
-                    self.gripper = peripheral
-                elif isinstance(peripheral, Laser):
-                    self.laser = peripheral
-                elif isinstance(peripheral, GenericServo):
-                    self.servo = peripheral
-                elif isinstance(peripheral, SkidServo):
-                    self.skid_servo = peripheral
+        # Fill local lists and assign them at the end. A reader on another thread never sees a
+        # half-filled list, and a device that is gone does not stay on its shortcut attribute.
+        guest_ports: List[GuestPort] = []
+        peripherals: List[Peripheral] = []
+        shortcuts = {
+            GuestPortLight: "external_light",
+            GuestPortCamera: "external_camera",
+            Gripper: "gripper",
+            Laser: "laser",
+            GenericServo: "servo",
+            SkidServo: "skid_servo",
+        }
+        found = {name: None for name in shortcuts.values()}
+        # Only the slots the drone has set describe physical ports; an unset slot would read as an
+        # empty connector info with port number UNSPECIFIED.
+        for slot in ("gp1", "gp2", "gp3", "gp4", "gp5", "gp6"):
+            if slot not in gp_info:
+                continue
+            port = connector_info_to_guest_port(self, getattr(gp_info, slot))
+            guest_ports.append(port)
+            for peripheral in port.devices:
+                peripherals.append(peripheral)
+                for peripheral_class, name in shortcuts.items():
+                    if isinstance(peripheral, peripheral_class):
+                        found[name] = peripheral
+        for name, peripheral in found.items():
+            setattr(self, name, peripheral)
+        self._guest_ports = guest_ports
+        self.peripherals = peripherals
+        self._guest_ports_known = True
+        self._track_generic_servos(any(isinstance(p, GenericServo) for p in peripherals))
 
     def connect(
         self,
@@ -415,8 +529,27 @@ class Drone:
         self._telemetry_watcher.start()
         self._req_rep_client.start()
         self._ctrl_client.start()
-        self._watchdog_publisher.start()
 
+        # Anything that fails from here on must not leave the threads behind. A watchdog thread
+        # that outlives a failed connect() would pet the drone as client 0, which the drone takes
+        # as the client in control whenever nobody is, and that keeps its failsafe from tripping.
+        try:
+            self._connect(
+                client_info, disconnect_other_clients, connect_as_observer, log_notifications
+            )
+        except BaseException:
+            self._stop_clients()
+            raise
+        logger.debug("Connected in {:.2f} seconds".format(time.time() - time_connection_start))
+
+    def _connect(
+        self,
+        client_info: blueye.protocol.ClientInfo,
+        disconnect_other_clients: bool,
+        connect_as_observer: bool,
+        log_notifications: bool,
+    ):
+        """The part of connect() that runs with the threads up, see there."""
         try:
             self.ping()
             connect_resp = self._req_rep_client.connect_client(
@@ -432,23 +565,39 @@ class Drone:
         self.connected = True
         if disconnect_other_clients and not self.in_control and not connect_as_observer:
             self.take_control()
+        if self.in_control:
+            # The drone keeps the last motion input it got, from whoever had control before.
+            # Clear it, and make sure it has gone out, before the watchdog thread starts. The
+            # control socket was opened moments ago and a PUB socket drops what it is given
+            # before its subscription is in place, so the zero is sent again at the end of the
+            # connection setup, still ahead of the first pet a second from now.
+            logger.debug("Disabling thrusters")
+            self.motion.zero_setpoints()
+            self._ctrl_client.flush()
+        # The watchdog pets with our client id, so it starts once the drone has handed one out
+        self._watchdog_publisher.start()
 
-        # Try to get the GuestPortInfo message to populate the peripherals list
-        # If the message has not been received yet, register a callback to populate the list when
-        # the message is received
-        if "gpdrone" in self.features:
-            drone_info_tel = self.telemetry.get(blueye.protocol.DroneInfoTel)
-            if drone_info_tel is not None and drone_info_tel.drone_info.gp._pb.ByteSize() != 0:
-                self._create_peripherals_from_drone_info(drone_info_tel.drone_info.gp)
-            else:
-                self._drone_info_cb_id = self.telemetry.add_msg_callback(
-                    [blueye.protocol.DroneInfoTel],
-                    Drone._drone_info_callback,
-                    False,
-                    drone=self,
-                )
+        # Populate the peripherals from the drone's guest port information. Discovery is driven by
+        # the DroneInfoTel message alone, rather than the "gpdrone" entry in the HTTP feature list,
+        # which not every drone image sets. If the message has not been received yet, or does not
+        # carry guest port information yet, a callback fills the list in when it does.
+        drone_info_tel = self.telemetry.get(blueye.protocol.DroneInfoTel)
+        if drone_info_tel is not None and drone_info_tel.drone_info.gp._pb.ByteSize() != 0:
+            self._create_peripherals_from_drone_info(drone_info_tel.drone_info.gp)
         else:
-            self.peripherals = []
+            if drone_info_tel is not None:
+                # The drone has reported, but without guest port information yet
+                self._reset_peripherals(reported=True)
+            self._drone_info_cb_id = self.telemetry.add_msg_callback(
+                [blueye.protocol.DroneInfoTel],
+                Drone._drone_info_callback,
+                False,
+                drone=self,
+            )
+            if self._guest_ports_known:
+                # The callback already ran on the telemetry thread before the id came back
+                self.telemetry.remove_msg_callback(self._drone_info_cb_id)
+                self._drone_info_cb_id = None
 
         self._last_notification_timestamp = None
         if log_notifications:
@@ -466,18 +615,20 @@ class Drone:
             time_formatted = datetime.fromtimestamp(current_time).strftime("%d. %b %Y %H:%M")
             logger.debug(f"Setting current time to {current_time} ({time_formatted})")
             self.config.set_drone_time(current_time)
-            logger.debug("Disabling thrusters")
-            self.motion.send_thruster_setpoint(0, 0, 0, 0)
-        logger.debug("Connected in {:.2f} seconds".format(time.time() - time_connection_start))
+            # Second zero, see above
+            self.motion.zero_setpoints()
+        _connected_drones.add(self)
 
-    def disconnect(self):
-        """Disconnects the connection, allowing another client to take control of the drone."""
-        try:
-            self._req_rep_client.disconnect_client(self.client_id)
-        except blueye.protocol.exceptions.ResponseTimeout:
-            # If there's no response the connection is likely already closed, so we can just
-            # continue to stop threads and disconnect
-            pass
+    def _stop_clients(self):
+        """Stop the connection threads and leave clients that refuse to be used in their place."""
+        self.connected = False
+        self.in_control = False
+        if self._drone_info_cb_id is not None:
+            self.telemetry.remove_msg_callback(self._drone_info_cb_id)
+            self._drone_info_cb_id = None
+        # Before the telemetry client goes away, since _reset_peripherals runs after that
+        self._track_generic_servos(False)
+
         self._watchdog_publisher.stop()
         self._telemetry_watcher.stop()
         self._req_rep_client.stop()
@@ -487,8 +638,98 @@ class Drone:
         self._telemetry_watcher = _NoConnectionClient()
         self._req_rep_client = _NoConnectionClient()
         self._ctrl_client = _NoConnectionClient()
+        # Motion input goes to the placeholder again, which raises like the other clients do
+        self.motion._resume_input()
 
+        # The peripherals belong to the connection that discovered them
+        self._reset_peripherals(reported=False)
+
+    def disconnect(self, timeout: float = 1.0):
+        """Disconnects the connection, allowing another client to take control of the drone.
+
+        The drone keeps the last motion input it received until a new one arrives or its
+        watchdog times out, and on a handover to another client the watchdog never times out.
+        So when this client is in control, every setpoint is zeroed and sent before the drone is
+        told that the client is leaving.
+
+        Does nothing when there is no connection, such as after a failed `connect()`, so it is
+        safe in a `finally` block.
+
+        Args:
+            timeout (float, optional): Seconds to wait for the zero setpoint and any other
+                queued control message to go out before the disconnect request is sent.
+        """
+        if isinstance(self._req_rep_client, _NoConnectionClient):
+            # Never connected, already disconnected, or connect() failed and stopped the threads
+            return
+        if self.connected:
+            # No motion input from other threads or callbacks after this, so that the zero is
+            # the last input the drone gets from this client
+            in_control = self._has_control_now()
+            self.motion._stop_input(zero=in_control)
+            if in_control and not self._ctrl_client.flush(timeout):
+                logger.warning("The zero thruster setpoint did not go out before disconnecting")
         self.connected = False
+        _connected_drones.discard(self)
+        try:
+            self._req_rep_client.disconnect_client(self.client_id)
+        except blueye.protocol.exceptions.ResponseTimeout:
+            # If there's no response the connection is likely already closed, so we can just
+            # continue to stop threads and disconnect
+            pass
+        self._stop_clients()
+
+    def _has_control_now(self) -> bool:
+        """Whether this client should zero the thrusters before leaving.
+
+        `in_control` is set on connect and take_control, but it goes stale both ways: the drone
+        hands control to the oldest remaining client when the one in control leaves, and
+        another client can take control away. Motion input carries no client id, so a zero
+        from a displaced client would cut the new pilot's input. So the drone is asked for its
+        report rather than the cached telemetry is read. The drone answers with the last
+        `ConnectedClientsTel` it published, and it publishes once a second, so the report can be
+        up to about a second old: a client that lost control within that second still zeroes
+        once. Then:
+
+        - another client in control: no zero
+        - this client in control: zero
+        - nobody in control, which the drone reports for a moment after a handover, or no
+          report at all: whatever the flag says
+        """
+        try:
+            if version.parse(self.software_version_short) >= version.parse("3.3"):
+                # From the drone rather than the cached telemetry, at most a second old
+                payload = self._req_rep_client.get_telemetry_msg(
+                    blueye.protocol.ConnectedClientsTel
+                ).payload.value
+                if payload == b"":
+                    return self.in_control
+                report = blueye.protocol.ConnectedClientsTel.deserialize(payload)
+                client_in_control = report.client_id_in_control
+            else:
+                client_in_control = self.get_client_in_control()
+        except blueye.protocol.exceptions.ResponseTimeout:
+            return self.in_control
+        if not client_in_control:
+            return self.in_control
+        return client_in_control == self.client_id
+
+    def __enter__(self) -> Drone:
+        """Use the drone in a `with` block, see [`__exit__`][blueye.sdk.drone.Drone.__exit__]."""
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        """Disconnect when the `with` block ends, however it ends.
+
+        Usage::
+
+            with Drone() as drone:
+                drone.motion.set_surge(0.5)
+                ...
+            # Thrusters zeroed and the drone told that we left, even after an exception
+        """
+        if self.connected:
+            self.disconnect()
 
     def get_connected_clients(self) -> Optional[List[blueye.protocol.ConnectedClient]]:
         """Get a list of connected clients.
@@ -712,6 +953,19 @@ class Drone:
             return altitude_tel.altitude.value
 
     altitude = deprecated_property("get_altitude")
+
+    def get_guest_ports(self) -> Optional[List[GuestPort]]:
+        """Get the state of every guest port on the drone.
+
+        Each entry carries the port number, the interfaces the port provides, the connector error
+        the drone reports for it (if any), and the peripherals discovered on it. A port with
+        nothing plugged in reports `GUEST_PORT_ERROR_NOT_CONNECTED` and no devices.
+
+        Returns:
+            One [GuestPort][blueye.sdk.guestport.GuestPort] per port the drone reports, or `None`
+            if no guest port information has been received from the drone yet.
+        """
+        return self._guest_ports
 
     def get_error_flags(self) -> Dict[str, bool]:
         """Get the error flags.

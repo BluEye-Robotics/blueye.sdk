@@ -30,6 +30,8 @@ class Motion:
             "pitch": 0,
         }
         self._current_boost_setpoints = {"slow": 0, "boost": 0}
+        # Set while disconnect() is leaving, see _stop_input
+        self._input_stopped = False
 
     def get_current_thruster_setpoints(self):
         """Returns the current setpoints for the thrusters
@@ -63,6 +65,8 @@ class Motion:
 
     def _send_motion_input_message(self):
         """Small helper function for building argument list to motion_input command"""
+        if self._input_stopped:
+            return
         setpoints = self._current_thruster_setpoints
         boost_setpoints = self._current_boost_setpoints
         self._parent_drone._ctrl_client.set_motion_input(
@@ -235,6 +239,42 @@ class Motion:
         with self.thruster_lock:
             self._current_thruster_setpoints["pitch"] = pitch_value
             self._send_motion_input_message()
+
+    def zero_setpoints(self):
+        """Set every setpoint to zero and send it.
+
+        Covers surge, sway, heave, yaw, roll and pitch as well as slow and boost. The drone keeps
+        the last motion input it received until a new one arrives or its watchdog times out, so
+        this is what [`disconnect`][blueye.sdk.drone.Drone.disconnect] sends before letting go.
+        """
+        with self.thruster_lock:
+            self._zero_setpoints()
+
+    def _zero_setpoints(self):
+        """zero_setpoints() for a caller that holds the thruster lock."""
+        for axis in self._current_thruster_setpoints:
+            self._current_thruster_setpoints[axis] = 0
+        for gain in self._current_boost_setpoints:
+            self._current_boost_setpoints[gain] = 0
+        self._send_motion_input_message()
+
+    def _stop_input(self, zero: bool):
+        """Stop sending motion input, after a last zero when `zero` is set.
+
+        For [`disconnect`][blueye.sdk.drone.Drone.disconnect]: until its threads have stopped, a
+        control loop on another thread or a telemetry callback can still set motion, and input
+        queued after the zero would reach the drone after it and stay in effect once the client
+        has left. Setpoints set after this are dropped until `_resume_input`.
+        """
+        with self.thruster_lock:
+            if zero:
+                self._zero_setpoints()
+            self._input_stopped = True
+
+    def _resume_input(self):
+        """Send motion input again, see `_stop_input`."""
+        with self.thruster_lock:
+            self._input_stopped = False
 
     def send_thruster_setpoint(self, surge, sway, heave, yaw, *, roll=0.0, pitch=0.0):
         """Control the thrusters of the drone

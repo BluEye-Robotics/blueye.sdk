@@ -5,6 +5,10 @@ management loop when invoked bare on a terminal. Model identifiers are the packa
 directory slugs shown by `blueye models list`. The `enabled` state is the autolaunch
 configuration — the drone's API does not expose a live "running" status.
 
+Listing and downloading go over HTTP alone. Everything that changes a model connects to
+the drone as an observer, because the drone only picks the change up after the rescan
+control message that follows it.
+
 Argument definitions are stdlib-only; rich/questionary/blueye.sdk imports happen
 inside `run` (after the dependency gate).
 """
@@ -14,6 +18,7 @@ from __future__ import annotations
 import argparse
 import logging
 import sys
+from contextlib import contextmanager
 from pathlib import Path
 
 from ...errors import CliError
@@ -86,7 +91,9 @@ def add_parser(subparsers) -> None:
     download.add_argument("-o", "--output", help="Destination file or directory")
 
     actions.add_parser(
-        "rescan", parents=[common], help="Ask the drone's vision pipeline to rescan the packages"
+        "rescan",
+        parents=[common],
+        help="Ask the drone's vision pipeline to rescan the packages (connects as an observer)",
     )
 
 
@@ -95,6 +102,25 @@ def _cv_models(args):
     from blueye.sdk import Drone
 
     return Drone(ip=args.drone_ip, auto_connect=False).cv_models
+
+
+@contextmanager
+def _connected_cv_models(args):
+    """The CvModels client of a drone connected as an observer.
+
+    The drone only picks up a model change after a rescan, which is a control message, so
+    every command that changes a model connects. Observers may send it, so no control is
+    taken. Disconnecting waits for the message to go out first.
+    """
+    from blueye.sdk import Drone
+
+    drone = friendly_errors(
+        lambda: Drone(ip=args.drone_ip, timeout=args.timeout, connect_as_observer=True)
+    )
+    try:
+        yield drone.cv_models
+    finally:
+        drone.disconnect()
 
 
 def _runtime_field(model, key: str, default: str = "-") -> str:
@@ -135,7 +161,11 @@ def _run_list(console, args) -> int:
 
 def _run_interactive(console, args, prompter) -> int:
     """Interactive management loop: pick a model, pick an action, repeat."""
-    cv_models = _cv_models(args)
+    with _connected_cv_models(args) as cv_models:
+        return _interactive_loop(console, args, prompter, cv_models)
+
+
+def _interactive_loop(console, args, prompter, cv_models) -> int:
     while True:
         models = friendly_errors(lambda: cv_models.list(timeout=args.timeout))
         if not models:
@@ -211,8 +241,43 @@ def run(args: argparse.Namespace) -> int:
 
     if action == "list":
         return _run_list(console, args)
+    if action == "download":
+        cv_models = _cv_models(args)
+        output = Path(args.output).expanduser() if args.output else None
+        with console.status("[cyan]Downloading from the drone..."):
+            path = friendly_errors(lambda: cv_models.download(args.name, output_path=output))
+        console.print(f"Downloaded '{args.name}' to {path}.")
+        return 0
+    if action == "warmup":
+        # Needs no rescan, so no connection, and a TensorRT build can take minutes
+        cv_models = _cv_models(args)
+        with console.status(
+            f"[cyan]Warming up '{args.name}' (TensorRT builds can take minutes)..."
+        ):
+            friendly_errors(lambda: cv_models.warmup(args.name))
+        console.print(f"Warmup of '{args.name}' complete.")
+        return 0
+    if action == "upload":
+        package = Path(args.package).expanduser()
+        if not package.is_file():
+            raise CliError(f"No such file: {package}")
+    if action == "delete" and not args.force:
+        from ... import prompts
 
-    cv_models = _cv_models(args)
+        interactive = sys.stdin.isatty() and sys.stdout.isatty()
+        if not interactive:
+            raise CliError(f"Deleting '{args.name}' requires --force when not interactive.")
+        if not prompts.QuestionaryPrompter().confirm(
+            f"Delete '{args.name}' from the drone?", False, "--force"
+        ):
+            return 1
+
+    with _connected_cv_models(args) as cv_models:
+        return _run_change(console, args, action, cv_models)
+
+
+def _run_change(console, args, action: str, cv_models) -> int:
+    """The actions that change a model, run on a connected drone so the rescan goes out."""
     if action == "enable":
         friendly_errors(lambda: cv_models.set_enabled(args.name, True, timeout=args.timeout))
         console.print(f"Enabled autolaunch for '{args.name}'.")
@@ -226,39 +291,16 @@ def run(args: argparse.Namespace) -> int:
         friendly_errors(lambda: cv_models.set_hz(args.name, args.hz, timeout=args.timeout))
         rate = "unlimited" if args.hz == 0 else f"{args.hz} Hz"
         console.print(f"'{args.name}' rate set to {rate}.")
-    elif action == "warmup":
-        with console.status(
-            f"[cyan]Warming up '{args.name}' (TensorRT builds can take minutes)..."
-        ):
-            friendly_errors(lambda: cv_models.warmup(args.name))
-        console.print(f"Warmup of '{args.name}' complete.")
     elif action == "delete":
-        if not args.force:
-            from ... import prompts
-
-            interactive = sys.stdin.isatty() and sys.stdout.isatty()
-            if not interactive:
-                raise CliError(f"Deleting '{args.name}' requires --force when not interactive.")
-            if not prompts.QuestionaryPrompter().confirm(
-                f"Delete '{args.name}' from the drone?", False, "--force"
-            ):
-                return 1
         friendly_errors(lambda: cv_models.delete(args.name, timeout=args.timeout))
         console.print(f"Deleted '{args.name}' from the drone.")
     elif action == "upload":
         package = Path(args.package).expanduser()
-        if not package.is_file():
-            raise CliError(f"No such file: {package}")
         with console.status("[cyan]Uploading to the drone..."):
             model = friendly_errors(lambda: cv_models.upload(package))
         state = "enabled" if model.enabled else "disabled"
         console.print(f"Uploaded '{model.name}' as '{model.directory}' (autolaunch {state}).")
-    elif action == "download":
-        output = Path(args.output).expanduser() if args.output else None
-        with console.status("[cyan]Downloading from the drone..."):
-            path = friendly_errors(lambda: cv_models.download(args.name, output_path=output))
-        console.print(f"Downloaded '{args.name}' to {path}.")
     elif action == "rescan":
-        friendly_errors(lambda: cv_models.rescan(timeout=args.timeout))
+        friendly_errors(cv_models.rescan)
         console.print("Rescan triggered.")
     return 0

@@ -272,11 +272,20 @@ def _push_to_drone(console, zip_path: Path, ip: str) -> None:
 
     from blueye.sdk import Drone
 
-    drone = Drone(ip=ip, auto_connect=False)  # HTTP only; takes no control of the drone.
     try:
-        with console.status(f"[cyan]Uploading to the drone at {ip}..."):
-            model = drone.cv_models.upload(zip_path)
-    except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as error:
+        # Observer: no control is taken. The connection carries the rescan that makes the
+        # drone load the new package.
+        drone = Drone(ip=ip, connect_as_observer=True)
+        try:
+            with console.status(f"[cyan]Uploading to the drone at {ip}..."):
+                model = drone.cv_models.upload(zip_path)
+        finally:
+            drone.disconnect()
+    except (
+        ConnectionError,
+        requests.exceptions.ConnectionError,
+        requests.exceptions.Timeout,
+    ) as error:
         raise CliError(
             f"Could not reach the drone at {ip} — is it connected? The bundle was written "
             f"to {zip_path}; connect to the drone and re-run with --push, use "

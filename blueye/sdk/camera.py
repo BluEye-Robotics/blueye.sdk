@@ -9,7 +9,7 @@ import blueye.protocol
 import requests
 from packaging import version
 
-from .utils import deprecated_property
+from .utils import deprecated_property, describe_enum
 
 # Necessary to avoid cyclic imports
 if TYPE_CHECKING:
@@ -76,16 +76,6 @@ def scale_calibration(
         image_height=height,
         is_default=calibration.is_default,
     )
-
-
-def _describe_enum(value) -> str:
-    """Render a protocol enum value for an error message.
-
-    A drone running a newer Blunux than the SDK can report an enum value this build does not
-    know, and proto-plus surfaces those as a plain int rather than an enum member. Fall back to
-    the number so the error still says which value was rejected.
-    """
-    return getattr(value, "name", str(value))
 
 
 class Tilt:
@@ -957,7 +947,7 @@ class Camera:
                     return from_enum[value]
                 except KeyError:
                     raise RuntimeError(
-                        f"Drone reported an unsupported {field}: {_describe_enum(value)}"
+                        f"Drone reported an unsupported {field}: {describe_enum(value)}"
                     ) from None
             return value
 
@@ -1018,6 +1008,10 @@ class Camera:
             self.tilt = Tilt(parent_drone)
             self.overlay = Overlay(parent_drone)
         self._camera_parameters = None
+        # Pan, tilt and zoom as last sent from this object, filled in for arguments left out of
+        # set_pan_tilt_zoom(). The drone reports a change about 0.1 s after the command, so two
+        # calls in a row would read the state from before the first one.
+        self._last_pan_tilt_zoom: Optional[tuple[float, float, float]] = None
 
     def _get_record_state(self) -> Optional[blueye.protocol.RecordState]:
         record_state_tel = self._parent_drone.telemetry.get(blueye.protocol.RecordStateTel)
@@ -1158,10 +1152,13 @@ class Camera:
     def set_exposure(self, exposure: int):
         """Set the camera exposure.
 
+        On the X3 Ultra and X7 a shutter time longer than one frame at the current frame rate
+        is shortened to the frame period, 333 at 30 fps, and
+        [`get_exposure`][blueye.sdk.camera.Camera.get_exposure] reports the shortened value.
+
         Args:
-            exposure (int): Set the camera exposure time. Unit is thousandths of a second,
-                            ie. 5 = 5s/1000. Valid values are in the range (1 .. 5000) or -1
-                            for auto exposure.
+            exposure (int): Shutter time in units of 1/10000 s (100 µs), so 100 = 10 ms. Valid
+                values are in the range (1..5000) or -1 for auto exposure.
         """
         if self._camera_parameters is None:
             self._update_camera_parameters()
@@ -1183,8 +1180,9 @@ class Camera:
         """Set the camera white balance.
 
         Args:
-            white_balance (int): Set the camera white balance. Valid values are in the range
-                                 (2800..9300) or -1 for auto white balance.
+            white_balance (int): Colour temperature in kelvin. Valid values are in the range
+                (2800..9300) on Pioneer/Pro/X1/X3 and (2300..15000) on the X3 Ultra and X7, or
+                -1 for auto white balance.
         """
         if self._camera_parameters is None:
             self._update_camera_parameters()
@@ -1196,6 +1194,9 @@ class Camera:
     def get_hue(self) -> int:
         """Get the camera hue.
 
+        Only available on Pioneer/Pro/X1/X3, the 4K camera in the X3 Ultra and X7 has no hue
+        control.
+
         Returns:
             The camera hue.
         """
@@ -1204,6 +1205,9 @@ class Camera:
 
     def set_hue(self, hue: int):
         """Set the camera hue.
+
+        Only available on Pioneer/Pro/X1/X3, the 4K camera in the X3 Ultra and X7 has no hue
+        control.
 
         Args:
             hue (int): Set the camera hue. Valid values are in the range (-40..40).
@@ -1218,10 +1222,11 @@ class Camera:
     def get_gain(self) -> float:
         """Get the camera gain.
 
-        Only available on Pioneer/Pro/X1/X3.
+        On the X3 Ultra and X7 the drone reports -1 while auto exposure owns the gain, that is
+        whenever the exposure is automatic or no manual gain has been set.
 
         Returns:
-            The camera ISO gain.
+            The camera ISO gain (0..1), or -1 when the drone controls it.
         """
         self._update_camera_parameters()
         return self._camera_parameters.gain
@@ -1229,10 +1234,13 @@ class Camera:
     def set_gain(self, gain: float):
         """Set the camera gain.
 
-        Only available on Pioneer/Pro/X1/X3.
+        On the X3 Ultra and X7 a manual gain only takes effect together with a manual exposure
+        (see [`set_exposure`][blueye.sdk.camera.Camera.set_exposure]). With auto exposure, or
+        with a gain of -1, the drone's auto exposure controls the gain. On Pioneer/Pro/X1/X3 a
+        value of -1 leaves the gain unchanged.
 
         Args:
-            gain (float): Set the ISO gain (0..1).
+            gain (float): Set the ISO gain (0..1), or -1 to let the drone control it.
         """
         if self._camera_parameters is None:
             self._update_camera_parameters()
@@ -1242,7 +1250,7 @@ class Camera:
     def get_brightness(self) -> int:
         """Get the camera brightness.
 
-        Only available on Ultra.
+        Only available on the X3 Ultra and X7.
 
         Returns:
             The camera brightness.
@@ -1253,7 +1261,7 @@ class Camera:
     def set_brightness(self, brightness: int):
         """Set the camera brightness.
 
-        Only available on Ultra.
+        Only available on the X3 Ultra and X7.
 
         Args:
             brightness (int): Set the brightness (-10..10), 0 is the default.
@@ -1270,7 +1278,7 @@ class Camera:
     def get_contrast(self) -> int:
         """Get the camera contrast.
 
-        Only available on Ultra.
+        Only available on the X3 Ultra and X7.
 
         Returns:
             The camera contrast.
@@ -1281,7 +1289,7 @@ class Camera:
     def set_contrast(self, contrast: int):
         """Set the camera contrast.
 
-        Only available on Ultra.
+        Only available on the X3 Ultra and X7.
 
         Args:
             contrast (int): Set the contrast (-50..50), 0 is the default.
@@ -1298,7 +1306,7 @@ class Camera:
     def get_saturation(self) -> int:
         """Get the camera saturation.
 
-        Only available on Ultra.
+        Only available on the X3 Ultra and X7.
 
         Returns:
             The camera saturation.
@@ -1309,7 +1317,7 @@ class Camera:
     def set_saturation(self, saturation: int):
         """Set the camera saturation.
 
-        Only available on Ultra.
+        Only available on the X3 Ultra and X7.
 
         Args:
             saturation (int): Set the saturation (0..50), 8 is the default.
@@ -1326,7 +1334,7 @@ class Camera:
     def get_gamma(self) -> int:
         """Get the camera gamma.
 
-        Only available on Ultra.
+        Only available on the X3 Ultra and X7.
 
         Returns:
             The camera gamma.
@@ -1337,7 +1345,7 @@ class Camera:
     def set_gamma(self, gamma: int):
         """Set the camera gamma.
 
-        Only available on Ultra.
+        Only available on the X3 Ultra and X7.
 
         Args:
             gamma (int): Set the gamma (4..79), 22 is the default.
@@ -1354,7 +1362,7 @@ class Camera:
     def get_sharpness(self) -> int:
         """Get the camera sharpness.
 
-        Only available on Ultra.
+        Only available on the X3 Ultra and X7.
 
         Returns:
             The camera sharpness.
@@ -1365,7 +1373,7 @@ class Camera:
     def set_sharpness(self, sharpness: int):
         """Set the camera sharpness.
 
-        Only available on Ultra.
+        Only available on the X3 Ultra and X7.
 
         Args:
             sharpness (int): Set the sharpness (-20..20), -20 is the default.
@@ -1382,7 +1390,7 @@ class Camera:
     def get_backlight_compensation(self) -> int:
         """Get the camera backlight compensation.
 
-        Only available on Ultra.
+        Only available on the X3 Ultra and X7.
 
         Returns:
             The camera backlight compensation.
@@ -1393,7 +1401,7 @@ class Camera:
     def set_backlight_compensation(self, compensation: int):
         """Set the camera backlight compensation.
 
-        Only available on Ultra.
+        Only available on the X3 Ultra and X7.
 
         Args:
             compensation (int): Set the backlight compensation (-150..150), 10 is the default.
@@ -1410,7 +1418,7 @@ class Camera:
     def get_denoise(self) -> int:
         """Get the camera noise reduction.
 
-        Only available on Ultra.
+        Only available on the X3 Ultra and X7.
 
         Returns:
             The camera noise reduction.
@@ -1421,7 +1429,7 @@ class Camera:
     def set_denoise(self, denoise: int):
         """Set the camera noise reduction.
 
-        Only available on Ultra.
+        Only available on the X3 Ultra and X7.
 
         Args:
             denoise (int): Set the noise reduction (-20..20), -20 is the default.
@@ -1438,7 +1446,7 @@ class Camera:
     def is_ehdr_enabled(self) -> bool:
         """Get the state of the eHDR mode.
 
-        Only available on Ultra.
+        Only available on the X3 Ultra and X7.
 
         Returns:
             The current state of the eHDR mode.
@@ -1449,7 +1457,7 @@ class Camera:
     def enable_ehdr(self, enable_ehdr: bool):
         """Enable or disable the eHDR mode.
 
-        Only available on Ultra.
+        Only available on the X3 Ultra and X7.
 
         Args:
             enable_ehdr (bool): True to enable eHDR mode, False to disable it. Enabled by default.
@@ -1466,7 +1474,7 @@ class Camera:
     def get_ehdr_exposure_min_number(self) -> int:
         """Get the minimum number of eHDR frames.
 
-        Only available on Ultra.
+        Only available on the X3 Ultra and X7.
 
         Returns:
             The minimum number of eHDR frames.
@@ -1477,7 +1485,7 @@ class Camera:
     def set_ehdr_exposure_min_number(self, number: int):
         """Set the minimum number of eHDR frames.
 
-        Only available on Ultra.
+        Only available on the X3 Ultra and X7.
 
         Args:
             number (int): Set the minimum number of eHDR frames (1..4), 1 is the default.
@@ -1494,7 +1502,7 @@ class Camera:
     def get_ehdr_exposure_max_number(self) -> int:
         """Get the maximum number of eHDR frames.
 
-        Only available on Ultra.
+        Only available on the X3 Ultra and X7.
 
         Returns:
             The maximum number of eHDR frames.
@@ -1505,7 +1513,7 @@ class Camera:
     def set_ehdr_exposure_max_number(self, number: int):
         """Set the maximum number of eHDR frames.
 
-        Only available on Ultra.
+        Only available on the X3 Ultra and X7.
 
         Args:
             number (int): Set the maximum number of eHDR frames (1..4), 2 is the default. Setting
@@ -1548,7 +1556,7 @@ class Camera:
         except KeyError:
             raise RuntimeError(
                 "Drone reported an unsupported resolution: "
-                f"{_describe_enum(self._camera_parameters.resolution)}"
+                f"{describe_enum(self._camera_parameters.resolution)}"
             ) from None
 
     def set_resolution(self, resolution: int):
@@ -1686,7 +1694,7 @@ class Camera:
         except KeyError:
             raise RuntimeError(
                 "Drone reported an unsupported framerate: "
-                f"{_describe_enum(self._camera_parameters.framerate)}"
+                f"{describe_enum(self._camera_parameters.framerate)}"
             ) from None
 
     def set_framerate(self, framerate: int):
@@ -1695,8 +1703,8 @@ class Camera:
         Args:
             framerate (int): Set the camera frame rate in frames per second. Valid values are 25,
                 30 or 60. 25 fps is only supported on Pioneer/Pro/X1/X3, and 60 fps only on the
-                Ultra at 1440p or lower. If the requested frame rate is not supported at the
-                current resolution the drone reduces it while respecting the resolution.
+                X3 Ultra and X7 at 1440p or lower. If the requested frame rate is not supported
+                at the current resolution the drone reduces it while respecting the resolution.
 
         Raises:
             ValueError: If the frame rate is not 25, 30 or 60.
@@ -1725,7 +1733,7 @@ class Camera:
         Args:
             codec (blueye.protocol.RecordingCodec): Set the recording codec.
                 RECORDING_CODEC_UNSPECIFIED uses the platform default (H.264).
-                RECORDING_CODEC_H265 is only available on Ultra.
+                RECORDING_CODEC_H265 is only available on the X3 Ultra and X7.
 
         Raises:
             ValueError: If the codec is not a valid `blueye.protocol.RecordingCodec` type.
@@ -1899,7 +1907,7 @@ class Camera:
                 width, height = _RESOLUTION_TO_SIZE[resolution]
             except KeyError:
                 raise RuntimeError(
-                    f"Drone reported an unsupported resolution: {_describe_enum(resolution)}"
+                    f"Drone reported an unsupported resolution: {describe_enum(resolution)}"
                 ) from None
         else:
             try:
@@ -1910,6 +1918,188 @@ class Camera:
                     "blueye.protocol.Resolution or a (width, height) tuple"
                 ) from None
         return scale_calibration(calibration, width, height)
+
+    def _verify_4k_camera(self, feature: str):
+        """Check that `feature` can be used on this camera.
+
+        The turbidity and color correction filters and digital pan, tilt and zoom exist on the
+        main camera of the X3 Ultra and X7, and the drone handles their messages from Blunux
+        5.0.0. A drone whose model is not known yet is let through, the drone then ignores the
+        message if it does not apply.
+
+        Raises:
+            RuntimeError: If this is the guestport camera, the drone runs a Blunux version older
+                than 5.0.0, or the drone is known to be neither an X3 Ultra nor an X7.
+        """
+        if self._is_guestport_camera:
+            raise RuntimeError(f"{feature} is only available on the main camera")
+        self._parent_drone._verify_required_blunux_version("5.0.0")
+        if self._parent_drone.is_jetson_platform() is False:
+            raise RuntimeError(f"{feature} is only available on the X3 Ultra and X7")
+
+    @staticmethod
+    def _verify_in_range(name: str, value: float, low: float, high: float):
+        if not low <= value <= high:
+            raise ValueError(f"{name} must be between {low} and {high}, got {value}")
+
+    def get_turbidity_filter(self) -> Optional[blueye.protocol.FilterMessage]:
+        """Get the turbidity filter settings of the main camera.
+
+        The turbidity filter runs contrast limited adaptive histogram equalisation (CLAHE) on
+        the video, which brings out detail in turbid water. Only available on the X3 Ultra and
+        X7.
+
+        The drone publishes `TurbidityFilterTel` when the settings change rather than at a fixed
+        rate. The value is the last change seen since connecting, and the drone is asked for its
+        current settings if there has been none.
+
+        Returns:
+            The filter settings with `enabled` and `intensity` (0..1), or None if the drone has
+            not reported any, as is the case for older models and the guestport camera.
+        """
+        if self._is_guestport_camera:
+            return None
+        tel = self._parent_drone.telemetry.get(blueye.protocol.TurbidityFilterTel)
+        if tel is None:
+            return None
+        return tel.turbidity_filter
+
+    def set_turbidity_filter(self, enabled: bool, intensity: float):
+        """Set the turbidity filter on the main camera.
+
+        See [`get_turbidity_filter`][blueye.sdk.camera.Camera.get_turbidity_filter] for what the
+        filter does.
+
+        Args:
+            enabled (bool): Whether the filter is enabled.
+            intensity (float): How strongly the filter is applied (0..1).
+
+        Raises:
+            ValueError: If the intensity is outside 0..1.
+            RuntimeError: If this is the guestport camera, the drone runs Blunux older than
+                5.0.0, or the drone is neither an X3 Ultra nor an X7.
+        """
+        self._verify_4k_camera("The turbidity filter")
+        self._verify_in_range("Turbidity filter intensity", intensity, 0.0, 1.0)
+        self._parent_drone._ctrl_client.set_turbidity_filter(enabled, intensity)
+
+    def get_color_correction(self) -> Optional[blueye.protocol.FilterMessage]:
+        """Get the color correction filter settings of the main camera.
+
+        The color correction filter restores the red and blue balance that water absorbs with
+        depth, driven by the depth and the scene. Only available on the X3 Ultra and X7.
+
+        The drone publishes `ColorCorrectionTel` when the settings change rather than at a fixed
+        rate. The value is the last change seen since connecting, and the drone is asked for its
+        current settings if there has been none.
+
+        Returns:
+            The filter settings with `enabled` and `intensity` (0..1), or None if the drone has
+            not reported any, as is the case for older models and the guestport camera.
+        """
+        if self._is_guestport_camera:
+            return None
+        tel = self._parent_drone.telemetry.get(blueye.protocol.ColorCorrectionTel)
+        if tel is None:
+            return None
+        return tel.color_correction_filter
+
+    def set_color_correction(self, enabled: bool, intensity: float):
+        """Set the color correction filter on the main camera.
+
+        See [`get_color_correction`][blueye.sdk.camera.Camera.get_color_correction] for what the
+        filter does.
+
+        Args:
+            enabled (bool): Whether the filter is enabled.
+            intensity (float): How much of the correction is applied, 0 leaves the image as is
+                and 1 applies the full correction.
+
+        Raises:
+            ValueError: If the intensity is outside 0..1.
+            RuntimeError: If this is the guestport camera, the drone runs Blunux older than
+                5.0.0, or the drone is neither an X3 Ultra nor an X7.
+        """
+        self._verify_4k_camera("Color correction")
+        self._verify_in_range("Color correction intensity", intensity, 0.0, 1.0)
+        self._parent_drone._ctrl_client.set_color_correction(enabled, intensity)
+
+    def get_pan_tilt_zoom(self) -> Optional[blueye.protocol.CameraPanTiltZoom]:
+        """Get the digital pan, tilt and zoom state of the main camera.
+
+        The 4K camera in the X3 Ultra and X7 can crop and scale its sensor image, which gives a
+        digital pan, tilt and zoom with no moving parts. The drone reports the state it has
+        applied in `CameraPanTiltZoomTel`, published when the state changes.
+
+        Returns:
+            The state with `pan` (-1..1), `tilt` (-1..1) and `zoom` (0..1), where 0 is centred and
+            not zoomed, or None if the drone has not reported any, as is the case for older
+            models and the guestport camera.
+        """
+        if self._is_guestport_camera:
+            return None
+        tel = self._parent_drone.telemetry.get(blueye.protocol.CameraPanTiltZoomTel)
+        if tel is None:
+            return None
+        return tel.camera_pan_tilt_zoom
+
+    def set_pan_tilt_zoom(
+        self,
+        pan: Optional[float] = None,
+        tilt: Optional[float] = None,
+        zoom: Optional[float] = None,
+    ):
+        """Set the digital pan, tilt and zoom of the main camera.
+
+        The three values are sent together in one message. An argument that is left out keeps
+        the value this object last sent. Before the first call it keeps the value the drone last
+        reported, or 0 if it has not reported one. The drone reports a change about 0.1 s after
+        the command, which is why the last sent values are used rather than the report: two
+        calls in a row would otherwise undo each other. A change made by another client after
+        the last call from this object is not picked up; pass all three values to be sure. Pan
+        and tilt only have an effect while zoomed in, since at zoom 0 the whole sensor image is
+        already shown.
+
+        Laser dot tracking works on the full, unzoomed image, so
+        [`enable_tracking`][blueye.sdk.guestport.Laser.enable_tracking] resets pan, tilt and
+        zoom to 0 when it starts, as the Blueye app does.
+
+        Args:
+            pan (float, optional): Horizontal pan (-1..1), 0 is centred.
+            tilt (float, optional): Vertical tilt (-1..1), 0 is centred.
+            zoom (float, optional): Zoom level (0..1), 0 is no zoom.
+
+        Raises:
+            ValueError: If pan or tilt is outside -1..1, or zoom is outside 0..1.
+            RuntimeError: If this is the guestport camera, the drone runs Blunux older than
+                5.0.0, or the drone is neither an X3 Ultra nor an X7.
+        """
+        self._verify_4k_camera("Digital pan, tilt and zoom")
+        if pan is not None:
+            self._verify_in_range("Pan", pan, -1.0, 1.0)
+        if tilt is not None:
+            self._verify_in_range("Tilt", tilt, -1.0, 1.0)
+        if zoom is not None:
+            self._verify_in_range("Zoom", zoom, 0.0, 1.0)
+        if None in (pan, tilt, zoom):
+            if self._last_pan_tilt_zoom is not None:
+                current = self._last_pan_tilt_zoom
+            else:
+                reported = self.get_pan_tilt_zoom()
+                current = (
+                    (reported.pan, reported.tilt, reported.zoom)
+                    if reported is not None
+                    else (0.0, 0.0, 0.0)
+                )
+            pan = current[0] if pan is None else pan
+            tilt = current[1] if tilt is None else tilt
+            zoom = current[2] if zoom is None else zoom
+        self._send_pan_tilt_zoom(pan, tilt, zoom)
+
+    def _send_pan_tilt_zoom(self, pan: float, tilt: float, zoom: float):
+        """Send pan, tilt and zoom and remember them for the next partial call."""
+        self._parent_drone._ctrl_client.set_camera_pan_tilt_zoom(pan, tilt, zoom)
+        self._last_pan_tilt_zoom = (pan, tilt, zoom)
 
     def take_picture(self):
         """Take a still picture and store it locally on the drone.

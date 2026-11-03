@@ -75,6 +75,16 @@ def open_local_documentation():
     webbrowser.open(documentation_path)
 
 
+def describe_enum(value) -> str:
+    """Render a protocol enum value for a log or error message.
+
+    A drone running a newer Blunux than the SDK can report an enum value this build does not
+    know, and proto-plus surfaces those as a plain int rather than an enum member. Fall back to
+    `UNKNOWN(<number>)` so the message still says which value was received.
+    """
+    return getattr(value, "name", f"UNKNOWN({value})")
+
+
 def deserialize_any_to_message(msg: Any) -> Tuple[proto.message.MessageMeta, proto.message.Message]:
     """Deserialize a protobuf Any message to a concrete message type.
 

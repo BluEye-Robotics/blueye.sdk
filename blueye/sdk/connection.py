@@ -5,6 +5,8 @@ import logging
 import platform
 import queue
 import threading
+import time
+import warnings
 import uuid
 from typing import Any, Callable, Dict, List, NamedTuple, Tuple
 
@@ -32,7 +34,13 @@ class WatchdogPublisher(threading.Thread):
         self._exit_flag = threading.Event()
 
     def run(self):
-        """Run the watchdog publisher thread."""
+        """Run the watchdog publisher thread.
+
+        The first pet goes out after a second, not at once. The control socket that carries the
+        zero setpoint sent on connect has only just been opened, and a PUB socket can drop what
+        it is given before its subscription is set up, so the delay gives the zero a head
+        start. The drone pets its own watchdog on a control handover anyway.
+        """
         duration = 0
         WATCHDOG_DELAY = 1
         while not self._exit_flag.wait(WATCHDOG_DELAY):
@@ -42,9 +50,15 @@ class WatchdogPublisher(threading.Thread):
     def pet_watchdog(self, duration):
         """Send a watchdog message.
 
+        Nothing is sent before the drone has handed out a client id. A pet with client id 0
+        counts as the client in control whenever nobody is, so an unregistered client must stay
+        quiet.
+
         Args:
             duration (int): The duration of the connection.
         """
+        if self._parent_drone.client_id is None:
+            return
         msg = blueye.protocol.WatchdogCtrl(
             connection_duration={"value": duration}, client_id=self._parent_drone.client_id
         )
@@ -96,6 +110,7 @@ class TelemetryClient(threading.Thread):
         self._socket.setsockopt_string(zmq.SUBSCRIBE, "")
         self._exit_flag = threading.Event()
         self._state_lock = threading.Lock()
+        self._callbacks_lock = threading.Lock()
         self._callbacks: List[Callback] = []
         self._state: Dict[proto.message.Message, bytes] = {}
         """`_state` is dictionary of the latest received messages, where the key is the protobuf
@@ -119,13 +134,25 @@ class TelemetryClient(threading.Thread):
         msg_payload = msg[1]
         with self._state_lock:
             self._state[msg_type] = msg_payload
-        for callback in self._callbacks:
+        # Iterate over a snapshot so a callback can add or remove callbacks (including itself)
+        # without skipping the next entry in the list.
+        with self._callbacks_lock:
+            callbacks = list(self._callbacks)
+        for callback in callbacks:
             if msg_type in callback.message_filter or callback.message_filter == []:
-                if callback.pass_raw_data:
-                    callback.function(msg_type_name, msg_payload, **callback.kwargs)
-                else:
-                    msg_deserialized = msg_type.deserialize(msg_payload)
-                    callback.function(msg_type_name, msg_deserialized, **callback.kwargs)
+                # An exception from one callback must not take down the telemetry thread, which
+                # would silently freeze every telemetry getter at the last cached value.
+                try:
+                    if callback.pass_raw_data:
+                        callback.function(msg_type_name, msg_payload, **callback.kwargs)
+                    else:
+                        msg_deserialized = msg_type.deserialize(msg_payload)
+                        callback.function(msg_type_name, msg_deserialized, **callback.kwargs)
+                except Exception:
+                    logger.exception(
+                        f"Telemetry callback {callback.function!r} raised on {msg_type_name}, "
+                        "ignoring"
+                    )
 
     def run(self):
         """Run the telemetry client thread."""
@@ -158,7 +185,8 @@ class TelemetryClient(threading.Thread):
             str: The UUID of the callback in hexadecimal format.
         """
         uuid_hex = uuid.uuid1().hex
-        self._callbacks.append(Callback(msg_filter, callback_function, raw, uuid_hex, kwargs))
+        with self._callbacks_lock:
+            self._callbacks.append(Callback(msg_filter, callback_function, raw, uuid_hex, kwargs))
         return uuid_hex
 
     def remove_callback(self, callback_id: str):
@@ -167,10 +195,12 @@ class TelemetryClient(threading.Thread):
         Args:
             callback_id (str): The UUID of the callback to remove.
         """
-        try:
-            self._callbacks.pop([cb.uuid_hex for cb in self._callbacks].index(callback_id))
-        except ValueError:
-            logger.warning(f"Callback with id {callback_id} not found, ignoring")
+        with self._callbacks_lock:
+            for index, callback in enumerate(self._callbacks):
+                if callback.uuid_hex == callback_id:
+                    del self._callbacks[index]
+                    return
+        logger.warning(f"Callback with id {callback_id} not found, ignoring")
 
     def get(self, key: proto.message.Message) -> bytes:
         """Get the latest received message of a specific type.
@@ -216,18 +246,44 @@ class CtrlClient(threading.Thread):
         while not self._exit_flag.is_set():
             try:
                 msg = self._messages_to_send.get(timeout=0.1)
+            except queue.Empty:
+                continue
+            try:
                 self._drone_pub_socket.send_multipart(
                     [
                         bytes(msg._pb.DESCRIPTOR.full_name, "utf-8"),
                         msg.__class__.serialize(msg),
                     ]
                 )
-            except queue.Empty:
-                # No messages to send, so we can
-                continue
+            finally:
+                self._messages_to_send.task_done()
+
+    def flush(self, timeout: float = 1.0) -> bool:
+        """Wait until every queued control message has been handed to the socket.
+
+        The messages are sent from the thread, so a message queued right before
+        [`stop`][blueye.sdk.connection.CtrlClient.stop] or
+        [`disconnect`][blueye.sdk.drone.Drone.disconnect] would otherwise be lost.
+
+        Args:
+            timeout (float, optional): Seconds to wait for the queue to drain.
+
+        Returns:
+            True if the queue is empty, False if it still held messages when the time ran out.
+        """
+        deadline = time.monotonic() + timeout
+        q = self._messages_to_send
+        with q.all_tasks_done:
+            while q.unfinished_tasks:
+                remaining = deadline - time.monotonic()
+                if remaining <= 0 or not q.all_tasks_done.wait(remaining):
+                    return False
+        return True
 
     def stop(self):
-        """Stop the control client thread."""
+        """Stop the control client thread, after sending what is still queued."""
+        if self.is_alive() and not self.flush():
+            logger.warning("Control messages were still queued when the connection was closed")
         self._exit_flag.set()
 
     def set_lights(self, value: float):
@@ -386,14 +442,56 @@ class CtrlClient(threading.Thread):
         )
         self._messages_to_send.put(msg)
 
-    def set_laser_intensity(self, intensity: float):
+    def set_laser_intensity(self, intensity: float, modulated: bool = False):
         """Set the laser intensity.
 
         Args:
             intensity (float): The laser intensity value.
+            modulated (bool, optional): Modulate the laser at 5 Hz for dot tracking.
         """
-        msg = blueye.protocol.LaserCtrl(laser={"value": intensity})
+        msg = blueye.protocol.LaserCtrl(laser={"value": intensity, "modulated": modulated})
         self._messages_to_send.put(msg)
+
+    def set_turbidity_filter(self, enabled: bool, intensity: float):
+        """Set the turbidity filter on the main camera.
+
+        Args:
+            enabled (bool): Whether the filter is enabled.
+            intensity (float): The filter intensity (0..1).
+        """
+        msg = blueye.protocol.SetTurbidityFilterCtrl(
+            turbidity_filter={"enabled": enabled, "intensity": intensity}
+        )
+        self._messages_to_send.put(msg)
+
+    def set_color_correction(self, enabled: bool, intensity: float):
+        """Set the color correction filter on the main camera.
+
+        Args:
+            enabled (bool): Whether the filter is enabled.
+            intensity (float): The filter intensity (0..1).
+        """
+        msg = blueye.protocol.SetColorCorrectionCtrl(
+            color_correction_filter={"enabled": enabled, "intensity": intensity}
+        )
+        self._messages_to_send.put(msg)
+
+    def set_camera_pan_tilt_zoom(self, pan: float, tilt: float, zoom: float):
+        """Set the digital pan, tilt and zoom of the main camera.
+
+        Args:
+            pan (float): Horizontal pan (-1..1), 0 is centre.
+            tilt (float): Vertical tilt (-1..1), 0 is centre.
+            zoom (float): Zoom level (0..1), 0 is no zoom.
+        """
+        msg = blueye.protocol.CameraPanTiltZoomCtrl(
+            camera_pan_tilt_zoom={"pan": pan, "tilt": tilt, "zoom": zoom}
+        )
+        self._messages_to_send.put(msg)
+
+    def rescan_cv_models(self):
+        """Ask the drone to rescan the installed computer vision model packages."""
+        self._messages_to_send.put(blueye.protocol.RescanCvModelsCtrl())
 
     def run_mission(self):
         msg = blueye.protocol.RunMissionCtrl()
@@ -416,19 +514,39 @@ class CtrlClient(threading.Thread):
         msg = blueye.protocol.MultibeamServoCtrl(servo={"angle": angle})
         self._messages_to_send.put(msg)
 
-    def set_generic_servo_angle(
-        self, angle: float, gp_number: blueye.protocol.GuestPortNumber
+    def set_generic_servo_position(
+        self, position: float, gp_number: blueye.protocol.GuestPortNumber
     ) -> None:
-        """Set the angle of a generic servo on the guest port.
+        """Set the position of a generic servo on a guest port.
 
         Args:
-            angle (float): The angle in degrees.
+            position (float): The position (0..1), the drone clamps values outside that range.
             gp_number (blueye.protocol.GuestPortNumber): The guest port number.
         """
         msg = blueye.protocol.GenericServoCtrl(
-            servo={"value": angle, "guest_port_number": gp_number}
+            servo={"value": position, "guest_port_number": gp_number}
         )
         self._messages_to_send.put(msg)
+
+    def set_generic_servo_angle(
+        self, angle: float, gp_number: blueye.protocol.GuestPortNumber
+    ) -> None:
+        """Set the position of a generic servo from an angle in -90..90 degrees.
+
+        Deprecated, the protocol takes a 0..1 position and not an angle. Use
+        [`set_generic_servo_position`][blueye.sdk.connection.CtrlClient.set_generic_servo_position].
+
+        Args:
+            angle (float): The angle in degrees (-90..90), mapped linearly onto 0..1.
+            gp_number (blueye.protocol.GuestPortNumber): The guest port number.
+        """
+        warnings.warn(
+            "`CtrlClient.set_generic_servo_angle` is deprecated and will be removed in the next "
+            "major version. Use `CtrlClient.set_generic_servo_position()` instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        self.set_generic_servo_position((angle + 90) / 180, gp_number)
 
 
 class ReqRepClient(threading.Thread):
@@ -485,24 +603,45 @@ class ReqRepClient(threading.Thread):
 
     def run(self):
         """Run the request-reply client thread."""
-        while not self._exit_flag.is_set():
-            try:
-                msg, response_type, response_callback_queue = self._requests_to_send.get(
-                    timeout=0.1
-                )
-                self._socket.send_multipart(
-                    [
-                        bytes(msg._pb.DESCRIPTOR.full_name, "utf-8"),
-                        msg.__class__.serialize(msg),
-                    ]
-                )
-            except queue.Empty:
-                # No requests to send, so we can
-                continue
-            # TODO: Deal with timeout
-            resp = self._socket.recv_multipart()
-            resp_deserialized = response_type.deserialize(resp[1])
-            response_callback_queue.put(resp_deserialized)
+        try:
+            while not self._exit_flag.is_set():
+                try:
+                    msg, response_type, response_callback_queue = self._requests_to_send.get(
+                        timeout=0.1
+                    )
+                    self._socket.send_multipart(
+                        [
+                            bytes(msg._pb.DESCRIPTOR.full_name, "utf-8"),
+                            msg.__class__.serialize(msg),
+                        ]
+                    )
+                except queue.Empty:
+                    # No requests to send, so we can
+                    continue
+                # TODO: Deal with timeout
+                if not self._wait_for_reply():
+                    break
+                resp = self._socket.recv_multipart()
+                resp_deserialized = response_type.deserialize(resp[1])
+                response_callback_queue.put(resp_deserialized)
+        finally:
+            # A failed connect() leaves no reference to this client behind, so close the socket
+            # here rather than leave its file descriptors to the garbage collector
+            self._socket.close(linger=0)
+
+    def _wait_for_reply(self) -> bool:
+        """Wait for the reply to the request just sent, in short steps so that stop() is seen.
+
+        A drone that never answers would otherwise keep the thread, and its socket, alive for as
+        long as the script runs, one more for every failed connect() in a retry loop.
+
+        Returns:
+            bool: True when the reply has arrived, False when the thread was stopped first.
+        """
+        while not self._socket.poll(100):
+            if self._exit_flag.is_set():
+                return False
+        return True
 
     def stop(self):
         """Stop the request-reply client thread."""
