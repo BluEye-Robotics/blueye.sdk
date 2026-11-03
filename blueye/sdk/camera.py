@@ -1593,7 +1593,18 @@ class Camera:
         self._camera_parameters.resolution = _HEIGHT_TO_RESOLUTION[resolution]
         self._parent_drone._req_rep_client.set_camera_parameters(self._camera_parameters)
 
-    resolution = deprecated_property("get_resolution", "set_resolution")
+    resolution = deprecated_property(
+        "get_resolution",
+        "set_resolution",
+        doc=(
+            "Deprecated since v2.8.0, removed in v3. Drones running Blunux 4.4 or newer ignore "
+            "this resolution: use `Camera.get_stream_resolution()` and "
+            "`Camera.set_stream_resolution()`, or `Camera.get_recording_resolution()` and "
+            "`Camera.set_recording_resolution()`. The property maps to `Camera.get_resolution()` "
+            "and `Camera.set_resolution()`, which are deprecated as well. See the deprecated "
+            "properties page in the documentation."
+        ),
+    )
 
     def get_stream_resolution(self) -> blueye.protocol.Resolution:
         """Get the camera stream resolution.
