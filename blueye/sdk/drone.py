@@ -189,7 +189,11 @@ class Telemetry:
 
         The log frequency is independent of the publish frequency, so a message can be logged at a
         higher rate than it is published to clients, or the other way around. Like the publish
-        frequency it is shared by every client and stays in effect until the drone reboots.
+        frequency it is shared by every client and stays in effect until the drone reboots, with
+        one exception: on the X3 Ultra and X7 a multibeam recording raises the log rate of
+        `PositionEstimateTel`, `AttitudeTel`, `CalibratedImuTel`, `CalibratedImuHpTel`,
+        `DepthTel` and `AltitudeTel` while it runs and restores their defaults when it stops,
+        which replaces a rate set here for those six.
 
         Args:
             msg (proto.message.Message): The message to set the log frequency of. Needs to be one

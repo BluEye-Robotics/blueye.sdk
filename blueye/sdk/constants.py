@@ -14,6 +14,7 @@ controls it offers (no hue control, 60 fps support, main camera calibration publ
 
 EVENT_DRIVEN_TELEMETRY = frozenset(
     {
+        bp.AnnotationTel,
         bp.AquaTrollProbeMetadataTel,
         bp.AquaTrollSensorMetadataTel,
         bp.AquaTrollSensorParametersTel,
@@ -32,8 +33,8 @@ EVENT_DRIVEN_TELEMETRY = frozenset(
 )
 """Telemetry messages the drone publishes when their data arrives rather than on a timer.
 
-A new sonar ping, a detection, a changed camera filter or a plugged-in storage device is
-published as it happens, so these messages have no publish frequency and
+A new sonar ping, a detection, a dive annotation, a changed camera filter or a plugged-in
+storage device is published as it happens, so these messages have no publish frequency and
 [`set_msg_publish_frequency`][blueye.sdk.drone.Telemetry.set_msg_publish_frequency] raises for
 them. Messages from peripherals are also only published while the peripheral is connected.
 """

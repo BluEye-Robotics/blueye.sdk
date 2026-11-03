@@ -22,6 +22,8 @@ On Blunux versions older than 5.1, changing a rate could stop the drone from pub
 ## Adjusting the logging frequency of a telemetry message
 The drone writes telemetry to the dive log at its own rate, separate from the publish rate. [`set_msg_log_frequency`][blueye.sdk.drone.Telemetry.set_msg_log_frequency] changes how often a message is logged, for example to get IMU or DVL data at a higher rate in the log without sending it to every client at that rate. It requires Blunux 5.1 or newer and takes the same frequency range as the publish frequency.
 
+On the X3 Ultra and X7 a multibeam recording raises the log rate of six messages while it runs (`PositionEstimateTel`, `AttitudeTel`, `CalibratedImuTel`, `CalibratedImuHpTel`, `DepthTel` and `AltitudeTel`) and restores their defaults when it stops. A rate set for one of those is replaced both times.
+
 ## Example
 The following example illustrates how can use a callback to print the depth reported by the drone.
 
