@@ -595,6 +595,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../video/recording-and-stills/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Recording video and taking pictures
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../video/downloading/" class="md-nav__link">
         
   
@@ -2215,15 +2243,18 @@
 <p>See <a href="../movement/from-the-CLI/#auto-modes-and-what-they-need">the movement page</a> for the auto modes and <a href="../mission-planning/#sensor-requirements">Mission planning</a> for the instructions.</p>
 <h2 id="external-camera">External camera</h2>
 <p>If the drone has a camera attached, the <code>Drone</code> class will have an <code>external_camera</code> attribute that is a <a class="autorefs autorefs-internal" title="            GuestPortCamera" href="../reference/blueye/sdk/guestport/#blueye.sdk.guestport.GuestPortCamera"><code>GuestPortCamera</code></a> object. This object can be used to control the camera.</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Capture an image from the external camera</span>
-<span class="n">drone</span><span class="o">.</span><span class="n">external_camera</span><span class="o">.</span><span class="n">take_picture</span><span class="p">()</span>
-
-<span class="c1"># Set bitrate for external camera to 2 Mbps</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Set bitrate for external camera to 2 Mbps</span>
 <span class="n">drone</span><span class="o">.</span><span class="n">external_camera</span><span class="o">.</span><span class="n">set_bitrate</span><span class="p">(</span><span class="mi">2_000_000</span><span class="p">)</span>
 
-<span class="c1"># Start recording video from the external camera</span>
+<span class="c1"># Start recording video from the external camera. The main camera and the multibeam keep</span>
+<span class="c1"># whatever they were doing.</span>
 <span class="n">drone</span><span class="o">.</span><span class="n">external_camera</span><span class="o">.</span><span class="n">set_recording</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Take a picture. The drone has one picture command for both cameras, so this captures from</span>
+<span class="c1"># the main camera and the external camera in one go, as drone.camera.take_picture() does.</span>
+<span class="n">drone</span><span class="o">.</span><span class="n">external_camera</span><span class="o">.</span><span class="n">take_picture</span><span class="p">()</span>
 </code></pre></div>
+<p>See <a href="../video/recording-and-stills/">Recording video and taking pictures</a> for the details.</p>
 <h2 id="external-light">External light</h2>
 <p>If the drone has an external light attached, the <code>Drone</code> class will have an <code>external_light</code> attribute that is a <a class="autorefs autorefs-internal" title="            GuestPortLight" href="../reference/blueye/sdk/guestport/#blueye.sdk.guestport.GuestPortLight"><code>GuestPortLight</code></a> object. This object can be used to control the light.</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Get the current intensity of the external light</span>
