@@ -116,7 +116,7 @@ nav:
   - "Drone model and hardware": "drone-info.md"
   - "Peripherals": "peripherals.md"
   - "Visualize live sensor data": "foxglove-bridge.md"
-  - "Forwarding positioning to NMEA": "nmea-publisher.md"
+  - "NMEA position and heading": "nmea-publisher.md"
   - "Mission Planning": "mission-planning.md"
   - "The blueye CLI": "cli.md"
   - "Odometer forwarding": odometer-to-831l.md
