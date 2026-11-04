@@ -27,10 +27,10 @@ def parse_to_dataframe(log: LogFile | Path) -> pd.DataFrame:
 
 
 if __name__ == "__main__":
-    d = Drone()
-    log = d.logs[0]
-    df_from_logfile = parse_to_dataframe(log)
-    path = Path("/tmp/logfile.bez")
-    log.download(output_path=path)
-    df_from_path = parse_to_dataframe(path)
-    assert df_from_logfile.equals(df_from_path)
+    with Drone(connect_as_observer=True) as d:
+        log = d.logs[0]
+        df_from_logfile = parse_to_dataframe(log)
+        path = Path("/tmp/logfile.bez")
+        log.download(output_path=path)
+        df_from_path = parse_to_dataframe(path)
+        assert df_from_logfile.equals(df_from_path)
