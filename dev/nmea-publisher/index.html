@@ -23,7 +23,7 @@
     
     
       
-        <title>Forwarding positioning to NMEA - Blueye SDK</title>
+        <title>NMEA position and heading - Blueye SDK</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#nmea-position-publisher" class="md-skip">
+        <a href="#nmea-position-and-heading" class="md-skip">
           Skip to content
         </a>
       
@@ -146,7 +146,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-            Forwarding positioning to NMEA
+            NMEA position and heading
             
           </span>
         </div>
@@ -1024,6 +1024,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NMEA position and heading
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -1031,7 +1049,7 @@
   <span class="md-ellipsis">
     
   
-    Forwarding positioning to NMEA
+    NMEA position and heading
   
 
     
@@ -1040,6 +1058,86 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#forwarding-the-drones-position" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Forwarding the drone's position
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#forwarding-heading-to-a-serial-port" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Forwarding heading to a serial port
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#feeding-an-external-position-to-the-drone" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Feeding an external position to the drone
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Feeding an external position to the drone">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#checking-that-the-drone-receives-the-fixes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Checking that the drone receives the fixes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shared-sentence-formatting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shared sentence formatting
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1868,6 +1966,75 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#forwarding-the-drones-position" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Forwarding the drone's position
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#forwarding-heading-to-a-serial-port" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Forwarding heading to a serial port
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#feeding-an-external-position-to-the-drone" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Feeding an external position to the drone
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Feeding an external position to the drone">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#checking-that-the-drone-receives-the-fixes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Checking that the drone receives the fixes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shared-sentence-formatting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shared sentence formatting
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1886,86 +2053,253 @@
   
 
 
-<h1 id="nmea-position-publisher">NMEA Position Publisher</h1>
-<p>This example shows how one can use the blueye.sdk to forward position messages from the drone as NMEA 0183 messages, eg. to use in a chart plotter on a boat, etc.</p>
-<p>The script performs the following steps:</p>
-<ol>
-<li><strong>UDP Configuration</strong>: Sets up the UDP IP and port for sending NMEA messages. If your receiver expects to receive data on a different port you need to change it here</li>
-<li><strong>Drone Connection</strong>: Establishes a connection to the Blueye drone.</li>
-<li><strong>Callback Registration</strong>: Registers a callback function to handle position estimate telemetry messages.</li>
-<li><strong>Main Loop</strong>: Keeps the script running to continuously receive and send messages.</li>
-</ol>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+<h1 id="nmea-position-and-heading">NMEA position and heading</h1>
+<p>This page includes example Python scripts for forwarding the drone's position and heading to NMEA receivers, and for sending an external positioning system's fixes to the drone. Each script is shown below with its filename linked to a copy bundled with this documentation version. These links also work in the SDK's installed, offline documentation.</p>
+<p><a href="../examples.zip">Download all examples</a> and extract the archive, or save the individual example and the shared <code>nmea_utils.py</code> helper shown at the end of this page in the same directory. Use the SDK version that matches these docs. If you need the example dependencies, install <code>"blueye.sdk[examples]==&lt;version&gt;"</code>, replacing <code>&lt;version&gt;</code> with that SDK version. This keeps the SDK pinned while adding the dependencies.</p>
+<p>The scripts use NMEA 0183 sentences with an XOR checksum (<code>*hh</code>) and a CRLF terminator. Coordinates are decimal degrees in Python and unsigned degrees/minutes plus hemisphere letters in the sentences.</p>
+<h2 id="forwarding-the-drones-position">Forwarding the drone's position</h2>
+<p>The <code>nmea_publisher.py</code> example below subscribes to <code>PositionEstimateTel</code> as an observer and sends GPGLL sentences to a chart plotter or other UDP receiver. It carries the position estimate's validity flag as <code>A</code> (valid) or <code>V</code> (invalid). Non-finite or out-of-range coordinates are skipped.</p>
+<p>The default destination is the surface-unit subnet's broadcast address, <code>192.168.1.255</code>, on port <strong>10111</strong>. Change it to your receiver's address and port. Do not broadcast these estimates to port 10110: that is the drone's position input, and feeding its output back into that input creates a feedback loop. If a chart plotter requires port 10110, send directly to the plotter's IP address.</p>
+<p><a href="../examples/nmea_publisher.py"><code>examples/nmea_publisher.py</code></a> <a href="https://github.com/BluEye-Robotics/blueye.sdk/blob/a4d34ef787df3dcce5e9f1647092d90e8473c20b/examples/nmea_publisher.py" title="View source on GitHub at a4d34ef7"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg></span></a></p>
+<div class="highlight"><pre><span></span><code><span class="sd">&quot;&quot;&quot;Forward the drone&#39;s position estimate to an NMEA UDP receiver.&quot;&quot;&quot;</span>
+
 <span class="kn">import</span><span class="w"> </span><span class="nn">socket</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+
 <span class="kn">import</span><span class="w"> </span><span class="nn">blueye.protocol</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">bp</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drone</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">nmea_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">nmea_gll</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">nmea_sentence</span><span class="p">(</span><span class="n">lat</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">lon</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">valid</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate an NMEA 0183 sentence for the given latitude and longitude.&quot;&quot;&quot;</span>
-    <span class="n">lat_deg</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span>
-    <span class="n">lat_min</span> <span class="o">=</span> <span class="p">(</span><span class="n">lat</span> <span class="o">-</span> <span class="n">lat_deg</span><span class="p">)</span> <span class="o">*</span> <span class="mi">60</span>
-    <span class="n">lon_deg</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">lon</span><span class="p">)</span>
-    <span class="n">lon_min</span> <span class="o">=</span> <span class="p">(</span><span class="n">lon</span> <span class="o">-</span> <span class="n">lon_deg</span><span class="p">)</span> <span class="o">*</span> <span class="mi">60</span>
-
-    <span class="n">lat_hemisphere</span> <span class="o">=</span> <span class="s2">&quot;N&quot;</span> <span class="k">if</span> <span class="n">lat</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="k">else</span> <span class="s2">&quot;S&quot;</span>
-    <span class="n">lon_hemisphere</span> <span class="o">=</span> <span class="s2">&quot;E&quot;</span> <span class="k">if</span> <span class="n">lon</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="k">else</span> <span class="s2">&quot;W&quot;</span>
-    <span class="n">is_valid</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span> <span class="k">if</span> <span class="n">valid</span> <span class="k">else</span> <span class="s2">&quot;V&quot;</span>
-
-    <span class="c1"># Get current UTC time with fractional seconds</span>
-    <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
-    <span class="n">utc_time</span> <span class="o">=</span> <span class="n">now</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%H%M%S&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;.</span><span class="si">{</span><span class="n">now</span><span class="o">.</span><span class="n">microsecond</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="mi">10000</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">&quot;</span>
-
-    <span class="k">return</span> <span class="p">(</span>
-        <span class="sa">f</span><span class="s2">&quot;$GPGLL,</span><span class="si">{</span><span class="n">lat_deg</span><span class="si">:</span><span class="s2">02d</span><span class="si">}{</span><span class="n">lat_min</span><span class="si">:</span><span class="s2">07.4f</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">lat_hemisphere</span><span class="si">}</span><span class="s2">,&quot;</span>
-        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">lon_deg</span><span class="si">:</span><span class="s2">03d</span><span class="si">}{</span><span class="n">lon_min</span><span class="si">:</span><span class="s2">07.4f</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">lon_hemisphere</span><span class="si">}</span><span class="s2">,&quot;</span>
-        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">utc_time</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">is_valid</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="p">)</span>
+<span class="c1"># Broadcast within the surface-unit subnet. Change this to your receiver&#39;s IP if needed.</span>
+<span class="n">UDP_IP</span> <span class="o">=</span> <span class="s2">&quot;192.168.1.255&quot;</span>
+<span class="c1"># Do not broadcast to 10110: the drone would consume its own position output as input.</span>
+<span class="n">UDP_PORT</span> <span class="o">=</span> <span class="mi">10111</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">callback_position_estimate</span><span class="p">(</span>
     <span class="n">msg_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="n">bp</span><span class="o">.</span><span class="n">PositionEstimateTel</span><span class="p">,</span> <span class="n">udp_socket</span><span class="p">:</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Callback for the PositionEstimateTel message.&quot;&quot;&quot;</span>
-    <span class="n">position_estimate</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">position_estimate</span>
-    <span class="n">lat</span> <span class="o">=</span> <span class="n">position_estimate</span><span class="o">.</span><span class="n">global_position</span><span class="o">.</span><span class="n">latitude</span>
-    <span class="n">lon</span> <span class="o">=</span> <span class="n">position_estimate</span><span class="o">.</span><span class="n">global_position</span><span class="o">.</span><span class="n">longitude</span>
-    <span class="n">is_valid</span> <span class="o">=</span> <span class="n">position_estimate</span><span class="o">.</span><span class="n">is_valid</span>
-    <span class="n">nmea_msg</span> <span class="o">=</span> <span class="n">nmea_sentence</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">is_valid</span><span class="p">)</span>
-    <span class="n">udp_socket</span><span class="o">.</span><span class="n">sendto</span><span class="p">(</span><span class="n">nmea_msg</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">),</span> <span class="p">(</span><span class="n">UDP_IP</span><span class="p">,</span> <span class="n">UDP_PORT</span><span class="p">))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sent NMEA message: </span><span class="si">{</span><span class="n">nmea_msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Forward each position estimate, including its validity flag.&quot;&quot;&quot;</span>
+    <span class="n">position</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">position_estimate</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">sentence</span> <span class="o">=</span> <span class="n">nmea_gll</span><span class="p">(</span>
+            <span class="n">position</span><span class="o">.</span><span class="n">global_position</span><span class="o">.</span><span class="n">latitude</span><span class="p">,</span>
+            <span class="n">position</span><span class="o">.</span><span class="n">global_position</span><span class="o">.</span><span class="n">longitude</span><span class="p">,</span>
+            <span class="n">position</span><span class="o">.</span><span class="n">is_valid</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">return</span>  <span class="c1"># No usable coordinates in this sample.</span>
+    <span class="n">udp_socket</span><span class="o">.</span><span class="n">sendto</span><span class="p">(</span><span class="n">sentence</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;ascii&quot;</span><span class="p">),</span> <span class="p">(</span><span class="n">UDP_IP</span><span class="p">,</span> <span class="n">UDP_PORT</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sent: </span><span class="si">{</span><span class="n">sentence</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="k">with</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_DGRAM</span><span class="p">)</span> <span class="k">as</span> <span class="n">udp_socket</span><span class="p">:</span>
+        <span class="n">udp_socket</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">SOL_SOCKET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SO_BROADCAST</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">Drone</span><span class="p">(</span><span class="n">connect_as_observer</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">drone</span><span class="p">:</span>
+            <span class="n">drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">add_msg_callback</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">bp</span><span class="o">.</span><span class="n">PositionEstimateTel</span><span class="p">],</span> <span class="n">callback_position_estimate</span><span class="p">,</span> <span class="n">udp_socket</span><span class="o">=</span><span class="n">udp_socket</span>
+            <span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+                <span class="k">pass</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="c1"># UDP configuration</span>
-    <span class="c1"># This IP will broadcast to all devices in the 192.168.1 subnet</span>
-    <span class="n">UDP_IP</span> <span class="o">=</span> <span class="s2">&quot;192.168.1.255&quot;</span>
-    <span class="c1"># 10110 is the most commonly used port for NMEA, but the drone expects to receive its own</span>
-    <span class="c1"># position on this port, so if we reuse it the position will be sent in a loop.</span>
-    <span class="n">UDP_PORT</span> <span class="o">=</span> <span class="mi">10111</span>
+    <span class="n">main</span><span class="p">()</span>
+</code></pre></div>
+<h2 id="forwarding-heading-to-a-serial-port">Forwarding heading to a serial port</h2>
+<p>The <code>nmea_heading_publisher.py</code> example below sends the latest yaw as HDT at up to 10 Hz. Set <code>COM_PORT</code> and <code>BAUD_RATE</code> for your receiver. It connects as an observer without changing the drone-wide attitude publishing rate. It waits for an attitude message, skips non-finite values, and stops sending if no attitude has arrived for one second. Heading is wrapped and rounded to 0.0–359.9 degrees.</p>
+<p><a href="../examples/nmea_heading_publisher.py"><code>examples/nmea_heading_publisher.py</code></a> <a href="https://github.com/BluEye-Robotics/blueye.sdk/blob/a4d34ef787df3dcce5e9f1647092d90e8473c20b/examples/nmea_heading_publisher.py" title="View source on GitHub at a4d34ef7"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg></span></a></p>
+<div class="highlight"><pre><span></span><code><span class="sd">&quot;&quot;&quot;Forward the drone&#39;s yaw as NMEA HDT to a serial port.</span>
 
-    <span class="n">udp_socket</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_DGRAM</span><span class="p">)</span>
-    <span class="n">udp_socket</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">SOL_SOCKET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SO_BROADCAST</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># Enable broadcasting</span>
+<span class="sd">Install the example dependencies with: pip install &#39;blueye.sdk[examples]&#39;</span>
+<span class="sd">&quot;&quot;&quot;</span>
 
-    <span class="c1"># Instantiate a drone object</span>
-    <span class="n">my_drone</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">(</span><span class="n">connect_as_observer</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 
-    <span class="c1"># Add a callback for the PositionEstimateTel message</span>
-    <span class="n">callback_id</span> <span class="o">=</span> <span class="n">my_drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">add_msg_callback</span><span class="p">(</span>
-        <span class="p">[</span><span class="n">bp</span><span class="o">.</span><span class="n">PositionEstimateTel</span><span class="p">],</span> <span class="n">callback_position_estimate</span><span class="p">,</span> <span class="n">udp_socket</span><span class="o">=</span><span class="n">udp_socket</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">blueye.protocol</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">bp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">serial</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drone</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">nmea_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">nmea_hdt</span>
+
+<span class="n">COM_PORT</span> <span class="o">=</span> <span class="s2">&quot;COM2&quot;</span>  <span class="c1"># Change to your serial port.</span>
+<span class="n">BAUD_RATE</span> <span class="o">=</span> <span class="mi">9600</span>
+<span class="n">heading</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">nan</span>
+<span class="n">last_attitude_time</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">callback_attitude</span><span class="p">(</span><span class="n">msg_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="n">bp</span><span class="o">.</span><span class="n">AttitudeTel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Keep the latest yaw and its arrival time.&quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">heading</span><span class="p">,</span> <span class="n">last_attitude_time</span>
+    <span class="n">heading</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">attitude</span><span class="o">.</span><span class="n">yaw</span>
+    <span class="n">last_attitude_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">heading</span><span class="p">,</span> <span class="n">last_attitude_time</span>
+    <span class="n">heading</span><span class="p">,</span> <span class="n">last_attitude_time</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="kc">None</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">serial</span><span class="o">.</span><span class="n">Serial</span><span class="p">(</span><span class="n">COM_PORT</span><span class="p">,</span> <span class="n">BAUD_RATE</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="k">as</span> <span class="n">port</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">Drone</span><span class="p">(</span><span class="n">connect_as_observer</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">drone</span><span class="p">:</span>
+                <span class="n">drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">add_msg_callback</span><span class="p">([</span><span class="n">bp</span><span class="o">.</span><span class="n">AttitudeTel</span><span class="p">],</span> <span class="n">callback_attitude</span><span class="p">)</span>
+                <span class="c1"># Read the existing telemetry stream; do not change the rate for other clients.</span>
+                <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">last_attitude_time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">-</span> <span class="n">last_attitude_time</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">sentence</span> <span class="o">=</span> <span class="n">nmea_hdt</span><span class="p">(</span><span class="n">heading</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">sentence</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="n">port</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">sentence</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;ascii&quot;</span><span class="p">))</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sent: </span><span class="si">{</span><span class="n">sentence</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">serial</span><span class="o">.</span><span class="n">SerialException</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Serial error: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</code></pre></div>
+<h2 id="feeding-an-external-position-to-the-drone">Feeding an external position to the drone</h2>
+<p>The drone listens on <strong>UDP port 10110</strong> for its own position, such as fixes from a topside USBL system. This is separate from the pilot's position. Send the ROV's measured latitude and longitude, not the boat's GPS coordinates and not the drone's own position estimate.</p>
+<p>Blunux 4.2.6 and newer pass <code>GNGGA</code>, <code>GPGLL</code>, <code>PBLPLL</code> and <code>PSONLLD</code> sentences to the position estimator, and Blunux 5.1 adds <code>GPGGA</code> and <code>GNGLL</code>. Other sentence types are ignored. The example sends <code>GPGLL</code>, which all of these versions accept.</p>
+<p>Send one checksummed, CRLF-terminated sentence per UDP datagram to the drone's IP address, normally <code>192.168.1.101</code>. Supply fresh fixes at <strong>1 Hz or faster</strong>. The NMEA navigation source expires after about three seconds without a valid fix. Mark unusable fixes invalid rather than repeatedly sending the last valid position with a new timestamp.</p>
+<div class="admonition warning">
+<p class="admonition-title">Position reset</p>
+<p>The first valid NMEA fix resets the drone's local position frame and odometer. Do not inject test coordinates during a dive or a running mission.</p>
+</div>
+<p>The <code>nmea_position_input.py</code> example below reads <code>latitude longitude A|V</code> lines from standard input and unicasts a GPGLL sentence for each line. It needs no SDK connection or control of the drone. Connect it to an adapter for your positioning system that emits fresh fixes without buffering, for example:</p>
+<div class="highlight"><pre><span></span><code>python<span class="w"> </span>-u<span class="w"> </span>positioning_adapter.py<span class="w"> </span><span class="p">|</span><span class="w"> </span>python<span class="w"> </span>examples/nmea_position_input.py<span class="w"> </span>--ip<span class="w"> </span><span class="m">192</span>.168.1.101
+</code></pre></div>
+<p><code>positioning_adapter.py</code> is your own adapter, not a supplied example. If it already produces NMEA, send those sentences directly instead. The supplied script does not repeat old fixes if its input stops.</p>
+<p><a href="../examples/nmea_position_input.py"><code>examples/nmea_position_input.py</code></a> <a href="https://github.com/BluEye-Robotics/blueye.sdk/blob/a4d34ef787df3dcce5e9f1647092d90e8473c20b/examples/nmea_position_input.py" title="View source on GitHub at a4d34ef7"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg></span></a></p>
+<div class="highlight"><pre><span></span><code><span class="sd">&quot;&quot;&quot;Send fresh external ROV positions from stdin to the drone&#39;s NMEA UDP input.</span>
+
+<span class="sd">Each line must contain: latitude longitude A|V</span>
+<span class="sd">Coordinates are decimal degrees; A means a valid fix and V means invalid.</span>
+<span class="sd">Supply fresh measurements at least once per second. This script sends each line</span>
+<span class="sd">once and does not repeat old coordinates when the source stops.</span>
+
+<span class="sd">Example usage with your own positioning adapter:</span>
+<span class="sd">    python positioning_adapter.py | python examples/nmea_position_input.py --ip 192.168.1.101</span>
+
+<span class="sd">The first valid fix resets the drone&#39;s local position frame and odometer.</span>
+<span class="sd">Do not feed the boat&#39;s GPS position or the drone&#39;s own telemetry back into this input.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">argparse</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">socket</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">nmea_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">nmea_gll</span>
+
+<span class="n">NMEA_INPUT_PORT</span> <span class="o">=</span> <span class="mi">10110</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">forward_positions</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">udp_socket</span><span class="p">:</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">,</span> <span class="n">ip</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert one fresh fix per line into a unicast GPGLL datagram.&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">line_number</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">latitude</span><span class="p">,</span> <span class="n">longitude</span><span class="p">,</span> <span class="n">status</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">status</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;V&quot;</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Status must be A or V&quot;</span><span class="p">)</span>
+            <span class="n">sentence</span> <span class="o">=</span> <span class="n">nmea_gll</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">latitude</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">longitude</span><span class="p">),</span> <span class="n">status</span> <span class="o">==</span> <span class="s2">&quot;A&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Skipping line </span><span class="si">{</span><span class="n">line_number</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="n">udp_socket</span><span class="o">.</span><span class="n">sendto</span><span class="p">(</span><span class="n">sentence</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;ascii&quot;</span><span class="p">),</span> <span class="p">(</span><span class="n">ip</span><span class="p">,</span> <span class="n">NMEA_INPUT_PORT</span><span class="p">))</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="vm">__doc__</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--ip&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;192.168.1.101&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Drone IPv4 address&quot;</span><span class="p">)</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_DGRAM</span><span class="p">)</span> <span class="k">as</span> <span class="n">udp_socket</span><span class="p">:</span>
+            <span class="n">forward_positions</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="p">,</span> <span class="n">udp_socket</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">ip</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</code></pre></div>
+<h3 id="checking-that-the-drone-receives-the-fixes">Checking that the drone receives the fixes</h3>
+<p>Inspect the NMEA entry in <code>PositionEstimateTel.position_estimate.navigation_sensors</code>. The overall estimate's <code>is_valid</code> flag alone does not tell you whether the NMEA source is valid.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">blueye.protocol</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">bp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drone</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">show_nmea</span><span class="p">(</span><span class="n">msg_type</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">sensor</span> <span class="ow">in</span> <span class="n">msg</span><span class="o">.</span><span class="n">position_estimate</span><span class="o">.</span><span class="n">navigation_sensors</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">sensor</span><span class="o">.</span><span class="n">sensor_id</span> <span class="o">==</span> <span class="n">bp</span><span class="o">.</span><span class="n">NavigationSensorID</span><span class="o">.</span><span class="n">NAVIGATION_SENSOR_ID_NMEA</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">sensor</span><span class="o">.</span><span class="n">is_valid</span><span class="p">,</span> <span class="n">sensor</span><span class="o">.</span><span class="n">global_position</span><span class="p">)</span>
+
+
+<span class="k">with</span> <span class="n">Drone</span><span class="p">(</span><span class="n">connect_as_observer</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">drone</span><span class="p">:</span>
+    <span class="n">drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">add_msg_callback</span><span class="p">([</span><span class="n">bp</span><span class="o">.</span><span class="n">PositionEstimateTel</span><span class="p">],</span> <span class="n">show_nmea</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</code></pre></div>
+<p>Older firmware may not report the per-source status. The resulting global estimate can also incorporate other sensors, so it need not equal each incoming fix exactly.</p>
+<p>NMEA position input does <strong>not</strong> enable station keeping. See <a class="autorefs autorefs-internal" title="            enable_station_keeping" href="../reference/blueye/sdk/motion/#blueye.sdk.motion.Motion.enable_station_keeping">station keeping requirements</a> and <a href="../mission-planning/">waypoint missions</a> for supported control modes. Waypoint mission legs are limited to 300 m.</p>
+<h2 id="shared-sentence-formatting">Shared sentence formatting</h2>
+<p>Both position scripts and the heading publisher use this helper:</p>
+<p><a href="../examples/nmea_utils.py"><code>examples/nmea_utils.py</code></a> <a href="https://github.com/BluEye-Robotics/blueye.sdk/blob/a4d34ef787df3dcce5e9f1647092d90e8473c20b/examples/nmea_utils.py" title="View source on GitHub at a4d34ef7"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg></span></a></p>
+<div class="highlight"><pre><span></span><code><span class="sd">&quot;&quot;&quot;NMEA sentence formatting shared by the examples in this directory.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">nmea_sentence</span><span class="p">(</span><span class="n">body</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Add the XOR checksum and CRLF to a sentence body without delimiters.&quot;&quot;&quot;</span>
+    <span class="n">checksum</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">byte</span> <span class="ow">in</span> <span class="n">body</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;ascii&quot;</span><span class="p">):</span>
+        <span class="n">checksum</span> <span class="o">^=</span> <span class="n">byte</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;$</span><span class="si">{</span><span class="n">body</span><span class="si">}</span><span class="s2">*</span><span class="si">{</span><span class="n">checksum</span><span class="si">:</span><span class="s2">02X</span><span class="si">}</span><span class="se">\r\n</span><span class="s2">&quot;</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_coordinate</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">degree_digits</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="c1"># Round before splitting so 59.99996 minutes carries into the next degree.</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">10000</span><span class="p">)</span>
+    <span class="n">degrees</span><span class="p">,</span> <span class="n">minute_units</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">units</span><span class="p">,</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">10000</span><span class="p">)</span>
+    <span class="n">minutes</span><span class="p">,</span> <span class="n">fraction</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">minute_units</span><span class="p">,</span> <span class="mi">10000</span><span class="p">)</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">degrees</span><span class="si">:</span><span class="s2">0</span><span class="si">{</span><span class="n">degree_digits</span><span class="si">}</span><span class="s2">d</span><span class="si">}{</span><span class="n">minutes</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">fraction</span><span class="si">:</span><span class="s2">04d</span><span class="si">}</span><span class="s2">&quot;</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">nmea_gll</span><span class="p">(</span><span class="n">lat</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">lon</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">valid</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Format decimal-degree coordinates as GPGLL with the current UTC time.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If a coordinate is non-finite or outside its geographic range.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="o">-</span><span class="mi">90</span> <span class="o">&lt;=</span> <span class="n">lat</span> <span class="o">&lt;=</span> <span class="mi">90</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Latitude must be finite and between -90 and 90 degrees&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">lon</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="o">-</span><span class="mi">180</span> <span class="o">&lt;=</span> <span class="n">lon</span> <span class="o">&lt;=</span> <span class="mi">180</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Longitude must be finite and between -180 and 180 degrees&quot;</span><span class="p">)</span>
+    <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+    <span class="n">utc_time</span> <span class="o">=</span> <span class="n">now</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%H%M%S&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;.</span><span class="si">{</span><span class="n">now</span><span class="o">.</span><span class="n">microsecond</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="mi">10000</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">return</span> <span class="n">nmea_sentence</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;GPGLL,</span><span class="si">{</span><span class="n">_coordinate</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="s1">&#39;N&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">lat</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;S&#39;</span><span class="si">}</span><span class="s2">,&quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_coordinate</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="s1">&#39;E&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">lon</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;W&#39;</span><span class="si">}</span><span class="s2">,&quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">utc_time</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="s1">&#39;A&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">valid</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;V&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="p">)</span>
 
-    <span class="c1"># Keep the script running to receive and send messages</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Exiting...&quot;</span><span class="p">)</span>
-    <span class="k">finally</span><span class="p">:</span>
-        <span class="c1"># Cleanup</span>
-        <span class="n">my_drone</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
-        <span class="n">udp_socket</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">nmea_hdt</span><span class="p">(</span><span class="n">heading</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Format heading in degrees as HDT, or skip a non-finite heading.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">heading</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="c1"># Wrap again after rounding: 359.99 must not be sent as 360.0.</span>
+    <span class="n">heading</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">heading</span> <span class="o">%</span> <span class="mi">360</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">360</span>
+    <span class="k">return</span> <span class="n">nmea_sentence</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;IIHDT,</span><span class="si">{</span><span class="n">heading</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">,T&quot;</span><span class="p">)</span>
 </code></pre></div>
 
 

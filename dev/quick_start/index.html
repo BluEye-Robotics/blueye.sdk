@@ -1148,7 +1148,7 @@
   <span class="md-ellipsis">
     
   
-    Forwarding positioning to NMEA
+    NMEA position and heading
   
 
     
@@ -2212,9 +2212,12 @@ Once VLC is downloaded, you can start the stream like this. The RTSP URL is: <co
 stream, you can download the Blueye Observer app.
 (<a href="https://apps.apple.com/us/app/blueye-dive-buddy/id1453884806?ls=1">iOS</a> /
 <a href="https://play.google.com/store/apps/details?id=no.blueye.divebuddy">Android</a>)</p>
-<p>The normal Blueye app cannot be used to spectate when controlling the drone from the SDK because
-it will interfere with the commands sent from the SDK. The Observer app, however, is only a
-spectator and can be used together with the SDK.</p>
+<p>For video-only viewing alongside a controlling SDK script, use VLC or the Blueye Observer app.
+The normal Blueye app initially connects as an observer, but starting a dive requires control;
+if the SDK holds it, the app refuses to start the dive. For telemetry or log scripts alongside
+a pilot using the app, connect with <code>Drone(connect_as_observer=True)</code> so the script neither takes
+nor inherits control. See <a href="../connecting/">Connecting to the drone</a> for connection options and
+control handover.</p>
 <h3 id="try-the-command-line-interface">Try the command line interface</h3>
 <p>The SDK also installs a <a href="../cli/"><code>blueye</code> command</a> for common tasks straight from the
 terminal — for example, grabbing the newest dive log from the drone:</p>
@@ -2228,6 +2231,8 @@ the desk.</p>
 <h3 id="explore-the-examples">Explore the examples</h3>
 <p>For further examples on how to use the SDK to control the drone have a look at the
 <a href="../movement/from-the-CLI/">motion examples</a>.</p>
+<p><a href="../examples.zip">Download the examples for this documentation version</a>. The archive includes shared
+helpers and is also available in the SDK's installed, offline docs.</p>
 <p>Remember to install the example dependencies before running the examples.</p>
 <div class="highlight"><pre><span></span><code>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;blueye.sdk[examples]&quot;</span>
 </code></pre></div>
