@@ -163,9 +163,12 @@ stream, you can download the Blueye Observer app.
 ([iOS](https://apps.apple.com/us/app/blueye-dive-buddy/id1453884806?ls=1) /
 [Android](https://play.google.com/store/apps/details?id=no.blueye.divebuddy))
 
-The normal Blueye app cannot be used to spectate when controlling the drone from the SDK because
-it will interfere with the commands sent from the SDK. The Observer app, however, is only a
-spectator and can be used together with the SDK.
+For video-only viewing alongside a controlling SDK script, use VLC or the Blueye Observer app.
+The normal Blueye app initially connects as an observer, but starting a dive requires control;
+if the SDK holds it, the app refuses to start the dive. For telemetry or log scripts alongside
+a pilot using the app, connect with `Drone(connect_as_observer=True)` so the script neither takes
+nor inherits control. See [Connecting to the drone](connecting.md) for connection options and
+control handover.
 
 ### Try the command line interface
 The SDK also installs a [`blueye` command](cli.md) for common tasks straight from the
@@ -185,6 +188,9 @@ Run `blueye --help` to see everything it can do, or read more on
 ### Explore the examples
 For further examples on how to use the SDK to control the drone have a look at the
 [motion examples](movement/from-the-CLI.md).
+
+[Download the examples for this documentation version](examples.zip). The archive includes shared
+helpers and is also available in the SDK's installed, offline docs.
 
 Remember to install the example dependencies before running the examples.
 

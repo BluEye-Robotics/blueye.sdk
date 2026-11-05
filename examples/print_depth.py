@@ -20,23 +20,20 @@ def callback_depth(msg_type: str, msg: bp.DepthTel):
 
 
 if __name__ == "__main__":
-    # Instantiate a drone object
-    my_drone = Drone()
+    with Drone(connect_as_observer=True) as my_drone:
+        # Add a callback for the DepthTel message, storing the ID for later use
+        callback_id = my_drone.telemetry.add_msg_callback([bp.DepthTel], callback_depth)
 
-    # Add a callback for the DepthTel message, storing the ID for later use
-    callback_id = my_drone.telemetry.add_msg_callback([bp.DepthTel], callback_depth)
+        try:
+            # This demonstration changes a drone-wide rate even though we are an observer.
+            # Omit the rate changes if another client needs its current rate preserved.
+            my_drone.telemetry.set_msg_publish_frequency(bp.DepthTel, 5)
 
-    try:
-        # Adjust the publishing frequency to 5 Hz
-        my_drone.telemetry.set_msg_publish_frequency(bp.DepthTel, 5)
+            # Callback is triggered by a separate thread while we sleep here
+            time.sleep(5)
+        finally:
+            my_drone.telemetry.remove_msg_callback(callback_id)
 
-        # Callback is triggered by a separate thread while we sleep here
-        time.sleep(5)
-    finally:
-        # Remove the callback using the ID we stored when it was created (not really necessary
-        # here since the my_drone object goes out of scope immediately afterwards)
-        my_drone.telemetry.remove_msg_callback(callback_id)
-
-        # The publishing frequency is shared by every client and stays in effect until the drone
-        # reboots, so set it back to the default of 10 Hz before exiting, also on Ctrl-C
-        my_drone.telemetry.set_msg_publish_frequency(bp.DepthTel, 10)
+            # Restore the default, also on Ctrl-C. This is not necessarily the rate another
+            # client had set before this example ran.
+            my_drone.telemetry.set_msg_publish_frequency(bp.DepthTel, 10)

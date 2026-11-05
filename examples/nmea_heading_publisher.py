@@ -1,75 +1,49 @@
-"""nmea_heading_publisher.py
+"""Forward the drone's yaw as NMEA HDT to a serial port.
 
-This example program demonstrates how one can subscribe to the drone's heading and publish it as an NMEA sentence to a (virtual) COM port.
+Install the example dependencies with: pip install 'blueye.sdk[examples]'
 """
 
-import serial
+import math
 import time
+
 import blueye.protocol as bp
+import serial
 from blueye.sdk import Drone
 
-# Configure the COM port
-COM_PORT = "COM2"  # Change this to your COM port
-BAUD_RATE = 9600  # Set the baud rate (ensure it matches your COM port configuration)
-heading = 0.0
+from nmea_utils import nmea_hdt
 
-
-def calculate_checksum(nmea_sentence):
-    """
-    Calculate the NMEA checksum for a sentence (excluding $ and *hh).
-    Returns the checksum as a two-character hexadecimal string.
-    """
-    checksum = 0
-    for char in nmea_sentence:
-        checksum ^= ord(char)  # XOR each character
-    return f"{checksum:02X}"
+COM_PORT = "COM2"  # Change to your serial port.
+BAUD_RATE = 9600
+heading = math.nan
+last_attitude_time = None
 
 
 def callback_attitude(msg_type: str, msg: bp.AttitudeTel):
-    """
-    Callback function to handle attitude telemetry messages.
-    Updates the global heading variable with the drone's yaw.
-    """
-    global heading
-    print(f"Got a {msg_type} message with heading: {msg.attitude.yaw:.3f}")
+    """Keep the latest yaw and its arrival time."""
+    global heading, last_attitude_time
     heading = msg.attitude.yaw
+    last_attitude_time = time.monotonic()
 
 
 def main():
-    """
-    Main function to set up the drone telemetry, process attitude data,
-    and publish it as an NMEA sentence to a virtual (or real) COM port.
-    """
-    my_drone = Drone()
-
-    # Add a callback for the AttitudeTel message
-    my_drone.telemetry.add_msg_callback([bp.AttitudeTel], callback_attitude)
-
-    # Adjust the publishing frequency to 10 Hz
-    my_drone.telemetry.set_msg_publish_frequency(bp.AttitudeTel, 10)
-
+    global heading, last_attitude_time
+    heading, last_attitude_time = math.nan, None
     try:
-        # Open the serial port
-        with serial.Serial(COM_PORT, BAUD_RATE, timeout=1) as ser:
-            print(f"Connected to {COM_PORT} at {BAUD_RATE} baud.")
-
-            while True:
-                # Format the heading into an NMEA sentence
-                heading_nmea = f"--HDT,{heading:.1f},T"
-                checksum = calculate_checksum(heading_nmea)
-                nmea_sentence = f"${heading_nmea}*{checksum}\r\n"
-
-                # Send the NMEA sentence to the COM port
-                ser.write(nmea_sentence.encode("utf-8"))
-                print(f"Sent: {nmea_sentence.strip()}")
-
-                # Wait before sending the next value
-                time.sleep(0.1)  # Set the update frequency here
-
-    except serial.SerialException as e:
-        print(f"Serial error: {e}")
+        with serial.Serial(COM_PORT, BAUD_RATE, timeout=1) as port:
+            with Drone(connect_as_observer=True) as drone:
+                drone.telemetry.add_msg_callback([bp.AttitudeTel], callback_attitude)
+                # Read the existing telemetry stream; do not change the rate for other clients.
+                while True:
+                    if last_attitude_time is not None and time.monotonic() - last_attitude_time < 1:
+                        sentence = nmea_hdt(heading)
+                        if sentence is not None:
+                            port.write(sentence.encode("ascii"))
+                            print(f"Sent: {sentence.rstrip()}")
+                    time.sleep(0.1)
+    except serial.SerialException as exc:
+        print(f"Serial error: {exc}")
     except KeyboardInterrupt:
-        print("\nExiting...")
+        pass
 
 
 if __name__ == "__main__":

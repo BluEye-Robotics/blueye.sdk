@@ -40,6 +40,6 @@ def state_printer(drone: Drone):
 
 
 if __name__ == "__main__":
-    myDrone = Drone()
-    sleep(1)  # Wait until data is updated
-    state_printer(myDrone)
+    with Drone(connect_as_observer=True) as myDrone:
+        sleep(1)  # Wait until data is updated
+        state_printer(myDrone)

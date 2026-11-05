@@ -609,14 +609,15 @@ class Drone:
         Spawns several threads for receiving telemetry, sending control messages, and publishing
         watchdog messages.
 
-        When a watchdog message is received by the drone, the thrusters are armed. To stop the drone
-        from moving unexpectedly when connecting, all thruster set points are set to zero when
-        connecting.
+        A watchdog message from the client in control arms the thrusters. When this connection
+        receives control during setup, the SDK zeroes the thruster setpoints and synchronizes the
+        drone's clock. An observer connection does neither and is excluded from control handover.
+        Observer mode does not prevent setters from sending commands.
 
         Args:
             client_info (blueye.protocol.ClientInfo, optional):
-                Information about the client connecting. If None, the SDK will attempt to read it
-                from the environment.
+                Information about the client connecting. If None, the SDK supplies its version
+                and uses Python's `platform` module for the OS and hostname shown in the app.
             timeout (float, optional):
                 Seconds to wait for connection.
             disconnect_other_clients (bool, optional):
@@ -849,7 +850,7 @@ class Drone:
         """Get a list of connected clients.
 
         Returns:
-            A list of connected clients, or None if no clients are connected.
+            A list of connected clients, or None if client-list telemetry has not arrived.
         """
         clients_tel = self.telemetry.get(blueye.protocol.ConnectedClientsTel)
         if clients_tel is None:
@@ -863,7 +864,8 @@ class Drone:
         """Get the client ID of the client in control of the drone.
 
         Returns:
-            The client ID of the client in control, or None if no client is in control.
+            The client ID in control, 0 if nobody holds control, or None if client-list
+            telemetry has not arrived.
         """
         clients_tel = self.telemetry.get(blueye.protocol.ConnectedClientsTel)
         if clients_tel is None:

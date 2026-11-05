@@ -2,6 +2,56 @@
 
 A [`Drone`][blueye.sdk.drone.Drone] object connects when it is created and stays connected until you call [`disconnect`][blueye.sdk.drone.Drone.disconnect] or the script exits. This page covers what the drone does while a client is connected, when that client goes quiet, and when it leaves.
 
+## Choosing how to connect
+
+Connections require Blunux 3.2 or newer. Use an observer connection for telemetry, log downloads, or other work that should leave control with the pilot:
+
+```python
+import time
+from blueye.sdk import Drone
+
+with Drone(connect_as_observer=True, log_notifications=True) as drone:
+    time.sleep(1)  # Allow the first telemetry messages to arrive.
+    print(drone.get_depth())  # Can still be None if no depth message has arrived.
+```
+
+The default `Drone()` connection is eligible for control. If nobody holds control, it takes control, zeroes the thruster setpoints and synchronizes the drone's clock to the computer. If another client already holds control, it joins without displacing that client, but can inherit control when that client leaves.
+
+| Argument | Effect |
+| --- | --- |
+| `ip="192.168.1.101"` | Drone address; change it for a routed network. |
+| `connect_as_observer=True` | Exclude this connection from control assignment and handover. |
+| `disconnect_other_clients=True` | Disconnect clients holding control until this non-observer connection has control. Ignored for an observer connection. |
+| `log_notifications=True` | Log incoming drone notifications through Python's `logging` module. Configure logging to display them. |
+| `client_info=...` | Supply a [`blueye.protocol.ClientInfo`][blueye.protocol.types.message_formats.ClientInfo]; otherwise the SDK identifies itself using its version, OS and hostname. |
+| `auto_connect=False` | Construct the object without connecting; call `connect()` later. |
+
+`connect_as_observer`, notification logging and the other connection options must be passed to `connect()` itself when using `auto_connect=False`; they are not saved for a later call.
+
+### Using the Blueye app alongside a script
+
+The Blueye app initially joins as an observer. When the pilot starts a dive, it requests control if nobody has it; otherwise it reports the client in control and refuses to start the dive. A plain `Drone()` script can therefore block the pilot even if the app connected first. Use `connect_as_observer=True` for read-only scripts.
+
+An observer connection is not a read-only permission: setters still send commands. The depth callback example deliberately changes a shared telemetry rate to demonstrate the API; omit those changes when another client's rate must be preserved. See [telemetry subscriptions](telemetry-callback.md).
+
+### Inspecting clients and taking control
+
+[`get_connected_clients`][blueye.sdk.drone.Drone.get_connected_clients] and [`get_client_in_control`][blueye.sdk.drone.Drone.get_client_in_control] read the latest client-list telemetry. Both return `None` until it arrives. Once available, client id `0` means nobody holds control.
+
+```python
+with Drone(connect_as_observer=True) as drone:
+    deadline = time.monotonic() + 5
+    clients = drone.get_connected_clients()
+    while clients is None and time.monotonic() < deadline:
+        time.sleep(0.1)
+        clients = drone.get_connected_clients()
+    for client in clients or []:
+        print(client.client_id, client.client_info.name, client.client_info.is_observer)
+    print("Client in control:", drone.get_client_in_control())
+```
+
+[`take_control()`][blueye.sdk.drone.Drone.take_control] disconnects other clients until this client is in control; it is not a cooperative handover request. Coordinate with the pilot before calling it or connecting with `disconnect_other_clients=True`. An observer is excluded from promotion, so `take_control()` cannot turn an observer into a controller and may disconnect other clients before timing out. Disconnect and reconnect as a non-observer if control is needed.
+
 ## The watchdog
 
 The drone expects a watchdog message from every connected client. The SDK sends one every second from a background thread for as long as the connection is open. The drone keeps two timers on these messages: a 3 second safety timer for the client in control, described below, and a client list that drops a client after about 4 seconds of silence.

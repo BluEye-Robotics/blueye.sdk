@@ -3,6 +3,9 @@ repo_url: "https://github.com/BluEye-Robotics/blueye.sdk"
 repo_name: ""
 plugins:
   - search
+  - gen-files:
+      scripts:
+        - doc_utils/bundle_examples.py
   - macros:
       module_name: doc_utils
   - neoteroi.mkdocsoad:
@@ -42,6 +45,9 @@ extra_javascript:
 
 markdown_extensions:
   - admonition
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - pymdownx.arithmatex
   - pymdownx.caret
   - pymdownx.critic
@@ -110,7 +116,7 @@ nav:
   - "Drone model and hardware": "drone-info.md"
   - "Peripherals": "peripherals.md"
   - "Visualize live sensor data": "foxglove-bridge.md"
-  - "Forwarding positioning to NMEA": "nmea-publisher.md"
+  - "NMEA position and heading": "nmea-publisher.md"
   - "Mission Planning": "mission-planning.md"
   - "The blueye CLI": "cli.md"
   - "Odometer forwarding": odometer-to-831l.md
