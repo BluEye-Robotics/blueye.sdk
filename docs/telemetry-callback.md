@@ -24,6 +24,22 @@ The drone writes telemetry to the dive log at its own rate, separate from the pu
 
 On the X3 Ultra and X7 a multibeam recording raises the log rate of six messages while it runs (`PositionEstimateTel`, `AttitudeTel`, `CalibratedImuTel`, `CalibratedImuHpTel`, `DepthTel` and `AltitudeTel`) and restores their defaults when it stops. A rate set for one of those is replaced both times.
 
+## IMU telemetry
+The drone publishes raw and calibrated data from its inertial measurement units (IMUs):
+
+| Message | Data | Models |
+| --- | --- | --- |
+| `Imu1Tel`, `Imu2Tel` | Raw data from the drone's two IMUs | All |
+| `CalibratedImuTel` | Calibrated IMU data | All |
+| `ImuHpTel` | Raw data from the high-precision IMU | X3 Ultra and X7 |
+| `CalibratedImuHpTel` | Calibrated high-precision IMU data | X3 Ultra and X7 |
+
+Each message carries an `imu` field with the accelerometer in g, the gyroscope in rad/s, the magnetometer in μT and the temperature in °C. The axes are the drone's body frame: x forward, y right and z down. A drone at rest reads about +1 g on z. The high-precision IMU has no magnetometer, and its magnetometer fields stay 0.
+
+All five are published at 1 Hz by default. Raise the rate with [`set_msg_publish_frequency`](#adjusting-the-publishing-frequency-of-a-telemetry-message), which changes it for every client, or the log rate with [`set_msg_log_frequency`](#adjusting-the-logging-frequency-of-a-telemetry-message). This example prints all of them; on models without the high-precision IMU the high-precision callback never runs:
+
+{{code_from_file("../examples/print_imu.py", "python")}}
+
 ## Example
 The following example illustrates how can use a callback to print the depth reported by the drone.
 
