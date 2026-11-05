@@ -347,17 +347,71 @@ class Drone:
         """
         self._ip = ip
         self.camera = Camera(self, is_guestport_camera=False)
+        """The main camera: recording, pictures and camera parameters.
+
+        See [`Camera`][blueye.sdk.camera.Camera]. Camera tilt is under `camera.tilt`
+        ([`Tilt`][blueye.sdk.camera.Tilt]) and the video overlay under `camera.overlay`
+        ([`Overlay`][blueye.sdk.camera.Overlay])."""
         self.motion = Motion(self)
+        """Thruster input and the auto modes, see [`Motion`][blueye.sdk.motion.Motion]."""
         self.logs = Logs(self)
+        """The dive logs stored on the drone, see [`Logs`][blueye.sdk.logs.Logs]."""
         self.legacy_logs = LegacyLogs(self)
+        """Logs in the CSV format of Blunux versions before 3.0.
+
+        See [`LegacyLogs`][blueye.sdk.logs.LegacyLogs]."""
         self.config = Config(self)
+        """Drone time and water density, see [`Config`][blueye.sdk.drone.Config]."""
         self.battery = Battery(self)
+        """Battery state, see [`Battery`][blueye.sdk.battery.Battery]."""
         self.telemetry = Telemetry(self)
+        """Telemetry messages, callbacks and publish rates.
+
+        See [`Telemetry`][blueye.sdk.drone.Telemetry]."""
         self.mission = Mission(self)
+        """Loading and running missions, see [`Mission`][blueye.sdk.mission.Mission]."""
         self.cv_models = CvModels(self)
+        """Computer vision models installed on the drone.
+
+        See [`CvModels`][blueye.sdk.cv_models.CvModels]."""
         self.connected = False
+        """Whether the drone is connected.
+
+        True between a successful [`connect`][blueye.sdk.drone.Drone.connect] and
+        [`disconnect`][blueye.sdk.drone.Drone.disconnect]."""
         self.client_id: int = None
+        """The id the drone assigned to this client when connecting, `None` before that."""
         self.in_control: bool = False
+        """Whether this client held control when it connected or last took control.
+
+        Set by [`connect`][blueye.sdk.drone.Drone.connect] and
+        [`take_control`][blueye.sdk.drone.Drone.take_control]. Not updated when the drone hands
+        control to another client; compare
+        [`get_client_in_control`][blueye.sdk.drone.Drone.get_client_in_control] with
+        `client_id` for the current state."""
+        # Set by connect() from the drone's HTTP drone_info. Declared here, without a value, so
+        # the reference documents them; reading one before connecting raises AttributeError.
+        self.features: List[str]
+        """Optional hardware the drone reported when connecting, as a list of names.
+
+        `"tilt"` on every model except the original Pioneer, `"gpdrone"` on drones with guest
+        ports, and `"gplight"`, `"gpcam"` and `"gripper"` when such a device is attached. The
+        [`Tilt`][blueye.sdk.camera.Tilt] methods raise `RuntimeError` without `"tilt"`. Not
+        updated while connected. Empty when the drone could not read its hardware within its own
+        5 s limit and answered with default information instead. Use
+        [`peripherals`][blueye.sdk.drone.Drone.peripherals] for the attached devices."""
+        self.software_version: str
+        """The full Blunux version string, such as `"5.2.212-wrynose-jetson-dev"`.
+
+        Set when connecting."""
+        self.software_version_short: str
+        """The Blunux version number without the build suffix, such as `"5.2.212"`.
+
+        Set when connecting."""
+        self.serial_number: str
+        """The drone's serial number. Set when connecting."""
+        self.uuid: str
+        """The drone's hardware id. Set when connecting."""
         # The drone's persistent storage settings from drone_info, which say which media the
         # drone writes at all. None until read, and on drones that do not report them.
         self._storage_settings: Optional[Dict[str, bool]] = None
@@ -367,22 +421,40 @@ class Drone:
         self._ctrl_client = _NoConnectionClient()
 
         self.peripherals: Optional[List[Peripheral]] = None
-        """This list holds the peripherals connected to the drone. It is `None` until the drone has
-        reported its guest ports (through `DroneInfoTel`), and an empty list when the drone
-        reports no peripherals."""
+        """The peripherals connected to the drone's guest ports.
+
+        `None` until the drone has reported its guest ports (through `DroneInfoTel`), and an
+        empty list when the drone reports no peripherals.
+
+        The drone can report its guest ports after `connect()` returns, so the shortcuts below
+        can still be `None` right after connecting. While `peripherals` is `None`, a `None`
+        shortcut means "not reported yet" rather than "not attached". Every shortcut is `None`
+        again after `disconnect()`."""
         self._guest_ports: Optional[List[GuestPort]] = None
         self.external_camera: Optional[GuestPortCamera] = None
-        """Camera on a guest port, or `None` if none has been discovered."""
+        """Camera on a guest port, or `None` if none has been discovered.
+
+        See [`peripherals`][blueye.sdk.drone.Drone.peripherals]."""
         self.external_light: Optional[GuestPortLight] = None
-        """Light on a guest port, or `None` if none has been discovered."""
+        """Light on a guest port, or `None` if none has been discovered.
+
+        See [`peripherals`][blueye.sdk.drone.Drone.peripherals]."""
         self.gripper: Optional[Gripper] = None
-        """Gripper on a guest port, or `None` if none has been discovered."""
+        """Gripper on a guest port, or `None` if none has been discovered.
+
+        See [`peripherals`][blueye.sdk.drone.Drone.peripherals]."""
         self.laser: Optional[Laser] = None
-        """Scaling laser on a guest port, or `None` if none has been discovered."""
+        """Scaling laser on a guest port, or `None` if none has been discovered.
+
+        See [`peripherals`][blueye.sdk.drone.Drone.peripherals]."""
         self.servo: Optional[GenericServo] = None
-        """Generic servo on a guest port, or `None` if none has been discovered."""
+        """Generic servo on a guest port, or `None` if none has been discovered.
+
+        See [`peripherals`][blueye.sdk.drone.Drone.peripherals]."""
         self.skid_servo: Optional[SkidServo] = None
-        """Multibeam (skid) servo on a guest port, or `None` if none has been discovered."""
+        """Multibeam (skid) servo on a guest port, or `None` if none has been discovered.
+
+        See [`peripherals`][blueye.sdk.drone.Drone.peripherals]."""
         self._guest_ports_known = False
         self._drone_info_cb_id: Optional[str] = None
         # The drone publishes one GenericServoTel per guest port under the same message type, so

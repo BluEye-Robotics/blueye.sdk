@@ -120,8 +120,9 @@ myDrone.set_lights(0)
 print(f"Current depth in meters: {myDrone.get_depth()}")
 ```
 For an overview of the methods that are available for controlling and reading data from the drone, go to the
-[`Reference section`](reference/blueye/sdk/drone.md) of the documentation.
-The valid input ranges and descriptions of the different methods can also be found there.
+[`Drone` reference](reference/blueye/sdk/drone.md). Most functions are grouped under attributes of
+the `Drone` object, such as `camera`, `motion`, `logs` and `telemetry`; the reference lists them
+with links to their own pages, which give the valid input ranges.
 
 When a script is done it should call [`disconnect`][blueye.sdk.drone.Drone.disconnect]. The drone
 keeps the last motion input it received until a new one arrives or its watchdog times out, so

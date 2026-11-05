@@ -77,7 +77,7 @@ The failsafe also runs 3 seconds after the client in control disconnects, unless
 
 The first client to connect without `connect_as_observer=True` is in control. When the client in control disconnects, or is dropped from the client list after about 4 seconds of silence, the drone hands control to the client that has been connected the longest among those that did not connect as observers. If there is none, nobody is in control and the drone reports client id 0.
 
-[`Drone.in_control`][blueye.sdk.drone.Drone] is set when the connection is made and by [`take_control`][blueye.sdk.drone.Drone.take_control]. It is not updated afterwards, so after a handover it is stale. Compare [`get_client_in_control`][blueye.sdk.drone.Drone.get_client_in_control] with `client_id` for the current answer:
+[`Drone.in_control`][blueye.sdk.drone.Drone.in_control] is set when the connection is made and by [`take_control`][blueye.sdk.drone.Drone.take_control]. It is not updated afterwards, so after a handover it is stale. Compare [`get_client_in_control`][blueye.sdk.drone.Drone.get_client_in_control] with `client_id` for the current answer:
 
 ```python
 from blueye.sdk import Drone
