@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 import re
+import urllib.parse
 import warnings
 from typing import TYPE_CHECKING, Optional, Tuple, Union
 
@@ -1744,6 +1745,8 @@ class Camera:
                 30 or 60. 25 fps is only supported on Pioneer/Pro/X1/X3, and 60 fps only on the
                 X3 Ultra and X7 at 1440p or lower. If the requested frame rate is not supported
                 at the current resolution the drone reduces it while respecting the resolution.
+                On the X3 Ultra and X7 the live stream is limited to 30 fps: at 60 fps it carries
+                every other frame, and recordings keep the full rate.
 
         Raises:
             ValueError: If the frame rate is not 25, 30 or 60.
@@ -2139,6 +2142,46 @@ class Camera:
         """Send pan, tilt and zoom and remember them for the next partial call."""
         self._parent_drone._ctrl_client.set_camera_pan_tilt_zoom(pan, tilt, zoom)
         self._last_pan_tilt_zoom = (pan, tilt, zoom)
+
+    def get_stream_url(self) -> str:
+        """Get the RTSP URL of this camera's live stream.
+
+        The URL comes from the stream list the drone reports in its drone info, addressed to the
+        IP this `Drone` connects to. Without a stream list, on older drones or before connecting,
+        the default is returned: port 8554 for the main camera and 8555 for a guest port camera.
+
+        The drone streams over UDP only, see
+        [Live video streams](../../../video/streams.md) for players and limits.
+
+        Returns:
+            The stream URL, such as `"rtsp://192.168.1.101:8554/test"`.
+        """
+        # Only the port and path are taken from the drone's URL, so the stream is addressed to
+        # the IP this Drone connects to.
+        ip = self._parent_drone._ip
+        host = f"[{ip}]" if ":" in ip else ip
+        primary = not self._is_guestport_camera
+        for service in self._parent_drone._services or []:
+            if not isinstance(service, dict) or service.get("type") != "videostream":
+                continue
+            options = service.get("options")
+            if not isinstance(options, dict) or bool(options.get("primary")) != primary:
+                continue
+            url = options.get("url")
+            if not isinstance(url, str):
+                continue
+            try:
+                parts = urllib.parse.urlsplit(url)
+                port = parts.port
+            except ValueError:
+                continue
+            if parts.scheme != "rtsp" or not parts.path:
+                continue
+            netloc = f"{host}:{port}" if port else host
+            return urllib.parse.urlunsplit((parts.scheme, netloc, parts.path, parts.query, ""))
+        if self._is_guestport_camera:
+            return f"rtsp://{host}:8555/guestport_cam"
+        return f"rtsp://{host}:8554/test"
 
     def take_picture(self):
         """Take a still picture and store it locally on the drone.
