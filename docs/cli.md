@@ -51,7 +51,7 @@ exit code.
 
 ## Bundling CV models — `blueye bundle-model`
 
-The Blueye X3 Ultra can run your own computer vision models: object
+The Blueye X3 Ultra and X7 can run your own computer vision models: object
 detection, instance segmentation, and single-object tracking. The drone's vision
 pipeline consumes **model packages** — a zip containing an ONNX model and a
 `model_meta.json` file that describes how to preprocess frames and decode the model's

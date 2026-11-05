@@ -113,6 +113,7 @@ nav:
       - "Legacy log file format": "logs/legacy-log-file-format.md"
   - "Configure drone parameters": "configuration.md"
   - "Subscribing to a telemetry message": "telemetry-callback.md"
+  - "Blueye drone models": "models.md"
   - "Drone model and hardware": "drone-info.md"
   - "Peripherals": "peripherals.md"
   - "Visualize live sensor data": "foxglove-bridge.md"
