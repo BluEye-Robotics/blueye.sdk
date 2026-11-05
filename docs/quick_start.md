@@ -187,8 +187,8 @@ Run `blueye --help` to see everything it can do, or read more on
 [the blueye CLI page](cli.md).
 
 ### Explore the examples
-For further examples on how to use the SDK to control the drone have a look at the
-[motion examples](movement/from-the-CLI.md).
+For how to move the drone, its axes, force levels and auto modes, see
+[Control from a Python script](movement/from-the-CLI.md).
 
 [Download the examples for this documentation version](examples.zip). The archive includes shared
 helpers and is also available in the SDK's installed, offline docs.

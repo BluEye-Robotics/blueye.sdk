@@ -1,6 +1,6 @@
 import threading
 import warnings
-from typing import Optional
+from typing import Dict, Optional
 
 import blueye.protocol
 
@@ -8,11 +8,18 @@ from .utils import deprecated_property
 
 
 class Motion:
-    """Control the motion of the drone, and set automatic control modes
+    """Control the motion of the drone, and set automatic control modes.
 
     Motion can be set one degree of freedom at a time by using the motion setters (set_surge,
     set_sway, set_heave and set_yaw, and on the Blueye X7 also set_roll and set_pitch) or for all
     degrees of freedom in one go through the `send_thruster_setpoint` method.
+
+    A setpoint of 1 or -1 is full stick, not the most the thrusters can give. The force it asks
+    for depends on [`set_boost`][blueye.sdk.motion.Motion.set_boost] and
+    [`set_slow`][blueye.sdk.motion.Motion.set_slow]; see
+    [Control from a Python script](../../../movement/from-the-CLI.md) for the levels per axis.
+    The drone holds the last setpoint until it gets a new one, or until it zeroes the input 3
+    seconds after the client in control stops sending its watchdog.
 
     Only the Blueye X7 has thrusters that can produce roll and pitch moments. The other models
     ignore roll and pitch input, so the setters are safe to call on any drone.
@@ -33,14 +40,14 @@ class Motion:
         # Set while disconnect() is leaving, see _stop_input
         self._input_stopped = False
 
-    def get_current_thruster_setpoints(self):
-        """Returns the current setpoints for the thrusters
+    def get_current_thruster_setpoints(self) -> Dict[str, float]:
+        """Get the setpoints the SDK last sent, per axis.
 
-        We maintain this state in the SDK since the drone expects to receive all of the setpoints at
-        once.
+        The SDK keeps them because every motion message carries all axes at once.
 
-        For setting the setpoints you should use the dedicated setters/functions for that, trying
-        to set them directly will raise an AttributeError.
+        Returns:
+            A dictionary with the surge, sway, heave, yaw, roll and pitch setpoints. Change them
+            with the setters or `send_thruster_setpoint`, not through this dictionary.
         """
 
         return self._current_thruster_setpoints
@@ -277,13 +284,12 @@ class Motion:
             self._input_stopped = False
 
     def send_thruster_setpoint(self, surge, sway, heave, yaw, *, roll=0.0, pitch=0.0):
-        """Control the thrusters of the drone
+        """Set the setpoint of every axis in one message.
 
-        Set reference values between -1 and 1 for each controllable degree of freedom on the drone.
-        The reference values are mapped linearly to a thruster force, a set point of -1 corresponds
-        to maximum negative force and a set point of 1 corresponds to maximum positive force. For
-        the yaw, roll and pitch directions the reference is a moment not a force, as these
-        directions are rotational not translational.
+        Each setpoint is between -1 and 1 and scales the force (or, for yaw, roll and pitch, the
+        moment) linearly. A setpoint of 1 or -1 is full stick, whose force depends on
+        [`set_boost`][blueye.sdk.motion.Motion.set_boost] and
+        [`set_slow`][blueye.sdk.motion.Motion.set_slow], not the most the thrusters can give.
 
         Roll and pitch are keyword-only and default to 0, so a call that leaves them out clears any
         roll or pitch set earlier. Only the Blueye X7 acts on them, and with auto heading off they
@@ -314,15 +320,20 @@ class Motion:
             self._send_motion_input_message()
 
     def get_boost(self) -> float:
-        """Get the boost gain
+        """Get the boost gain.
 
         Returns:
-            The current boost gain, range from 0 to 1.
+            The boost gain the SDK last sent, from 0 to 1.
         """
         return self._current_boost_setpoints["boost"]
 
     def set_boost(self, boost_gain: float):
-        """Set the boost gain
+        """Set the boost gain.
+
+        Boost raises the force a full-stick setpoint asks for, up to the drone's boosted level at
+        1. Values up to 0.1 count as 0 and 0.1 to 1 is stretched over the whole range, so 0.55 is
+        halfway. The drone uses boost minus slow after that, so boost and slow at 1 together give
+        the normal level.
 
         Args:
             boost_gain (float): Range from 0 to 1.
@@ -334,15 +345,19 @@ class Motion:
     boost = deprecated_property("get_boost", "set_boost")
 
     def get_slow(self) -> float:
-        """Get the "slow gain" (inverse of boost)
+        """Get the slow gain.
 
         Returns:
-            The current slow gain, range from 0 to 1.
+            The slow gain the SDK last sent, from 0 to 1.
         """
         return self._current_boost_setpoints["slow"]
 
     def set_slow(self, slow_gain: float):
-        """Set the "slow gain" (inverse of boost)
+        """Set the slow gain.
+
+        Slow lowers the force a full-stick setpoint asks for, down to the drone's slow level at 1,
+        for fine positioning. Values up to 0.1 count as 0, and the drone uses boost minus slow,
+        see [`set_boost`][blueye.sdk.motion.Motion.set_boost].
 
         Args:
             slow_gain (float): Range from 0 to 1.
@@ -356,7 +371,7 @@ class Motion:
     def is_auto_depth_active(self) -> Optional[bool]:
         """Get the state of the auto depth control mode
 
-        When auto depth is active, input for the heave direction to the thruster_setpoint function
+        When auto depth is active, heave input (`set_heave` or `send_thruster_setpoint`)
         specifies a speed set point instead of a force set point. A control loop on the drone will
         then attempt to maintain the wanted speed in the heave direction as long as auto depth is
         active.
@@ -374,7 +389,7 @@ class Motion:
     def enable_auto_depth(self, enable: bool):
         """Enable or disable the auto depth control mode
 
-        When auto depth is active, input for the heave direction to the thruster_setpoint function
+        When auto depth is active, heave input (`set_heave` or `send_thruster_setpoint`)
         specifies a speed set point instead of a force set point. A control loop on the drone will
         then attempt to maintain the wanted speed in the heave direction as long as auto depth is
         active.
@@ -392,8 +407,8 @@ class Motion:
     def is_auto_heading_active(self) -> Optional[bool]:
         """Get the state of the auto heading control mode
 
-        When auto heading is active, input for the yaw direction to the thruster_setpoint function
-        specifies a angular speed set point instead of a moment set point. A control loop on the
+        When auto heading is active, yaw input (`set_yaw` or `send_thruster_setpoint`)
+        specifies an angular speed set point instead of a moment set point. A control loop on the
         drone will then attempt to maintain the wanted angular velocity in the yaw direction as
         long as auto heading is active.
 
@@ -410,8 +425,8 @@ class Motion:
     def enable_auto_heading(self, enable: bool):
         """Enable or disable the auto heading control mode
 
-        When auto heading is active, input for the yaw direction to the thruster_setpoint function
-        specifies a angular speed set point instead of a moment set point. A control loop on the
+        When auto heading is active, yaw input (`set_yaw` or `send_thruster_setpoint`)
+        specifies an angular speed set point instead of a moment set point. A control loop on the
         drone will then attempt to maintain the wanted angular velocity in the yaw direction as
         long as auto heading is active.
 
@@ -426,7 +441,7 @@ class Motion:
         """Get the state of the auto altitude control mode
 
         When auto altitude is active, the drone will attempt to maintain its current altitude above
-        the seabed. Input for the heave direction to the thruster_setpoint function specifies a
+        the seabed. Heave input (`set_heave` or `send_thruster_setpoint`) specifies a
         speed set point instead of a force set point. A control loop on the drone will then attempt
         to maintain the wanted speed in the heave direction as long as auto altitude is active.
 
@@ -444,7 +459,7 @@ class Motion:
         """Enable or disable the auto altitude control mode
 
         When auto altitude is active, the drone will attempt to maintain its current altitude above
-        the seabed. Input for the heave direction to the thruster_setpoint function specifies a
+        the seabed. Heave input (`set_heave` or `send_thruster_setpoint`) specifies a
         speed set point instead of a force set point. A control loop on the drone will then attempt
         to maintain the wanted speed in the heave direction as long as auto altitude is active.
 
