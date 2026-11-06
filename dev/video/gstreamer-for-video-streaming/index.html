@@ -9,7 +9,7 @@
       
       
       
-        <link rel="prev" href="../../movement/with-a-gamepad/">
+        <link rel="prev" href="../streams/">
       
       
         <link rel="next" href="../recording-and-stills/">
@@ -566,6 +566,34 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../streams/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Live video streams
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -651,6 +679,28 @@
     <span class="md-ellipsis">
       
         External camera streaming pipeline
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mjpeg-streaming-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MJPEG streaming pipeline
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#multibeam-sonar-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multibeam sonar pipeline
       
     </span>
   </a>
@@ -2000,6 +2050,28 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#mjpeg-streaming-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MJPEG streaming pipeline
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#multibeam-sonar-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multibeam sonar pipeline
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2022,7 +2094,7 @@
 
   <h1>GStreamer for video streaming</h1>
 
-<p>GStreamer is the lowest latency alternative for streaming video from the drone to your laptop.</p>
+<p>GStreamer is the lowest latency alternative for streaming video from the drone to your laptop. See <a href="../streams/">Live video streams</a> for the stream URLs and what the drone allows. On the X3 Ultra and X7, the camera only starts once the Blueye app or an SDK <code>Drone</code> has connected after the drone boots.</p>
 <h2 id="installing-gstreamer">Installing GStreamer</h2>
 <p>To run the streaming pipeline in the next section you will need a runtime installation of GStreamer.
 The instructions below show the basic steps for installing GStreamer on the most common operating systems.
@@ -2031,8 +2103,7 @@ You can find more in depth instruction for your specific operating system in the
 <summary>Windows</summary>
 <p>On Windows the basic installation steps are:</p>
 <ol>
-<li>Download the relevant installer for your computer from <a href="https://gstreamer.freedesktop.org/download">https://gstreamer.freedesktop.org/download</a> .
-Using the latest stable relase should be fine, at the time of writing that is <code>1.16.1 runtime installer</code></li>
+<li>Download the runtime installer for the latest stable release from <a href="https://gstreamer.freedesktop.org/download">https://gstreamer.freedesktop.org/download</a>.</li>
 <li>Run the installer. When asked to choose a setup type choose to do a <strong>complete</strong> installation. This is because some plugins that are needed for the basic pipeline later are not included if you choose to install the typical setup</li>
 <li>To run GStreamer commands form the terminal, GStreamer must be added to the PATH environment variable. This can be done from the advanced system settings. Add <code>%GSTREAMER_1_0_ROOT_X86_64%\bin</code> to path. Alternatively you can choose to run gst-launch-1.0.exe from the folder it is installed in, typically <code>C:\gstreamer\1.0\x86_64\bin</code></li>
 </ol>
@@ -2072,7 +2143,7 @@ gstreamer1.0-tools<span class="w"> </span>gstreamer1.0-x<span class="w"> </span>
 </details>
 <p>Running the pipeline will open a window with the camera stream and information about packet loss and camera frame rate.</p>
 <h2 id="external-camera-streaming-pipeline">External camera streaming pipeline</h2>
-<p>If you have a X3 drone with an external camera connected you can use the following pipeline:</p>
+<p>With a Blueye guest port camera attached you can use the following pipeline:</p>
 <details class="abstract">
 <summary>Windows</summary>
 <div class="highlight"><pre><span></span><code>gst-launch-1.0<span class="w"> </span>rtspsrc<span class="w"> </span><span class="nv">location</span><span class="o">=</span>rtsp://192.168.1.101:8555/guestport_cam<span class="w"> </span><span class="nv">latency</span><span class="o">=</span><span class="m">0</span><span class="w"> </span>!<span class="w"> </span>rtph264depay<span class="w"> </span>!<span class="w"> </span>avdec_h264<span class="w"> </span>!<span class="w"> </span>videoconvert<span class="w"> </span>!<span class="w"> </span>autovideosink<span class="w"> </span><span class="nv">sync</span><span class="o">=</span><span class="nb">false</span>
@@ -2088,6 +2159,41 @@ gstreamer1.0-tools<span class="w"> </span>gstreamer1.0-x<span class="w"> </span>
 </code></pre></div>
 </details>
 <p>Running the pipeline will open a window with the external camera stream.</p>
+<h2 id="mjpeg-streaming-pipeline">MJPEG streaming pipeline</h2>
+<p>When the main camera streams MJPEG, set with
+<a class="autorefs autorefs-internal" title="            set_streaming_protocol" href="../../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.set_streaming_protocol"><code>set_streaming_protocol</code></a>, the H.264 decoder is
+replaced by a JPEG one:</p>
+<details class="abstract">
+<summary>Windows</summary>
+<div class="highlight"><pre><span></span><code>gst-launch-1.0<span class="w"> </span>rtspsrc<span class="w"> </span><span class="nv">location</span><span class="o">=</span>rtsp://192.168.1.101:8554/test<span class="w"> </span><span class="nv">latency</span><span class="o">=</span><span class="m">0</span><span class="w"> </span>!<span class="w"> </span>rtpjpegdepay<span class="w"> </span>!<span class="w"> </span>jpegdec<span class="w"> </span>!<span class="w"> </span>videoconvert<span class="w"> </span>!<span class="w"> </span>fpsdisplaysink<span class="w"> </span><span class="nv">sync</span><span class="o">=</span><span class="nb">false</span>
+</code></pre></div>
+</details>
+<details class="abstract">
+<summary>Linux and macOS</summary>
+<div class="highlight"><pre><span></span><code>gst-launch-1.0<span class="w"> </span>rtspsrc<span class="w"> </span><span class="nv">location</span><span class="o">=</span>rtsp://192.168.1.101:8554/test<span class="w"> </span><span class="nv">latency</span><span class="o">=</span><span class="m">0</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>!<span class="w"> </span>rtpjpegdepay<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>!<span class="w"> </span>jpegdec<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>!<span class="w"> </span>videoconvert<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>!<span class="w"> </span>fpsdisplaysink<span class="w"> </span><span class="nv">sync</span><span class="o">=</span><span class="nb">false</span>
+</code></pre></div>
+</details>
+<h2 id="multibeam-sonar-pipeline">Multibeam sonar pipeline</h2>
+<p>On the X3 Ultra and X7 with a multibeam connected, the sonar image is an H.264 stream on port
+8556:</p>
+<details class="abstract">
+<summary>Windows</summary>
+<div class="highlight"><pre><span></span><code>gst-launch-1.0<span class="w"> </span>rtspsrc<span class="w"> </span><span class="nv">location</span><span class="o">=</span>rtsp://192.168.1.101:8556/sonar<span class="w"> </span><span class="nv">latency</span><span class="o">=</span><span class="m">0</span><span class="w"> </span>!<span class="w"> </span>rtph264depay<span class="w"> </span>!<span class="w"> </span>avdec_h264<span class="w"> </span>!<span class="w"> </span>videoconvert<span class="w"> </span>!<span class="w"> </span>autovideosink<span class="w"> </span><span class="nv">sync</span><span class="o">=</span><span class="nb">false</span>
+</code></pre></div>
+</details>
+<details class="abstract">
+<summary>Linux and macOS</summary>
+<div class="highlight"><pre><span></span><code>gst-launch-1.0<span class="w"> </span>rtspsrc<span class="w"> </span><span class="nv">location</span><span class="o">=</span>rtsp://192.168.1.101:8556/sonar<span class="w"> </span><span class="nv">latency</span><span class="o">=</span><span class="m">0</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>!<span class="w"> </span>rtph264depay<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>!<span class="w"> </span>avdec_h264<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>!<span class="w"> </span>videoconvert<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>!<span class="w"> </span>autovideosink<span class="w"> </span><span class="nv">sync</span><span class="o">=</span><span class="nb">false</span>
+</code></pre></div>
+</details>
 
 
 
@@ -2124,8 +2230,8 @@ gstreamer1.0-tools<span class="w"> </span>gstreamer1.0-x<span class="w"> </span>
   <nav class="md-footer__inner md-grid" aria-label="footer.title">
     
     
-    <a href="../../movement/with-a-gamepad/" class="md-footer__link md-footer__link--prev"
-      aria-label="Previous: Control with a gamepad" rel="prev">
+    <a href="../streams/" class="md-footer__link md-footer__link--prev"
+      aria-label="Previous: Live video streams" rel="prev">
       <div class="md-footer__button md-icon">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
       </div>
@@ -2134,7 +2240,7 @@ gstreamer1.0-tools<span class="w"> </span>gstreamer1.0-x<span class="w"> </span>
           <span class="md-footer__direction">
             Previous
           </span>
-          Control with a gamepad
+          Live video streams
         </div>
       </div>
     </a>

@@ -567,6 +567,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../video/streams/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Live video streams
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../video/gstreamer-for-video-streaming/" class="md-nav__link">
         
   
@@ -1004,6 +1032,17 @@
     <span class="md-ellipsis">
       
         Adjusting the logging frequency of a telemetry message
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#imu-telemetry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IMU telemetry
       
     </span>
   </a>
@@ -2038,6 +2077,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#imu-telemetry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IMU telemetry
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2088,9 +2138,81 @@
 <h2 id="adjusting-the-logging-frequency-of-a-telemetry-message">Adjusting the logging frequency of a telemetry message</h2>
 <p>The drone writes telemetry to the dive log at its own rate, separate from the publish rate. <a class="autorefs autorefs-internal" title="            set_msg_log_frequency" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Telemetry.set_msg_log_frequency"><code>set_msg_log_frequency</code></a> changes how often a message is logged, for example to get IMU or DVL data at a higher rate in the log without sending it to every client at that rate. It requires Blunux 5.1 or newer and takes the same frequency range as the publish frequency.</p>
 <p>On the X3 Ultra and X7 a multibeam recording raises the log rate of six messages while it runs (<code>PositionEstimateTel</code>, <code>AttitudeTel</code>, <code>CalibratedImuTel</code>, <code>CalibratedImuHpTel</code>, <code>DepthTel</code> and <code>AltitudeTel</code>) and restores their defaults when it stops. A rate set for one of those is replaced both times.</p>
+<h2 id="imu-telemetry">IMU telemetry</h2>
+<p>The drone publishes raw and calibrated data from its inertial measurement units (IMUs):</p>
+<table>
+<thead>
+<tr>
+<th>Message</th>
+<th>Data</th>
+<th>Models</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Imu1Tel</code>, <code>Imu2Tel</code></td>
+<td>Raw data from the drone's two IMUs</td>
+<td>All</td>
+</tr>
+<tr>
+<td><code>CalibratedImuTel</code></td>
+<td>Calibrated IMU data</td>
+<td>All</td>
+</tr>
+<tr>
+<td><code>ImuHpTel</code></td>
+<td>Raw data from the high-precision IMU</td>
+<td>X3 Ultra and X7</td>
+</tr>
+<tr>
+<td><code>CalibratedImuHpTel</code></td>
+<td>Calibrated high-precision IMU data</td>
+<td>X3 Ultra and X7</td>
+</tr>
+</tbody>
+</table>
+<p>Each message carries an <code>imu</code> field with the accelerometer in g, the gyroscope in rad/s, the magnetometer in μT and the temperature in °C. The axes are the drone's body frame: x forward, y right and z down. A drone at rest reads about +1 g on z. The high-precision IMU has no magnetometer, and its magnetometer fields stay 0.</p>
+<p>All five are published at 1 Hz by default. Raise the rate with <a href="#adjusting-the-publishing-frequency-of-a-telemetry-message"><code>set_msg_publish_frequency</code></a>, which changes it for every client, or the log rate with <a href="#adjusting-the-logging-frequency-of-a-telemetry-message"><code>set_msg_log_frequency</code></a>. This example prints all of them; on models without the high-precision IMU the high-precision callback never runs:</p>
+<p><a href="../examples/print_imu.py"><code>examples/print_imu.py</code></a> <a href="https://github.com/BluEye-Robotics/blueye.sdk/blob/4bb35beaeea9ed4062049f9430eec0901f74322b/examples/print_imu.py" title="View source on GitHub at 4bb35bea"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg></span></a></p>
+<div class="highlight"><pre><span></span><code><span class="sd">&quot;&quot;&quot;print_imu.py</span>
+
+<span class="sd">Print the drone&#39;s IMU telemetry for a few seconds. Every model publishes Imu1Tel, Imu2Tel and</span>
+<span class="sd">CalibratedImuTel. Only the X3 Ultra and X7 have the high-precision IMU behind ImuHpTel and</span>
+<span class="sd">CalibratedImuHpTel, so on other models that callback never runs.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">blueye.protocol</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">bp</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drone</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">callback_imu_raw</span><span class="p">(</span><span class="n">msg_type</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Raw </span><span class="si">{</span><span class="n">msg_type</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">callback_imu_calibrated</span><span class="p">(</span><span class="n">msg_type</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">msg_type</span><span class="si">}</span><span class="s2">:</span><span class="se">\n</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">callback_imu_high_precision</span><span class="p">(</span><span class="n">msg_type</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;High-precision </span><span class="si">{</span><span class="n">msg_type</span><span class="si">}</span><span class="s2">:</span><span class="se">\n</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">Drone</span><span class="p">(</span><span class="n">connect_as_observer</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">my_drone</span><span class="p">:</span>
+        <span class="c1"># Use the current telemetry rates without changing them for the pilot.</span>
+        <span class="n">my_drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">add_msg_callback</span><span class="p">([</span><span class="n">bp</span><span class="o">.</span><span class="n">Imu1Tel</span><span class="p">,</span> <span class="n">bp</span><span class="o">.</span><span class="n">Imu2Tel</span><span class="p">],</span> <span class="n">callback_imu_raw</span><span class="p">)</span>
+        <span class="n">my_drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">add_msg_callback</span><span class="p">([</span><span class="n">bp</span><span class="o">.</span><span class="n">CalibratedImuTel</span><span class="p">],</span> <span class="n">callback_imu_calibrated</span><span class="p">)</span>
+        <span class="n">my_drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">add_msg_callback</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">bp</span><span class="o">.</span><span class="n">ImuHpTel</span><span class="p">,</span> <span class="n">bp</span><span class="o">.</span><span class="n">CalibratedImuHpTel</span><span class="p">],</span> <span class="n">callback_imu_high_precision</span>
+        <span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</code></pre></div>
 <h2 id="example">Example</h2>
 <p>The following example illustrates how can use a callback to print the depth reported by the drone.</p>
-<p><a href="../examples/print_depth.py"><code>examples/print_depth.py</code></a> <a href="https://github.com/BluEye-Robotics/blueye.sdk/blob/2cd7d7d707291fc1902b6fe09c4205855c476262/examples/print_depth.py" title="View source on GitHub at 2cd7d7d7"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg></span></a></p>
+<p><a href="../examples/print_depth.py"><code>examples/print_depth.py</code></a> <a href="https://github.com/BluEye-Robotics/blueye.sdk/blob/4bb35beaeea9ed4062049f9430eec0901f74322b/examples/print_depth.py" title="View source on GitHub at 4bb35bea"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg></span></a></p>
 <div class="highlight"><pre><span></span><code><span class="sd">&quot;&quot;&quot;print_depth.py</span>
 
 <span class="sd">This example program demonstrates how one can add a callback function to a telemetry message, as</span>
