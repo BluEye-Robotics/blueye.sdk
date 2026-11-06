@@ -126,7 +126,7 @@ Here are some examples outlining how to use some of the mission planning feature
 /// details | Tilt camera
     type: example
 
-This is a simple example that tilts the camera up and down. Useful for testing with the drone out of the water.
+This is a simple example that tilts the camera up and down. Useful for testing with the drone out of the water. The drone limits a tilt instruction to its own tilt range: ±30° on the Pro, X1, X3 and X3 Ultra and ±90° on the X7, see [Blueye drone models](models.md).
 
 {{code_from_file("../examples/mission_tilt.py", flavor= "python")}}
 ///

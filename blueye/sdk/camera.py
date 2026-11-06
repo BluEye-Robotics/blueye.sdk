@@ -79,7 +79,12 @@ def scale_calibration(
 
 
 class Tilt:
-    """Handles the camera tilt functionality for the Blueye drone."""
+    """Handles the camera tilt functionality for the Blueye drone.
+
+    Every model except the original Pioneer can tilt its camera. The Pro, X1, X3 and X3 Ultra
+    tilt from -30 to +30 degrees and the X7 from -90 to +90 degrees. The methods raise
+    `RuntimeError` on a drone without `"tilt"` in `Drone.features`.
+    """
 
     def __init__(self, parent_drone: Drone):
         """Initialize the Tilt class.
@@ -101,6 +106,9 @@ class Tilt:
     def set_velocity(self, velocity: float):
         """Set the speed and direction of the camera tilt.
 
+        The drone keeps the last velocity until it gets a new one, so the tilt runs to its end
+        stop unless the velocity is set back to 0.
+
         Args:
             velocity: Speed and direction of the tilt. 1 is max speed up, -1 is max speed down.
 
@@ -114,7 +122,8 @@ class Tilt:
         """Return the current angle of the camera tilt.
 
         Returns:
-            The current angle of the camera tilt.
+            The current angle of the camera tilt in degrees, positive up. None if no telemetry
+            has been received.
 
         Raises:
             RuntimeError: If the connected drone does not have the tilt option.
@@ -131,6 +140,9 @@ class Tilt:
     def is_stabilization_enabled(self) -> Optional[bool]:
         """Get the state of active camera stabilization.
 
+        On the X7 this reports the setting, which the drone does not act on, see
+        [`enable_stabilization`][blueye.sdk.camera.Tilt.enable_stabilization].
+
         Returns:
             The current state of active camera stabilization.
 
@@ -146,6 +158,9 @@ class Tilt:
 
     def enable_stabilization(self, enabled: bool):
         """Set the state of active camera stabilization.
+
+        Stabilization tilts the camera against the drone's pitch. The X7 accepts and reports the
+        setting, but its tilt servo does not compensate.
 
         Args:
             enabled (bool): True to turn stabilization on, False to turn it off.

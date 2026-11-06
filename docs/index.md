@@ -1,7 +1,17 @@
 ![SDK demo: connect with Drone(), set_lights(1.0), and motion.set_surge(0.3)](media/sdk-demo.gif)
 
-Blueye produces and sells three models of underwater drones, the Blueye Pioneer, Blueye Pro, and Blueye X3. The Pioneer and the Pro are drones designed for inspection, while the X3 is extensible with three guest ports that allow attaching for example grippers or sonars.
-Visit [blueyerobotics.com](https://www.blueyerobotics.com/products) for more information about the Blueye products.
+Blueye makes the Pioneer, Pro, X1, X3, X3 Ultra and X7 underwater drones, and the SDK works with all of them. The Pioneer and Pro are built for inspection. The other models have guest ports for tools such as grippers, sonars and positioning systems, and the X3 Ultra and X7 add a 4K camera and can run computer vision models on the drone.
+
+| Model | Camera | Camera tilt | Guest ports | CV models |
+| --- | --- | --- | --- | --- |
+| Pioneer | Up to 1080p | None | None | No |
+| Pro | Up to 1080p | ±30° | None | No |
+| X1 | Up to 1080p | ±30° | 1 | No |
+| X3 | Up to 1080p | ±30° | 3 | No |
+| X3 Ultra | 4K | ±30° | 3 | Yes |
+| X7 | 4K | ±90° | 6 | Yes |
+
+See [Blueye drone models](models.md) for the differences that matter to a script, and [blueyerobotics.com](https://www.blueyerobotics.com/products) for more about the drones.
 
 ## This SDK and the Blueye drones
 A Blueye drone is normally controlled via a mobile device through the Blueye App ([iOS](https://apps.apple.com/no/app/blueye/id1369714041)/[Android](https://play.google.com/store/apps/details?id=no.blueye.blueyeapp)).
