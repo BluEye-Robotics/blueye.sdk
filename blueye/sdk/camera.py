@@ -805,7 +805,8 @@ class Overlay:
     def upload_logo(self, path_to_logo: str, timeout: float = 1.0):
         """Upload user selectable logo for watermarking videos and pictures.
 
-        Set the logo-property to `blueye.protocol.LogoType.LOG_TYPE_CUSTOM` to enable this logo.
+        Call [`set_logo`][blueye.sdk.camera.Overlay.set_logo] with
+        `blueye.protocol.LogoType.LOGO_TYPE_CUSTOM` to show it.
 
         Allowed filetype: JPG or PNG.
         Max resolution: 2000 px.

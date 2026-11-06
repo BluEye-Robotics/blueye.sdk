@@ -45,8 +45,9 @@ class Peripheral:
         )
         """Interfaces the device requires from the port it is connected to."""
         self.compatible_guest_ports: List[bp.GuestPortNumber] = list(device.compatible_guest_ports)
-        """Ports on this drone where the device is fully supported, as computed by the drone from
-        the port capabilities and the device requirements."""
+        """Ports on this drone where the device is fully supported.
+
+        Computed by the drone from the port capabilities and the device requirements."""
         if self.required_blunux_version != "":
             if version.parse(self.required_blunux_version) > version.parse(
                 parent_drone.software_version_short
