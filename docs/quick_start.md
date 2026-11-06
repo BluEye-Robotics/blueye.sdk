@@ -154,7 +154,8 @@ the available methods on the drone, making it easy to try setting and getting th
 
 ### Watching the video stream
 The easiest way to open the RTSP video stream is by using [`VLC media player`](https://www.videolan.org/vlc/index.html).
-Once VLC is downloaded, you can start the stream like this. The RTSP URL is: `rtsp://192.168.1.101:8554/test`
+Once VLC is downloaded, you can start the stream like this. The RTSP URL is: `rtsp://192.168.1.101:8554/test`. See
+[Live video streams](video/streams.md) for the other streams and for OpenCV.
 ![VLC: open the drone's RTSP network stream](media/rtsp-in-vlc.gif)
 
 

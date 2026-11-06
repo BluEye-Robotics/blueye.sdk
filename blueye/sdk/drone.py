@@ -415,6 +415,9 @@ class Drone:
         # The drone's persistent storage settings from drone_info, which say which media the
         # drone writes at all. None until read, and on drones that do not report them.
         self._storage_settings: Optional[Dict[str, bool]] = None
+        # The drone's service list from drone_info, which carries its video stream URLs. None
+        # until read, and on drones that do not report it.
+        self._services: Optional[List[dict]] = None
         self._watchdog_publisher = _NoConnectionClient()
         self._telemetry_watcher = _NoConnectionClient()
         self._req_rep_client = _NoConnectionClient()
@@ -510,6 +513,8 @@ class Drone:
         self.uuid = response["hardware_id"]
         storage = response.get("persistent_storage")
         self._storage_settings = dict(storage) if isinstance(storage, dict) else None
+        services = response.get("services")
+        self._services = list(services) if isinstance(services, list) else None
 
     def _fetch_drone_info(self, timeout: float) -> dict:
         """The drone_info document from the drone's HTTP API.
@@ -1176,8 +1181,13 @@ class Drone:
     def get_active_video_streams(self) -> Dict[str, int]:
         """Get the number of currently active connections to the video stream.
 
-        Every client connected to the RTSP stream (does not matter if it's directly from GStreamer,
-        or from the Blueye app) counts as one connection.
+        Every RTSP session counts, whether it comes from the Blueye app, GStreamer, VLC or
+        OpenCV. A session counts from the moment the player sets it up. It stops counting when
+        the player closes the main camera stream, or when the session times out, about 5 seconds
+        after the player stops keeping it alive; the guest port camera stream only drops
+        sessions on the timeout. The drone publishes the count once a second. Each stream accepts
+        4 sessions; a player that asks for a fifth is refused, see
+        [Live video streams](../../../video/streams.md).
 
         Returns:
             A dictionary with the number of active connections to the main and guestport video
