@@ -516,7 +516,7 @@
   <span class="md-ellipsis">
     
   
-    Control from the CLI
+    Control from a Python script
   
 
     
@@ -986,6 +986,33 @@
   
   
     <li class="md-nav__item">
+      <a href="models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blueye drone models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="drone-info/" class="md-nav__link">
         
   
@@ -1264,10 +1291,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_19" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_20" >
         
           
-          <label class="md-nav__link" for="__nav_19" id="__nav_19_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_20" id="__nav_20_label" tabindex="0">
             
   
   
@@ -1285,8 +1312,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_19_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_19">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_20_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_20">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1647,10 +1674,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_19_13" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_20_13" >
         
           
-          <label class="md-nav__link" for="__nav_19_13" id="__nav_19_13_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_20_13" id="__nav_20_13_label" tabindex="0">
             
   
   
@@ -1668,8 +1695,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_19_13_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_19_13">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_20_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_20_13">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1948,8 +1975,63 @@
   <h1>About the Blueye Drones</h1>
 
 <p><img alt="SDK demo: connect with Drone(), set_lights(1.0), and motion.set_surge(0.3)" src="media/sdk-demo.gif" /></p>
-<p>Blueye produces and sells three models of underwater drones, the Blueye Pioneer, Blueye Pro, and Blueye X3. The Pioneer and the Pro are drones designed for inspection, while the X3 is extensible with three guest ports that allow attaching for example grippers or sonars.
-Visit <a href="https://www.blueyerobotics.com/products">blueyerobotics.com</a> for more information about the Blueye products.</p>
+<p>Blueye makes the Pioneer, Pro, X1, X3, X3 Ultra and X7 underwater drones, and the SDK works with all of them. The Pioneer and Pro are built for inspection. The other models have guest ports for tools such as grippers, sonars and positioning systems, and the X3 Ultra and X7 add a 4K camera and can run computer vision models on the drone.</p>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Camera</th>
+<th>Camera tilt</th>
+<th>Guest ports</th>
+<th>CV models</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pioneer</td>
+<td>Up to 1080p</td>
+<td>None</td>
+<td>None</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Pro</td>
+<td>Up to 1080p</td>
+<td>±30°</td>
+<td>None</td>
+<td>No</td>
+</tr>
+<tr>
+<td>X1</td>
+<td>Up to 1080p</td>
+<td>±30°</td>
+<td>1</td>
+<td>No</td>
+</tr>
+<tr>
+<td>X3</td>
+<td>Up to 1080p</td>
+<td>±30°</td>
+<td>3</td>
+<td>No</td>
+</tr>
+<tr>
+<td>X3 Ultra</td>
+<td>4K</td>
+<td>±30°</td>
+<td>3</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>X7</td>
+<td>4K</td>
+<td>±90°</td>
+<td>6</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+<p>See <a href="models/">Blueye drone models</a> for the differences that matter to a script, and <a href="https://www.blueyerobotics.com/products">blueyerobotics.com</a> for more about the drones.</p>
 <h2 id="this-sdk-and-the-blueye-drones">This SDK and the Blueye drones</h2>
 <p>A Blueye drone is normally controlled via a mobile device through the Blueye App (<a href="https://apps.apple.com/no/app/blueye/id1369714041">iOS</a>/<a href="https://play.google.com/store/apps/details?id=no.blueye.blueyeapp">Android</a>).
 The mobile device is connected via Wi-Fi to a surface unit, and the drone is connected to the surface unit via a tether cable.</p>

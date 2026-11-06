@@ -23,7 +23,7 @@
     
     
       
-        <title>Control from the CLI - Blueye SDK</title>
+        <title>Control from a Python script - Blueye SDK</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#controlling-from-the-command-line-interface" class="md-skip">
+        <a href="#control-from-a-python-script" class="md-skip">
           Skip to content
         </a>
       
@@ -146,7 +146,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-            Control from the CLI
+            Control from a Python script
             
           </span>
         </div>
@@ -475,7 +475,7 @@
   <span class="md-ellipsis">
     
   
-    Control from the CLI
+    Control from a Python script
   
 
     
@@ -493,7 +493,7 @@
   <span class="md-ellipsis">
     
   
-    Control from the CLI
+    Control from a Python script
   
 
     
@@ -519,10 +519,54 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#axes-and-directions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Axes and directions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-strong-a-setpoint-is" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How strong a setpoint is
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#one-axis-or-all-at-once" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        One axis or all at once
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#auto-modes-and-what-they-need" class="md-nav__link">
     <span class="md-ellipsis">
       
         Auto modes and what they need
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stopping-safely" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stopping safely
       
     </span>
   </a>
@@ -994,6 +1038,33 @@
   
   
     <li class="md-nav__item">
+      <a href="../../models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blueye drone models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+    
+    
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../drone-info/" class="md-nav__link">
         
   
@@ -1272,10 +1343,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_19" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_20" >
         
           
-          <label class="md-nav__link" for="__nav_19" id="__nav_19_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_20" id="__nav_20_label" tabindex="0">
             
   
   
@@ -1293,8 +1364,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_19_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_19">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_20_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_20">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1655,10 +1726,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_19_13" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_20_13" >
         
           
-          <label class="md-nav__link" for="__nav_19_13" id="__nav_19_13_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_20_13" id="__nav_20_13_label" tabindex="0">
             
   
   
@@ -1676,8 +1747,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_19_13_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_19_13">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_20_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_20_13">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1925,10 +1996,54 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#axes-and-directions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Axes and directions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-strong-a-setpoint-is" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How strong a setpoint is
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#one-axis-or-all-at-once" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        One axis or all at once
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#auto-modes-and-what-they-need" class="md-nav__link">
     <span class="md-ellipsis">
       
         Auto modes and what they need
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stopping-safely" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stopping safely
       
     </span>
   </a>
@@ -1955,17 +2070,123 @@
   
 
 
-<h1 id="controlling-from-the-command-line-interface">Controlling from the Command Line Interface</h1>
-<p>This is a super simple example showing how you make the drone move from the command line interface:</p>
+<h1 id="control-from-a-python-script">Control from a Python script</h1>
+<p>A <a class="autorefs autorefs-internal" title="            Drone" href="../../reference/blueye/sdk/drone/#blueye.sdk.drone.Drone"><code>Drone</code></a> object has a <code>motion</code> attribute, an instance of <a class="autorefs autorefs-internal" title="            Motion" href="../../reference/blueye/sdk/motion/#blueye.sdk.motion.Motion"><code>Motion</code></a>, with the methods that move the drone and switch its auto modes on and off. Each setter gives one axis a setpoint between -1 and 1, which the drone holds until it gets a new one:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drone</span>
-<span class="n">myDrone</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">()</span>
-<span class="n">myDrone</span><span class="o">.</span><span class="n">motion</span><span class="o">.</span><span class="n">set_surge</span><span class="p">(</span><span class="mf">0.4</span><span class="p">)</span>
-<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">myDrone</span><span class="o">.</span><span class="n">motion</span><span class="o">.</span><span class="n">set_surge</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">Drone</span><span class="p">()</span> <span class="k">as</span> <span class="n">myDrone</span><span class="p">:</span>
+    <span class="n">myDrone</span><span class="o">.</span><span class="n">motion</span><span class="o">.</span><span class="n">set_surge</span><span class="p">(</span><span class="mf">0.4</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">myDrone</span><span class="o">.</span><span class="n">motion</span><span class="o">.</span><span class="n">set_surge</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="c1"># Leaving the block zeroes every setpoint and disconnects</span>
+</code></pre></div>
+<p>The drone drops motion input while nobody is in control, and an observer is never given control, so a script that pilots the drone should connect without <code>connect_as_observer=True</code>. See <a href="../../connecting/">Connecting to the drone</a>.</p>
+<h2 id="axes-and-directions">Axes and directions</h2>
+<table>
+<thead>
+<tr>
+<th>Axis</th>
+<th>Setter</th>
+<th>A positive setpoint</th>
+<th>Models</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Surge</td>
+<td><a class="autorefs autorefs-internal" title="            set_surge" href="../../reference/blueye/sdk/motion/#blueye.sdk.motion.Motion.set_surge"><code>set_surge</code></a></td>
+<td>moves forward</td>
+<td>All</td>
+</tr>
+<tr>
+<td>Sway</td>
+<td><a class="autorefs autorefs-internal" title="            set_sway" href="../../reference/blueye/sdk/motion/#blueye.sdk.motion.Motion.set_sway"><code>set_sway</code></a></td>
+<td>moves right</td>
+<td>All</td>
+</tr>
+<tr>
+<td>Heave</td>
+<td><a class="autorefs autorefs-internal" title="            set_heave" href="../../reference/blueye/sdk/motion/#blueye.sdk.motion.Motion.set_heave"><code>set_heave</code></a></td>
+<td>moves down</td>
+<td>All</td>
+</tr>
+<tr>
+<td>Yaw</td>
+<td><a class="autorefs autorefs-internal" title="            set_yaw" href="../../reference/blueye/sdk/motion/#blueye.sdk.motion.Motion.set_yaw"><code>set_yaw</code></a></td>
+<td>turns clockwise, seen from above</td>
+<td>All</td>
+</tr>
+<tr>
+<td>Roll</td>
+<td><a class="autorefs autorefs-internal" title="            set_roll" href="../../reference/blueye/sdk/motion/#blueye.sdk.motion.Motion.set_roll"><code>set_roll</code></a></td>
+<td>rolls right</td>
+<td>X7</td>
+</tr>
+<tr>
+<td>Pitch</td>
+<td><a class="autorefs autorefs-internal" title="            set_pitch" href="../../reference/blueye/sdk/motion/#blueye.sdk.motion.Motion.set_pitch"><code>set_pitch</code></a></td>
+<td>raises the nose</td>
+<td>X7</td>
+</tr>
+</tbody>
+</table>
+<p>Surge, sway and heave setpoints are forces. Yaw, roll and pitch setpoints are moments. The models other than the X7 ignore roll and pitch, so those setters are safe to call on any drone. On the X7, read <a class="autorefs autorefs-internal" title="            set_roll" href="../../reference/blueye/sdk/motion/#blueye.sdk.motion.Motion.set_roll"><code>set_roll</code></a> before using them: with auto heading off nothing limits the resulting angle.</p>
+<h2 id="how-strong-a-setpoint-is">How strong a setpoint is</h2>
+<p>A setpoint of ±1 is full stick. It does not ask for the most the thrusters can give: the force depends on boost and slow.</p>
+<ul>
+<li><strong>Normal</strong>, with boost and slow at 0, is the drone's everyday level.</li>
+<li><strong>Boost</strong>, <a class="autorefs autorefs-internal" title="            set_boost" href="../../reference/blueye/sdk/motion/#blueye.sdk.motion.Motion.set_boost"><code>set_boost(1)</code></a>, raises full stick to the drone's boosted force.</li>
+<li><strong>Slow</strong>, <a class="autorefs autorefs-internal" title="            set_slow" href="../../reference/blueye/sdk/motion/#blueye.sdk.motion.Motion.set_slow"><code>set_slow(1)</code></a>, lowers it for fine positioning.</li>
+</ul>
+<p>At full stick, as a share of the boosted force, with the drone's default force settings:</p>
+<table>
+<thead>
+<tr>
+<th>Axis</th>
+<th>Normal</th>
+<th>Slow</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Surge</td>
+<td>27 %</td>
+<td>4 %</td>
+</tr>
+<tr>
+<td>Sway</td>
+<td>39 %</td>
+<td>13 %</td>
+</tr>
+<tr>
+<td>Heave</td>
+<td>44 %</td>
+<td>18 %</td>
+</tr>
+<tr>
+<td>Yaw, roll and pitch</td>
+<td>52 %</td>
+<td>16 %</td>
+</tr>
+</tbody>
+</table>
+<p>Boost and slow each have a dead band of 0.1: values up to 0.1 count as 0, and 0.1 to 1 is stretched over the whole range, so a boost of 0.55 is halfway. The drone then takes boost minus slow and blends linearly toward the boosted level when the result is positive and toward the slow level when it is negative. Both at 1 give the normal level. A setpoint between 0 and 1 scales the force in proportion.</p>
+<h2 id="one-axis-or-all-at-once">One axis or all at once</h2>
+<p>The setters change one axis and keep the others. <a class="autorefs autorefs-internal" title="            send_thruster_setpoint" href="../../reference/blueye/sdk/motion/#blueye.sdk.motion.Motion.send_thruster_setpoint"><code>send_thruster_setpoint</code></a> sets surge, sway, heave and yaw in one message, and roll and pitch as keyword arguments that default to 0. <a class="autorefs autorefs-internal" title="            get_current_thruster_setpoints" href="../../reference/blueye/sdk/motion/#blueye.sdk.motion.Motion.get_current_thruster_setpoints"><code>get_current_thruster_setpoints</code></a> returns what the SDK last sent.</p>
+<p>In a control loop, compute every axis and send them with one <code>send_thruster_setpoint</code> call per iteration:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drone</span>
+
+<span class="k">with</span> <span class="n">Drone</span><span class="p">()</span> <span class="k">as</span> <span class="n">myDrone</span><span class="p">:</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">+</span> <span class="mi">5</span>
+    <span class="k">while</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">end</span><span class="p">:</span>
+        <span class="c1"># Compute every axis here, for example from a controller</span>
+        <span class="n">myDrone</span><span class="o">.</span><span class="n">motion</span><span class="o">.</span><span class="n">send_thruster_setpoint</span><span class="p">(</span><span class="n">surge</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">sway</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">heave</span><span class="o">=-</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">yaw</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.05</span><span class="p">)</span>  <span class="c1"># 20 Hz</span>
 </code></pre></div>
 <h2 id="auto-modes-and-what-they-need">Auto modes and what they need</h2>
-<p>The auto modes are enabled with the <code>enable_*</code> methods on <a class="autorefs autorefs-internal" title="            Motion" href="../../reference/blueye/sdk/motion/#blueye.sdk.motion.Motion"><code>motion</code></a>. The drone checks its sensors when a mode is requested. A request the drone cannot meet is dropped with a log line on the drone and nothing else, so read the matching <code>is_*_active()</code> method afterwards. <a class="autorefs autorefs-internal" title="            ControlModeTel" href="../../reference/blueye/protocol/telemetry/#blueye.protocol.types.telemetry.ControlModeTel"><code>ControlModeTel</code></a> carries the same flags.</p>
+<p>The auto modes are enabled with the <code>enable_*</code> methods on <a class="autorefs autorefs-internal" title="            Motion" href="../../reference/blueye/sdk/motion/#blueye.sdk.motion.Motion"><code>motion</code></a>. The drone checks its sensors when a mode is requested. The drone does not send a notification when it refuses a mode. It writes an error to its own log and leaves the mode off, so read the matching <code>is_*_active()</code> method afterwards. <a class="autorefs autorefs-internal" title="            ControlModeTel" href="../../reference/blueye/protocol/telemetry/#blueye.protocol.types.telemetry.ControlModeTel"><code>ControlModeTel</code></a> carries the same flags.</p>
 <table>
 <thead>
 <tr>
@@ -2002,6 +2223,7 @@
 </tr>
 </tbody>
 </table>
+<p>With auto depth or auto altitude on, the heave setpoint asks for a vertical speed instead of a force, and 0 holds the depth or altitude. With auto heading on, the yaw setpoint asks for a turn rate, and 0 holds the heading.</p>
 <p>The position sensors and their validity are listed in <code>PositionEstimateTel.position_estimate.navigation_sensors</code>, and <a class="autorefs autorefs-internal" title="            get_altitude" href="../../reference/blueye/sdk/drone/#blueye.sdk.drone.Drone.get_altitude"><code>get_altitude</code></a> returns <code>None</code> while the altitude is not valid. See <a href="../../peripherals/#navigation-sensors">Navigation sensors</a> for which guest-port devices provide what.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drone</span>
@@ -2012,7 +2234,9 @@
 <span class="k">if</span> <span class="ow">not</span> <span class="n">myDrone</span><span class="o">.</span><span class="n">motion</span><span class="o">.</span><span class="n">is_station_keeping_active</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Station keeping did not engage: no valid DVL or GNSS position&quot;</span><span class="p">)</span>
 </code></pre></div>
-<p>All auto modes are switched off when the client in control stops petting the drone's watchdog, see <a href="../../connecting/">Connecting to the drone</a>.</p>
+<h2 id="stopping-safely">Stopping safely</h2>
+<p>The drone keeps the last setpoint it received, so a script that stops sending does not stop the drone. Set every axis back to 0 with <a class="autorefs autorefs-internal" title="            zero_setpoints" href="../../reference/blueye/sdk/motion/#blueye.sdk.motion.Motion.zero_setpoints"><code>zero_setpoints</code></a> when a manoeuvre is done. <a class="autorefs autorefs-internal" title="            disconnect" href="../../reference/blueye/sdk/drone/#blueye.sdk.drone.Drone.disconnect"><code>disconnect</code></a>, and the end of a <code>with</code> block, zero the setpoints before leaving when the script is in control. When connecting, the SDK zeroes them only if it gets control.</p>
+<p>If the client in control stops sending its watchdog for 3 seconds, the drone zeroes the input and switches the auto modes off, see <a href="../../connecting/#what-the-drone-does-when-the-client-in-control-goes-quiet">Connecting to the drone</a>.</p>
 
 
 
