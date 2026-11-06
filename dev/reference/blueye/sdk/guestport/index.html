@@ -4858,7 +4858,7 @@ reports each one in its own <code>GenericServoTel</code>, which the SDK keeps pe
               (<code><span title="typing.List">List</span>[<a class="autorefs autorefs-internal" title="            GuestPortNumber (blueye.protocol.GuestPortNumber)" href="../../protocol/message_formats/#blueye.protocol.types.message_formats.GuestPortNumber">GuestPortNumber</a>]</code>)
           –
           <div class="doc-md-description">
-            <p>Ports on this drone where the device is fully supported, as computed by the drone from</p>
+            <p>Ports on this drone where the device is fully supported.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -4878,8 +4878,7 @@ reports each one in its own <code>GenericServoTel</code>, which the SDK keeps pe
 
                   <details class="quote">
                     <summary>Source code in <code>blueye/sdk/guestport.py</code></summary>
-                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">462</span>
-<span class="normal">463</span>
+                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">463</span>
 <span class="normal">464</span>
 <span class="normal">465</span>
 <span class="normal">466</span>
@@ -4891,7 +4890,8 @@ reports each one in its own <code>GenericServoTel</code>, which the SDK keeps pe
 <span class="normal">472</span>
 <span class="normal">473</span>
 <span class="normal">474</span>
-<span class="normal">475</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">475</span>
+<span class="normal">476</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">parent_drone</span><span class="p">:</span> <span class="s2">&quot;Drone&quot;</span><span class="p">,</span> <span class="n">port_number</span><span class="p">:</span> <span class="n">bp</span><span class="o">.</span><span class="n">GuestPortNumber</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="n">bp</span><span class="o">.</span><span class="n">GuestPortDevice</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize the Servo class.</span>
@@ -4938,8 +4938,8 @@ reports each one in its own <code>GenericServoTel</code>, which the SDK keeps pe
 
     <div class="doc doc-contents ">
 
-        <p>Ports on this drone where the device is fully supported, as computed by the drone from
-the port capabilities and the device requirements.</p>
+        <p>Ports on this drone where the device is fully supported.</p>
+<p>Computed by the drone from the port capabilities and the device requirements.</p>
 
     </div>
 
@@ -5006,8 +5006,7 @@ the port capabilities and the device requirements.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/guestport.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">552</span>
-<span class="normal">553</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">553</span>
 <span class="normal">554</span>
 <span class="normal">555</span>
 <span class="normal">556</span>
@@ -5025,7 +5024,8 @@ the port capabilities and the device requirements.</p>
 <span class="normal">568</span>
 <span class="normal">569</span>
 <span class="normal">570</span>
-<span class="normal">571</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+<span class="normal">571</span>
+<span class="normal">572</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the current position of the servo as an angle in degrees.</span>
 
 <span class="sd">    Deprecated, the servo reports a position and not an angle. Use</span>
@@ -5085,8 +5085,7 @@ detached.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/guestport.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">60</span>
-<span class="normal">61</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">61</span>
 <span class="normal">62</span>
 <span class="normal">63</span>
 <span class="normal">64</span>
@@ -5101,7 +5100,8 @@ detached.</p>
 <span class="normal">73</span>
 <span class="normal">74</span>
 <span class="normal">75</span>
-<span class="normal">76</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_detach_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">bp</span><span class="o">.</span><span class="n">GuestPortDetachStatus</span><span class="p">:</span>
+<span class="normal">76</span>
+<span class="normal">77</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_detach_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">bp</span><span class="o">.</span><span class="n">GuestPortDetachStatus</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the current attach state of a detachable device.</span>
 
 <span class="sd">    The state is read from the latest drone info telemetry so it follows the device being</span>
@@ -5154,8 +5154,7 @@ detached.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/guestport.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">505</span>
-<span class="normal">506</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">506</span>
 <span class="normal">507</span>
 <span class="normal">508</span>
 <span class="normal">509</span>
@@ -5163,7 +5162,8 @@ detached.</p>
 <span class="normal">511</span>
 <span class="normal">512</span>
 <span class="normal">513</span>
-<span class="normal">514</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_position</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+<span class="normal">514</span>
+<span class="normal">515</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_position</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the current position of the servo.</span>
 
 <span class="sd">    Returns:</span>
@@ -5209,8 +5209,7 @@ detached.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/guestport.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">516</span>
-<span class="normal">517</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">517</span>
 <span class="normal">518</span>
 <span class="normal">519</span>
 <span class="normal">520</span>
@@ -5218,7 +5217,8 @@ detached.</p>
 <span class="normal">522</span>
 <span class="normal">523</span>
 <span class="normal">524</span>
-<span class="normal">525</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_set_point</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+<span class="normal">525</span>
+<span class="normal">526</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_set_point</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the position the servo is moving towards.</span>
 
 <span class="sd">    Returns:</span>
@@ -5280,8 +5280,7 @@ detached.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/guestport.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">527</span>
-<span class="normal">528</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">528</span>
 <span class="normal">529</span>
 <span class="normal">530</span>
 <span class="normal">531</span>
@@ -5303,7 +5302,8 @@ detached.</p>
 <span class="normal">547</span>
 <span class="normal">548</span>
 <span class="normal">549</span>
-<span class="normal">550</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angle</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">550</span>
+<span class="normal">551</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angle</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the position of the servo from an angle in degrees.</span>
 
 <span class="sd">    Deprecated, the servo takes a position and not an angle. Use</span>
@@ -5376,8 +5376,7 @@ detached.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/guestport.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">477</span>
-<span class="normal">478</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">478</span>
 <span class="normal">479</span>
 <span class="normal">480</span>
 <span class="normal">481</span>
@@ -5387,7 +5386,8 @@ detached.</p>
 <span class="normal">485</span>
 <span class="normal">486</span>
 <span class="normal">487</span>
-<span class="normal">488</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">488</span>
+<span class="normal">489</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the position of the servo.</span>
 
 <span class="sd">    Args:</span>
@@ -5527,7 +5527,7 @@ detached.</p>
               (<code><span title="typing.List">List</span>[<a class="autorefs autorefs-internal" title="            GuestPortNumber (blueye.protocol.GuestPortNumber)" href="../../protocol/message_formats/#blueye.protocol.types.message_formats.GuestPortNumber">GuestPortNumber</a>]</code>)
           –
           <div class="doc-md-description">
-            <p>Ports on this drone where the device is fully supported, as computed by the drone from</p>
+            <p>Ports on this drone where the device is fully supported.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -5547,8 +5547,7 @@ detached.</p>
 
                   <details class="quote">
                     <summary>Source code in <code>blueye/sdk/guestport.py</code></summary>
-                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">220</span>
-<span class="normal">221</span>
+                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">221</span>
 <span class="normal">222</span>
 <span class="normal">223</span>
 <span class="normal">224</span>
@@ -5559,7 +5558,8 @@ detached.</p>
 <span class="normal">229</span>
 <span class="normal">230</span>
 <span class="normal">231</span>
-<span class="normal">232</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">232</span>
+<span class="normal">233</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">parent_drone</span><span class="p">:</span> <span class="s2">&quot;Drone&quot;</span><span class="p">,</span> <span class="n">port_number</span><span class="p">:</span> <span class="n">bp</span><span class="o">.</span><span class="n">GuestPortNumber</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="n">bp</span><span class="o">.</span><span class="n">GuestPortDevice</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize the Gripper class.</span>
@@ -5605,8 +5605,8 @@ detached.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Ports on this drone where the device is fully supported, as computed by the drone from
-the port capabilities and the device requirements.</p>
+        <p>Ports on this drone where the device is fully supported.</p>
+<p>Computed by the drone from the port capabilities and the device requirements.</p>
 
     </div>
 
@@ -5674,8 +5674,7 @@ detached.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/guestport.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">60</span>
-<span class="normal">61</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">61</span>
 <span class="normal">62</span>
 <span class="normal">63</span>
 <span class="normal">64</span>
@@ -5690,7 +5689,8 @@ detached.</p>
 <span class="normal">73</span>
 <span class="normal">74</span>
 <span class="normal">75</span>
-<span class="normal">76</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_detach_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">bp</span><span class="o">.</span><span class="n">GuestPortDetachStatus</span><span class="p">:</span>
+<span class="normal">76</span>
+<span class="normal">77</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_detach_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">bp</span><span class="o">.</span><span class="n">GuestPortDetachStatus</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the current attach state of a detachable device.</span>
 
 <span class="sd">    The state is read from the latest drone info telemetry so it follows the device being</span>
@@ -5743,13 +5743,13 @@ detached.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/guestport.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">234</span>
-<span class="normal">235</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">235</span>
 <span class="normal">236</span>
 <span class="normal">237</span>
 <span class="normal">238</span>
 <span class="normal">239</span>
-<span class="normal">240</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_grip_velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="normal">240</span>
+<span class="normal">241</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_grip_velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the current grip velocity of the Gripper.</span>
 
 <span class="sd">    Returns:</span>
@@ -5792,13 +5792,13 @@ detached.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/guestport.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">260</span>
-<span class="normal">261</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">261</span>
 <span class="normal">262</span>
 <span class="normal">263</span>
 <span class="normal">264</span>
 <span class="normal">265</span>
-<span class="normal">266</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_rotation_velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="normal">266</span>
+<span class="normal">267</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_rotation_velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the current rotation velocity of the Gripper.</span>
 
 <span class="sd">    Returns:</span>
@@ -5854,8 +5854,7 @@ detached.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/guestport.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">242</span>
-<span class="normal">243</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">243</span>
 <span class="normal">244</span>
 <span class="normal">245</span>
 <span class="normal">246</span>
@@ -5868,7 +5867,8 @@ detached.</p>
 <span class="normal">253</span>
 <span class="normal">254</span>
 <span class="normal">255</span>
-<span class="normal">256</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_grip_velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+<span class="normal">256</span>
+<span class="normal">257</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_grip_velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the current grip velocity of the Gripper.</span>
 
 <span class="sd">    Args:</span>
@@ -5932,8 +5932,7 @@ detached.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/guestport.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">268</span>
-<span class="normal">269</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">269</span>
 <span class="normal">270</span>
 <span class="normal">271</span>
 <span class="normal">272</span>
@@ -5946,7 +5945,8 @@ detached.</p>
 <span class="normal">279</span>
 <span class="normal">280</span>
 <span class="normal">281</span>
-<span class="normal">282</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_rotation_velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+<span class="normal">282</span>
+<span class="normal">283</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_rotation_velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the current rotation velocity of the Gripper.</span>
 
 <span class="sd">    Args:</span>
@@ -6708,7 +6708,7 @@ nothing plugged in reports <code>GUEST_PORT_ERROR_NOT_CONNECTED</code>.</p>
               (<code><span title="typing.List">List</span>[<a class="autorefs autorefs-internal" title="            GuestPortNumber (blueye.protocol.GuestPortNumber)" href="../../protocol/message_formats/#blueye.protocol.types.message_formats.GuestPortNumber">GuestPortNumber</a>]</code>)
           –
           <div class="doc-md-description">
-            <p>Ports on this drone where the device is fully supported, as computed by the drone from</p>
+            <p>Ports on this drone where the device is fully supported.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -6728,8 +6728,7 @@ nothing plugged in reports <code>GUEST_PORT_ERROR_NOT_CONNECTED</code>.</p>
 
                   <details class="quote">
                     <summary>Source code in <code>blueye/sdk/guestport.py</code></summary>
-                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">154</span>
-<span class="normal">155</span>
+                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">155</span>
 <span class="normal">156</span>
 <span class="normal">157</span>
 <span class="normal">158</span>
@@ -6739,7 +6738,8 @@ nothing plugged in reports <code>GUEST_PORT_ERROR_NOT_CONNECTED</code>.</p>
 <span class="normal">162</span>
 <span class="normal">163</span>
 <span class="normal">164</span>
-<span class="normal">165</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">165</span>
+<span class="normal">166</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">parent_drone</span><span class="p">:</span> <span class="s2">&quot;Drone&quot;</span><span class="p">,</span> <span class="n">port_number</span><span class="p">:</span> <span class="n">bp</span><span class="o">.</span><span class="n">GuestPortNumber</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="n">bp</span><span class="o">.</span><span class="n">GuestPortDevice</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize the GuestPortCamera class.</span>
@@ -6784,8 +6784,8 @@ nothing plugged in reports <code>GUEST_PORT_ERROR_NOT_CONNECTED</code>.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Ports on this drone where the device is fully supported, as computed by the drone from
-the port capabilities and the device requirements.</p>
+        <p>Ports on this drone where the device is fully supported.</p>
+<p>Computed by the drone from the port capabilities and the device requirements.</p>
 
     </div>
 
@@ -6883,8 +6883,7 @@ parameters that trigger pipeline restarts (e.g. codec, resolution).</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1028</span>
-<span class="normal">1029</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1029</span>
 <span class="normal">1030</span>
 <span class="normal">1031</span>
 <span class="normal">1032</span>
@@ -6908,7 +6907,8 @@ parameters that trigger pipeline restarts (e.g. codec, resolution).</p>
 <span class="normal">1050</span>
 <span class="normal">1051</span>
 <span class="normal">1052</span>
-<span class="normal">1053</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">configure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_ParamsBatch</span><span class="p">:</span>
+<span class="normal">1053</span>
+<span class="normal">1054</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">configure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_ParamsBatch</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a context manager for batching camera parameter changes.</span>
 
 <span class="sd">    All attribute assignments on the returned object are accumulated and sent as a single</span>
@@ -6984,8 +6984,7 @@ parameters that trigger pipeline restarts (e.g. codec, resolution).</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1469</span>
-<span class="normal">1470</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1470</span>
 <span class="normal">1471</span>
 <span class="normal">1472</span>
 <span class="normal">1473</span>
@@ -6999,7 +6998,8 @@ parameters that trigger pipeline restarts (e.g. codec, resolution).</p>
 <span class="normal">1481</span>
 <span class="normal">1482</span>
 <span class="normal">1483</span>
-<span class="normal">1484</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">enable_ehdr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enable_ehdr</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+<span class="normal">1484</span>
+<span class="normal">1485</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">enable_ehdr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enable_ehdr</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Enable or disable the eHDR mode.</span>
 
 <span class="sd">    Only available on the X3 Ultra and X7.</span>
@@ -7052,8 +7052,7 @@ parameters that trigger pipeline restarts (e.g. codec, resolution).</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1402</span>
-<span class="normal">1403</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1403</span>
 <span class="normal">1404</span>
 <span class="normal">1405</span>
 <span class="normal">1406</span>
@@ -7061,7 +7060,8 @@ parameters that trigger pipeline restarts (e.g. codec, resolution).</p>
 <span class="normal">1408</span>
 <span class="normal">1409</span>
 <span class="normal">1410</span>
-<span class="normal">1411</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_backlight_compensation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="normal">1411</span>
+<span class="normal">1412</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_backlight_compensation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the camera backlight compensation.</span>
 
 <span class="sd">    Only available on the X3 Ultra and X7.</span>
@@ -7107,14 +7107,14 @@ parameters that trigger pipeline restarts (e.g. codec, resolution).</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1107</span>
-<span class="normal">1108</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1108</span>
 <span class="normal">1109</span>
 <span class="normal">1110</span>
 <span class="normal">1111</span>
 <span class="normal">1112</span>
 <span class="normal">1113</span>
-<span class="normal">1114</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_bitrate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="normal">1114</span>
+<span class="normal">1115</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_bitrate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the video stream bitrate.</span>
 
 <span class="sd">    Returns:</span>
@@ -7158,14 +7158,14 @@ parameters that trigger pipeline restarts (e.g. codec, resolution).</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1130</span>
-<span class="normal">1131</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1131</span>
 <span class="normal">1132</span>
 <span class="normal">1133</span>
 <span class="normal">1134</span>
 <span class="normal">1135</span>
 <span class="normal">1136</span>
-<span class="normal">1137</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_bitrate_still_picture</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="normal">1137</span>
+<span class="normal">1138</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_bitrate_still_picture</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the bitrate for the still picture stream.</span>
 
 <span class="sd">    Returns:</span>
@@ -7210,8 +7210,7 @@ parameters that trigger pipeline restarts (e.g. codec, resolution).</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1262</span>
-<span class="normal">1263</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1263</span>
 <span class="normal">1264</span>
 <span class="normal">1265</span>
 <span class="normal">1266</span>
@@ -7219,7 +7218,8 @@ parameters that trigger pipeline restarts (e.g. codec, resolution).</p>
 <span class="normal">1268</span>
 <span class="normal">1269</span>
 <span class="normal">1270</span>
-<span class="normal">1271</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_brightness</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="normal">1271</span>
+<span class="normal">1272</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_brightness</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the camera brightness.</span>
 
 <span class="sd">    Only available on the X3 Ultra and X7.</span>
@@ -7272,8 +7272,7 @@ built-in calibration rather than one measured for this particular drone.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1876</span>
-<span class="normal">1877</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1877</span>
 <span class="normal">1878</span>
 <span class="normal">1879</span>
 <span class="normal">1880</span>
@@ -7292,7 +7291,8 @@ built-in calibration rather than one measured for this particular drone.</p>
 <span class="normal">1893</span>
 <span class="normal">1894</span>
 <span class="normal">1895</span>
-<span class="normal">1896</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_calibration</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">blueye</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">CameraCalibration</span><span class="p">]:</span>
+<span class="normal">1896</span>
+<span class="normal">1897</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_calibration</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">blueye</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">CameraCalibration</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the intrinsic calibration of the camera.</span>
 
 <span class="sd">    The X3 Ultra and X7 publish the main camera calibration (pinhole model with OpenCV</span>
@@ -7355,8 +7355,7 @@ not reported any, as is the case for older models and the guestport camera.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2009</span>
-<span class="normal">2010</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2010</span>
 <span class="normal">2011</span>
 <span class="normal">2012</span>
 <span class="normal">2013</span>
@@ -7374,7 +7373,8 @@ not reported any, as is the case for older models and the guestport camera.</p>
 <span class="normal">2025</span>
 <span class="normal">2026</span>
 <span class="normal">2027</span>
-<span class="normal">2028</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_color_correction</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">blueye</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">FilterMessage</span><span class="p">]:</span>
+<span class="normal">2028</span>
+<span class="normal">2029</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_color_correction</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">blueye</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">FilterMessage</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the color correction filter settings of the main camera.</span>
 
 <span class="sd">    The color correction filter restores the red and blue balance that water absorbs with</span>
@@ -7431,8 +7431,7 @@ not reported any, as is the case for older models and the guestport camera.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1290</span>
-<span class="normal">1291</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1291</span>
 <span class="normal">1292</span>
 <span class="normal">1293</span>
 <span class="normal">1294</span>
@@ -7440,7 +7439,8 @@ not reported any, as is the case for older models and the guestport camera.</p>
 <span class="normal">1296</span>
 <span class="normal">1297</span>
 <span class="normal">1298</span>
-<span class="normal">1299</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_contrast</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="normal">1299</span>
+<span class="normal">1300</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_contrast</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the camera contrast.</span>
 
 <span class="sd">    Only available on the X3 Ultra and X7.</span>
@@ -7487,8 +7487,7 @@ not reported any, as is the case for older models and the guestport camera.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1430</span>
-<span class="normal">1431</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1431</span>
 <span class="normal">1432</span>
 <span class="normal">1433</span>
 <span class="normal">1434</span>
@@ -7496,7 +7495,8 @@ not reported any, as is the case for older models and the guestport camera.</p>
 <span class="normal">1436</span>
 <span class="normal">1437</span>
 <span class="normal">1438</span>
-<span class="normal">1439</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_denoise</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="normal">1439</span>
+<span class="normal">1440</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_denoise</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the camera noise reduction.</span>
 
 <span class="sd">    Only available on the X3 Ultra and X7.</span>
@@ -7546,8 +7546,7 @@ detached.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/guestport.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">60</span>
-<span class="normal">61</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">61</span>
 <span class="normal">62</span>
 <span class="normal">63</span>
 <span class="normal">64</span>
@@ -7562,7 +7561,8 @@ detached.</p>
 <span class="normal">73</span>
 <span class="normal">74</span>
 <span class="normal">75</span>
-<span class="normal">76</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_detach_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">bp</span><span class="o">.</span><span class="n">GuestPortDetachStatus</span><span class="p">:</span>
+<span class="normal">76</span>
+<span class="normal">77</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_detach_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">bp</span><span class="o">.</span><span class="n">GuestPortDetachStatus</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the current attach state of a detachable device.</span>
 
 <span class="sd">    The state is read from the latest drone info telemetry so it follows the device being</span>
@@ -7616,8 +7616,7 @@ detached.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1514</span>
-<span class="normal">1515</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1515</span>
 <span class="normal">1516</span>
 <span class="normal">1517</span>
 <span class="normal">1518</span>
@@ -7625,7 +7624,8 @@ detached.</p>
 <span class="normal">1520</span>
 <span class="normal">1521</span>
 <span class="normal">1522</span>
-<span class="normal">1523</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_ehdr_exposure_max_number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="normal">1523</span>
+<span class="normal">1524</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_ehdr_exposure_max_number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the maximum number of eHDR frames.</span>
 
 <span class="sd">    Only available on the X3 Ultra and X7.</span>
@@ -7672,8 +7672,7 @@ detached.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1486</span>
-<span class="normal">1487</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1487</span>
 <span class="normal">1488</span>
 <span class="normal">1489</span>
 <span class="normal">1490</span>
@@ -7681,7 +7680,8 @@ detached.</p>
 <span class="normal">1492</span>
 <span class="normal">1493</span>
 <span class="normal">1494</span>
-<span class="normal">1495</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_ehdr_exposure_min_number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="normal">1495</span>
+<span class="normal">1496</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_ehdr_exposure_min_number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the minimum number of eHDR frames.</span>
 
 <span class="sd">    Only available on the X3 Ultra and X7.</span>
@@ -7727,14 +7727,14 @@ detached.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1155</span>
-<span class="normal">1156</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1156</span>
 <span class="normal">1157</span>
 <span class="normal">1158</span>
 <span class="normal">1159</span>
 <span class="normal">1160</span>
 <span class="normal">1161</span>
-<span class="normal">1162</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_exposure</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="normal">1162</span>
+<span class="normal">1163</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_exposure</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the camera exposure.</span>
 
 <span class="sd">    Returns:</span>
@@ -7790,8 +7790,7 @@ detached.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1705</span>
-<span class="normal">1706</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1706</span>
 <span class="normal">1707</span>
 <span class="normal">1708</span>
 <span class="normal">1709</span>
@@ -7806,7 +7805,8 @@ detached.</p>
 <span class="normal">1718</span>
 <span class="normal">1719</span>
 <span class="normal">1720</span>
-<span class="normal">1721</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_framerate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="normal">1721</span>
+<span class="normal">1722</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_framerate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the camera frame rate.</span>
 
 <span class="sd">    Raises:</span>
@@ -7861,8 +7861,7 @@ whenever the exposure is automatic or no manual gain has been set.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1234</span>
-<span class="normal">1235</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1235</span>
 <span class="normal">1236</span>
 <span class="normal">1237</span>
 <span class="normal">1238</span>
@@ -7871,7 +7870,8 @@ whenever the exposure is automatic or no manual gain has been set.</p>
 <span class="normal">1241</span>
 <span class="normal">1242</span>
 <span class="normal">1243</span>
-<span class="normal">1244</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_gain</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="normal">1244</span>
+<span class="normal">1245</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_gain</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the camera gain.</span>
 
 <span class="sd">    On the X3 Ultra and X7 the drone reports -1 while auto exposure owns the gain, that is</span>
@@ -7919,8 +7919,7 @@ whenever the exposure is automatic or no manual gain has been set.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1346</span>
-<span class="normal">1347</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1347</span>
 <span class="normal">1348</span>
 <span class="normal">1349</span>
 <span class="normal">1350</span>
@@ -7928,7 +7927,8 @@ whenever the exposure is automatic or no manual gain has been set.</p>
 <span class="normal">1352</span>
 <span class="normal">1353</span>
 <span class="normal">1354</span>
-<span class="normal">1355</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_gamma</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="normal">1355</span>
+<span class="normal">1356</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_gamma</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the camera gamma.</span>
 
 <span class="sd">    Only available on the X3 Ultra and X7.</span>
@@ -7976,8 +7976,7 @@ control.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1206</span>
-<span class="normal">1207</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1207</span>
 <span class="normal">1208</span>
 <span class="normal">1209</span>
 <span class="normal">1210</span>
@@ -7986,7 +7985,8 @@ control.</p>
 <span class="normal">1213</span>
 <span class="normal">1214</span>
 <span class="normal">1215</span>
-<span class="normal">1216</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_hue</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="normal">1216</span>
+<span class="normal">1217</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_hue</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the camera hue.</span>
 
 <span class="sd">    Only available on Pioneer/Pro/X1/X3, the 4K camera in the X3 Ultra and X7 has no hue</span>
@@ -8033,14 +8033,14 @@ control.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1834</span>
-<span class="normal">1835</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1835</span>
 <span class="normal">1836</span>
 <span class="normal">1837</span>
 <span class="normal">1838</span>
 <span class="normal">1839</span>
 <span class="normal">1840</span>
-<span class="normal">1841</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_mtu_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="normal">1841</span>
+<span class="normal">1842</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_mtu_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the network MTU size used for video streaming.</span>
 
 <span class="sd">    Returns:</span>
@@ -8089,8 +8089,7 @@ models and the guestport camera.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2050</span>
-<span class="normal">2051</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2051</span>
 <span class="normal">2052</span>
 <span class="normal">2053</span>
 <span class="normal">2054</span>
@@ -8106,7 +8105,8 @@ models and the guestport camera.</p>
 <span class="normal">2064</span>
 <span class="normal">2065</span>
 <span class="normal">2066</span>
-<span class="normal">2067</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_pan_tilt_zoom</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">blueye</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">CameraPanTiltZoom</span><span class="p">]:</span>
+<span class="normal">2067</span>
+<span class="normal">2068</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_pan_tilt_zoom</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">blueye</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">CameraPanTiltZoom</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the digital pan, tilt and zoom state of the main camera.</span>
 
 <span class="sd">    The 4K camera in the X3 Ultra and X7 can crop and scale its sensor image, which gives a</span>
@@ -8161,8 +8161,7 @@ recording. Returns None if the SDK hasn't received a RecordState telemetry messa
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1859</span>
-<span class="normal">1860</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1860</span>
 <span class="normal">1861</span>
 <span class="normal">1862</span>
 <span class="normal">1863</span>
@@ -8174,7 +8173,8 @@ recording. Returns None if the SDK hasn't received a RecordState telemetry messa
 <span class="normal">1869</span>
 <span class="normal">1870</span>
 <span class="normal">1871</span>
-<span class="normal">1872</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_record_time</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="normal">1872</span>
+<span class="normal">1873</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_record_time</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the duration of the current camera recording.</span>
 
 <span class="sd">    Returns:</span>
@@ -8226,8 +8226,7 @@ resolution, framerate, and codec.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1775</span>
-<span class="normal">1776</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1776</span>
 <span class="normal">1777</span>
 <span class="normal">1778</span>
 <span class="normal">1779</span>
@@ -8236,7 +8235,8 @@ resolution, framerate, and codec.</p>
 <span class="normal">1782</span>
 <span class="normal">1783</span>
 <span class="normal">1784</span>
-<span class="normal">1785</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_recording_bitrate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="normal">1785</span>
+<span class="normal">1786</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_recording_bitrate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the recording bitrate in bits per second.</span>
 
 <span class="sd">    A value of 0 means the drone will auto-compute a default bitrate based on the current</span>
@@ -8283,14 +8283,14 @@ resolution, framerate, and codec.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1744</span>
-<span class="normal">1745</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1745</span>
 <span class="normal">1746</span>
 <span class="normal">1747</span>
 <span class="normal">1748</span>
 <span class="normal">1749</span>
 <span class="normal">1750</span>
-<span class="normal">1751</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_recording_codec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">blueye</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">RecordingCodec</span><span class="p">:</span>
+<span class="normal">1751</span>
+<span class="normal">1752</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_recording_codec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">blueye</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">RecordingCodec</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the recording video codec.</span>
 
 <span class="sd">    Returns:</span>
@@ -8336,8 +8336,7 @@ resolution, framerate, and codec.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1662</span>
-<span class="normal">1663</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1663</span>
 <span class="normal">1664</span>
 <span class="normal">1665</span>
 <span class="normal">1666</span>
@@ -8352,7 +8351,8 @@ resolution, framerate, and codec.</p>
 <span class="normal">1675</span>
 <span class="normal">1676</span>
 <span class="normal">1677</span>
-<span class="normal">1678</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_recording_resolution</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">blueye</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">Resolution</span><span class="p">:</span>
+<span class="normal">1678</span>
+<span class="normal">1679</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_recording_resolution</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">blueye</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">Resolution</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the camera recording resolution.</span>
 
 <span class="sd">    For drones running Blunux version &lt; 4.4.1 this is the same as the</span>
@@ -8426,8 +8426,7 @@ instead.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1543</span>
-<span class="normal">1544</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1544</span>
 <span class="normal">1545</span>
 <span class="normal">1546</span>
 <span class="normal">1547</span>
@@ -8455,7 +8454,8 @@ instead.</p>
 <span class="normal">1569</span>
 <span class="normal">1570</span>
 <span class="normal">1571</span>
-<span class="normal">1572</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_resolution</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="normal">1572</span>
+<span class="normal">1573</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_resolution</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the camera resolution.</span>
 
 <span class="sd">    Deprecated:</span>
@@ -8522,8 +8522,7 @@ instead.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1318</span>
-<span class="normal">1319</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1319</span>
 <span class="normal">1320</span>
 <span class="normal">1321</span>
 <span class="normal">1322</span>
@@ -8531,7 +8530,8 @@ instead.</p>
 <span class="normal">1324</span>
 <span class="normal">1325</span>
 <span class="normal">1326</span>
-<span class="normal">1327</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_saturation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="normal">1327</span>
+<span class="normal">1328</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_saturation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the camera saturation.</span>
 
 <span class="sd">    Only available on the X3 Ultra and X7.</span>
@@ -8622,8 +8622,7 @@ resolution.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1898</span>
-<span class="normal">1899</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1899</span>
 <span class="normal">1900</span>
 <span class="normal">1901</span>
 <span class="normal">1902</span>
@@ -8667,7 +8666,8 @@ resolution.</p>
 <span class="normal">1940</span>
 <span class="normal">1941</span>
 <span class="normal">1942</span>
-<span class="normal">1943</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_scaled_calibration</span><span class="p">(</span>
+<span class="normal">1943</span>
+<span class="normal">1944</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_scaled_calibration</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">resolution</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">blueye</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">Resolution</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">blueye</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">CameraCalibration</span><span class="p">]:</span>
@@ -8750,8 +8750,7 @@ resolution.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1374</span>
-<span class="normal">1375</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1375</span>
 <span class="normal">1376</span>
 <span class="normal">1377</span>
 <span class="normal">1378</span>
@@ -8759,7 +8758,8 @@ resolution.</p>
 <span class="normal">1380</span>
 <span class="normal">1381</span>
 <span class="normal">1382</span>
-<span class="normal">1383</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_sharpness</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="normal">1383</span>
+<span class="normal">1384</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_sharpness</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the camera sharpness.</span>
 
 <span class="sd">    Only available on the X3 Ultra and X7.</span>
@@ -8807,8 +8807,7 @@ resolution.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1621</span>
-<span class="normal">1622</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1622</span>
 <span class="normal">1623</span>
 <span class="normal">1624</span>
 <span class="normal">1625</span>
@@ -8823,7 +8822,8 @@ resolution.</p>
 <span class="normal">1634</span>
 <span class="normal">1635</span>
 <span class="normal">1636</span>
-<span class="normal">1637</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_stream_resolution</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">blueye</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">Resolution</span><span class="p">:</span>
+<span class="normal">1637</span>
+<span class="normal">1638</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_stream_resolution</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">blueye</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">Resolution</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the camera stream resolution.</span>
 
 <span class="sd">    For drones running blunux version &lt; 4.4.1 this is the same as the</span>
@@ -8876,14 +8876,14 @@ resolution.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1807</span>
-<span class="normal">1808</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1808</span>
 <span class="normal">1809</span>
 <span class="normal">1810</span>
 <span class="normal">1811</span>
 <span class="normal">1812</span>
 <span class="normal">1813</span>
-<span class="normal">1814</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_streaming_protocol</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">blueye</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">StreamingProtocol</span><span class="p">:</span>
+<span class="normal">1814</span>
+<span class="normal">1815</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_streaming_protocol</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">blueye</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">StreamingProtocol</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the streaming protocol (codec used for the RTSP stream).</span>
 
 <span class="sd">    Returns:</span>
@@ -8934,8 +8934,7 @@ not reported any, as is the case for older models and the guestport camera.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1968</span>
-<span class="normal">1969</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1969</span>
 <span class="normal">1970</span>
 <span class="normal">1971</span>
 <span class="normal">1972</span>
@@ -8954,7 +8953,8 @@ not reported any, as is the case for older models and the guestport camera.</p>
 <span class="normal">1985</span>
 <span class="normal">1986</span>
 <span class="normal">1987</span>
-<span class="normal">1988</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_turbidity_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">blueye</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">FilterMessage</span><span class="p">]:</span>
+<span class="normal">1988</span>
+<span class="normal">1989</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_turbidity_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">blueye</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">FilterMessage</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the turbidity filter settings of the main camera.</span>
 
 <span class="sd">    The turbidity filter runs contrast limited adaptive histogram equalisation (CLAHE) on</span>
@@ -9011,14 +9011,14 @@ not reported any, as is the case for older models and the guestport camera.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1182</span>
-<span class="normal">1183</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1183</span>
 <span class="normal">1184</span>
 <span class="normal">1185</span>
 <span class="normal">1186</span>
 <span class="normal">1187</span>
 <span class="normal">1188</span>
-<span class="normal">1189</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_whitebalance</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="normal">1189</span>
+<span class="normal">1190</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_whitebalance</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the camera white balance.</span>
 
 <span class="sd">    Returns:</span>
@@ -9063,8 +9063,7 @@ not reported any, as is the case for older models and the guestport camera.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1458</span>
-<span class="normal">1459</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1459</span>
 <span class="normal">1460</span>
 <span class="normal">1461</span>
 <span class="normal">1462</span>
@@ -9072,7 +9071,8 @@ not reported any, as is the case for older models and the guestport camera.</p>
 <span class="normal">1464</span>
 <span class="normal">1465</span>
 <span class="normal">1466</span>
-<span class="normal">1467</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">is_ehdr_enabled</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="normal">1467</span>
+<span class="normal">1468</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">is_ehdr_enabled</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the state of the eHDR mode.</span>
 
 <span class="sd">    Only available on the X3 Ultra and X7.</span>
@@ -9119,8 +9119,7 @@ hasn't received a RecordState telemetry message.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1055</span>
-<span class="normal">1056</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1056</span>
 <span class="normal">1057</span>
 <span class="normal">1058</span>
 <span class="normal">1059</span>
@@ -9132,7 +9131,8 @@ hasn't received a RecordState telemetry message.</p>
 <span class="normal">1065</span>
 <span class="normal">1066</span>
 <span class="normal">1067</span>
-<span class="normal">1068</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">is_recording_active</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+<span class="normal">1068</span>
+<span class="normal">1069</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">is_recording_active</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the camera recording state.</span>
 
 <span class="sd">    Returns:</span>
@@ -9196,8 +9196,7 @@ hasn't received a RecordState telemetry message.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1413</span>
-<span class="normal">1414</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1414</span>
 <span class="normal">1415</span>
 <span class="normal">1416</span>
 <span class="normal">1417</span>
@@ -9211,7 +9210,8 @@ hasn't received a RecordState telemetry message.</p>
 <span class="normal">1425</span>
 <span class="normal">1426</span>
 <span class="normal">1427</span>
-<span class="normal">1428</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_backlight_compensation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compensation</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="normal">1428</span>
+<span class="normal">1429</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_backlight_compensation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compensation</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the camera backlight compensation.</span>
 
 <span class="sd">    Only available on the X3 Ultra and X7.</span>
@@ -9265,8 +9265,7 @@ hasn't received a RecordState telemetry message.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1116</span>
-<span class="normal">1117</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1117</span>
 <span class="normal">1118</span>
 <span class="normal">1119</span>
 <span class="normal">1120</span>
@@ -9275,7 +9274,8 @@ hasn't received a RecordState telemetry message.</p>
 <span class="normal">1123</span>
 <span class="normal">1124</span>
 <span class="normal">1125</span>
-<span class="normal">1126</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_bitrate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitrate</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="normal">1126</span>
+<span class="normal">1127</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_bitrate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitrate</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the video stream bitrate.</span>
 
 <span class="sd">    Args:</span>
@@ -9324,8 +9324,7 @@ hasn't received a RecordState telemetry message.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1139</span>
-<span class="normal">1140</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1140</span>
 <span class="normal">1141</span>
 <span class="normal">1142</span>
 <span class="normal">1143</span>
@@ -9334,7 +9333,8 @@ hasn't received a RecordState telemetry message.</p>
 <span class="normal">1146</span>
 <span class="normal">1147</span>
 <span class="normal">1148</span>
-<span class="normal">1149</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_bitrate_still_picture</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitrate</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="normal">1149</span>
+<span class="normal">1150</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_bitrate_still_picture</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitrate</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the bitrate for the still picture stream.</span>
 
 <span class="sd">    Args:</span>
@@ -9395,8 +9395,7 @@ hasn't received a RecordState telemetry message.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1273</span>
-<span class="normal">1274</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1274</span>
 <span class="normal">1275</span>
 <span class="normal">1276</span>
 <span class="normal">1277</span>
@@ -9410,7 +9409,8 @@ hasn't received a RecordState telemetry message.</p>
 <span class="normal">1285</span>
 <span class="normal">1286</span>
 <span class="normal">1287</span>
-<span class="normal">1288</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_brightness</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">brightness</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="normal">1288</span>
+<span class="normal">1289</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_brightness</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">brightness</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the camera brightness.</span>
 
 <span class="sd">    Only available on the X3 Ultra and X7.</span>
@@ -9494,8 +9494,7 @@ and 1 applies the full correction.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2030</span>
-<span class="normal">2031</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2031</span>
 <span class="normal">2032</span>
 <span class="normal">2033</span>
 <span class="normal">2034</span>
@@ -9512,7 +9511,8 @@ and 1 applies the full correction.</p>
 <span class="normal">2045</span>
 <span class="normal">2046</span>
 <span class="normal">2047</span>
-<span class="normal">2048</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_color_correction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enabled</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">intensity</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+<span class="normal">2048</span>
+<span class="normal">2049</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_color_correction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enabled</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">intensity</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the color correction filter on the main camera.</span>
 
 <span class="sd">    See [`get_color_correction`][blueye.sdk.camera.Camera.get_color_correction] for what the</span>
@@ -9581,8 +9581,7 @@ and 1 applies the full correction.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1301</span>
-<span class="normal">1302</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1302</span>
 <span class="normal">1303</span>
 <span class="normal">1304</span>
 <span class="normal">1305</span>
@@ -9596,7 +9595,8 @@ and 1 applies the full correction.</p>
 <span class="normal">1313</span>
 <span class="normal">1314</span>
 <span class="normal">1315</span>
-<span class="normal">1316</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_contrast</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contrast</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="normal">1316</span>
+<span class="normal">1317</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_contrast</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contrast</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the camera contrast.</span>
 
 <span class="sd">    Only available on the X3 Ultra and X7.</span>
@@ -9662,8 +9662,7 @@ and 1 applies the full correction.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1441</span>
-<span class="normal">1442</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1442</span>
 <span class="normal">1443</span>
 <span class="normal">1444</span>
 <span class="normal">1445</span>
@@ -9677,7 +9676,8 @@ and 1 applies the full correction.</p>
 <span class="normal">1453</span>
 <span class="normal">1454</span>
 <span class="normal">1455</span>
-<span class="normal">1456</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_denoise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">denoise</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="normal">1456</span>
+<span class="normal">1457</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_denoise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">denoise</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the camera noise reduction.</span>
 
 <span class="sd">    Only available on the X3 Ultra and X7.</span>
@@ -9744,8 +9744,7 @@ it higher than 2 can reduce the frame rate.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1525</span>
-<span class="normal">1526</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1526</span>
 <span class="normal">1527</span>
 <span class="normal">1528</span>
 <span class="normal">1529</span>
@@ -9760,7 +9759,8 @@ it higher than 2 can reduce the frame rate.</p>
 <span class="normal">1538</span>
 <span class="normal">1539</span>
 <span class="normal">1540</span>
-<span class="normal">1541</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_ehdr_exposure_max_number</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="normal">1541</span>
+<span class="normal">1542</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_ehdr_exposure_max_number</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the maximum number of eHDR frames.</span>
 
 <span class="sd">    Only available on the X3 Ultra and X7.</span>
@@ -9827,8 +9827,7 @@ it higher than 2 can reduce the frame rate.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1497</span>
-<span class="normal">1498</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1498</span>
 <span class="normal">1499</span>
 <span class="normal">1500</span>
 <span class="normal">1501</span>
@@ -9842,7 +9841,8 @@ it higher than 2 can reduce the frame rate.</p>
 <span class="normal">1509</span>
 <span class="normal">1510</span>
 <span class="normal">1511</span>
-<span class="normal">1512</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_ehdr_exposure_min_number</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="normal">1512</span>
+<span class="normal">1513</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_ehdr_exposure_min_number</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the minimum number of eHDR frames.</span>
 
 <span class="sd">    Only available on the X3 Ultra and X7.</span>
@@ -9899,8 +9899,7 @@ values are in the range (1..5000) or -1 for auto exposure.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1164</span>
-<span class="normal">1165</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1165</span>
 <span class="normal">1166</span>
 <span class="normal">1167</span>
 <span class="normal">1168</span>
@@ -9913,7 +9912,8 @@ values are in the range (1..5000) or -1 for auto exposure.</p>
 <span class="normal">1175</span>
 <span class="normal">1176</span>
 <span class="normal">1177</span>
-<span class="normal">1178</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_exposure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exposure</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="normal">1178</span>
+<span class="normal">1179</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_exposure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exposure</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the camera exposure.</span>
 
 <span class="sd">    On the X3 Ultra and X7 a shutter time longer than one frame at the current frame rate</span>
@@ -9980,8 +9980,7 @@ at the current resolution the drone reduces it while respecting the resolution.<
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1723</span>
-<span class="normal">1724</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1724</span>
 <span class="normal">1725</span>
 <span class="normal">1726</span>
 <span class="normal">1727</span>
@@ -9997,7 +9996,8 @@ at the current resolution the drone reduces it while respecting the resolution.<
 <span class="normal">1737</span>
 <span class="normal">1738</span>
 <span class="normal">1739</span>
-<span class="normal">1740</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_framerate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">framerate</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="normal">1740</span>
+<span class="normal">1741</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_framerate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">framerate</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the camera frame rate.</span>
 
 <span class="sd">    Args:</span>
@@ -10056,8 +10056,7 @@ value of -1 leaves the gain unchanged.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1246</span>
-<span class="normal">1247</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1247</span>
 <span class="normal">1248</span>
 <span class="normal">1249</span>
 <span class="normal">1250</span>
@@ -10070,7 +10069,8 @@ value of -1 leaves the gain unchanged.</p>
 <span class="normal">1257</span>
 <span class="normal">1258</span>
 <span class="normal">1259</span>
-<span class="normal">1260</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_gain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gain</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+<span class="normal">1260</span>
+<span class="normal">1261</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_gain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gain</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the camera gain.</span>
 
 <span class="sd">    On the X3 Ultra and X7 a manual gain only takes effect together with a manual exposure</span>
@@ -10135,8 +10135,7 @@ value of -1 leaves the gain unchanged.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1357</span>
-<span class="normal">1358</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1358</span>
 <span class="normal">1359</span>
 <span class="normal">1360</span>
 <span class="normal">1361</span>
@@ -10150,7 +10149,8 @@ value of -1 leaves the gain unchanged.</p>
 <span class="normal">1369</span>
 <span class="normal">1370</span>
 <span class="normal">1371</span>
-<span class="normal">1372</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_gamma</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gamma</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="normal">1372</span>
+<span class="normal">1373</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_gamma</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gamma</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the camera gamma.</span>
 
 <span class="sd">    Only available on the X3 Ultra and X7.</span>
@@ -10205,8 +10205,7 @@ control.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1218</span>
-<span class="normal">1219</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1219</span>
 <span class="normal">1220</span>
 <span class="normal">1221</span>
 <span class="normal">1222</span>
@@ -10217,7 +10216,8 @@ control.</p>
 <span class="normal">1227</span>
 <span class="normal">1228</span>
 <span class="normal">1229</span>
-<span class="normal">1230</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_hue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hue</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="normal">1230</span>
+<span class="normal">1231</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_hue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hue</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the camera hue.</span>
 
 <span class="sd">    Only available on Pioneer/Pro/X1/X3, the 4K camera in the X3 Ultra and X7 has no hue</span>
@@ -10280,8 +10280,7 @@ between 500 and 1460. A value of 0 means the drone uses its default of 1400.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1843</span>
-<span class="normal">1844</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1844</span>
 <span class="normal">1845</span>
 <span class="normal">1846</span>
 <span class="normal">1847</span>
@@ -10294,7 +10293,8 @@ between 500 and 1460. A value of 0 means the drone uses its default of 1400.</p>
 <span class="normal">1854</span>
 <span class="normal">1855</span>
 <span class="normal">1856</span>
-<span class="normal">1857</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_mtu_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mtu_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="normal">1857</span>
+<span class="normal">1858</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_mtu_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mtu_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the network MTU size used for video streaming.</span>
 
 <span class="sd">    Args:</span>
@@ -10403,8 +10403,7 @@ zoom to 0 when it starts, as the Blueye app does.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2069</span>
-<span class="normal">2070</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2070</span>
 <span class="normal">2071</span>
 <span class="normal">2072</span>
 <span class="normal">2073</span>
@@ -10454,7 +10453,8 @@ zoom to 0 when it starts, as the Blueye app does.</p>
 <span class="normal">2117</span>
 <span class="normal">2118</span>
 <span class="normal">2119</span>
-<span class="normal">2120</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_pan_tilt_zoom</span><span class="p">(</span>
+<span class="normal">2120</span>
+<span class="normal">2121</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_pan_tilt_zoom</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">pan</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">tilt</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -10557,8 +10557,7 @@ videos switched off, in which case the drone would not record.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1070</span>
-<span class="normal">1071</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1071</span>
 <span class="normal">1072</span>
 <span class="normal">1073</span>
 <span class="normal">1074</span>
@@ -10590,7 +10589,8 @@ videos switched off, in which case the drone would not record.</p>
 <span class="normal">1100</span>
 <span class="normal">1101</span>
 <span class="normal">1102</span>
-<span class="normal">1103</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_recording</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_recording</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+<span class="normal">1103</span>
+<span class="normal">1104</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_recording</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_recording</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the camera recording state.</span>
 
 <span class="sd">    Args:</span>
@@ -10675,8 +10675,7 @@ resolution, framerate, and codec.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1787</span>
-<span class="normal">1788</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1788</span>
 <span class="normal">1789</span>
 <span class="normal">1790</span>
 <span class="normal">1791</span>
@@ -10691,7 +10690,8 @@ resolution, framerate, and codec.</p>
 <span class="normal">1800</span>
 <span class="normal">1801</span>
 <span class="normal">1802</span>
-<span class="normal">1803</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_recording_bitrate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitrate</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="normal">1803</span>
+<span class="normal">1804</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_recording_bitrate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitrate</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the recording bitrate in bits per second.</span>
 
 <span class="sd">    A value of 0 means the drone will auto-compute a default bitrate based on the current</span>
@@ -10766,8 +10766,7 @@ RECORDING_CODEC_H265 is only available on the X3 Ultra and X7.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1753</span>
-<span class="normal">1754</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1754</span>
 <span class="normal">1755</span>
 <span class="normal">1756</span>
 <span class="normal">1757</span>
@@ -10784,7 +10783,8 @@ RECORDING_CODEC_H265 is only available on the X3 Ultra and X7.</p>
 <span class="normal">1768</span>
 <span class="normal">1769</span>
 <span class="normal">1770</span>
-<span class="normal">1771</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_recording_codec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">codec</span><span class="p">:</span> <span class="n">blueye</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">RecordingCodec</span><span class="p">):</span>
+<span class="normal">1771</span>
+<span class="normal">1772</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_recording_codec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">codec</span><span class="p">:</span> <span class="n">blueye</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">RecordingCodec</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the recording video codec.</span>
 
 <span class="sd">    Args:</span>
@@ -10854,8 +10854,7 @@ RECORDING_CODEC_H265 is only available on the X3 Ultra and X7.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1680</span>
-<span class="normal">1681</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1681</span>
 <span class="normal">1682</span>
 <span class="normal">1683</span>
 <span class="normal">1684</span>
@@ -10873,7 +10872,8 @@ RECORDING_CODEC_H265 is only available on the X3 Ultra and X7.</p>
 <span class="normal">1696</span>
 <span class="normal">1697</span>
 <span class="normal">1698</span>
-<span class="normal">1699</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_recording_resolution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resolution</span><span class="p">:</span> <span class="n">blueye</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">Resolution</span><span class="p">):</span>
+<span class="normal">1699</span>
+<span class="normal">1700</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_recording_resolution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resolution</span><span class="p">:</span> <span class="n">blueye</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">Resolution</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the camera recording resolution.</span>
 
 <span class="sd">    For drones running Blunux version &lt; 4.4.1 this is the same as the</span>
@@ -10952,8 +10952,7 @@ instead.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1574</span>
-<span class="normal">1575</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1575</span>
 <span class="normal">1576</span>
 <span class="normal">1577</span>
 <span class="normal">1578</span>
@@ -10984,7 +10983,8 @@ instead.</p>
 <span class="normal">1603</span>
 <span class="normal">1604</span>
 <span class="normal">1605</span>
-<span class="normal">1606</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_resolution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resolution</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="normal">1606</span>
+<span class="normal">1607</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_resolution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resolution</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the camera resolution.</span>
 
 <span class="sd">    Deprecated:</span>
@@ -11067,8 +11067,7 @@ instead.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1329</span>
-<span class="normal">1330</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1330</span>
 <span class="normal">1331</span>
 <span class="normal">1332</span>
 <span class="normal">1333</span>
@@ -11082,7 +11081,8 @@ instead.</p>
 <span class="normal">1341</span>
 <span class="normal">1342</span>
 <span class="normal">1343</span>
-<span class="normal">1344</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_saturation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">saturation</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="normal">1344</span>
+<span class="normal">1345</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_saturation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">saturation</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the camera saturation.</span>
 
 <span class="sd">    Only available on the X3 Ultra and X7.</span>
@@ -11148,8 +11148,7 @@ instead.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1385</span>
-<span class="normal">1386</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1386</span>
 <span class="normal">1387</span>
 <span class="normal">1388</span>
 <span class="normal">1389</span>
@@ -11163,7 +11162,8 @@ instead.</p>
 <span class="normal">1397</span>
 <span class="normal">1398</span>
 <span class="normal">1399</span>
-<span class="normal">1400</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_sharpness</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sharpness</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="normal">1400</span>
+<span class="normal">1401</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_sharpness</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sharpness</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the camera sharpness.</span>
 
 <span class="sd">    Only available on the X3 Ultra and X7.</span>
@@ -11230,8 +11230,7 @@ instead.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1639</span>
-<span class="normal">1640</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1640</span>
 <span class="normal">1641</span>
 <span class="normal">1642</span>
 <span class="normal">1643</span>
@@ -11249,7 +11248,8 @@ instead.</p>
 <span class="normal">1655</span>
 <span class="normal">1656</span>
 <span class="normal">1657</span>
-<span class="normal">1658</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_stream_resolution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resolution</span><span class="p">:</span> <span class="n">blueye</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">Resolution</span><span class="p">):</span>
+<span class="normal">1658</span>
+<span class="normal">1659</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_stream_resolution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resolution</span><span class="p">:</span> <span class="n">blueye</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">Resolution</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the camera stream resolution.</span>
 
 <span class="sd">    For drones running blunux version &lt; 4.4.1 this is the same as the</span>
@@ -11318,8 +11318,7 @@ instead.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1816</span>
-<span class="normal">1817</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1817</span>
 <span class="normal">1818</span>
 <span class="normal">1819</span>
 <span class="normal">1820</span>
@@ -11332,7 +11331,8 @@ instead.</p>
 <span class="normal">1827</span>
 <span class="normal">1828</span>
 <span class="normal">1829</span>
-<span class="normal">1830</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_streaming_protocol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">protocol</span><span class="p">:</span> <span class="n">blueye</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">StreamingProtocol</span><span class="p">):</span>
+<span class="normal">1830</span>
+<span class="normal">1831</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_streaming_protocol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">protocol</span><span class="p">:</span> <span class="n">blueye</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">StreamingProtocol</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the streaming protocol (codec used for the RTSP stream).</span>
 
 <span class="sd">    Args:</span>
@@ -11414,8 +11414,7 @@ filter does.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1990</span>
-<span class="normal">1991</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1991</span>
 <span class="normal">1992</span>
 <span class="normal">1993</span>
 <span class="normal">1994</span>
@@ -11431,7 +11430,8 @@ filter does.</p>
 <span class="normal">2004</span>
 <span class="normal">2005</span>
 <span class="normal">2006</span>
-<span class="normal">2007</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_turbidity_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enabled</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">intensity</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+<span class="normal">2007</span>
+<span class="normal">2008</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_turbidity_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enabled</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">intensity</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the turbidity filter on the main camera.</span>
 
 <span class="sd">    See [`get_turbidity_filter`][blueye.sdk.camera.Camera.get_turbidity_filter] for what the</span>
@@ -11488,8 +11488,7 @@ filter does.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1191</span>
-<span class="normal">1192</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1192</span>
 <span class="normal">1193</span>
 <span class="normal">1194</span>
 <span class="normal">1195</span>
@@ -11499,7 +11498,8 @@ filter does.</p>
 <span class="normal">1199</span>
 <span class="normal">1200</span>
 <span class="normal">1201</span>
-<span class="normal">1202</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_whitebalance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">white_balance</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="normal">1202</span>
+<span class="normal">1203</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_whitebalance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">white_balance</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the camera white balance.</span>
 
 <span class="sd">    Args:</span>
@@ -11553,8 +11553,7 @@ the drone would drop the picture.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/camera.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2127</span>
-<span class="normal">2128</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2128</span>
 <span class="normal">2129</span>
 <span class="normal">2130</span>
 <span class="normal">2131</span>
@@ -11572,7 +11571,8 @@ the drone would drop the picture.</p>
 <span class="normal">2143</span>
 <span class="normal">2144</span>
 <span class="normal">2145</span>
-<span class="normal">2146</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">take_picture</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">2146</span>
+<span class="normal">2147</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">take_picture</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Take a still picture and store it locally on the drone.</span>
 
 <span class="sd">    The picture command has no camera selector: the drone captures from the main camera and,</span>
@@ -11706,7 +11706,7 @@ the drone would drop the picture.</p>
               (<code><span title="typing.List">List</span>[<a class="autorefs autorefs-internal" title="            GuestPortNumber (blueye.protocol.GuestPortNumber)" href="../../protocol/message_formats/#blueye.protocol.types.message_formats.GuestPortNumber">GuestPortNumber</a>]</code>)
           –
           <div class="doc-md-description">
-            <p>Ports on this drone where the device is fully supported, as computed by the drone from</p>
+            <p>Ports on this drone where the device is fully supported.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -11726,8 +11726,7 @@ the drone would drop the picture.</p>
 
                   <details class="quote">
                     <summary>Source code in <code>blueye/sdk/guestport.py</code></summary>
-                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">173</span>
-<span class="normal">174</span>
+                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">174</span>
 <span class="normal">175</span>
 <span class="normal">176</span>
 <span class="normal">177</span>
@@ -11736,7 +11735,8 @@ the drone would drop the picture.</p>
 <span class="normal">180</span>
 <span class="normal">181</span>
 <span class="normal">182</span>
-<span class="normal">183</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">183</span>
+<span class="normal">184</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">parent_drone</span><span class="p">:</span> <span class="s2">&quot;Drone&quot;</span><span class="p">,</span> <span class="n">port_number</span><span class="p">:</span> <span class="n">bp</span><span class="o">.</span><span class="n">GuestPortNumber</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="n">bp</span><span class="o">.</span><span class="n">GuestPortDevice</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize the GuestPortLight class.</span>
@@ -11780,8 +11780,8 @@ the drone would drop the picture.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Ports on this drone where the device is fully supported, as computed by the drone from
-the port capabilities and the device requirements.</p>
+        <p>Ports on this drone where the device is fully supported.</p>
+<p>Computed by the drone from the port capabilities and the device requirements.</p>
 
     </div>
 
@@ -11849,8 +11849,7 @@ detached.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/guestport.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">60</span>
-<span class="normal">61</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">61</span>
 <span class="normal">62</span>
 <span class="normal">63</span>
 <span class="normal">64</span>
@@ -11865,7 +11864,8 @@ detached.</p>
 <span class="normal">73</span>
 <span class="normal">74</span>
 <span class="normal">75</span>
-<span class="normal">76</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_detach_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">bp</span><span class="o">.</span><span class="n">GuestPortDetachStatus</span><span class="p">:</span>
+<span class="normal">76</span>
+<span class="normal">77</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_detach_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">bp</span><span class="o">.</span><span class="n">GuestPortDetachStatus</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the current attach state of a detachable device.</span>
 
 <span class="sd">    The state is read from the latest drone info telemetry so it follows the device being</span>
@@ -11920,8 +11920,7 @@ in the session, so this can be <code>None</code> for a while after connecting.</
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/guestport.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">200</span>
-<span class="normal">201</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">201</span>
 <span class="normal">202</span>
 <span class="normal">203</span>
 <span class="normal">204</span>
@@ -11932,7 +11931,8 @@ in the session, so this can be <code>None</code> for a while after connecting.</
 <span class="normal">209</span>
 <span class="normal">210</span>
 <span class="normal">211</span>
-<span class="normal">212</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_intensity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+<span class="normal">212</span>
+<span class="normal">213</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_intensity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the intensity of the guest port light.</span>
 
 <span class="sd">    The drone only publishes the guest port light state after the lights have been set once</span>
@@ -11995,8 +11995,7 @@ in the session, so this can be <code>None</code> for a while after connecting.</
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/guestport.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">185</span>
-<span class="normal">186</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">186</span>
 <span class="normal">187</span>
 <span class="normal">188</span>
 <span class="normal">189</span>
@@ -12008,7 +12007,8 @@ in the session, so this can be <code>None</code> for a while after connecting.</
 <span class="normal">195</span>
 <span class="normal">196</span>
 <span class="normal">197</span>
-<span class="normal">198</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_intensity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intensity</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+<span class="normal">198</span>
+<span class="normal">199</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_intensity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intensity</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the intensity of the guest port light.</span>
 
 <span class="sd">    The drone applies the value to every light on its guest ports at once.</span>
@@ -12169,7 +12169,7 @@ reported flag unless told otherwise.</p>
               (<code><span title="typing.List">List</span>[<a class="autorefs autorefs-internal" title="            GuestPortNumber (blueye.protocol.GuestPortNumber)" href="../../protocol/message_formats/#blueye.protocol.types.message_formats.GuestPortNumber">GuestPortNumber</a>]</code>)
           –
           <div class="doc-md-description">
-            <p>Ports on this drone where the device is fully supported, as computed by the drone from</p>
+            <p>Ports on this drone where the device is fully supported.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -12189,8 +12189,7 @@ reported flag unless told otherwise.</p>
 
                   <details class="quote">
                     <summary>Source code in <code>blueye/sdk/guestport.py</code></summary>
-                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">298</span>
-<span class="normal">299</span>
+                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">299</span>
 <span class="normal">300</span>
 <span class="normal">301</span>
 <span class="normal">302</span>
@@ -12207,7 +12206,8 @@ reported flag unless told otherwise.</p>
 <span class="normal">313</span>
 <span class="normal">314</span>
 <span class="normal">315</span>
-<span class="normal">316</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">316</span>
+<span class="normal">317</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">parent_drone</span><span class="p">:</span> <span class="s2">&quot;Drone&quot;</span><span class="p">,</span> <span class="n">port_number</span><span class="p">:</span> <span class="n">bp</span><span class="o">.</span><span class="n">GuestPortNumber</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="n">bp</span><span class="o">.</span><span class="n">GuestPortDevice</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize the Laser class.</span>
@@ -12259,8 +12259,8 @@ reported flag unless told otherwise.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Ports on this drone where the device is fully supported, as computed by the drone from
-the port capabilities and the device requirements.</p>
+        <p>Ports on this drone where the device is fully supported.</p>
+<p>Computed by the drone from the port capabilities and the device requirements.</p>
 
     </div>
 
@@ -12345,8 +12345,7 @@ continuously.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/guestport.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">381</span>
-<span class="normal">382</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">382</span>
 <span class="normal">383</span>
 <span class="normal">384</span>
 <span class="normal">385</span>
@@ -12375,7 +12374,8 @@ continuously.</p>
 <span class="normal">408</span>
 <span class="normal">409</span>
 <span class="normal">410</span>
-<span class="normal">411</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">enable_tracking</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enabled</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+<span class="normal">411</span>
+<span class="normal">412</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">enable_tracking</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enabled</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Start or stop laser dot tracking.</span>
 
 <span class="sd">    Tracking modulates the laser at 5 Hz, and the drone picks the flickering dots out of the</span>
@@ -12446,8 +12446,7 @@ detached.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/guestport.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">60</span>
-<span class="normal">61</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">61</span>
 <span class="normal">62</span>
 <span class="normal">63</span>
 <span class="normal">64</span>
@@ -12462,7 +12461,8 @@ detached.</p>
 <span class="normal">73</span>
 <span class="normal">74</span>
 <span class="normal">75</span>
-<span class="normal">76</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_detach_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">bp</span><span class="o">.</span><span class="n">GuestPortDetachStatus</span><span class="p">:</span>
+<span class="normal">76</span>
+<span class="normal">77</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_detach_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">bp</span><span class="o">.</span><span class="n">GuestPortDetachStatus</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the current attach state of a detachable device.</span>
 
 <span class="sd">    The state is read from the latest drone info telemetry so it follows the device being</span>
@@ -12519,8 +12519,7 @@ report it, and only while tracking is enabled.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/guestport.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">425</span>
-<span class="normal">426</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">426</span>
 <span class="normal">427</span>
 <span class="normal">428</span>
 <span class="normal">429</span>
@@ -12533,7 +12532,8 @@ report it, and only while tracking is enabled.</p>
 <span class="normal">436</span>
 <span class="normal">437</span>
 <span class="normal">438</span>
-<span class="normal">439</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_detection</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">bp</span><span class="o">.</span><span class="n">LaserDetection</span><span class="p">]:</span>
+<span class="normal">439</span>
+<span class="normal">440</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_detection</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">bp</span><span class="o">.</span><span class="n">LaserDetection</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the latest laser dot detection.</span>
 
 <span class="sd">    The detection carries `detected`, the two dot centroids, their distance in pixels before</span>
@@ -12584,8 +12584,7 @@ report it, and only while tracking is enabled.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/guestport.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">441</span>
-<span class="normal">442</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">442</span>
 <span class="normal">443</span>
 <span class="normal">444</span>
 <span class="normal">445</span>
@@ -12593,7 +12592,8 @@ report it, and only while tracking is enabled.</p>
 <span class="normal">447</span>
 <span class="normal">448</span>
 <span class="normal">449</span>
-<span class="normal">450</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_estimated_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+<span class="normal">450</span>
+<span class="normal">451</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_estimated_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the estimated distance to the subject the laser dots are on.</span>
 
 <span class="sd">    Returns:</span>
@@ -12639,8 +12639,7 @@ report it, and only while tracking is enabled.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/guestport.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">370</span>
-<span class="normal">371</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">371</span>
 <span class="normal">372</span>
 <span class="normal">373</span>
 <span class="normal">374</span>
@@ -12648,7 +12647,8 @@ report it, and only while tracking is enabled.</p>
 <span class="normal">376</span>
 <span class="normal">377</span>
 <span class="normal">378</span>
-<span class="normal">379</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_intensity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+<span class="normal">379</span>
+<span class="normal">380</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_intensity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the current intensity of the laser.</span>
 
 <span class="sd">    Returns:</span>
@@ -12695,8 +12695,7 @@ not reported the laser state.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/guestport.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">413</span>
-<span class="normal">414</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">414</span>
 <span class="normal">415</span>
 <span class="normal">416</span>
 <span class="normal">417</span>
@@ -12705,7 +12704,8 @@ not reported the laser state.</p>
 <span class="normal">420</span>
 <span class="normal">421</span>
 <span class="normal">422</span>
-<span class="normal">423</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">is_tracking</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+<span class="normal">423</span>
+<span class="normal">424</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">is_tracking</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Check whether the laser is modulated for dot tracking.</span>
 
 <span class="sd">    Returns:</span>
@@ -12786,8 +12786,7 @@ sets the intensity often still follows what another client does to tracking. See
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/guestport.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">339</span>
-<span class="normal">340</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">340</span>
 <span class="normal">341</span>
 <span class="normal">342</span>
 <span class="normal">343</span>
@@ -12815,7 +12814,8 @@ sets the intensity often still follows what another client does to tracking. See
 <span class="normal">365</span>
 <span class="normal">366</span>
 <span class="normal">367</span>
-<span class="normal">368</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_intensity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intensity</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">modulated</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="normal">368</span>
+<span class="normal">369</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_intensity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intensity</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">modulated</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the intensity of the laser.</span>
 
 <span class="sd">    If the laser does not support dimming but only on and off, a value of 0 turns the laser off,</span>
@@ -12945,7 +12945,7 @@ sets the intensity often still follows what another client does to tracking. See
               (<code><span title="typing.List">List</span>[<a class="autorefs autorefs-internal" title="            GuestPortNumber (blueye.protocol.GuestPortNumber)" href="../../protocol/message_formats/#blueye.protocol.types.message_formats.GuestPortNumber">GuestPortNumber</a>]</code>)
           –
           <div class="doc-md-description">
-            <p>Ports on this drone where the device is fully supported, as computed by the drone from</p>
+            <p>Ports on this drone where the device is fully supported.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -12999,7 +12999,8 @@ sets the intensity often still follows what another client does to tracking. See
 <span class="normal">55</span>
 <span class="normal">56</span>
 <span class="normal">57</span>
-<span class="normal">58</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">58</span>
+<span class="normal">59</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">parent_drone</span><span class="p">:</span> <span class="s2">&quot;Drone&quot;</span><span class="p">,</span> <span class="n">port_number</span><span class="p">:</span> <span class="n">bp</span><span class="o">.</span><span class="n">GuestPortNumber</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="n">bp</span><span class="o">.</span><span class="n">GuestPortDevice</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize the Peripheral class.</span>
@@ -13023,8 +13024,9 @@ sets the intensity often still follows what another client does to tracking. See
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Interfaces the device requires from the port it is connected to.&quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">compatible_guest_ports</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">bp</span><span class="o">.</span><span class="n">GuestPortNumber</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">device</span><span class="o">.</span><span class="n">compatible_guest_ports</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Ports on this drone where the device is fully supported, as computed by the drone from</span>
-<span class="sd">    the port capabilities and the device requirements.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Ports on this drone where the device is fully supported.</span>
+
+<span class="sd">    Computed by the drone from the port capabilities and the device requirements.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">required_blunux_version</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">version</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">required_blunux_version</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">version</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span>
             <span class="n">parent_drone</span><span class="o">.</span><span class="n">software_version_short</span>
@@ -13067,8 +13069,8 @@ sets the intensity often still follows what another client does to tracking. See
 
     <div class="doc doc-contents ">
 
-        <p>Ports on this drone where the device is fully supported, as computed by the drone from
-the port capabilities and the device requirements.</p>
+        <p>Ports on this drone where the device is fully supported.</p>
+<p>Computed by the drone from the port capabilities and the device requirements.</p>
 
     </div>
 
@@ -13136,8 +13138,7 @@ detached.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/guestport.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">60</span>
-<span class="normal">61</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">61</span>
 <span class="normal">62</span>
 <span class="normal">63</span>
 <span class="normal">64</span>
@@ -13152,7 +13153,8 @@ detached.</p>
 <span class="normal">73</span>
 <span class="normal">74</span>
 <span class="normal">75</span>
-<span class="normal">76</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_detach_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">bp</span><span class="o">.</span><span class="n">GuestPortDetachStatus</span><span class="p">:</span>
+<span class="normal">76</span>
+<span class="normal">77</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_detach_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">bp</span><span class="o">.</span><span class="n">GuestPortDetachStatus</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the current attach state of a detachable device.</span>
 
 <span class="sd">    The state is read from the latest drone info telemetry so it follows the device being</span>
@@ -13294,7 +13296,7 @@ the range of the connected servo.</p>
               (<code><span title="typing.List">List</span>[<a class="autorefs autorefs-internal" title="            GuestPortNumber (blueye.protocol.GuestPortNumber)" href="../../protocol/message_formats/#blueye.protocol.types.message_formats.GuestPortNumber">GuestPortNumber</a>]</code>)
           –
           <div class="doc-md-description">
-            <p>Ports on this drone where the device is fully supported, as computed by the drone from</p>
+            <p>Ports on this drone where the device is fully supported.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -13314,8 +13316,7 @@ the range of the connected servo.</p>
 
                   <details class="quote">
                     <summary>Source code in <code>blueye/sdk/guestport.py</code></summary>
-                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">590</span>
-<span class="normal">591</span>
+                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">591</span>
 <span class="normal">592</span>
 <span class="normal">593</span>
 <span class="normal">594</span>
@@ -13327,7 +13328,8 @@ the range of the connected servo.</p>
 <span class="normal">600</span>
 <span class="normal">601</span>
 <span class="normal">602</span>
-<span class="normal">603</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">603</span>
+<span class="normal">604</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">parent_drone</span><span class="p">:</span> <span class="s2">&quot;Drone&quot;</span><span class="p">,</span> <span class="n">port_number</span><span class="p">:</span> <span class="n">bp</span><span class="o">.</span><span class="n">GuestPortNumber</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="n">bp</span><span class="o">.</span><span class="n">GuestPortDevice</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize the SkidServo class.</span>
@@ -13374,8 +13376,8 @@ the range of the connected servo.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Ports on this drone where the device is fully supported, as computed by the drone from
-the port capabilities and the device requirements.</p>
+        <p>Ports on this drone where the device is fully supported.</p>
+<p>Computed by the drone from the port capabilities and the device requirements.</p>
 
     </div>
 
@@ -13439,8 +13441,7 @@ the port capabilities and the device requirements.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/guestport.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">621</span>
-<span class="normal">622</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">622</span>
 <span class="normal">623</span>
 <span class="normal">624</span>
 <span class="normal">625</span>
@@ -13449,7 +13450,8 @@ the port capabilities and the device requirements.</p>
 <span class="normal">628</span>
 <span class="normal">629</span>
 <span class="normal">630</span>
-<span class="normal">631</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">631</span>
+<span class="normal">632</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the current angle of the multibeam servo.</span>
 
 <span class="sd">    Returns:</span>
@@ -13500,8 +13502,7 @@ detached.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/guestport.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">60</span>
-<span class="normal">61</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">61</span>
 <span class="normal">62</span>
 <span class="normal">63</span>
 <span class="normal">64</span>
@@ -13516,7 +13517,8 @@ detached.</p>
 <span class="normal">73</span>
 <span class="normal">74</span>
 <span class="normal">75</span>
-<span class="normal">76</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_detach_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">bp</span><span class="o">.</span><span class="n">GuestPortDetachStatus</span><span class="p">:</span>
+<span class="normal">76</span>
+<span class="normal">77</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_detach_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">bp</span><span class="o">.</span><span class="n">GuestPortDetachStatus</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the current attach state of a detachable device.</span>
 
 <span class="sd">    The state is read from the latest drone info telemetry so it follows the device being</span>
@@ -13569,8 +13571,7 @@ detached.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/guestport.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">633</span>
-<span class="normal">634</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">634</span>
 <span class="normal">635</span>
 <span class="normal">636</span>
 <span class="normal">637</span>
@@ -13579,7 +13580,8 @@ detached.</p>
 <span class="normal">640</span>
 <span class="normal">641</span>
 <span class="normal">642</span>
-<span class="normal">643</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_set_point</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">643</span>
+<span class="normal">644</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_set_point</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the angle the multibeam servo is moving towards.</span>
 
 <span class="sd">    Returns:</span>
@@ -13640,8 +13642,7 @@ detached.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/guestport.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">605</span>
-<span class="normal">606</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">606</span>
 <span class="normal">607</span>
 <span class="normal">608</span>
 <span class="normal">609</span>
@@ -13654,7 +13655,8 @@ detached.</p>
 <span class="normal">616</span>
 <span class="normal">617</span>
 <span class="normal">618</span>
-<span class="normal">619</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angle</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">619</span>
+<span class="normal">620</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angle</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the angle of the multibeam servo.</span>
 
 <span class="sd">    Args:</span>
@@ -13753,8 +13755,7 @@ detached.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/guestport.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">118</span>
-<span class="normal">119</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">119</span>
 <span class="normal">120</span>
 <span class="normal">121</span>
 <span class="normal">122</span>
@@ -13781,7 +13782,8 @@ detached.</p>
 <span class="normal">143</span>
 <span class="normal">144</span>
 <span class="normal">145</span>
-<span class="normal">146</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">connector_info_to_guest_port</span><span class="p">(</span>
+<span class="normal">146</span>
+<span class="normal">147</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">connector_info_to_guest_port</span><span class="p">(</span>
     <span class="n">parent_drone</span><span class="p">:</span> <span class="s2">&quot;Drone&quot;</span><span class="p">,</span> <span class="n">connector_info</span><span class="p">:</span> <span class="n">bp</span><span class="o">.</span><span class="n">GuestPortConnectorInfo</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GuestPort</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Build a [GuestPort][blueye.sdk.guestport.GuestPort] from the drone&#39;s connector info.</span>
@@ -13879,8 +13881,7 @@ detached.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/guestport.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">646</span>
-<span class="normal">647</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">647</span>
 <span class="normal">648</span>
 <span class="normal">649</span>
 <span class="normal">650</span>
@@ -13920,7 +13921,8 @@ detached.</p>
 <span class="normal">684</span>
 <span class="normal">685</span>
 <span class="normal">686</span>
-<span class="normal">687</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">device_to_peripheral</span><span class="p">(</span>
+<span class="normal">687</span>
+<span class="normal">688</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">device_to_peripheral</span><span class="p">(</span>
     <span class="n">parent_drone</span><span class="p">:</span> <span class="s2">&quot;Drone&quot;</span><span class="p">,</span> <span class="n">port_number</span><span class="p">:</span> <span class="n">bp</span><span class="o">.</span><span class="n">GuestPortNumber</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="n">bp</span><span class="o">.</span><span class="n">GuestPortDevice</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Peripheral</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a device to its corresponding peripheral class.</span>

@@ -2179,8 +2179,9 @@ use by showing how to control the lights:</p>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Current depth in meters: </span><span class="si">{</span><span class="n">myDrone</span><span class="o">.</span><span class="n">get_depth</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </code></pre></div>
 For an overview of the methods that are available for controlling and reading data from the drone, go to the
-<a href="../reference/blueye/sdk/drone/"><code>Reference section</code></a> of the documentation.
-The valid input ranges and descriptions of the different methods can also be found there.</p>
+<a href="../reference/blueye/sdk/drone/"><code>Drone</code> reference</a>. Most functions are grouped under attributes of
+the <code>Drone</code> object, such as <code>camera</code>, <code>motion</code>, <code>logs</code> and <code>telemetry</code>; the reference lists them
+with links to their own pages, which give the valid input ranges.</p>
 <p>When a script is done it should call <a class="autorefs autorefs-internal" title="            disconnect" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Drone.disconnect"><code>disconnect</code></a>. The drone
 keeps the last motion input it received until a new one arrives or its watchdog times out, so
 <code>disconnect</code> zeroes the thrusters before it tells the drone that the client is leaving. A <code>with</code>

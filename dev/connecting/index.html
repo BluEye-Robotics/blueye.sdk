@@ -2200,7 +2200,12 @@
 <p>The failsafe also runs 3 seconds after the client in control disconnects, unless another client has taken over control by then.</p>
 <h2 id="control-handover">Control handover</h2>
 <p>The first client to connect without <code>connect_as_observer=True</code> is in control. When the client in control disconnects, or is dropped from the client list after about 4 seconds of silence, the drone hands control to the client that has been connected the longest among those that did not connect as observers. If there is none, nobody is in control and the drone reports client id 0.</p>
-<p><a class="autorefs autorefs-internal" title="            Drone" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Drone"><code>Drone.in_control</code></a> is set when the connection is made and by <a class="autorefs autorefs-internal" title="            take_control" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Drone.take_control"><code>take_control</code></a>. It is not updated afterwards, so after a handover it is stale. Compare <a class="autorefs autorefs-internal" title="            get_client_in_control" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Drone.get_client_in_control"><code>get_client_in_control</code></a> with <code>client_id</code> for the current answer:</p>
+<p><a class="autorefs autorefs-internal" title="            in_control
+
+
+  
+      instance-attribute
+  " href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Drone.in_control"><code>Drone.in_control</code></a> is set when the connection is made and by <a class="autorefs autorefs-internal" title="            take_control" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Drone.take_control"><code>take_control</code></a>. It is not updated afterwards, so after a handover it is stale. Compare <a class="autorefs autorefs-internal" title="            get_client_in_control" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Drone.get_client_in_control"><code>get_client_in_control</code></a> with <code>client_id</code> for the current answer:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drone</span>
 
 <span class="n">d</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">()</span>

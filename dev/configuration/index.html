@@ -969,10 +969,54 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#image-settings-x3-ultra-and-x7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Image settings (X3 Ultra and X7)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#image-filters-and-digital-pan-tilt-and-zoom" class="md-nav__link">
     <span class="md-ellipsis">
       
         Image filters and digital pan, tilt and zoom
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recording-and-streaming" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recording and streaming
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#camera-tilt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Camera tilt
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#overlay-and-logo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overlay and logo
       
     </span>
   </a>
@@ -1983,10 +2027,54 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#image-settings-x3-ultra-and-x7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Image settings (X3 Ultra and X7)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#image-filters-and-digital-pan-tilt-and-zoom" class="md-nav__link">
     <span class="md-ellipsis">
       
         Image filters and digital pan, tilt and zoom
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recording-and-streaming" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recording and streaming
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#camera-tilt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Camera tilt
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#overlay-and-logo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overlay and logo
       
     </span>
   </a>
@@ -2017,26 +2105,16 @@
 
 <p>There are settings on the drone that are remotely configurable from the Blueye mobile app. These can also be set directly from the SDK.</p>
 <h3 id="configure-time-and-date">Configure time and date</h3>
-<p>The drone does not keep track of time internally. The SDK sets the time on the drone automatically when you connect initially. But you can also configure time and date manually like this</p>
+<p>The drone does not keep track of time internally. When a client connects and is in control, the SDK sends the computer's current time to the drone. A connection made with <code>connect_as_observer=True</code>, or while another client holds control, leaves the drone's clock alone, unless it passes <code>disconnect_other_clients=True</code> and takes control. You can also set the time yourself:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drone</span>
 
 <span class="n">myDrone</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">()</span>
 
-<span class="n">time_to_set_on_drone</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span> <span class="c1"># Unix Timestamp</span>
-<span class="n">myDrone</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">set_drone_time</span><span class="p">(</span><span class="n">time_to_set_on_drone</span><span class="p">)</span>
+<span class="n">myDrone</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">set_drone_time</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()))</span>  <span class="c1"># Unix timestamp</span>
 </code></pre></div>
-<p>or if we for example want to offset the drone time 5 hours relative to our current system time we can do something like this:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drone</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">timezone</span><span class="p">,</span> <span class="n">timedelta</span><span class="p">,</span> <span class="n">datetime</span>
-
-<span class="n">myDrone</span> <span class="o">=</span> <span class="n">Drone</span><span class="p">()</span>
-
-<span class="n">offset_in_hours</span> <span class="o">=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-<span class="n">equivalent_timezone</span> <span class="o">=</span> <span class="n">timezone</span><span class="p">(</span><span class="n">offset_in_hours</span><span class="p">)</span>
-<span class="n">unix_timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">tz</span><span class="o">=</span><span class="n">equivalent_timezone</span><span class="p">)</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span>
-
-<span class="n">myDrone</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">set_drone_time</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">unix_timestamp</span><span class="p">))</span>
+<p>The drone's clock runs in UTC and stamps its logs, so always set it to the current Unix time. To show local time in the video overlay, set the overlay's time zone offset in minutes instead. The overlay adds it to the drone's UTC time:</p>
+<div class="highlight"><pre><span></span><code><span class="n">myDrone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">overlay</span><span class="o">.</span><span class="n">set_timezone_offset</span><span class="p">(</span><span class="mi">120</span><span class="p">)</span>  <span class="c1"># UTC+2</span>
 </code></pre></div>
 <h3 id="calibrate-pressure-sensor-for-water-density">Calibrate pressure sensor for water density</h3>
 <p>The water density on the drone default to a reasonable density for salt water: 1025 grams per liter. For more accurate depth readings, the water density can be configured manually to suit your local conditions</p>
@@ -2073,13 +2151,86 @@
 
 <span class="k">with</span> <span class="n">myDrone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mf">5.0</span><span class="p">)</span> <span class="k">as</span> <span class="n">params</span><span class="p">:</span>
     <span class="n">params</span><span class="o">.</span><span class="n">stream_resolution</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">RESOLUTION_FULLHD_1080P</span>
-    <span class="n">params</span><span class="o">.</span><span class="n">framerate</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">Framerate</span><span class="o">.</span><span class="n">FRAMERATE_FPS_30</span>
-    <span class="n">params</span><span class="o">.</span><span class="n">h264_bitrate</span> <span class="o">=</span> <span class="mi">4_000_000</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">framerate</span> <span class="o">=</span> <span class="mi">30</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">bitrate</span> <span class="o">=</span> <span class="mi">4_000_000</span>
 <span class="c1"># All changes are sent in one request when the block exits.</span>
 <span class="c1"># If an exception occurs inside the block, changes are discarded.</span>
 </code></pre></div>
 <p>The <code>timeout</code> parameter (default: 0.5s) controls how long to wait for the drone to respond. Increase it when changing parameters that trigger pipeline restarts (e.g. codec, resolution).</p>
-<p>Due to a bug in the camera streaming on the drone a camera stream has to have been opened at least once before camera parameters can be set on the drone, see issue <a href="https://github.com/BluEye-Robotics/blueye.sdk/issues/67">#67</a>. For instructions on how to start a video stream see, the <a href="../quick_start/#watching-the-video-stream"><code>Quick Start Guide</code></a>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Setters send every parameter</p>
+<p>Each camera setter sends the full set of camera parameters, not only the one it changes. It fills in the rest from the parameters the SDK read last: on the first setter call, or by the most recent getter. A change made from the Blueye app after that read is written back over, and two setters in a row can undo each other if a getter ran in between. <code>configure()</code> reads the parameters when the block starts and sends one request, so use it when changing several parameters. The overlay setters work the same way with the overlay parameters. Sending only the changed field is tracked in <a href="https://github.com/BluEye-Robotics/blueye.sdk/issues/221">#221</a>.</p>
+</div>
+<p>Exposure and white balance apply to every model, with -1 for automatic: <a class="autorefs autorefs-internal" title="            set_exposure" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.set_exposure"><code>set_exposure</code></a> and <a class="autorefs autorefs-internal" title="            set_whitebalance" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.set_whitebalance"><code>set_whitebalance</code></a>. <a class="autorefs autorefs-internal" title="            set_gain" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.set_gain"><code>set_gain</code></a> differs per model: -1 keeps the current gain on the Pioneer, Pro, X1 and X3, and on the X3 Ultra and X7 a manual gain only takes effect with a manual exposure. <a class="autorefs autorefs-internal" title="            set_hue" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.set_hue"><code>set_hue</code></a> only has an effect on the Pioneer, Pro, X1 and X3.</p>
+<h3 id="image-settings-x3-ultra-and-x7">Image settings (X3 Ultra and X7)</h3>
+<p>The 4K camera in the X3 Ultra and X7 has image settings the older cameras lack. The setters need Blunux 5.0.0 and raise <code>RuntimeError</code> on older versions. They do not check the model.</p>
+<table>
+<thead>
+<tr>
+<th>Setter</th>
+<th>Range</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="autorefs autorefs-internal" title="            set_brightness" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.set_brightness"><code>set_brightness</code></a></td>
+<td>-10..10</td>
+<td>0</td>
+</tr>
+<tr>
+<td><a class="autorefs autorefs-internal" title="            set_contrast" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.set_contrast"><code>set_contrast</code></a></td>
+<td>-50..50</td>
+<td>0</td>
+</tr>
+<tr>
+<td><a class="autorefs autorefs-internal" title="            set_saturation" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.set_saturation"><code>set_saturation</code></a></td>
+<td>0..50</td>
+<td>8</td>
+</tr>
+<tr>
+<td><a class="autorefs autorefs-internal" title="            set_gamma" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.set_gamma"><code>set_gamma</code></a></td>
+<td>4..79</td>
+<td>22</td>
+</tr>
+<tr>
+<td><a class="autorefs autorefs-internal" title="            set_sharpness" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.set_sharpness"><code>set_sharpness</code></a></td>
+<td>-20..20</td>
+<td>-20</td>
+</tr>
+<tr>
+<td><a class="autorefs autorefs-internal" title="            set_backlight_compensation" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.set_backlight_compensation"><code>set_backlight_compensation</code></a></td>
+<td>-150..150</td>
+<td>10</td>
+</tr>
+<tr>
+<td><a class="autorefs autorefs-internal" title="            set_denoise" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.set_denoise"><code>set_denoise</code></a></td>
+<td>-20..20</td>
+<td>-20</td>
+</tr>
+<tr>
+<td><a class="autorefs autorefs-internal" title="            enable_ehdr" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.enable_ehdr"><code>enable_ehdr</code></a></td>
+<td><code>True</code> or <code>False</code></td>
+<td><code>True</code></td>
+</tr>
+<tr>
+<td><a class="autorefs autorefs-internal" title="            set_ehdr_exposure_min_number" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.set_ehdr_exposure_min_number"><code>set_ehdr_exposure_min_number</code></a></td>
+<td>1..4</td>
+<td>1</td>
+</tr>
+<tr>
+<td><a class="autorefs autorefs-internal" title="            set_ehdr_exposure_max_number" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.set_ehdr_exposure_max_number"><code>set_ehdr_exposure_max_number</code></a></td>
+<td>1..4</td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
+<p>More than 2 eHDR frames can lower the frame rate.</p>
+<div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="n">myDrone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">configure</span><span class="p">()</span> <span class="k">as</span> <span class="n">params</span><span class="p">:</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">contrast</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">saturation</span> <span class="o">=</span> <span class="mi">12</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">denoise</span> <span class="o">=</span> <span class="mi">0</span>
+</code></pre></div>
 <h3 id="image-filters-and-digital-pan-tilt-and-zoom">Image filters and digital pan, tilt and zoom</h3>
 <p>The 4K camera in the X3 Ultra and X7 has two image filters and a digital pan, tilt and zoom. They are not camera parameters, each is sent as its own control message, and the drone reports the state it applied in a telemetry message. The setters raise <code>RuntimeError</code> on other models, on the guestport camera and on drones running Blunux older than 5.0.0.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drone</span>
@@ -2103,6 +2254,55 @@
 <p>The drone publishes <code>TurbidityFilterTel</code>, <code>ColorCorrectionTel</code> and <code>CameraPanTiltZoomTel</code> when the state changes, not at a fixed rate. The getters return what the drone reported on the last change, and ask the drone directly if nothing has been received since connecting, so there is no need to wait for a periodic update. A drone that has never applied a filter has nothing to report, and the getter returns <code>None</code> until the first change.</p>
 <p>The report arrives about 0.1 s after the command, so <code>set_pan_tilt_zoom</code> fills in the values you leave out from what it last sent, and from the drone's report only before the first call. A change made by the Blueye app after your last call is not picked up that way; pass all three values when that matters.</p>
 <p>Laser dot tracking works on the full, unzoomed image, so <a class="autorefs autorefs-internal" title="            enable_tracking" href="../reference/blueye/sdk/guestport/#blueye.sdk.guestport.Laser.enable_tracking"><code>enable_tracking</code></a> resets pan, tilt and zoom to 0 when it starts, as the Blueye app does.</p>
+<h3 id="recording-and-streaming">Recording and streaming</h3>
+<p>The settings for the recorded file, its resolution, codec and bitrate, are covered in <a href="../video/recording-and-stills/#resolution-frame-rate-codec-and-bitrate">Recording video and taking pictures</a>. The live stream has these:</p>
+<ul>
+<li><a class="autorefs autorefs-internal" title="            set_stream_resolution" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.set_stream_resolution"><code>set_stream_resolution</code></a> and <a class="autorefs autorefs-internal" title="            set_framerate" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.set_framerate"><code>set_framerate</code></a>. The frame rate applies to the recording too.</li>
+<li><a class="autorefs autorefs-internal" title="            set_bitrate" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.set_bitrate"><code>set_bitrate</code></a>: the H.264 stream bitrate, 1 to 16 Mbit/s.</li>
+<li><a class="autorefs autorefs-internal" title="            set_streaming_protocol" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.set_streaming_protocol"><code>set_streaming_protocol</code></a>: <code>STREAMING_PROTOCOL_RTSP_H264</code> or <code>STREAMING_PROTOCOL_RTSP_MJPEG</code>. The Pioneer, Pro, X1 and X3 do not start a recording while they stream MJPEG. The X3 Ultra and X7 cap an MJPEG stream at 1080p.</li>
+<li><a class="autorefs autorefs-internal" title="            set_mtu_size" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Camera.set_mtu_size"><code>set_mtu_size</code></a>: the largest network packet the stream uses, in bytes. 0 uses the drone's default of 1400. Lower it for links that carry smaller packets, such as some VPNs. Needs Blunux 5.1.0.</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">blueye.protocol</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">bp</span>
+
+<span class="k">with</span> <span class="n">myDrone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mf">5.0</span><span class="p">)</span> <span class="k">as</span> <span class="n">params</span><span class="p">:</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">streaming_protocol</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">StreamingProtocol</span><span class="o">.</span><span class="n">STREAMING_PROTOCOL_RTSP_H264</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">mtu_size</span> <span class="o">=</span> <span class="mi">1200</span>
+</code></pre></div>
+<h3 id="camera-tilt">Camera tilt</h3>
+<p>Every model except the original Pioneer can tilt the camera. <a class="autorefs autorefs-internal" title="            features
+
+
+  
+      instance-attribute
+  " href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Drone.features"><code>Drone.features</code></a> contains <code>"tilt"</code> on those drones, and the <a class="autorefs autorefs-internal" title="            Tilt" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Tilt"><code>Tilt</code></a> methods raise <code>RuntimeError</code> without it.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+
+<span class="n">myDrone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">tilt</span><span class="o">.</span><span class="n">set_velocity</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>  <span class="c1"># 1 is full speed up, -1 full speed down</span>
+<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">myDrone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">tilt</span><span class="o">.</span><span class="n">set_velocity</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">myDrone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">tilt</span><span class="o">.</span><span class="n">get_angle</span><span class="p">())</span>  <span class="c1"># Degrees</span>
+
+<span class="n">myDrone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">tilt</span><span class="o">.</span><span class="n">enable_stabilization</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+<p>The drone keeps the last velocity until it gets a new one, so the tilt runs to its end stop unless you set it back to 0. Stabilization tilts the camera against the drone's pitch. The X7 accepts the setting but its tilt servo does not compensate.</p>
+<h3 id="overlay-and-logo">Overlay and logo</h3>
+<p>The overlay is the text and logo the drone draws into its recordings. <a class="autorefs autorefs-internal" title="            Overlay" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay"><code>camera.overlay</code></a> has an <code>enable_*</code> method for each field (depth, heading, tilt, date, temperature, altitude, distance and more), and setters for the title and subtitle, units, font size, margins, text shading, the date format and the time zone offset.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">blueye.protocol</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">bp</span>
+
+<span class="n">overlay</span> <span class="o">=</span> <span class="n">myDrone</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">overlay</span>
+<span class="n">overlay</span><span class="o">.</span><span class="n">enable_depth</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">overlay</span><span class="o">.</span><span class="n">enable_date</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">overlay</span><span class="o">.</span><span class="n">set_date_format</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">)</span>
+<span class="n">overlay</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Pier inspection&quot;</span><span class="p">)</span>
+<span class="n">overlay</span><span class="o">.</span><span class="n">set_depth_unit</span><span class="p">(</span><span class="n">bp</span><span class="o">.</span><span class="n">DepthUnit</span><span class="o">.</span><span class="n">DEPTH_UNIT_METERS</span><span class="p">)</span>
+<span class="n">overlay</span><span class="o">.</span><span class="n">set_font_size</span><span class="p">(</span><span class="n">bp</span><span class="o">.</span><span class="n">FontSize</span><span class="o">.</span><span class="n">FONT_SIZE_PX25</span><span class="p">)</span>
+</code></pre></div>
+<p>Title, subtitle and date format take up to 63 ASCII characters. Longer text is cut to 63 characters and sent with a <code>RuntimeWarning</code>. Non-ASCII text, a value of the wrong type or one out of range is not sent: the setter warns with a <code>RuntimeWarning</code> and leaves the setting unchanged.</p>
+<p>To show your own logo, upload a JPG or PNG of up to 2000 px and 5 MB, then select it:</p>
+<div class="highlight"><pre><span></span><code><span class="n">overlay</span><span class="o">.</span><span class="n">upload_logo</span><span class="p">(</span><span class="s2">&quot;logo.png&quot;</span><span class="p">)</span>
+<span class="n">overlay</span><span class="o">.</span><span class="n">set_logo</span><span class="p">(</span><span class="n">bp</span><span class="o">.</span><span class="n">LogoType</span><span class="o">.</span><span class="n">LOGO_TYPE_CUSTOM</span><span class="p">)</span>
+</code></pre></div>
+<p><code>LOGO_TYPE_DEFAULT</code> shows the default logo and <code>LOGO_TYPE_NONE</code> none. <a class="autorefs autorefs-internal" title="            download_logo" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.download_logo"><code>download_logo</code></a> fetches the uploaded file and <a class="autorefs autorefs-internal" title="            delete_logo" href="../reference/blueye/sdk/camera/#blueye.sdk.camera.Overlay.delete_logo"><code>delete_logo</code></a> removes it.</p>
 
 
 
