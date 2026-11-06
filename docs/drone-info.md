@@ -1,9 +1,8 @@
 # Drone model and hardware
 The drone publishes its identity and hardware configuration in the `DroneInfoTel` telemetry
 message. The `Drone` class exposes the most useful fields through getters, so a script can adapt
-to the drone it is connected to without parsing the message itself. The getters return `None`
-until the first `DroneInfoTel` message has been received, which normally happens during
-[`connect`][blueye.sdk.drone.Drone.connect].
+to the drone it is connected to without parsing the message itself. If `DroneInfoTel` has not
+arrived since connecting, the getters ask the drone for it.
 
 ```python
 import blueye.protocol as bp

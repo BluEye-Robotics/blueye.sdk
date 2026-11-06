@@ -7,13 +7,13 @@ A [`Drone`][blueye.sdk.drone.Drone] object connects when it is created and stays
 Connections require Blunux 3.2 or newer. Use an observer connection for telemetry, log downloads, or other work that should leave control with the pilot:
 
 ```python
-import time
 from blueye.sdk import Drone
 
 with Drone(connect_as_observer=True, log_notifications=True) as drone:
-    time.sleep(1)  # Allow the first telemetry messages to arrive.
-    print(drone.get_depth())  # Can still be None if no depth message has arrived.
+    print(drone.get_depth())
 ```
+
+A getter reads the latest telemetry message the SDK has received. If none has arrived since connecting, it asks the drone for the latest one, so a script does not have to wait for telemetry first.
 
 The default `Drone()` connection is eligible for control. If nobody holds control, it takes control, zeroes the thruster setpoints and synchronizes the drone's clock to the computer. If another client already holds control, it joins without displacing that client, but can inherit control when that client leaves.
 
@@ -36,16 +36,11 @@ An observer connection is not a read-only permission: setters still send command
 
 ### Inspecting clients and taking control
 
-[`get_connected_clients`][blueye.sdk.drone.Drone.get_connected_clients] and [`get_client_in_control`][blueye.sdk.drone.Drone.get_client_in_control] read the latest client-list telemetry. Both return `None` until it arrives. Once available, client id `0` means nobody holds control.
+[`get_connected_clients`][blueye.sdk.drone.Drone.get_connected_clients] and [`get_client_in_control`][blueye.sdk.drone.Drone.get_client_in_control] read the drone's client-list telemetry. Client id `0` means nobody holds control.
 
 ```python
 with Drone(connect_as_observer=True) as drone:
-    deadline = time.monotonic() + 5
-    clients = drone.get_connected_clients()
-    while clients is None and time.monotonic() < deadline:
-        time.sleep(0.1)
-        clients = drone.get_connected_clients()
-    for client in clients or []:
+    for client in drone.get_connected_clients():
         print(client.client_id, client.client_info.name, client.client_info.is_observer)
     print("Client in control:", drone.get_client_in_control())
 ```
