@@ -23,7 +23,7 @@ from .connection import (
     WatchdogPublisher,
     message_type_name,
 )
-from .constants import EVENT_DRIVEN_TELEMETRY, JETSON_MODELS
+from .constants import EVENT_DRIVEN_TELEMETRY, IMU_ERROR_FLAGS, JETSON_MODELS
 from .guestport import (
     GenericServo,
     Gripper,
@@ -1083,21 +1083,54 @@ class Drone:
         """
         return self._guest_ports
 
-    def get_error_flags(self) -> Dict[str, bool]:
+    def get_error_flags(self) -> Optional[Dict[str, bool]]:
         """Get the error flags.
 
+        The flags are the fields of the
+        [`ErrorFlags`][blueye.protocol.types.message_formats.ErrorFlags] message, true while the
+        error is present. The IMU flags in
+        [`IMU_ERROR_FLAGS`][blueye.sdk.constants.IMU_ERROR_FLAGS] are left out on drones running
+        Blunux older than 5.2, which do not report them.
+
         Returns:
-            The error flags as bools in a dictionary.
+            The error flags as bools in a dictionary, or None if no `ErrorFlagsTel` message has
+            been received.
         """
         error_flags_tel = self.telemetry.get(blueye.protocol.ErrorFlagsTel)
         if error_flags_tel is None:
             return None
         error_flags_msg = error_flags_tel.error_flags
+        reports_imu_flags = version.parse(self.software_version_short) >= version.parse("5.2")
         error_flags = {}
         possible_flags = [attr for attr in dir(error_flags_msg) if not attr.startswith("__")]
         for flag in possible_flags:
+            if flag in IMU_ERROR_FLAGS and not reports_imu_flags:
+                continue
             error_flags[flag] = getattr(error_flags_msg, flag)
         return error_flags
+
+    def has_attitude(self) -> Optional[bool]:
+        """Check whether the drone can estimate its attitude.
+
+        The drone estimates roll, pitch and yaw from any of its IMUs that works. Without one it
+        sets the `imu_attitude` error flag and can only be driven by hand: it switches every auto
+        mode off and refuses to turn one on, aborts a running mission, reports its attitude as
+        NaN and turns camera tilt stabilization off. When an IMU recovers the flag is cleared,
+        but the drone does not turn the auto modes or tilt stabilization back on by itself.
+
+        Returns:
+            True if the drone has an attitude estimate, False if it has none, or None if no
+            `ErrorFlagsTel` message has been received.
+
+        Raises:
+            RuntimeError: If the connected drone is running Blunux older than 5.2, which does
+                not report this.
+        """
+        self._verify_required_blunux_version("5.2")
+        error_flags_tel = self.telemetry.get(blueye.protocol.ErrorFlagsTel)
+        if error_flags_tel is None:
+            return None
+        return not error_flags_tel.error_flags.imu_attitude
 
     error_flags = deprecated_property("get_error_flags")
 
