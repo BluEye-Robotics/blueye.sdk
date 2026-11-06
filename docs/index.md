@@ -1,6 +1,12 @@
 ![SDK demo: connect with Drone(), set_lights(1.0), and motion.set_surge(0.3)](media/sdk-demo.gif)
 
-Blueye makes the Pioneer, Pro, X1, X3, X3 Ultra and X7 underwater drones, and the SDK works with all of them. The Pioneer and Pro are built for inspection. The other models have guest ports for tools such as grippers, sonars and positioning systems, and the X3 Ultra and X7 add a 4K camera and can run computer vision models on the drone.
+The Blueye SDK is a Python package for controlling Blueye underwater drones from a computer. Your computer joins the drone's surface unit over Wi-Fi, the same way the Blueye app does, and a [`Drone`][blueye.sdk.drone.Drone] object connects to the drone through it.
+
+New to the SDK? Start with the [Quick Start](quick_start.md), which installs the SDK and runs a first script, then read [Connecting to the drone](connecting.md) for how a script and the Blueye app share the drone.
+
+## Supported drones
+
+The SDK works with every Blueye model:
 
 | Model | Camera | Camera tilt | Guest ports | CV models |
 | --- | --- | --- | --- | --- |
@@ -11,15 +17,18 @@ Blueye makes the Pioneer, Pro, X1, X3, X3 Ultra and X7 underwater drones, and th
 | X3 Ultra | 4K | ±30° | 3 | Yes |
 | X7 | 4K | ±90° | 6 | Yes |
 
-See [Blueye drone models](models.md) for the differences that matter to a script, and [blueyerobotics.com](https://www.blueyerobotics.com/products) for more about the drones.
+[Blueye drone models](models.md) has the full table and the differences that matter to a script, and [blueyerobotics.com](https://www.blueyerobotics.com/products) has more about the drones.
 
-## This SDK and the Blueye drones
-A Blueye drone is normally controlled via a mobile device through the Blueye App ([iOS](https://apps.apple.com/no/app/blueye/id1369714041)/[Android](https://play.google.com/store/apps/details?id=no.blueye.blueyeapp)).
-The mobile device is connected via Wi-Fi to a surface unit, and the drone is connected to the surface unit via a tether cable.
+## What the documentation covers
 
-This python SDK exposes the functionality of the Blueye app through a Python object. The SDK enables remote control of a Blueye drone as well as reading telemetry data and viewing video streams. It is not meant for executing code on the drone itself.
+- **Movement**: [moving the drone](movement/from-the-CLI.md) with thrust, boost and the auto modes, and [driving it with a gamepad](movement/with-a-gamepad.md).
+- **Video**: [live streams](video/streams.md) and [GStreamer](video/gstreamer-for-video-streaming.md), [recording and taking pictures](video/recording-and-stills.md), [downloading media](video/downloading.md) and the [camera calibration](video/camera-calibration.md).
+- **Logs**: [listing and downloading dive logs](logs/listing-and-downloading.md), [plotting them](logs/plotting.md) and [viewing them in Foxglove](logs/foxglove-bez-to-mcap.md).
+- **Drone settings**: [camera, overlay and other parameters](configuration.md), and [the drone's model and hardware](drone-info.md).
+- **Telemetry**: [subscribing to telemetry messages](telemetry-callback.md) and [visualizing live sensor data](foxglove-bridge.md).
+- **Guest port tools**: [grippers, lights, lasers, servos and sensors](peripherals.md).
+- **Missions**: [planning and running missions](mission-planning.md).
+- **The blueye command**: [the CLI](cli.md) for logs, computer vision models and other tasks from the terminal.
+- **Reference**: every class and method, starting with [`Drone`](reference/blueye/sdk/drone.md), and the [protocol messages](reference/blueye/protocol/overview.md).
 
-To control the drone you connect your laptop to the surface unit Wi-Fi and run code that interfaces with the through the Python object.
-
-
-Check out the [`Quick Start Guide`](quick_start.md) to get started with using the SDK.
+A copy of the documentation matching the installed SDK ships with the package for use without internet access, see the [Quick Start](quick_start.md#local-documentation).
