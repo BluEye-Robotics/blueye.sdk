@@ -39,6 +39,13 @@ storage device is published as it happens, so these messages have no publish fre
 them. Messages from peripherals are also only published while the peripheral is connected.
 """
 
+IMU_ERROR_FLAGS = frozenset({"imu_1", "imu_2", "imu_hp", "imu_attitude"})
+"""Error flags for the drone's IMUs, reported from Blunux 5.2.
+
+Drones running older Blunux do not report them, and the flags read as false there, so
+[`get_error_flags`][blueye.sdk.drone.Drone.get_error_flags] leaves them out on those drones.
+"""
+
 
 class WaterDensities:
     """
