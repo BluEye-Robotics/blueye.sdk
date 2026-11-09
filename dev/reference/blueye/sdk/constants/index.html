@@ -1499,6 +1499,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#blueye.sdk.constants.IMU_ERROR_FLAGS" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;IMU_ERROR_FLAGS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#blueye.sdk.constants.JETSON_MODELS" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2036,6 +2047,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#blueye.sdk.constants.IMU_ERROR_FLAGS" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;IMU_ERROR_FLAGS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#blueye.sdk.constants.JETSON_MODELS" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2155,6 +2177,34 @@
 storage device is published as it happens, so these messages have no publish frequency and
 <a class="autorefs autorefs-internal" title="            set_msg_publish_frequency" href="../drone/#blueye.sdk.drone.Telemetry.set_msg_publish_frequency"><code>set_msg_publish_frequency</code></a> raises for
 them. Messages from peripherals are also only published while the peripheral is connected.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="blueye.sdk.constants.IMU_ERROR_FLAGS" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">IMU_ERROR_FLAGS</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-module-attribute"><code>module-attribute</code></small>
+  </span>
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">IMU_ERROR_FLAGS</span> <span class="o">=</span> <span class="n"><span title="frozenset">frozenset</span></span><span class="p">(</span>
+    <span class="p">{</span><span class="s2">&quot;imu_1&quot;</span><span class="p">,</span> <span class="s2">&quot;imu_2&quot;</span><span class="p">,</span> <span class="s2">&quot;imu_hp&quot;</span><span class="p">,</span> <span class="s2">&quot;imu_attitude&quot;</span><span class="p">}</span>
+<span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Error flags for the drone's IMUs, reported from Blunux 5.2.</p>
+<p>Drones running older Blunux do not report them, and the flags read as false there, so
+<a class="autorefs autorefs-internal" title="            get_error_flags" href="../drone/#blueye.sdk.drone.Drone.get_error_flags"><code>get_error_flags</code></a> leaves them out on those drones.</p>
 
     </div>
 

@@ -2090,6 +2090,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#blueye.sdk.drone.Drone.has_attitude" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;has_attitude
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#blueye.sdk.drone.Drone.is_jetson_platform" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3205,6 +3216,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#blueye.sdk.drone.Drone.has_attitude" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;has_attitude
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#blueye.sdk.drone.Drone.is_jetson_platform" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3957,6 +3979,13 @@ method.</p>
             –
             <div class="doc-md-description">
               <p>Get the water temperature in degrees Celsius.</p>
+            </div>
+          </li>
+          <li class="doc-section-item field-body">
+            <b><code><a class="autorefs autorefs-internal" title="            has_attitude (blueye.sdk.drone.Drone.has_attitude)" href="#blueye.sdk.drone.Drone.has_attitude">has_attitude</a></code></b>
+            –
+            <div class="doc-md-description">
+              <p>Check whether the drone can estimate its attitude.</p>
             </div>
           </li>
           <li class="doc-section-item field-body">
@@ -5733,26 +5762,26 @@ streams.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/drone.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1181</span>
-<span class="normal">1182</span>
-<span class="normal">1183</span>
-<span class="normal">1184</span>
-<span class="normal">1185</span>
-<span class="normal">1186</span>
-<span class="normal">1187</span>
-<span class="normal">1188</span>
-<span class="normal">1189</span>
-<span class="normal">1190</span>
-<span class="normal">1191</span>
-<span class="normal">1192</span>
-<span class="normal">1193</span>
-<span class="normal">1194</span>
-<span class="normal">1195</span>
-<span class="normal">1196</span>
-<span class="normal">1197</span>
-<span class="normal">1198</span>
-<span class="normal">1199</span>
-<span class="normal">1200</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_active_video_streams</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1214</span>
+<span class="normal">1215</span>
+<span class="normal">1216</span>
+<span class="normal">1217</span>
+<span class="normal">1218</span>
+<span class="normal">1219</span>
+<span class="normal">1220</span>
+<span class="normal">1221</span>
+<span class="normal">1222</span>
+<span class="normal">1223</span>
+<span class="normal">1224</span>
+<span class="normal">1225</span>
+<span class="normal">1226</span>
+<span class="normal">1227</span>
+<span class="normal">1228</span>
+<span class="normal">1229</span>
+<span class="normal">1230</span>
+<span class="normal">1231</span>
+<span class="normal">1232</span>
+<span class="normal">1233</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_active_video_streams</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the number of currently active connections to the video stream.</span>
 
 <span class="sd">    Every RTSP session counts, whether it comes from the Blueye app, GStreamer, VLC or</span>
@@ -6185,19 +6214,19 @@ telemetry has not arrived.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/drone.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1229</span>
-<span class="normal">1230</span>
-<span class="normal">1231</span>
-<span class="normal">1232</span>
-<span class="normal">1233</span>
-<span class="normal">1234</span>
-<span class="normal">1235</span>
-<span class="normal">1236</span>
-<span class="normal">1237</span>
-<span class="normal">1238</span>
-<span class="normal">1239</span>
-<span class="normal">1240</span>
-<span class="normal">1241</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_dive_time</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1262</span>
+<span class="normal">1263</span>
+<span class="normal">1264</span>
+<span class="normal">1265</span>
+<span class="normal">1266</span>
+<span class="normal">1267</span>
+<span class="normal">1268</span>
+<span class="normal">1269</span>
+<span class="normal">1270</span>
+<span class="normal">1271</span>
+<span class="normal">1272</span>
+<span class="normal">1273</span>
+<span class="normal">1274</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_dive_time</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the amount of time the drone has been submerged.</span>
 
 <span class="sd">    The drone starts incrementing this value when the depth is above 250 mm.</span>
@@ -6293,21 +6322,32 @@ main camera calibration.</p>
 
 
 </h4>
-<div class="doc-signature highlight"><pre><span></span><code><span class="nf">get_error_flags</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n"><span title="typing.Dict">Dict</span></span><span class="p">[</span><span class="n"><span title="str">str</span></span><span class="p">,</span> <span class="n"><span title="bool">bool</span></span><span class="p">]</span>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">get_error_flags</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n"><span title="typing.Optional">Optional</span></span><span class="p">[</span><span class="n"><span title="typing.Dict">Dict</span></span><span class="p">[</span><span class="n"><span title="str">str</span></span><span class="p">,</span> <span class="n"><span title="bool">bool</span></span><span class="p">]]</span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
 
         <p>Get the error flags.</p>
+<p>The flags are the fields of the
+<a class="autorefs autorefs-internal" title="            ErrorFlags" href="../../protocol/message_formats/#blueye.protocol.types.message_formats.ErrorFlags"><code>ErrorFlags</code></a> message, true while the
+error is present. The IMU flags in
+<a class="autorefs autorefs-internal" title="            IMU_ERROR_FLAGS
+
+
+  
+      module-attribute
+  " href="../constants/#blueye.sdk.constants.IMU_ERROR_FLAGS"><code>IMU_ERROR_FLAGS</code></a> are left out on drones running
+Blunux older than 5.2, which do not report them.</p>
 
 
 <p><span class="doc-section-title">Returns:</span></p>
     <ul>
         <li class="doc-section-item field-body">
-              <code><span title="typing.Dict">Dict</span>[<span title="str">str</span>, <span title="bool">bool</span>]</code>
+              <code><span title="typing.Optional">Optional</span>[<span title="typing.Dict">Dict</span>[<span title="str">str</span>, <span title="bool">bool</span>]]</code>
           –
           <div class="doc-md-description">
-            <p>The error flags as bools in a dictionary.</p>
+            <p>The error flags as bools in a dictionary, or None if no <code>ErrorFlagsTel</code> message has
+been received.</p>
           </div>
         </li>
     </ul>
@@ -6329,19 +6369,39 @@ main camera calibration.</p>
 <span class="normal">1174</span>
 <span class="normal">1175</span>
 <span class="normal">1176</span>
-<span class="normal">1177</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_error_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
+<span class="normal">1177</span>
+<span class="normal">1178</span>
+<span class="normal">1179</span>
+<span class="normal">1180</span>
+<span class="normal">1181</span>
+<span class="normal">1182</span>
+<span class="normal">1183</span>
+<span class="normal">1184</span>
+<span class="normal">1185</span>
+<span class="normal">1186</span>
+<span class="normal">1187</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_error_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the error flags.</span>
 
+<span class="sd">    The flags are the fields of the</span>
+<span class="sd">    [`ErrorFlags`][blueye.protocol.types.message_formats.ErrorFlags] message, true while the</span>
+<span class="sd">    error is present. The IMU flags in</span>
+<span class="sd">    [`IMU_ERROR_FLAGS`][blueye.sdk.constants.IMU_ERROR_FLAGS] are left out on drones running</span>
+<span class="sd">    Blunux older than 5.2, which do not report them.</span>
+
 <span class="sd">    Returns:</span>
-<span class="sd">        The error flags as bools in a dictionary.</span>
+<span class="sd">        The error flags as bools in a dictionary, or None if no `ErrorFlagsTel` message has</span>
+<span class="sd">        been received.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">error_flags_tel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">blueye</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">ErrorFlagsTel</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">error_flags_tel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>
     <span class="n">error_flags_msg</span> <span class="o">=</span> <span class="n">error_flags_tel</span><span class="o">.</span><span class="n">error_flags</span>
+    <span class="n">reports_imu_flags</span> <span class="o">=</span> <span class="n">version</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">software_version_short</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">version</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;5.2&quot;</span><span class="p">)</span>
     <span class="n">error_flags</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">possible_flags</span> <span class="o">=</span> <span class="p">[</span><span class="n">attr</span> <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">error_flags_msg</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">attr</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;__&quot;</span><span class="p">)]</span>
     <span class="k">for</span> <span class="n">flag</span> <span class="ow">in</span> <span class="n">possible_flags</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">flag</span> <span class="ow">in</span> <span class="n">IMU_ERROR_FLAGS</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">reports_imu_flags</span><span class="p">:</span>
+            <span class="k">continue</span>
         <span class="n">error_flags</span><span class="p">[</span><span class="n">flag</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">error_flags_msg</span><span class="p">,</span> <span class="n">flag</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">error_flags</span>
 </code></pre></div></td></tr></table></div>
@@ -6723,16 +6783,16 @@ a Blunux version that predates this field report <code>POWER_SOURCE_UNSPECIFIED<
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/drone.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1216</span>
-<span class="normal">1217</span>
-<span class="normal">1218</span>
-<span class="normal">1219</span>
-<span class="normal">1220</span>
-<span class="normal">1221</span>
-<span class="normal">1222</span>
-<span class="normal">1223</span>
-<span class="normal">1224</span>
-<span class="normal">1225</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_water_temperature</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1249</span>
+<span class="normal">1250</span>
+<span class="normal">1251</span>
+<span class="normal">1252</span>
+<span class="normal">1253</span>
+<span class="normal">1254</span>
+<span class="normal">1255</span>
+<span class="normal">1256</span>
+<span class="normal">1257</span>
+<span class="normal">1258</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_water_temperature</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the water temperature in degrees Celsius.</span>
 
 <span class="sd">    Returns:</span>
@@ -6742,6 +6802,104 @@ a Blunux version that predates this field report <code>POWER_SOURCE_UNSPECIFIED<
     <span class="k">if</span> <span class="n">water_temperature_tel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>
     <span class="k">return</span> <span class="n">water_temperature_tel</span><span class="o">.</span><span class="n">temperature</span><span class="o">.</span><span class="n">value</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="blueye.sdk.drone.Drone.has_attitude" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">has_attitude</span>
+
+
+</h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">has_attitude</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n"><span title="typing.Optional">Optional</span></span><span class="p">[</span><span class="n"><span title="bool">bool</span></span><span class="p">]</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Check whether the drone can estimate its attitude.</p>
+<p>The drone estimates roll, pitch and yaw from any of its IMUs that works. Without one it
+sets the <code>imu_attitude</code> error flag and can only be driven by hand: it switches every auto
+mode off and refuses to turn one on, aborts a running mission, reports its attitude as
+NaN and turns camera tilt stabilization off. When an IMU recovers the flag is cleared,
+but the drone does not turn the auto modes or tilt stabilization back on by itself.</p>
+
+
+<p><span class="doc-section-title">Returns:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code><span title="typing.Optional">Optional</span>[<span title="bool">bool</span>]</code>
+          –
+          <div class="doc-md-description">
+            <p>True if the drone has an attitude estimate, False if it has none, or None if no
+<code>ErrorFlagsTel</code> message has been received.</p>
+          </div>
+        </li>
+    </ul>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code><span title="RuntimeError">RuntimeError</span></code>
+            –
+          <div class="doc-md-description">
+            <p>If the connected drone is running Blunux older than 5.2, which does
+not report this.</p>
+          </div>
+        </li>
+    </ul>
+
+
+            <details class="quote">
+              <summary>Source code in <code>blueye/sdk/drone.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1189</span>
+<span class="normal">1190</span>
+<span class="normal">1191</span>
+<span class="normal">1192</span>
+<span class="normal">1193</span>
+<span class="normal">1194</span>
+<span class="normal">1195</span>
+<span class="normal">1196</span>
+<span class="normal">1197</span>
+<span class="normal">1198</span>
+<span class="normal">1199</span>
+<span class="normal">1200</span>
+<span class="normal">1201</span>
+<span class="normal">1202</span>
+<span class="normal">1203</span>
+<span class="normal">1204</span>
+<span class="normal">1205</span>
+<span class="normal">1206</span>
+<span class="normal">1207</span>
+<span class="normal">1208</span>
+<span class="normal">1209</span>
+<span class="normal">1210</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">has_attitude</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check whether the drone can estimate its attitude.</span>
+
+<span class="sd">    The drone estimates roll, pitch and yaw from any of its IMUs that works. Without one it</span>
+<span class="sd">    sets the `imu_attitude` error flag and can only be driven by hand: it switches every auto</span>
+<span class="sd">    mode off and refuses to turn one on, aborts a running mission, reports its attitude as</span>
+<span class="sd">    NaN and turns camera tilt stabilization off. When an IMU recovers the flag is cleared,</span>
+<span class="sd">    but the drone does not turn the auto modes or tilt stabilization back on by itself.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        True if the drone has an attitude estimate, False if it has none, or None if no</span>
+<span class="sd">        `ErrorFlagsTel` message has been received.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        RuntimeError: If the connected drone is running Blunux older than 5.2, which does</span>
+<span class="sd">            not report this.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_verify_required_blunux_version</span><span class="p">(</span><span class="s2">&quot;5.2&quot;</span><span class="p">)</span>
+    <span class="n">error_flags_tel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">blueye</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">ErrorFlagsTel</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">error_flags_tel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="ow">not</span> <span class="n">error_flags_tel</span><span class="o">.</span><span class="n">error_flags</span><span class="o">.</span><span class="n">imu_attitude</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -6867,17 +7025,17 @@ not known yet.</p>
 
             <details class="quote">
               <summary>Source code in <code>blueye/sdk/drone.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1204</span>
-<span class="normal">1205</span>
-<span class="normal">1206</span>
-<span class="normal">1207</span>
-<span class="normal">1208</span>
-<span class="normal">1209</span>
-<span class="normal">1210</span>
-<span class="normal">1211</span>
-<span class="normal">1212</span>
-<span class="normal">1213</span>
-<span class="normal">1214</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">ping</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">):</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1237</span>
+<span class="normal">1238</span>
+<span class="normal">1239</span>
+<span class="normal">1240</span>
+<span class="normal">1241</span>
+<span class="normal">1242</span>
+<span class="normal">1243</span>
+<span class="normal">1244</span>
+<span class="normal">1245</span>
+<span class="normal">1246</span>
+<span class="normal">1247</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">ping</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Ping the drone.</span>
 
 <span class="sd">    Args:</span>

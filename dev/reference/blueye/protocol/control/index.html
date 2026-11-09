@@ -2224,6 +2224,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#blueye.protocol.types.control.SetMarineSnowFilterCtrl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;SetMarineSnowFilterCtrl
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#blueye.protocol.types.control.SetMultibeamConfigCtrl" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2984,6 +2995,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#blueye.protocol.types.control.SetMarineSnowFilterCtrl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;SetMarineSnowFilterCtrl
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#blueye.protocol.types.control.SetMultibeamConfigCtrl" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3463,6 +3485,13 @@
           –
           <div class="doc-md-description">
             <p>Message sent when the user wants to set color correction</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><a class="autorefs autorefs-internal" title="            SetMarineSnowFilterCtrl (blueye.protocol.types.control.SetMarineSnowFilterCtrl)" href="#blueye.protocol.types.control.SetMarineSnowFilterCtrl">SetMarineSnowFilterCtrl</a></code></b>
+          –
+          <div class="doc-md-description">
+            <p>Message sent when the user wants to set marine snow filter</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -4422,6 +4451,15 @@ be lost.</p>
 
 
         <p>Issue a command to control the gripper.</p>
+<p>On a manipulator arm the command can also move the arm. Each
+command stands until the next one: the arm stops on a command
+without arm input, or when the client watchdog (WatchdogCtrl)
+lapses.</p>
+<p>This message has <code>oneof</code>_ fields (mutually exclusive fields).
+For each oneof, at most one member field can be set at the same time.
+Setting any member of the oneof automatically clears all other
+members.</p>
+<p>.. _oneof: <a href="https://proto-plus-python.readthedocs.io/en/stable/fields.html#oneofs-mutually-exclusive-fields">https://proto-plus-python.readthedocs.io/en/stable/fields.html#oneofs-mutually-exclusive-fields</a></p>
 
 
 <p><span class="doc-section-title">Attributes:</span></p>
@@ -4432,6 +4470,45 @@ be lost.</p>
           –
           <div class="doc-md-description">
             <p>The desired gripping and rotation velocity.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><span title="blueye.protocol.types.control.GripperCtrl.cartesian">cartesian</span></code></b>
+              (<code><a class="autorefs autorefs-internal" title="            CartesianManipulatorInput (blueye.protocol.types.CartesianManipulatorInput)" href="../message_formats/#blueye.protocol.types.message_formats.CartesianManipulatorInput">CartesianManipulatorInput</a></code>)
+          –
+          <div class="doc-md-description">
+            <p>In the drone body frame.</p>
+<p>This field is a member of <code>oneof</code>_ <code>arm_input</code>.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><span title="blueye.protocol.types.control.GripperCtrl.cylindrical">cylindrical</span></code></b>
+              (<code><a class="autorefs autorefs-internal" title="            CylindricalManipulatorInput (blueye.protocol.types.CylindricalManipulatorInput)" href="../message_formats/#blueye.protocol.types.message_formats.CylindricalManipulatorInput">CylindricalManipulatorInput</a></code>)
+          –
+          <div class="doc-md-description">
+            <p>About the axis of the arm's base joint.</p>
+<p>This field is a member of <code>oneof</code>_ <code>arm_input</code>.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><span title="blueye.protocol.types.control.GripperCtrl.known_pose">known_pose</span></code></b>
+              (<code><a class="autorefs autorefs-internal" title="            KnownPoseManipulatorInput (blueye.protocol.types.KnownPoseManipulatorInput)" href="../message_formats/#blueye.protocol.types.message_formats.KnownPoseManipulatorInput">KnownPoseManipulatorInput</a></code>)
+          –
+          <div class="doc-md-description">
+            <p>Towards a named pose, such as stowed or
+deployed.</p>
+<p>This field is a member of <code>oneof</code>_ <code>arm_input</code>.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><span title="blueye.protocol.types.control.GripperCtrl.speed_modifier">speed_modifier</span></code></b>
+              (<code><span title="float">float</span></code>)
+          –
+          <div class="doc-md-description">
+            <p>Speed of the arm input relative to the drone default
+(-1.0..1.0): negative is slower, positive is faster, and 0
+is the default speed. Scales arm_input only, not
+gripper_velocities.</p>
           </div>
         </li>
     </ul>
@@ -5308,6 +5385,78 @@ Only supported on X3 Ultra.</p>
           <div class="doc-md-description">
             <p>Message with the color correction settings to
 set.</p>
+          </div>
+        </li>
+    </ul>
+
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="blueye.protocol.types.control.SetMarineSnowFilterCtrl" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <span class="doc doc-object-name doc-class-name">SetMarineSnowFilterCtrl</span>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>Message sent when the user wants to set marine snow filter
+settings. Removes bright particles, such as marine snow, from
+the video. The intensity field sets how faint a particle can be
+and still be removed (0.0 = only the brightest, 1.0 = faint
+particles as well). Turn it off during laser detection. Only
+supported on X3 Ultra.</p>
+
+
+<p><span class="doc-section-title">Attributes:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+          <b><code><span title="blueye.protocol.types.control.SetMarineSnowFilterCtrl.marine_snow_filter">marine_snow_filter</span></code></b>
+              (<code><a class="autorefs autorefs-internal" title="            FilterMessage (blueye.protocol.types.FilterMessage)" href="../message_formats/#blueye.protocol.types.message_formats.FilterMessage">FilterMessage</a></code>)
+          –
+          <div class="doc-md-description">
+            <p>Message with the marine snow filter settings
+to set.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><span title="blueye.protocol.types.control.SetMarineSnowFilterCtrl.frames">frames</span></code></b>
+              (<code><a class="autorefs autorefs-internal" title="            MarineSnowFilterFrames (blueye.protocol.types.MarineSnowFilterFrames)" href="../message_formats/#blueye.protocol.types.message_formats.MarineSnowFilterFrames">MarineSnowFilterFrames</a></code>)
+          –
+          <div class="doc-md-description">
+            <p>Frames to compare with. Leave it unset to
+keep the current frames.</p>
           </div>
         </li>
     </ul>
