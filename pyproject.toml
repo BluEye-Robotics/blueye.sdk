@@ -1,6 +1,6 @@
 [project]
 name = "blueye.sdk"
-version = "2.8.0"
+version = "2.9.0"
 license = { file = "LICENSE" }
 description = "SDK for controlling Blueye underwater drones"
 authors = [{ name = "Blueye Robotics", email = "contact@blueye.no" }]
@@ -11,6 +11,21 @@ keywords = [
     "Robotics",
     "SDK",
     "Software Development Kit",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Scientific/Engineering",
 ]
 dependencies = [
     "requests>=2.22.0,<3",
@@ -56,7 +71,10 @@ examples = [
 
 [project.urls]
 Homepage = "https://www.blueyerobotics.com"
-Repository = "https://github.com/blueye-robotics/blueye.sdk"
+Documentation = "https://blueye-robotics.github.io/blueye.sdk/"
+Repository = "https://github.com/BluEye-Robotics/blueye.sdk"
+Issues = "https://github.com/BluEye-Robotics/blueye.sdk/issues"
+Changelog = "https://github.com/BluEye-Robotics/blueye.sdk/releases"
 
 [dependency-groups]
 dev = [
