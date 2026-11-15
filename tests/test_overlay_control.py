@@ -1,3 +1,5 @@
+import copy
+
 import blueye.protocol as bp
 import pytest
 
@@ -244,6 +246,33 @@ class TestOverlay:
 
     def test_get_date_format(self, mocked_drone: Drone):
         assert mocked_drone.camera.overlay.get_date_format() == "%m/%d/%Y %I:%M:%S %p"
+
+    def test_setter_preserves_change_made_between_calls(self, mocked_drone: Drone):
+        overlay = mocked_drone.camera.overlay
+        client = mocked_drone._req_rep_client
+        drone_parameters = copy.deepcopy(client.get_overlay_parameters.return_value)
+
+        def get_parameters():
+            return copy.deepcopy(drone_parameters)
+
+        def set_parameters(parameters):
+            nonlocal drone_parameters
+            drone_parameters = copy.deepcopy(parameters)
+
+        client.get_overlay_parameters.side_effect = get_parameters
+        client.set_overlay_parameters.side_effect = set_parameters
+
+        overlay.enable_temperature(True)
+
+        # A change made by another client, such as the Blueye app, after the SDK's last read.
+        drone_parameters = copy.deepcopy(drone_parameters)
+        drone_parameters.depth_enabled = True
+
+        overlay.enable_heading(True)
+
+        assert drone_parameters.depth_enabled is True
+        assert drone_parameters.heading_enabled is True
+        assert drone_parameters.temperature_enabled is True
 
 
 class TestOverlayLogoControl:

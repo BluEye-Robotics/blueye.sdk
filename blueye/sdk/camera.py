@@ -176,7 +176,11 @@ class Tilt:
 
 
 class Overlay:
-    """Control the overlay on videos and pictures."""
+    """Control the overlay on videos and pictures.
+
+    The overlay settings are not persistent on the drone: the overlay node keeps them in memory
+    and starts from its defaults every time the drone boots.
+    """
 
     def __init__(self, parent_drone: Drone):
         """Initialize the Overlay class.
@@ -190,6 +194,17 @@ class Overlay:
     def _update_overlay_parameters(self):
         """Update the overlay parameters from the drone."""
         self._overlay_parametres = self._parent_drone._req_rep_client.get_overlay_parameters()
+
+    def _set_overlay_parameter(self, name: str, value):
+        """Read the current overlay parameters, change one field, and send them back.
+
+        The parameters are read fresh before every change, since other clients such as the
+        Blueye app may have changed them since the SDK last read them. Reusing a cached copy
+        would revert those changes when the whole parameter struct is sent to the drone.
+        """
+        self._update_overlay_parameters()
+        setattr(self._overlay_parametres, name, value)
+        self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
 
     def is_temperature_enabled(self) -> bool:
         """Get the state of the temperature overlay.
@@ -206,10 +221,7 @@ class Overlay:
         Args:
             enable_temperature (bool): True to enable the temperature overlay, False to disable it.
         """
-        if self._overlay_parametres is None:
-            self._update_overlay_parameters()
-        self._overlay_parametres.temperature_enabled = enable_temperature
-        self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
+        self._set_overlay_parameter("temperature_enabled", enable_temperature)
 
     temperature_enabled = deprecated_property("is_temperature_enabled", "enable_temperature")
 
@@ -228,10 +240,7 @@ class Overlay:
         Args:
             enable_depth (bool): True to enable the depth overlay, False to disable it.
         """
-        if self._overlay_parametres is None:
-            self._update_overlay_parameters()
-        self._overlay_parametres.depth_enabled = enable_depth
-        self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
+        self._set_overlay_parameter("depth_enabled", enable_depth)
 
     depth_enabled = deprecated_property("is_depth_enabled", "enable_depth")
 
@@ -250,10 +259,7 @@ class Overlay:
         Args:
             enable_heading (bool): True to enable the heading overlay, False to disable it.
         """
-        if self._overlay_parametres is None:
-            self._update_overlay_parameters()
-        self._overlay_parametres.heading_enabled = enable_heading
-        self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
+        self._set_overlay_parameter("heading_enabled", enable_heading)
 
     heading_enabled = deprecated_property("is_heading_enabled", "enable_heading")
 
@@ -272,10 +278,7 @@ class Overlay:
         Args:
             enable_tilt (bool): True to enable the tilt overlay, False to disable it.
         """
-        if self._overlay_parametres is None:
-            self._update_overlay_parameters()
-        self._overlay_parametres.tilt_enabled = enable_tilt
-        self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
+        self._set_overlay_parameter("tilt_enabled", enable_tilt)
 
     tilt_enabled = deprecated_property("is_tilt_enabled", "enable_tilt")
 
@@ -285,8 +288,7 @@ class Overlay:
         Returns:
             The current state of the date overlay.
         """
-        if self._overlay_parametres is None:
-            self._update_overlay_parameters()
+        self._update_overlay_parameters()
         return self._overlay_parametres.date_enabled
 
     def enable_date(self, enable_date: bool):
@@ -295,10 +297,7 @@ class Overlay:
         Args:
             enable_date (bool): True to enable the date overlay, False to disable it.
         """
-        if self._overlay_parametres is None:
-            self._update_overlay_parameters()
-        self._overlay_parametres.date_enabled = enable_date
-        self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
+        self._set_overlay_parameter("date_enabled", enable_date)
 
     date_enabled = deprecated_property("is_date_enabled", "enable_date")
 
@@ -323,10 +322,7 @@ class Overlay:
         if not isinstance(logo_type, blueye.protocol.LogoType):
             warnings.warn("Invalid logo type, ignoring", RuntimeWarning)
         else:
-            if self._overlay_parametres is None:
-                self._update_overlay_parameters()
-            self._overlay_parametres.logo_type = logo_type
-            self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
+            self._set_overlay_parameter("logo_type", logo_type)
 
     logo = deprecated_property("get_logo", "set_logo")
 
@@ -351,10 +347,7 @@ class Overlay:
         if not isinstance(unit, blueye.protocol.DepthUnit):
             warnings.warn("Invalid depth unit, ignoring", RuntimeWarning)
         else:
-            if self._overlay_parametres is None:
-                self._update_overlay_parameters()
-            self._overlay_parametres.depth_unit = unit
-            self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
+            self._set_overlay_parameter("depth_unit", unit)
 
     depth_unit = deprecated_property("get_depth_unit", "set_depth_unit")
 
@@ -379,10 +372,7 @@ class Overlay:
         if not isinstance(unit, blueye.protocol.TemperatureUnit):
             warnings.warn("Invalid temperature unit, ignoring", RuntimeWarning)
         else:
-            if self._overlay_parametres is None:
-                self._update_overlay_parameters()
-            self._overlay_parametres.temperature_unit = unit
-            self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
+            self._set_overlay_parameter("temperature_unit", unit)
 
     temperature_unit = deprecated_property("get_temperature_unit", "set_temperature_unit")
 
@@ -401,10 +391,7 @@ class Overlay:
         Args:
             enable_cp_probe (bool): True to enable the CP probe overlay, False to disable it.
         """
-        if self._overlay_parametres is None:
-            self._update_overlay_parameters()
-        self._overlay_parametres.cp_probe_enabled = enable_cp_probe
-        self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
+        self._set_overlay_parameter("cp_probe_enabled", enable_cp_probe)
 
     cp_probe_enabled = deprecated_property("is_cp_probe_enabled", "enable_cp_probe")
 
@@ -423,10 +410,7 @@ class Overlay:
         Args:
             enable_distance (bool): True to enable the distance overlay, False to disable it.
         """
-        if self._overlay_parametres is None:
-            self._update_overlay_parameters()
-        self._overlay_parametres.distance_enabled = enable_distance
-        self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
+        self._set_overlay_parameter("distance_enabled", enable_distance)
 
     distance_enabled = deprecated_property("is_distance_enabled", "enable_distance")
 
@@ -445,10 +429,7 @@ class Overlay:
         Args:
             enable_altitude (bool): True to enable the altitude overlay, False to disable it.
         """
-        if self._overlay_parametres is None:
-            self._update_overlay_parameters()
-        self._overlay_parametres.altitude_enabled = enable_altitude
-        self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
+        self._set_overlay_parameter("altitude_enabled", enable_altitude)
 
     altitude_enabled = deprecated_property("is_altitude_enabled", "enable_altitude")
 
@@ -467,10 +448,7 @@ class Overlay:
         Args:
             enable_thickness (bool): True to enable the thickness overlay, False to disable it.
         """
-        if self._overlay_parametres is None:
-            self._update_overlay_parameters()
-        self._overlay_parametres.thickness_enabled = enable_thickness
-        self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
+        self._set_overlay_parameter("thickness_enabled", enable_thickness)
 
     thickness_enabled = deprecated_property("is_thickness_enabled", "enable_thickness")
 
@@ -495,10 +473,7 @@ class Overlay:
         if not isinstance(unit, blueye.protocol.ThicknessUnit):
             warnings.warn("Invalid thickness unit, ignoring", RuntimeWarning)
         else:
-            if self._overlay_parametres is None:
-                self._update_overlay_parameters()
-            self._overlay_parametres.thickness_unit = unit
-            self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
+            self._set_overlay_parameter("thickness_unit", unit)
 
     thickness_unit = deprecated_property("get_thickness_unit", "set_thickness_unit")
 
@@ -518,10 +493,7 @@ class Overlay:
             enable_drone_location (bool): True to enable the drone location overlay,
                                           False to disable it.
         """
-        if self._overlay_parametres is None:
-            self._update_overlay_parameters()
-        self._overlay_parametres.drone_location_enabled = enable_drone_location
-        self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
+        self._set_overlay_parameter("drone_location_enabled", enable_drone_location)
 
     drone_location_enabled = deprecated_property(
         "is_drone_location_enabled", "enable_drone_location"
@@ -549,10 +521,7 @@ class Overlay:
         if intensity < 0.0 or intensity > 1.0:
             warnings.warn("Invalid shading intensity, ignoring", RuntimeWarning)
         else:
-            if self._overlay_parametres is None:
-                self._update_overlay_parameters()
-            self._overlay_parametres.shading = intensity
-            self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
+            self._set_overlay_parameter("shading", intensity)
 
     shading = deprecated_property("get_shading", "set_shading")
 
@@ -572,10 +541,7 @@ class Overlay:
             enable_gamma_ray_measurement (bool): True to enable the gamma-ray measurement overlay,
                                                  False to disable it.
         """
-        if self._overlay_parametres is None:
-            self._update_overlay_parameters()
-        self._overlay_parametres.medusa_enabled = enable_gamma_ray_measurement
-        self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
+        self._set_overlay_parameter("medusa_enabled", enable_gamma_ray_measurement)
 
     gamma_ray_measurement_enabled = deprecated_property(
         "is_gamma_ray_measurement_enabled", "enable_gamma_ray_measurement"
@@ -598,10 +564,7 @@ class Overlay:
         Args:
             offset (int): The timezone offset to set.
         """
-        if self._overlay_parametres is None:
-            self._update_overlay_parameters()
-        self._overlay_parametres.timezone_offset = offset
-        self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
+        self._set_overlay_parameter("timezone_offset", offset)
 
     timezone_offset = deprecated_property("get_timezone_offset", "set_timezone_offset")
 
@@ -628,10 +591,7 @@ class Overlay:
         if width < 0:
             warnings.warn("Invalid margin width, ignoring", RuntimeWarning)
         else:
-            if self._overlay_parametres is None:
-                self._update_overlay_parameters()
-            self._overlay_parametres.margin_width = width
-            self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
+            self._set_overlay_parameter("margin_width", width)
 
     margin_width = deprecated_property("get_margin_width", "set_margin_width")
 
@@ -658,10 +618,7 @@ class Overlay:
         if height < 0:
             warnings.warn("Invalid margin height, ignoring", RuntimeWarning)
         else:
-            if self._overlay_parametres is None:
-                self._update_overlay_parameters()
-            self._overlay_parametres.margin_height = height
-            self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
+            self._set_overlay_parameter("margin_height", height)
 
     margin_height = deprecated_property("get_margin_height", "set_margin_height")
 
@@ -688,10 +645,7 @@ class Overlay:
         if not isinstance(size, blueye.protocol.FontSize):
             warnings.warn("Invalid font size, ignoring", RuntimeWarning)
         else:
-            if self._overlay_parametres is None:
-                self._update_overlay_parameters()
-            self._overlay_parametres.font_size = size
-            self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
+            self._set_overlay_parameter("font_size", size)
 
     font_size = deprecated_property("get_font_size", "set_font_size")
 
@@ -727,10 +681,7 @@ class Overlay:
         except UnicodeEncodeError:
             warnings.warn("Title can only contain ASCII characters, ignoring", RuntimeWarning)
             return
-        if self._overlay_parametres is None:
-            self._update_overlay_parameters()
-        self._overlay_parametres.title = new_title
-        self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
+        self._set_overlay_parameter("title", new_title)
 
     title = deprecated_property("get_title", "set_title")
 
@@ -767,10 +718,7 @@ class Overlay:
         except UnicodeEncodeError:
             warnings.warn("Subtitle can only contain ASCII characters, ignoring", RuntimeWarning)
             return
-        if self._overlay_parametres is None:
-            self._update_overlay_parameters()
-        self._overlay_parametres.subtitle = new_subtitle
-        self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
+        self._set_overlay_parameter("subtitle", new_subtitle)
 
     subtitle = deprecated_property("get_subtitle", "set_subtitle")
 
@@ -811,10 +759,7 @@ class Overlay:
                 "Date format string can only contain ASCII characters, ignoring", RuntimeWarning
             )
             return
-        if self._overlay_parametres is None:
-            self._update_overlay_parameters()
-        self._overlay_parametres.date_format = format_str
-        self._parent_drone._req_rep_client.set_overlay_parameters(self._overlay_parametres)
+        self._set_overlay_parameter("date_format", format_str)
 
     date_format = deprecated_property("get_date_format", "set_date_format")
 
