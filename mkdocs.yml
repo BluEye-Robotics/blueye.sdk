@@ -94,7 +94,7 @@ extra:
     provider: mike
 
 nav:
-  - "About the Blueye Drones": "index.md"
+  - "Overview": "index.md"
   - "Quick Start": "quick_start.md"
   - "Connecting to the drone": "connecting.md"
   - Movement:

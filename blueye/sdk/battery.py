@@ -33,7 +33,7 @@ class Battery:
 
     Use `has_second_battery()` to check whether a pack is present in the second slot.
 
-    All getters return `None` until the drone has sent the corresponding telemetry message.
+    All getters return `None` if the drone has not reported the corresponding telemetry message.
     """
 
     def __init__(self, parent_drone: Drone):
