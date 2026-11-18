@@ -336,7 +336,7 @@
   <span class="md-ellipsis">
     
   
-    About the Blueye Drones
+    Overview
   
 
     
@@ -2178,13 +2178,12 @@
 <p>A <a class="autorefs autorefs-internal" title="            Drone" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Drone"><code>Drone</code></a> object connects when it is created and stays connected until you call <a class="autorefs autorefs-internal" title="            disconnect" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Drone.disconnect"><code>disconnect</code></a> or the script exits. This page covers what the drone does while a client is connected, when that client goes quiet, and when it leaves.</p>
 <h2 id="choosing-how-to-connect">Choosing how to connect</h2>
 <p>Connections require Blunux 3.2 or newer. Use an observer connection for telemetry, log downloads, or other work that should leave control with the pilot:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drone</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drone</span>
 
 <span class="k">with</span> <span class="n">Drone</span><span class="p">(</span><span class="n">connect_as_observer</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">log_notifications</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">drone</span><span class="p">:</span>
-    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># Allow the first telemetry messages to arrive.</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">drone</span><span class="o">.</span><span class="n">get_depth</span><span class="p">())</span>  <span class="c1"># Can still be None if no depth message has arrived.</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">drone</span><span class="o">.</span><span class="n">get_depth</span><span class="p">())</span>
 </code></pre></div>
+<p>A getter reads the latest telemetry message the SDK has received. If none has arrived since connecting, it asks the drone for the latest one, so a script does not have to wait for telemetry first.</p>
 <p>The default <code>Drone()</code> connection is eligible for control. If nobody holds control, it takes control, zeroes the thruster setpoints and synchronizes the drone's clock to the computer. If another client already holds control, it joins without displacing that client, but can inherit control when that client leaves.</p>
 <table>
 <thead>
@@ -2225,14 +2224,9 @@
 <p>The Blueye app initially joins as an observer. When the pilot starts a dive, it requests control if nobody has it; otherwise it reports the client in control and refuses to start the dive. A plain <code>Drone()</code> script can therefore block the pilot even if the app connected first. Use <code>connect_as_observer=True</code> for read-only scripts.</p>
 <p>An observer connection is not a read-only permission: setters still send commands. The depth callback example deliberately changes a shared telemetry rate to demonstrate the API; omit those changes when another client's rate must be preserved. See <a href="../telemetry-callback/">telemetry subscriptions</a>.</p>
 <h3 id="inspecting-clients-and-taking-control">Inspecting clients and taking control</h3>
-<p><a class="autorefs autorefs-internal" title="            get_connected_clients" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Drone.get_connected_clients"><code>get_connected_clients</code></a> and <a class="autorefs autorefs-internal" title="            get_client_in_control" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Drone.get_client_in_control"><code>get_client_in_control</code></a> read the latest client-list telemetry. Both return <code>None</code> until it arrives. Once available, client id <code>0</code> means nobody holds control.</p>
+<p><a class="autorefs autorefs-internal" title="            get_connected_clients" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Drone.get_connected_clients"><code>get_connected_clients</code></a> and <a class="autorefs autorefs-internal" title="            get_client_in_control" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Drone.get_client_in_control"><code>get_client_in_control</code></a> read the drone's client-list telemetry. Client id <code>0</code> means nobody holds control.</p>
 <div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="n">Drone</span><span class="p">(</span><span class="n">connect_as_observer</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">drone</span><span class="p">:</span>
-    <span class="n">deadline</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">+</span> <span class="mi">5</span>
-    <span class="n">clients</span> <span class="o">=</span> <span class="n">drone</span><span class="o">.</span><span class="n">get_connected_clients</span><span class="p">()</span>
-    <span class="k">while</span> <span class="n">clients</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">deadline</span><span class="p">:</span>
-        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
-        <span class="n">clients</span> <span class="o">=</span> <span class="n">drone</span><span class="o">.</span><span class="n">get_connected_clients</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">client</span> <span class="ow">in</span> <span class="n">clients</span> <span class="ow">or</span> <span class="p">[]:</span>
+    <span class="k">for</span> <span class="n">client</span> <span class="ow">in</span> <span class="n">drone</span><span class="o">.</span><span class="n">get_connected_clients</span><span class="p">():</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">client_id</span><span class="p">,</span> <span class="n">client</span><span class="o">.</span><span class="n">client_info</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">client</span><span class="o">.</span><span class="n">client_info</span><span class="o">.</span><span class="n">is_observer</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Client in control:&quot;</span><span class="p">,</span> <span class="n">drone</span><span class="o">.</span><span class="n">get_client_in_control</span><span class="p">())</span>
 </code></pre></div>

@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#this-sdk-and-the-blueye-drones" class="md-skip">
+        <a href="#supported-drones" class="md-skip">
           Skip to content
         </a>
       
@@ -144,7 +144,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-            About the Blueye Drones
+            Overview
             
           </span>
         </div>
@@ -341,7 +341,7 @@
   <span class="md-ellipsis">
     
   
-    About the Blueye Drones
+    Overview
   
 
     
@@ -359,7 +359,7 @@
   <span class="md-ellipsis">
     
   
-    About the Blueye Drones
+    Overview
   
 
     
@@ -383,10 +383,21 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#this-sdk-and-the-blueye-drones" class="md-nav__link">
+  <a href="#supported-drones" class="md-nav__link">
     <span class="md-ellipsis">
       
-        This SDK and the Blueye drones
+        Supported drones
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-the-documentation-covers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the documentation covers
       
     </span>
   </a>
@@ -1970,10 +1981,21 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#this-sdk-and-the-blueye-drones" class="md-nav__link">
+  <a href="#supported-drones" class="md-nav__link">
     <span class="md-ellipsis">
       
-        This SDK and the Blueye drones
+        Supported drones
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-the-documentation-covers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the documentation covers
       
     </span>
   </a>
@@ -2000,10 +2022,13 @@
   
 
 
-  <h1>About the Blueye Drones</h1>
+  <h1>Overview</h1>
 
 <p><img alt="SDK demo: connect with Drone(), set_lights(1.0), and motion.set_surge(0.3)" src="media/sdk-demo.gif" /></p>
-<p>Blueye makes the Pioneer, Pro, X1, X3, X3 Ultra and X7 underwater drones, and the SDK works with all of them. The Pioneer and Pro are built for inspection. The other models have guest ports for tools such as grippers, sonars and positioning systems, and the X3 Ultra and X7 add a 4K camera and can run computer vision models on the drone.</p>
+<p>The Blueye SDK is a Python package for controlling Blueye underwater drones from a computer. Your computer joins the drone's surface unit over Wi-Fi, the same way the Blueye app does, and a <a class="autorefs autorefs-internal" title="            Drone" href="reference/blueye/sdk/drone/#blueye.sdk.drone.Drone"><code>Drone</code></a> object connects to the drone through it.</p>
+<p>New to the SDK? Start with the <a href="quick_start/">Quick Start</a>, which installs the SDK and runs a first script, then read <a href="connecting/">Connecting to the drone</a> for how a script and the Blueye app share the drone.</p>
+<h2 id="supported-drones">Supported drones</h2>
+<p>The SDK works with every Blueye model:</p>
 <table>
 <thead>
 <tr>
@@ -2059,13 +2084,20 @@
 </tr>
 </tbody>
 </table>
-<p>See <a href="models/">Blueye drone models</a> for the differences that matter to a script, and <a href="https://www.blueyerobotics.com/products">blueyerobotics.com</a> for more about the drones.</p>
-<h2 id="this-sdk-and-the-blueye-drones">This SDK and the Blueye drones</h2>
-<p>A Blueye drone is normally controlled via a mobile device through the Blueye App (<a href="https://apps.apple.com/no/app/blueye/id1369714041">iOS</a>/<a href="https://play.google.com/store/apps/details?id=no.blueye.blueyeapp">Android</a>).
-The mobile device is connected via Wi-Fi to a surface unit, and the drone is connected to the surface unit via a tether cable.</p>
-<p>This python SDK exposes the functionality of the Blueye app through a Python object. The SDK enables remote control of a Blueye drone as well as reading telemetry data and viewing video streams. It is not meant for executing code on the drone itself.</p>
-<p>To control the drone you connect your laptop to the surface unit Wi-Fi and run code that interfaces with the through the Python object.</p>
-<p>Check out the <a href="quick_start/"><code>Quick Start Guide</code></a> to get started with using the SDK.</p>
+<p><a href="models/">Blueye drone models</a> has the full table and the differences that matter to a script, and <a href="https://www.blueyerobotics.com/products">blueyerobotics.com</a> has more about the drones.</p>
+<h2 id="what-the-documentation-covers">What the documentation covers</h2>
+<ul>
+<li><strong>Movement</strong>: <a href="movement/from-the-CLI/">moving the drone</a> with thrust, boost and the auto modes, and <a href="movement/with-a-gamepad/">driving it with a gamepad</a>.</li>
+<li><strong>Video</strong>: <a href="video/streams/">live streams</a> and <a href="video/gstreamer-for-video-streaming/">GStreamer</a>, <a href="video/recording-and-stills/">recording and taking pictures</a>, <a href="video/downloading/">downloading media</a> and the <a href="video/camera-calibration/">camera calibration</a>.</li>
+<li><strong>Logs</strong>: <a href="logs/listing-and-downloading/">listing and downloading dive logs</a>, <a href="logs/plotting/">plotting them</a> and <a href="logs/foxglove-bez-to-mcap/">viewing them in Foxglove</a>.</li>
+<li><strong>Drone settings</strong>: <a href="configuration/">camera, overlay and other parameters</a>, and <a href="drone-info/">the drone's model and hardware</a>.</li>
+<li><strong>Telemetry</strong>: <a href="telemetry-callback/">subscribing to telemetry messages</a> and <a href="foxglove-bridge/">visualizing live sensor data</a>.</li>
+<li><strong>Guest port tools</strong>: <a href="peripherals/">grippers, lights, lasers, servos and sensors</a>.</li>
+<li><strong>Missions</strong>: <a href="mission-planning/">planning and running missions</a>.</li>
+<li><strong>The blueye command</strong>: <a href="cli/">the CLI</a> for logs, computer vision models and other tasks from the terminal.</li>
+<li><strong>Reference</strong>: every class and method, starting with <a href="reference/blueye/sdk/drone/"><code>Drone</code></a>, and the <a href="reference/blueye/protocol/overview/">protocol messages</a>.</li>
+</ul>
+<p>A copy of the documentation matching the installed SDK ships with the package for use without internet access, see the <a href="quick_start/#local-documentation">Quick Start</a>.</p>
 
 
 

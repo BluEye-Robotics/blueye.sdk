@@ -336,7 +336,7 @@
   <span class="md-ellipsis">
     
   
-    About the Blueye Drones
+    Overview
   
 
     
@@ -2011,9 +2011,8 @@
 <h1 id="drone-model-and-hardware">Drone model and hardware</h1>
 <p>The drone publishes its identity and hardware configuration in the <code>DroneInfoTel</code> telemetry
 message. The <code>Drone</code> class exposes the most useful fields through getters, so a script can adapt
-to the drone it is connected to without parsing the message itself. The getters return <code>None</code>
-until the first <code>DroneInfoTel</code> message has been received, which normally happens during
-<a class="autorefs autorefs-internal" title="            connect" href="../reference/blueye/sdk/drone/#blueye.sdk.drone.Drone.connect"><code>connect</code></a>.</p>
+to the drone it is connected to without parsing the message itself. If <code>DroneInfoTel</code> has not
+arrived since connecting, the getters ask the drone for it.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">blueye.protocol</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">bp</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">blueye.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">Drone</span>
 

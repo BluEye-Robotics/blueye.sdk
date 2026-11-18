@@ -336,7 +336,7 @@
   <span class="md-ellipsis">
     
   
-    About the Blueye Drones
+    Overview
   
 
     
@@ -2246,7 +2246,7 @@ keeps a weak or depleted pack from being hidden behind a healthy one. If a futur
 reports a combined value for the parallel packs, the aggregated getters will return that
 value instead, while the per-pack getters keep returning the individual packs.</p>
 <p>Use <code>has_second_battery()</code> to check whether a pack is present in the second slot.</p>
-<p>All getters return <code>None</code> until the drone has sent the corresponding telemetry message.</p>
+<p>All getters return <code>None</code> if the drone has not reported the corresponding telemetry message.</p>
 
 
 
