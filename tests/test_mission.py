@@ -235,6 +235,21 @@ def test_create_waypoint_instruction():
     )
 
 
+def test_create_waypoint_instruction_without_depth_leaves_the_depth_set_point_out():
+    waypoint = blueye.sdk.mission.create_waypoint_instruction("waypoint", 60.0, 10.0)
+    assert "depth_set_point" not in waypoint.waypoint_command.waypoint
+
+
+def test_create_waypoint_instruction_at_the_surface_sends_a_depth_of_0():
+    waypoint = blueye.sdk.mission.create_waypoint_instruction("waypoint", 60.0, 10.0, depth=0)
+    assert "depth_set_point" in waypoint.waypoint_command.waypoint
+    depth_set_point = waypoint.waypoint_command.waypoint.depth_set_point
+    assert depth_set_point.depth == 0
+    assert (
+        depth_set_point.depth_zero_reference == bp.DepthZeroReference.DEPTH_ZERO_REFERENCE_SURFACE
+    )
+
+
 @pytest.mark.parametrize("latitude", [-91.0, 91.0])
 def test_create_waypoint_instruction_invalid_latitude(latitude):
     with pytest.raises(ValueError, match="Latitude must be between -90 and 90 degrees"):

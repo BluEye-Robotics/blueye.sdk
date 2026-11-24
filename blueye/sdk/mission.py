@@ -18,7 +18,7 @@ def create_waypoint_instruction(
     waypoint_name: str,
     latitude: float,
     longitude: float,
-    depth: float,
+    depth: Optional[float] = None,
     speed_to_target: float = 0.6,
     speed_to_depth: float = 0.3,
     circle_of_acceptance: float = 1,
@@ -33,7 +33,10 @@ def create_waypoint_instruction(
                           range [-90, 90].
         longitude (float): The longitude of the waypoint (WGS 84 decimal format). Needs to be in the
                            range [-180, 180].
-        depth (float): The depth of the waypoint (meters below surface).
+        depth (float, optional): The depth of the waypoint (meters below surface). 0 holds the
+                                 drone at the surface on the way to the waypoint. None (the
+                                 default) leaves the depth set point out, and the drone keeps
+                                 the depth it has. Older Blunux versions ignore a depth of 0.
         circle_of_acceptance: The radius of the circle of acceptance (meters).
         speed_to_target: The speed to the waypoint (m/s).
         waypoint_id: The ID of the waypoint.
@@ -52,18 +55,18 @@ def create_waypoint_instruction(
     global_position.latitude = latitude
     global_position.longitude = longitude
 
-    depth_set_point = bp.DepthSetPoint()
-    depth_set_point.depth = depth
-    depth_set_point.depth_zero_reference = bp.DepthZeroReference.DEPTH_ZERO_REFERENCE_SURFACE
-    depth_set_point.speed_to_depth = speed_to_depth
-
     waypoint = bp.Waypoint()
     waypoint.id = waypoint_id
     waypoint.name = waypoint_name
     waypoint.global_position = global_position
     waypoint.circle_of_acceptance = circle_of_acceptance
     waypoint.speed_to_target = speed_to_target
-    waypoint.depth_set_point = depth_set_point
+    if depth is not None:
+        depth_set_point = bp.DepthSetPoint()
+        depth_set_point.depth = depth
+        depth_set_point.depth_zero_reference = bp.DepthZeroReference.DEPTH_ZERO_REFERENCE_SURFACE
+        depth_set_point.speed_to_depth = speed_to_depth
+        waypoint.depth_set_point = depth_set_point
 
     waypoint_command = bp.WaypointCommand(waypoint=waypoint)
 
